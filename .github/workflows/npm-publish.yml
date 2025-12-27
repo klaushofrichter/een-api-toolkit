@@ -1,0 +1,77 @@
+name: Publish to npm
+
+# Publish to npm when a PR is merged to production, or manually triggered
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - production
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (build only, do not publish)'
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  publish:
+    # Run if: PR was merged, OR manually triggered
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build and verify package
+        run: npm run verify-package
+
+      - name: Publish to npm
+        if: ${{ !inputs.dry_run }}
+        # Use --ignore-scripts to skip prepublishOnly since we already built via verify-package
+        run: npm publish --ignore-scripts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Dry run - skip publish
+        if: ${{ inputs.dry_run }}
+        run: echo "Dry run mode - skipping npm publish"
+
+      - name: Notify Slack on success
+        if: success() && !inputs.dry_run
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK" ]; then
+            VERSION=$(node -p "require('./package.json').version")
+            curl -X POST -H 'Content-type: application/json' \
+              --data "{\"text\":\"een-api-toolkit v${VERSION} published to npm\"}" \
+              "$SLACK_WEBHOOK"
+          fi
+
+      - name: Notify Slack on failure
+        if: failure() && !inputs.dry_run
+        env:
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: |
+          if [ -n "$SLACK_WEBHOOK" ]; then
+            curl -X POST -H 'Content-type: application/json' \
+              --data '{"text":"een-api-toolkit npm publish failed! Check GitHub Actions."}' \
+              "$SLACK_WEBHOOK"
+          fi
