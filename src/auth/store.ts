@@ -17,6 +17,7 @@ export const useAuthStore = defineStore('een-auth', () => {
   const userProfile = ref<UserProfile | null>(null)
   const refreshTimerId = ref<ReturnType<typeof setTimeout> | null>(null)
   const isRefreshing = ref(false)
+  let refreshPromise: Promise<void> | null = null
   const refreshFailed = ref(false)
   const refreshFailedMessage = ref<string | null>(null)
 
@@ -66,7 +67,9 @@ export const useAuthStore = defineStore('een-auth', () => {
         const url = new URL(data.startsWith('http') ? data : `https://${data}`)
         hostname.value = url.hostname
         port.value = url.port ? parseInt(url.port, 10) : 443
-      } catch {
+      } catch (err: unknown) {
+        // Invalid URL format, use as hostname directly
+        debug('Failed to parse URL, using as hostname:', err instanceof Error ? err.message : String(err))
         hostname.value = data
         port.value = 443
       }
@@ -104,7 +107,7 @@ export const useAuthStore = defineStore('een-auth', () => {
     const halfTtl = timeUntilExpiry / 2
     const refreshBuffer = Math.min(fiveMinutes, halfTtl)
     const refreshTime = Math.max(timeUntilExpiry - refreshBuffer, 60 * 1000)
-    const timeout = Math.max(refreshTime - (expiresAt - now - timeUntilExpiry), 5000)
+    const timeout = Math.max(refreshTime, 5000)
 
     debug('Auto-refresh scheduled in', Math.round(timeout / 1000), 'seconds')
 
@@ -113,36 +116,42 @@ export const useAuthStore = defineStore('een-auth', () => {
     }, timeout)
   }
 
-  async function performAutoRefresh() {
-    if (isRefreshing.value) {
-      debug('Refresh already in progress, skipping')
-      return
+  async function performAutoRefresh(): Promise<void> {
+    // If refresh is already in progress, wait for the existing promise
+    if (refreshPromise) {
+      debug('Refresh already in progress, waiting for existing refresh')
+      return refreshPromise
     }
 
     isRefreshing.value = true
     debug('Performing auto-refresh')
 
-    try {
-      // Import dynamically to avoid circular dependency
-      const { refreshToken } = await import('./service')
-      const result = await refreshToken()
+    refreshPromise = (async () => {
+      try {
+        // Import dynamically to avoid circular dependency
+        const { refreshToken } = await import('./service')
+        const result = await refreshToken()
 
-      if (result.error) {
+        if (result.error) {
+          refreshFailed.value = true
+          refreshFailedMessage.value = result.error.message
+          debug('Auto-refresh failed:', result.error.message)
+        } else {
+          refreshFailed.value = false
+          refreshFailedMessage.value = null
+          debug('Auto-refresh successful')
+        }
+      } catch (err: unknown) {
         refreshFailed.value = true
-        refreshFailedMessage.value = result.error.message
-        debug('Auto-refresh failed:', result.error.message)
-      } else {
-        refreshFailed.value = false
-        refreshFailedMessage.value = null
-        debug('Auto-refresh successful')
+        refreshFailedMessage.value = err instanceof Error ? err.message : String(err)
+        debug('Auto-refresh error:', err)
+      } finally {
+        isRefreshing.value = false
+        refreshPromise = null
       }
-    } catch (err) {
-      refreshFailed.value = true
-      refreshFailedMessage.value = String(err)
-      debug('Auto-refresh error:', err)
-    } finally {
-      isRefreshing.value = false
-    }
+    })()
+
+    return refreshPromise
   }
 
   function clearRefreshFailed() {
@@ -194,8 +203,9 @@ export const useAuthStore = defineStore('een-auth', () => {
       if (hostname.value) localStorage.setItem('een_hostname', hostname.value)
       if (port.value !== 443) localStorage.setItem('een_port', String(port.value))
       if (userProfile.value) localStorage.setItem('een_userProfile', JSON.stringify(userProfile.value))
-    } catch {
-      // localStorage might not be available
+    } catch (err: unknown) {
+      // localStorage might not be available (SSR, private browsing, etc.)
+      debug('Failed to save to localStorage:', err instanceof Error ? err.message : String(err))
     }
   }
 
@@ -211,8 +221,9 @@ export const useAuthStore = defineStore('een-auth', () => {
       port.value = portStr ? parseInt(portStr, 10) : 443
       const profileStr = localStorage.getItem('een_userProfile')
       userProfile.value = profileStr ? JSON.parse(profileStr) : null
-    } catch {
-      // localStorage might not be available
+    } catch (err: unknown) {
+      // localStorage might not be available (SSR, private browsing, etc.)
+      debug('Failed to load from localStorage:', err instanceof Error ? err.message : String(err))
     }
   }
 
@@ -225,8 +236,9 @@ export const useAuthStore = defineStore('een-auth', () => {
       localStorage.removeItem('een_hostname')
       localStorage.removeItem('een_port')
       localStorage.removeItem('een_userProfile')
-    } catch {
-      // localStorage might not be available
+    } catch (err: unknown) {
+      // localStorage might not be available (SSR, private browsing, etc.)
+      debug('Failed to clear localStorage:', err instanceof Error ? err.message : String(err))
     }
   }
 

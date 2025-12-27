@@ -232,6 +232,16 @@ npm run test:e2e:ui     # Run with Playwright UI
 
 **Token caching:** Auth tokens are cached in `e2e/.auth-state.json` (with 5-minute expiry buffer) to speed up repeated test runs. Delete this file to force re-authentication.
 
+**Security note:** The cached access token is stored in plaintext. This is acceptable for development/testing because:
+- The token is short-lived (~1 hour)
+- The file has restricted permissions (owner read/write only)
+- The file is excluded from git
+
+**Cleanup after tests:**
+```bash
+./scripts/cleanup-auth.sh   # Revokes token and removes cache file
+```
+
 ## Architecture
 
 ```

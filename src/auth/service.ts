@@ -1,11 +1,10 @@
 import { useAuthStore } from './store'
-import { getProxyUrl, getClientId } from '../config'
+import { getProxyUrl, getClientId, getRedirectUri } from '../config'
 import { success, failure } from '../types'
 import type { Result } from '../types'
 import { debug } from '../utils/debug'
 
 const EEN_AUTH_URL = 'https://auth.eagleeyenetworks.com/oauth2/authorize'
-const REDIRECT_URI = 'http://127.0.0.1:3333'
 
 /**
  * Token response from the proxy
@@ -39,7 +38,7 @@ export function getAuthUrl(): string {
     client_id: clientId,
     response_type: 'code',
     scope: 'vms.all',
-    redirect_uri: REDIRECT_URI,
+    redirect_uri: getRedirectUri(),
     state
   })
 
@@ -58,7 +57,7 @@ export async function getAccessToken(code: string): Promise<Result<TokenResponse
 
   const params = new URLSearchParams({
     code,
-    redirect_uri: REDIRECT_URI
+    redirect_uri: getRedirectUri()
   })
 
   try {

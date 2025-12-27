@@ -54,6 +54,7 @@ export interface PaginatedResult<T> {
 export interface EenToolkitConfig {
   proxyUrl?: string
   clientId?: string
+  redirectUri?: string
   debug?: boolean
 }
 

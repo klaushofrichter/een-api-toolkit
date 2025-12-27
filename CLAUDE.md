@@ -374,12 +374,14 @@ Located in `./scripts/`:
 |--------|---------|
 | `sync-secrets.sh` | Sync `.env` to GitHub repository secrets |
 | `restart-proxy.sh` | Restart the local OAuth proxy on port 8787 |
+| `cleanup-auth.sh` | Revoke E2E test token and remove cache file |
 
 Usage:
 ```bash
 ./scripts/sync-secrets.sh --dry-run  # Preview what will be synced
 ./scripts/sync-secrets.sh            # Sync all secrets to GitHub
 ./scripts/restart-proxy.sh           # Start/restart local proxy
+./scripts/cleanup-auth.sh            # Clean up after E2E tests
 ```
 
 ## Skills

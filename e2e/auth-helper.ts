@@ -4,9 +4,18 @@
  * Performs OAuth login via Playwright and caches the access token.
  * The token can be reused across multiple API tests without
  * re-authenticating each time.
+ *
+ * SECURITY NOTE: The access token is stored in plaintext in .auth-state.json.
+ * This is acceptable for development/testing because:
+ * - The token is short-lived (~1 hour)
+ * - The file has restricted permissions (mode 0o600)
+ * - The file is in .gitignore
+ * - This is for local development and CI testing only
+ *
+ * For cleanup after tests, run: ./scripts/cleanup-auth.sh
  */
 
-import { chromium, Browser, Page } from '@playwright/test'
+import { chromium, Browser } from '@playwright/test'
 import * as fs from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
