@@ -28,8 +28,10 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # For workflow_run, checkout the branch that triggered the test workflow
-          ref: ${{ github.event.workflow_run.head_branch || github.ref }}
+          # Use commit SHA to avoid race condition if branch was deleted after merge
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          # Fetch all history for git describe and git log operations
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -82,7 +84,7 @@ jobs:
           echo "" >> CHANGELOG.md
 
           # Get PR numbers from merge commits in the commit range (only PRs in this release)
-          git log $COMMIT_RANGE --oneline --merges | grep -oE "Merge pull request #[0-9]+" | grep -oE "[0-9]+" | sort -u > pr_numbers.txt 2>/dev/null || echo "" > pr_numbers.txt
+          git log "$COMMIT_RANGE" --oneline --merges | grep -oE "Merge pull request #[0-9]+" | grep -oE "[0-9]+" | sort -u > pr_numbers.txt 2>/dev/null || echo "" > pr_numbers.txt
 
           # Fetch details for each PR in this release
           > pr_summaries.txt
@@ -106,7 +108,7 @@ jobs:
           rm -f pr_summaries.txt
 
           # Generate detailed changelog from commits safely (write to file first to avoid shell injection)
-          git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
+          git log "$COMMIT_RANGE" --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
           grep -v "chore: Sync develop" commits_raw.txt | grep -v "^\s*$" > commits_filtered.txt || echo "- Initial release" > commits_filtered.txt
 
           # Categorize commits (read from file to avoid shell injection)

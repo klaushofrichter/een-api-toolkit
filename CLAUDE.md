@@ -293,10 +293,10 @@ Located in `.github/workflows/`.
 
 ### npm Publish (`npm-publish.yml`)
 - Triggers when test-release workflow succeeds, or manually
-- Generates CHANGELOG from merged PRs and commits
+- Generates CHANGELOG for the current release from merged PRs and commits
 - Publishes to npm registry
 - Creates GitHub Release with tarball and RELEASE-NOTES asset
-- Sends Slack notifications with links to npm, GitHub Release, and Release Notes
+- Sends Slack notifications on success (with links to npm, GitHub Release, and Release Notes) or on failure
 - Supports dry-run mode for testing
 
 ### Future Workflows (to be added)
