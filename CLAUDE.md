@@ -285,12 +285,18 @@ Located in `.github/workflows/`.
 - Automatically merges production into develop
 - Keeps branches in sync after releases
 
-### npm Publish (`npm-publish.yml`)
+### Test Release (`test-release.yml`)
 - Triggers when PR is merged to production, or manually
-- Runs tests and package verification before publish
+- Runs linting, type checking, unit tests
+- Builds and verifies package
+- On success, triggers the publish workflow
+
+### npm Publish (`npm-publish.yml`)
+- Triggers when test-release workflow succeeds, or manually
+- Generates CHANGELOG from merged PRs and commits
 - Publishes to npm registry
-- Creates GitHub Release with tarball and auto-generated CHANGELOG
-- Sends Slack notifications on success (with links to npm and GitHub Release) or on failure
+- Creates GitHub Release with tarball and RELEASE-NOTES asset
+- Sends Slack notifications with links to npm, GitHub Release, and Release Notes
 - Supports dry-run mode for testing
 
 ### Future Workflows (to be added)

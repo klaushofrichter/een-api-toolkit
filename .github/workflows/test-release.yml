@@ -1,0 +1,40 @@
+name: Test Release
+
+# Run tests when a PR is merged to production, or manually triggered
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - production
+  workflow_dispatch:
+
+jobs:
+  test:
+    # Run if: PR was merged, OR manually triggered
+    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run type checking
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build and verify package
+        run: npm run verify-package
