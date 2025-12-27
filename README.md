@@ -1,6 +1,6 @@
 # een-api-toolkit
 
-A TypeScript library implementing the Eagle Eye Networks (EEN) Video platform API v3.0 for Vue 3 Composition API applications.
+A TypeScript library implementing the [Eagle Eye Networks (EEN)](https://een.com/) Video platform API v3.0 for Vue 3 Composition API applications. See also the [EEN Developer Portal](https://developer.eagleeyenetworks.com). 
 
 This repository is provided as-is without any warranty, functionality guarantee, or assurance of availability. This repository uses EEN services, but it is not associated with EEN.
 
