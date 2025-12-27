@@ -1,14 +1,25 @@
 <script setup lang="ts">
 import { useAuthStore, useCurrentUser } from 'een-api-toolkit'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 
-// Only fetch user if authenticated
-const { user, loading, error } = useCurrentUser({
-  immediate: isAuthenticated.value
+// Don't fetch on mount - we'll handle it reactively
+const { user, loading, error, fetch } = useCurrentUser({
+  immediate: false
 })
+
+// Fetch user when authentication state changes
+watch(
+  isAuthenticated,
+  (isAuth) => {
+    if (isAuth && !user.value) {
+      fetch()
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

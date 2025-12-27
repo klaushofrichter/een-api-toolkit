@@ -424,7 +424,7 @@ async function fetchAllUsers(): Promise<User[]> {
 
   do {
     const { data, error } = await getUsers({ pageSize: 100, pageToken })
-    if (error) throw new Error(error.message)
+    if (error) break // Stop on error, return what we have
     allUsers.push(...data.results)
     pageToken = data.nextPageToken
   } while (pageToken)
