@@ -38,3 +38,15 @@ jobs:
 
       - name: Build and verify package
         run: npm run verify-package
+
+      - name: Install example dependencies
+        run: npm ci
+        working-directory: examples/vue-basic
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+        working-directory: examples/vue-basic
+
+      - name: Run example e2e tests
+        run: npm run test:e2e
+        working-directory: examples/vue-basic
