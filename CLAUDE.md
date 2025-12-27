@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EEN) Video platform API v3.0 for use with Vue 3 Composition API applications. The library is published to npm as `een-api-toolkit`.
 
+**Security and robustness are critical priorities for this toolkit.** As a library handling authentication tokens and API communication for video surveillance systems, code must be written defensively with proper error handling, input validation, and secure coding practices.
+
 ## Technology Stack
 
 - **Build**: Vite + npm
@@ -182,6 +184,25 @@ Key state:
 - `baseUrl` - Computed from hostname + port
 
 Auto-refresh: Trigger at 5 minutes before expiration OR 50% of token lifetime (whichever is earlier).
+
+## Security Model
+
+### Refresh Token Isolation
+The refresh token is **never exposed to the client application**. This is a critical security design:
+
+1. **Proxy stores refresh token** - Kept in Cloudflare KV, never sent to client
+2. **Client receives session ID** - Used to identify the session with the proxy
+3. **Token refresh flow**:
+   - App calls `POST /proxy/refreshAccessToken` with session ID (via cookie or Authorization header)
+   - Proxy retrieves stored refresh token from KV
+   - Proxy exchanges refresh token for new access token with EEN
+   - Proxy returns only the new access token to the app
+4. **Client stores only**:
+   - `token` - Short-lived access token
+   - `sessionId` - Session identifier
+   - `refreshTokenMarker` - Just `"present"` to indicate a refresh token exists
+
+This prevents refresh token theft via XSS or browser storage inspection.
 
 ## Demo Applications
 
