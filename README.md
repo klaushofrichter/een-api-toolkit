@@ -10,6 +10,18 @@ A TypeScript library implementing the Eagle Eye Networks (EEN) Video platform AP
 npm install een-api-toolkit
 ```
 
+**Development (from source):**
+```bash
+git clone https://github.com/klaushofrichter/een-api-toolkit.git
+cd een-api-toolkit
+npm install
+npm run build
+npm link
+
+# In your project:
+npm link een-api-toolkit
+```
+
 ## Setup
 
 ```typescript
@@ -61,11 +73,13 @@ const onCallback = async (code: string, state: string) => {
 
 ```vue
 <script setup>
-import { useUsers, useCameras, useBridges } from 'een-api-toolkit'
+import { useCurrentUser, useUsers } from 'een-api-toolkit'
 
-// Composables provide reactive state
-const { user, loading, error, refresh } = useUsers()
-const { cameras, loading: camerasLoading } = useCameras()
+// Get current authenticated user
+const { user, loading, error, refresh } = useCurrentUser()
+
+// List all users with pagination
+const { users, loading: usersLoading, hasNextPage, fetchNextPage } = useUsers()
 </script>
 
 <template>
@@ -73,11 +87,11 @@ const { cameras, loading: camerasLoading } = useCameras()
   <div v-else-if="error">Error: {{ error.message }}</div>
   <div v-else>
     <h1>Welcome, {{ user.firstName }}</h1>
+    <h2>All Users:</h2>
     <ul>
-      <li v-for="camera in cameras" :key="camera.id">
-        {{ camera.name }}
-      </li>
+      <li v-for="u in users" :key="u.id">{{ u.email }}</li>
     </ul>
+    <button v-if="hasNextPage" @click="fetchNextPage">Load More</button>
     <button @click="refresh">Refresh</button>
   </div>
 </template>

@@ -193,7 +193,7 @@ Isolated Vue 3 app that imports `een-api-toolkit` via npm. Use this to verify th
 
 ### Common requirements
 - Port 3333 on IP 127.0.0.1 (not "localhost")
-- Launch scripts should kill existing process on port 3333: `lsof -ti :3333 | xargs kill -9 2>/dev/null`
+- Launch scripts should kill existing process on port 3333: `kill $(lsof -ti :3333) 2>/dev/null || true`
 - Requires running proxy server from `../een-oauth-proxy`
 
 ## Branch Strategy
@@ -230,34 +230,24 @@ Root package.json must include:
 
 ## GitHub Actions Workflows
 
-Located in `.github/workflows/`. Reference: `../een-oauth-proxy/.github/workflows/`
+Located in `.github/workflows/`.
 
-### Code Review (`pr-review.yml`)
-- Triggers on PR to develop/production
+### Code Review (`claude-code-review.yml`)
+- Triggers on PR open/synchronize
 - Uses `anthropics/claude-code-action@v1`
-- Reads custom prompts from `.github/claude-review.md`
+- Reviews code quality, bugs, performance, security
 - Posts review as PR comment
 
-### Branch Protection (`validate-branch-protection.yml`)
-- Enforces: production only accepts from develop
-- Warns: feature branches should target develop
-- Prevents: develop from merging to production directly
+### Interactive Claude (`claude.yml`)
+- Triggers when @claude is mentioned in issues/PRs
+- Responds to requests in comments and reviews
 
-### Testing (`test-pr.yml`)
-- Runs on PR affecting source code
-- Executes: lint, unit tests, build
-- Uploads test artifacts on failure
-
-### npm Package Release (`release.yml`)
-- Triggers on push to production
-- Builds and publishes to npm registry
-- Creates GitHub release with version tag
-- Sends Slack notification
-- Requires `NPM_TOKEN` secret (from npmjs.com → Account → Access Tokens)
-
-### Sync Develop (`sync-develop.yml`)
-- Auto-syncs develop after production PR merge
-- Keeps branches in sync
+### Future Workflows (to be added)
+Reference `../een-oauth-proxy/.github/workflows/` for examples:
+- `validate-branch-protection.yml` - Enforce branch rules
+- `test-pr.yml` - Run tests on PRs
+- `release.yml` - npm publish + GitHub release
+- `sync-develop.yml` - Auto-sync branches after merge
 
 ## Code Review
 

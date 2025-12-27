@@ -91,7 +91,7 @@ for secret_spec in "${SECRETS_TO_SYNC[@]}"; do
     if [[ "$DRY_RUN" == true ]]; then
         echo -e "${GREEN}Would set:${NC} $github_name = ${value:0:10}..."
     else
-        if echo "$value" | gh secret set "$github_name" --repo "$REPO" 2>/dev/null; then
+        if echo "$value" | gh secret set "$github_name" --repo "$REPO"; then
             echo -e "${GREEN}Set:${NC} $github_name"
             ((success_count++))
         else
