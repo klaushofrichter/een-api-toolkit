@@ -36,13 +36,13 @@ description: Use this skill when you are requested to create a PR for a feature 
   - the `gh pr create` command outputs the PR URL, extract the number from it
 
 ## 5. Monitor code review
-- A code review using the workflow pr-review.yml was automatically triggered by the PR
+- A code review using the workflow claude-code-review.yml was automatically triggered by the PR
 - Verify the workflow started:
-  - wait 5 seconds, then check: `gh run list --workflow=pr-review.yml --limit 1 --json databaseId,status,headBranch`
+  - wait 5 seconds, then check: `gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,headBranch`
   - confirm the run is for the correct branch
   - if workflow failed to start, report error and stop
 - Poll for completion (check once per minute, max 10 minutes total):
-  - `gh run list --workflow=pr-review.yml --limit 1 --json databaseId,status,conclusion`
+  - `gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,conclusion`
 - Check the result:
   - if the workflow did not finish within 10 minutes, report timeout and stop
   - view the review: `gh pr view <pr-number> --comments` or check the PR review file artifact

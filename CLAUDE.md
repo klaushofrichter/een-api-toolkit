@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EEN) Video platform API v3.0 for use with Vue 3 Composition API applications. The library is published to npm as `een-api-toolkit`.
 
+**Security and robustness are critical priorities for this toolkit.** As a library handling authentication tokens and API communication for video surveillance systems, code must be written defensively with proper error handling, input validation, and secure coding practices.
+
 ## Technology Stack
 
 - **Build**: Vite + npm
@@ -15,18 +17,21 @@ This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EE
 - **Testing**: Vitest (unit), Playwright (E2E)
 - **Linting**: ESLint only (no Prettier)
 - **Node.js**: Minimum version 20 LTS
+- **Dependencies**: Always use latest stable versions of imported packages
 
 ## Architecture
 
-### Source Structure (`./src/een-api-toolkit/`)
+### Source Structure (`./src/`)
 Organized by resource (mirrors EEN API structure):
 ```
-src/een-api-toolkit/
-├── users/          # User API: service functions + useUsers() composable
-├── bridges/        # Bridge API: service functions + useBridges() composable
-├── cameras/        # Camera API: service functions + useCameras() composable
+src/
 ├── auth/           # Authentication: Pinia store + auth service
-├── types/          # TypeScript types (auto-generated from OpenAPI)
+├── users/          # User API: service functions + composables
+├── bridges/        # Bridge API: service functions + composables (future)
+├── cameras/        # Camera API: service functions + composables (future)
+├── types/          # TypeScript types
+├── utils/          # Utility functions (debug, etc.)
+├── config.ts       # Toolkit configuration
 └── index.ts        # Single entry point export
 ```
 
@@ -180,6 +185,25 @@ Key state:
 
 Auto-refresh: Trigger at 5 minutes before expiration OR 50% of token lifetime (whichever is earlier).
 
+## Security Model
+
+### Refresh Token Isolation
+The refresh token is **never exposed to the client application**. This is a critical security design:
+
+1. **Proxy stores refresh token** - Kept in Cloudflare KV, never sent to client
+2. **Client receives session ID** - Used to identify the session with the proxy
+3. **Token refresh flow**:
+   - App calls `POST /proxy/refreshAccessToken` with session ID (via cookie or Authorization header)
+   - Proxy retrieves stored refresh token from KV
+   - Proxy exchanges refresh token for new access token with EEN
+   - Proxy returns only the new access token to the app
+4. **Client stores only**:
+   - `token` - Short-lived access token
+   - `sessionId` - Session identifier
+   - `refreshTokenMarker` - Just `"present"` to indicate a refresh token exists
+
+This prevents refresh token theft via XSS or browser storage inspection.
+
 ## Demo Applications
 
 ### In-repo examples (`/examples`)
@@ -190,7 +214,7 @@ Isolated Vue 3 app that imports `een-api-toolkit` via npm. Use this to verify th
 
 ### Common requirements
 - Port 3333 on IP 127.0.0.1 (not "localhost")
-- Launch scripts should kill existing process on port 3333: `lsof -ti :3333 | xargs kill -9 2>/dev/null`
+- Launch scripts should kill existing process on port 3333: `kill $(lsof -ti :3333) 2>/dev/null || true`
 - Requires running proxy server from `../een-oauth-proxy`
 
 ## Branch Strategy
@@ -227,34 +251,24 @@ Root package.json must include:
 
 ## GitHub Actions Workflows
 
-Located in `.github/workflows/`. Reference: `../een-oauth-proxy/.github/workflows/`
+Located in `.github/workflows/`.
 
-### Code Review (`pr-review.yml`)
-- Triggers on PR to develop/production
+### Code Review (`claude-code-review.yml`)
+- Triggers on PR open/synchronize
 - Uses `anthropics/claude-code-action@v1`
-- Reads custom prompts from `.github/claude-review.md`
+- Reviews code quality, bugs, performance, security
 - Posts review as PR comment
 
-### Branch Protection (`validate-branch-protection.yml`)
-- Enforces: production only accepts from develop
-- Warns: feature branches should target develop
-- Prevents: develop from merging to production directly
+### Interactive Claude (`claude.yml`)
+- Triggers when @claude is mentioned in issues/PRs
+- Responds to requests in comments and reviews
 
-### Testing (`test-pr.yml`)
-- Runs on PR affecting source code
-- Executes: lint, unit tests, build
-- Uploads test artifacts on failure
-
-### npm Package Release (`release.yml`)
-- Triggers on push to production
-- Builds and publishes to npm registry
-- Creates GitHub release with version tag
-- Sends Slack notification
-- Requires `NPM_TOKEN` secret (from npmjs.com → Account → Access Tokens)
-
-### Sync Develop (`sync-develop.yml`)
-- Auto-syncs develop after production PR merge
-- Keeps branches in sync
+### Future Workflows (to be added)
+Reference `../een-oauth-proxy/.github/workflows/` for examples:
+- `validate-branch-protection.yml` - Enforce branch rules
+- `test-pr.yml` - Run tests on PRs
+- `release.yml` - npm publish + GitHub release
+- `sync-develop.yml` - Auto-sync branches after merge
 
 ## Code Review
 
@@ -359,11 +373,15 @@ Located in `./scripts/`:
 | Script | Purpose |
 |--------|---------|
 | `sync-secrets.sh` | Sync `.env` to GitHub repository secrets |
+| `restart-proxy.sh` | Restart the local OAuth proxy on port 8787 |
+| `cleanup-auth.sh` | Revoke E2E test token and remove cache file |
 
 Usage:
 ```bash
 ./scripts/sync-secrets.sh --dry-run  # Preview what will be synced
 ./scripts/sync-secrets.sh            # Sync all secrets to GitHub
+./scripts/restart-proxy.sh           # Start/restart local proxy
+./scripts/cleanup-auth.sh            # Clean up after E2E tests
 ```
 
 ## Skills

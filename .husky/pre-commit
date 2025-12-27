@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Pre-commit hook to increment version when source files change
+
+# Check if src or e2e folder has staged changes
+if git diff --cached --name-only | grep -qE "^(src|e2e)/"; then
+    echo "Incrementing version in package.json..."
+
+    # Increment patch version
+    npm version patch --no-git-tag-version || exit 1
+
+    # Stage the updated package files
+    git add package.json
+    if [ -f "package-lock.json" ]; then
+        git add package-lock.json
+    fi
+
+    echo "Version incremented successfully"
+fi
+
+exit 0

@@ -10,6 +10,18 @@ A TypeScript library implementing the Eagle Eye Networks (EEN) Video platform AP
 npm install een-api-toolkit
 ```
 
+**Development (from source):**
+```bash
+git clone https://github.com/klaushofrichter/een-api-toolkit.git
+cd een-api-toolkit
+npm install
+npm run build
+npm link
+
+# In your project:
+npm link een-api-toolkit
+```
+
 ## Setup
 
 ```typescript
@@ -61,11 +73,13 @@ const onCallback = async (code: string, state: string) => {
 
 ```vue
 <script setup>
-import { useUsers, useCameras, useBridges } from 'een-api-toolkit'
+import { useCurrentUser, useUsers } from 'een-api-toolkit'
 
-// Composables provide reactive state
-const { user, loading, error, refresh } = useUsers()
-const { cameras, loading: camerasLoading } = useCameras()
+// Get current authenticated user
+const { user, loading, error, refresh } = useCurrentUser()
+
+// List all users with pagination
+const { users, loading: usersLoading, hasNextPage, fetchNextPage } = useUsers()
 </script>
 
 <template>
@@ -73,11 +87,11 @@ const { cameras, loading: camerasLoading } = useCameras()
   <div v-else-if="error">Error: {{ error.message }}</div>
   <div v-else>
     <h1>Welcome, {{ user.firstName }}</h1>
+    <h2>All Users:</h2>
     <ul>
-      <li v-for="camera in cameras" :key="camera.id">
-        {{ camera.name }}
-      </li>
+      <li v-for="u in users" :key="u.id">{{ u.email }}</li>
     </ul>
+    <button v-if="hasNextPage" @click="fetchNextPage">Load More</button>
     <button @click="refresh">Refresh</button>
   </div>
 </template>
@@ -191,6 +205,42 @@ npm run dev
 ```
 
 This starts the proxy at `http://localhost:8787`. The proxy must be running for authentication and API calls to work.
+
+### Running E2E Tests
+
+E2E tests use Playwright to authenticate with EEN and test actual API calls.
+
+**Prerequisites:**
+1. Ensure the OAuth proxy is running:
+   ```bash
+   ./scripts/restart-proxy.sh
+   ```
+
+2. Set test credentials in `.env`:
+   ```env
+   TEST_USER=your-test-email@example.com
+   TEST_PASSWORD=your-test-password
+   VITE_EEN_CLIENT_ID=your-client-id
+   VITE_PROXY_URL=http://localhost:8787
+   ```
+
+**Run tests:**
+```bash
+npm run test:e2e        # Run all E2E tests
+npm run test:e2e:ui     # Run with Playwright UI
+```
+
+**Token caching:** Auth tokens are cached in `e2e/.auth-state.json` (with 5-minute expiry buffer) to speed up repeated test runs. Delete this file to force re-authentication.
+
+**Security note:** The cached access token is stored in plaintext. This is acceptable for development/testing because:
+- The token is short-lived (~1 hour)
+- The file has restricted permissions (owner read/write only)
+- The file is excluded from git
+
+**Cleanup after tests:**
+```bash
+./scripts/cleanup-auth.sh   # Revokes token and removes cache file
+```
 
 ## Architecture
 
