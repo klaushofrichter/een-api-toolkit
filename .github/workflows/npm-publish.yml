@@ -57,11 +57,39 @@ jobs:
         if: success() && !inputs.dry_run
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          TZ: America/Chicago
         run: |
           if [ -n "$SLACK_WEBHOOK" ]; then
             VERSION=$(node -p "require('./package.json').version")
+            PACKAGE_NAME=$(node -p "require('./package.json').name")
+            NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
+            RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
+            # Get package size from the tarball
+            TARBALL=$(npm pack --dry-run 2>&1 | grep -E 'package size' | sed 's/.*package size: *//' | cut -d' ' -f1-2)
+            if [ -z "$TARBALL" ]; then
+              TARBALL="unknown"
+            fi
             curl -X POST -H 'Content-type: application/json' \
-              --data "{\"text\":\"een-api-toolkit v${VERSION} published to npm\"}" \
+              --data "{
+                \"blocks\": [
+                  {
+                    \"type\": \"section\",
+                    \"text\": {
+                      \"type\": \"mrkdwn\",
+                      \"text\": \":package: *${PACKAGE_NAME} v${VERSION}* published to npm\"
+                    }
+                  },
+                  {
+                    \"type\": \"section\",
+                    \"fields\": [
+                      {\"type\": \"mrkdwn\", \"text\": \"*Package:*\n<${NPM_URL}|${PACKAGE_NAME}>\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*Version:*\n${VERSION}\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*Size:*\n${TARBALL}\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*Released:*\n${RELEASE_TIME}\"}
+                    ]
+                  }
+                ]
+              }" \
               "$SLACK_WEBHOOK"
           fi
 
