@@ -27,6 +27,13 @@ export interface AuthState {
   sessionId: string
 }
 
+interface TokenResponse {
+  accessToken: string
+  expiresIn: number
+  httpsBaseUrl: string | { hostname: string; port?: number }
+  sessionId: string
+}
+
 /**
  * Get a valid access token, either from cache or by performing OAuth login.
  * Returns the auth state with token, baseUrl, and sessionId.
@@ -65,7 +72,8 @@ function loadCachedAuth(): AuthState | null {
 
     console.log('Cached token has expired')
     return null
-  } catch {
+  } catch (err) {
+    console.error('Failed to load cached auth:', err)
     return null
   }
 }
@@ -141,18 +149,22 @@ async function performOAuthLogin(): Promise<AuthState> {
       await page.getByRole('button', { name: 'Sign in' }).click()
     }
 
-    // Wait for redirect
-    await page.waitForTimeout(5000)
-
-    if (!redirectUrl) {
-      const currentUrl = page.url()
-      if (currentUrl.includes('code=')) {
-        redirectUrl = currentUrl
+    // Wait for redirect with proper event-based waiting
+    // The redirect will fail (no server on 3333) but we capture the URL via request listener
+    try {
+      await page.waitForURL(/127\.0\.0\.1:3333.*code=/, { timeout: 30000 })
+    } catch {
+      // Expected - no server running, check if we captured the redirect URL
+      if (!redirectUrl) {
+        const currentUrl = page.url()
+        if (currentUrl.includes('code=')) {
+          redirectUrl = currentUrl
+        }
       }
     }
 
     if (!redirectUrl) {
-      throw new Error('Failed to capture redirect URL with authorization code')
+      throw new Error('Failed to capture redirect URL with authorization code. Check TEST_USER/TEST_PASSWORD credentials.')
     }
 
     // Extract code and validate state
@@ -189,7 +201,7 @@ async function performOAuthLogin(): Promise<AuthState> {
       throw new Error(`Token exchange failed: ${tokenResponse.status()} ${errorText}`)
     }
 
-    const tokenData = await tokenResponse.json()
+    const tokenData = await tokenResponse.json() as TokenResponse
 
     // Parse baseUrl
     let baseUrl: string
@@ -208,8 +220,8 @@ async function performOAuthLogin(): Promise<AuthState> {
       sessionId: tokenData.sessionId
     }
 
-    // Save to cache
-    fs.writeFileSync(AUTH_FILE, JSON.stringify(authState, null, 2))
+    // Save to cache with restricted permissions (owner read/write only)
+    fs.writeFileSync(AUTH_FILE, JSON.stringify(authState, null, 2), { mode: 0o600 })
     console.log('Auth token obtained and cached')
     console.log('Base URL:', baseUrl)
 
