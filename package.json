@@ -22,6 +22,8 @@
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "lint": "eslint src --ext .ts,.vue",
     "lint:fix": "eslint src --ext .ts,.vue --fix",
     "typecheck": "vue-tsc --noEmit",
@@ -33,11 +35,13 @@
     "vue": "^3.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.57.0",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "@vitejs/plugin-vue": "^5.0.0",
     "@vue/tsconfig": "^0.5.0",
+    "dotenv": "^17.2.3",
     "eslint": "^8.56.0",
     "eslint-plugin-vue": "^9.20.0",
     "husky": "^9.1.7",
