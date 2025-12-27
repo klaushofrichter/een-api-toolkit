@@ -77,24 +77,28 @@ jobs:
           echo "## [${VERSION}] - $(date '+%Y-%m-%d')" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
 
-          # Extract release summary from merged PRs
+          # Extract release summary from merged PRs in this release only
           echo "### Release Summary" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
 
-          # Get merged PRs to production since last tag
-          gh pr list \
-            --base production \
-            --state merged \
-            --search "merged:>=${LAST_TAG_DATE}" \
-            --json number,title,body \
-            --jq '.[] | "#### PR #\(.number): \(.title)\n\(.body // "No description provided.")\n"' \
-            > pr_summaries.txt 2>/dev/null || echo "" > pr_summaries.txt
+          # Get PR numbers from merge commits in the commit range (only PRs in this release)
+          git log $COMMIT_RANGE --oneline --merges | grep -oE "Merge pull request #[0-9]+" | grep -oE "[0-9]+" | sort -u > pr_numbers.txt 2>/dev/null || echo "" > pr_numbers.txt
+
+          # Fetch details for each PR in this release
+          > pr_summaries.txt
+          if [ -s pr_numbers.txt ]; then
+            while read -r PR_NUM; do
+              if [ -n "$PR_NUM" ]; then
+                gh pr view "$PR_NUM" --json number,title,body \
+                  --jq '"#### PR #\(.number): \(.title)\n\(.body // "No description provided.")\n"' \
+                  >> pr_summaries.txt 2>/dev/null || true
+              fi
+            done < pr_numbers.txt
+          fi
+          rm -f pr_numbers.txt
 
           if [ -s pr_summaries.txt ]; then
-            # Extract just the Summary section from each PR body (between ## Summary and next ##)
-            while IFS= read -r line; do
-              echo "$line" >> CHANGELOG.md
-            done < pr_summaries.txt
+            cat pr_summaries.txt >> CHANGELOG.md
           else
             echo "No PR descriptions available for this release." >> CHANGELOG.md
           fi
