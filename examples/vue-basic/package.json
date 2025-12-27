@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "stop": "kill $(lsof -ti :3333) 2>/dev/null || true",
+    "dev": "npm run stop && vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview"
   },
