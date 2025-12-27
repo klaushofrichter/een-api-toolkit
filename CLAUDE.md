@@ -279,12 +279,21 @@ Located in `.github/workflows/`.
 - Triggers when @claude is mentioned in issues/PRs
 - Responds to requests in comments and reviews
 
+### Branch Sync (`sync-develop.yml`)
+- Triggers when PR is merged to production
+- Automatically merges production into develop
+- Keeps branches in sync after releases
+
+### npm Publish (`npm-publish.yml`)
+- Triggers when PR is merged to production, or manually
+- Runs tests and package verification before publish
+- Supports dry-run mode for testing
+- Sends Slack notifications on success/failure
+
 ### Future Workflows (to be added)
 Reference `../een-oauth-proxy/.github/workflows/` for examples:
 - `validate-branch-protection.yml` - Enforce branch rules
 - `test-pr.yml` - Run tests on PRs
-- `release.yml` - npm publish + GitHub release
-- `sync-develop.yml` - Auto-sync branches after merge
 
 ## Code Review
 

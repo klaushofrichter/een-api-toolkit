@@ -49,7 +49,9 @@ jobs:
 
             Use the repository's CLAUDE.md for guidance on style and conventions. Be constructive and helpful in your feedback.
 
-            Use `gh pr comment` with your Bash tool to leave your review as a comment on the PR.
+            IMPORTANT: Before posting a new review comment, check if there is an existing review comment from a previous run (look for "## Code Review" in PR comments). If found, UPDATE that comment instead of creating a new one using `gh pr comment --edit-last`. If no previous comment exists, create a new one with `gh pr comment`.
+
+            Include the commit SHA in your review header so it's clear which commit was reviewed.
 
           # See https://github.com/anthropics/claude-code-action/blob/main/docs/usage.md
           # or https://code.claude.com/docs/en/cli-reference for available options
