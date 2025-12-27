@@ -15,18 +15,21 @@ This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EE
 - **Testing**: Vitest (unit), Playwright (E2E)
 - **Linting**: ESLint only (no Prettier)
 - **Node.js**: Minimum version 20 LTS
+- **Dependencies**: Always use latest stable versions of imported packages
 
 ## Architecture
 
-### Source Structure (`./src/een-api-toolkit/`)
+### Source Structure (`./src/`)
 Organized by resource (mirrors EEN API structure):
 ```
-src/een-api-toolkit/
-├── users/          # User API: service functions + useUsers() composable
-├── bridges/        # Bridge API: service functions + useBridges() composable
-├── cameras/        # Camera API: service functions + useCameras() composable
+src/
 ├── auth/           # Authentication: Pinia store + auth service
-├── types/          # TypeScript types (auto-generated from OpenAPI)
+├── users/          # User API: service functions + composables
+├── bridges/        # Bridge API: service functions + composables (future)
+├── cameras/        # Camera API: service functions + composables (future)
+├── types/          # TypeScript types
+├── utils/          # Utility functions (debug, etc.)
+├── config.ts       # Toolkit configuration
 └── index.ts        # Single entry point export
 ```
 
