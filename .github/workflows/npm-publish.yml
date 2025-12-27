@@ -39,6 +39,76 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Generate CHANGELOG.md from commits
+        env:
+          TZ: America/Chicago
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
+          RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
+
+          # Get commits since last tag for changelog
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            COMMIT_RANGE="${LAST_TAG}..HEAD"
+            COMPARE_URL="https://github.com/${{ github.repository }}/compare/${LAST_TAG}...v${VERSION}"
+          else
+            COMMIT_RANGE="HEAD"
+            COMPARE_URL="https://github.com/${{ github.repository }}/commits/v${VERSION}"
+          fi
+
+          # Generate changelog from commits, excluding merge commits and sync commits
+          CHANGELOG=$(git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges | grep -v "chore: Sync develop" | grep -v "^\s*$" || echo "- Initial release")
+
+          # Categorize commits
+          FEATURES=$(echo "$CHANGELOG" | grep -iE "^- (feat|add|new)" || true)
+          FIXES=$(echo "$CHANGELOG" | grep -iE "^- (fix|bug|patch)" || true)
+          OTHER=$(echo "$CHANGELOG" | grep -viE "^- (feat|add|new|fix|bug|patch)" || true)
+
+          # Generate CHANGELOG.md
+          cat > CHANGELOG.md << 'HEADER'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+
+          HEADER
+
+          echo "## [${VERSION}] - $(date '+%Y-%m-%d')" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
+          # Add categorized changes
+          if [ -n "$FEATURES" ]; then
+            echo "### ✨ Features" >> CHANGELOG.md
+            echo "$FEATURES" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          if [ -n "$FIXES" ]; then
+            echo "### 🐛 Bug Fixes" >> CHANGELOG.md
+            echo "$FIXES" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          if [ -n "$OTHER" ]; then
+            echo "### 📝 Other Changes" >> CHANGELOG.md
+            echo "$OTHER" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          # Add links section
+          cat >> CHANGELOG.md << LINKS
+          ### Links
+          - [npm package](${NPM_URL})
+          - [Full Changelog](${COMPARE_URL})
+
+          ---
+          *Released: ${RELEASE_TIME}*
+          LINKS
+
+          echo "Generated CHANGELOG.md:"
+          cat CHANGELOG.md
+
       - name: Build and verify package
         run: npm run verify-package
 
@@ -57,47 +127,17 @@ jobs:
         if: success() && !inputs.dry_run
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TZ: America/Chicago
         run: |
           VERSION=$(node -p "require('./package.json').version")
-          PACKAGE_NAME=$(node -p "require('./package.json').name")
-          NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
-          RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
 
-          # Create the tarball for the release
+          # Create the tarball for the release (CHANGELOG.md is already included)
           TARBALL=$(npm pack 2>&1 | grep -E '\.tgz$' | tail -1)
-          PACKAGE_SIZE=$(du -h "$TARBALL" | cut -f1)
 
-          # Generate release notes
-          cat > release-notes.md << EOF
-          ## 📦 ${PACKAGE_NAME} v${VERSION}
-
-          ### Installation
-          \`\`\`bash
-          npm install ${PACKAGE_NAME}@${VERSION}
-          \`\`\`
-
-          ### Package Details
-          | | |
-          |---|---|
-          | **npm** | [${PACKAGE_NAME}](${NPM_URL}) |
-          | **Version** | ${VERSION} |
-          | **Size** | ${PACKAGE_SIZE} |
-          | **Released** | ${RELEASE_TIME} |
-
-          ### Links
-          - [npm package](${NPM_URL})
-          - [Documentation](https://github.com/${{ github.repository }}#readme)
-          - [Changelog](https://github.com/${{ github.repository }}/commits/production)
-          EOF
-
-          # Create the release with the tarball attached
+          # Create the release with the tarball attached, using CHANGELOG.md as release notes
           gh release create "v${VERSION}" \
             --title "v${VERSION}" \
-            --notes-file release-notes.md \
+            --notes-file CHANGELOG.md \
             "$TARBALL"
-
-          rm -f release-notes.md
 
       - name: Notify Slack on success
         if: success() && !inputs.dry_run

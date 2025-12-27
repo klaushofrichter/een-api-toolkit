@@ -148,3 +148,6 @@ test-results/
 examples/**/node_modules
 examples/**/.env
 !examples/**/.env.example
+
+# Generated during publish
+CHANGELOG.md
