@@ -58,13 +58,15 @@ jobs:
             COMPARE_URL="https://github.com/${{ github.repository }}/commits/v${VERSION}"
           fi
 
-          # Generate changelog from commits, excluding merge commits and sync commits
-          CHANGELOG=$(git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges | grep -v "chore: Sync develop" | grep -v "^\s*$" || echo "- Initial release")
+          # Generate changelog from commits safely (write to file first to avoid shell injection)
+          git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
+          grep -v "chore: Sync develop" commits_raw.txt | grep -v "^\s*$" > commits_filtered.txt || echo "- Initial release" > commits_filtered.txt
 
-          # Categorize commits
-          FEATURES=$(echo "$CHANGELOG" | grep -iE "^- (feat|add|new)" || true)
-          FIXES=$(echo "$CHANGELOG" | grep -iE "^- (fix|bug|patch)" || true)
-          OTHER=$(echo "$CHANGELOG" | grep -viE "^- (feat|add|new|fix|bug|patch)" || true)
+          # Categorize commits (read from file to avoid shell injection)
+          FEATURES=$(grep -iE "^- (feat|add|new)" commits_filtered.txt || true)
+          FIXES=$(grep -iE "^- (fix|bug|patch)" commits_filtered.txt || true)
+          OTHER=$(grep -viE "^- (feat|add|new|fix|bug|patch)" commits_filtered.txt || true)
+          rm -f commits_raw.txt commits_filtered.txt
 
           # Generate CHANGELOG.md
           cat > CHANGELOG.md << 'HEADER'
@@ -130,14 +132,36 @@ jobs:
         run: |
           VERSION=$(node -p "require('./package.json').version")
 
-          # Create the tarball for the release (CHANGELOG.md is already included)
+          # Create the tarball for the release (CHANGELOG.md is included via package.json files array)
           TARBALL=$(npm pack 2>&1 | grep -E '\.tgz$' | tail -1)
 
-          # Create the release with the tarball attached, using CHANGELOG.md as release notes
-          gh release create "v${VERSION}" \
-            --title "v${VERSION}" \
-            --notes-file CHANGELOG.md \
-            "$TARBALL"
+          # Validate tarball was created
+          if [ -z "$TARBALL" ] || [ ! -f "$TARBALL" ]; then
+            echo "Error: Failed to create tarball"
+            exit 1
+          fi
+          echo "Created tarball: $TARBALL"
+
+          # Store tarball size for Slack notification
+          TARBALL_SIZE=$(du -h "$TARBALL" | cut -f1)
+          echo "TARBALL_SIZE=$TARBALL_SIZE" >> $GITHUB_ENV
+          echo "TARBALL_NAME=$TARBALL" >> $GITHUB_ENV
+
+          # Check if release already exists (idempotent - for workflow re-runs)
+          if gh release view "v${VERSION}" > /dev/null 2>&1; then
+            echo "Release v${VERSION} already exists, updating..."
+            gh release upload "v${VERSION}" "$TARBALL" --clobber
+            gh release edit "v${VERSION}" --notes-file CHANGELOG.md
+          else
+            echo "Creating new release v${VERSION}..."
+            gh release create "v${VERSION}" \
+              --title "v${VERSION}" \
+              --notes-file CHANGELOG.md \
+              "$TARBALL"
+          fi
+
+          # Clean up tarball
+          rm -f "$TARBALL"
 
       - name: Notify Slack on success
         if: success() && !inputs.dry_run
@@ -151,11 +175,8 @@ jobs:
             NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
             GITHUB_RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
             RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
-            # Get package size from the tarball
-            PACKAGE_SIZE=$(npm pack --dry-run 2>&1 | grep -E 'package size' | sed 's/.*package size: *//' | cut -d' ' -f1-2)
-            if [ -z "$PACKAGE_SIZE" ]; then
-              PACKAGE_SIZE="unknown"
-            fi
+            # Use package size from GitHub Release step (stored in GITHUB_ENV)
+            PACKAGE_SIZE="${TARBALL_SIZE:-unknown}"
             curl -X POST -H 'Content-type: application/json' \
               --data "{
                 \"blocks\": [
