@@ -39,9 +39,10 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Generate CHANGELOG.md from commits
+      - name: Generate CHANGELOG.md from PRs and commits
         env:
           TZ: America/Chicago
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           VERSION=$(node -p "require('./package.json').version")
           PACKAGE_NAME=$(node -p "require('./package.json').name")
@@ -53,22 +54,14 @@ jobs:
           if [ -n "$LAST_TAG" ]; then
             COMMIT_RANGE="${LAST_TAG}..HEAD"
             COMPARE_URL="https://github.com/${{ github.repository }}/compare/${LAST_TAG}...v${VERSION}"
+            LAST_TAG_DATE=$(git log -1 --format=%ci "$LAST_TAG" 2>/dev/null | cut -d' ' -f1)
           else
             COMMIT_RANGE="HEAD"
             COMPARE_URL="https://github.com/${{ github.repository }}/commits/v${VERSION}"
+            LAST_TAG_DATE="2000-01-01"
           fi
 
-          # Generate changelog from commits safely (write to file first to avoid shell injection)
-          git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
-          grep -v "chore: Sync develop" commits_raw.txt | grep -v "^\s*$" > commits_filtered.txt || echo "- Initial release" > commits_filtered.txt
-
-          # Categorize commits (read from file to avoid shell injection)
-          FEATURES=$(grep -iE "^- (feat|add|new)" commits_filtered.txt || true)
-          FIXES=$(grep -iE "^- (fix|bug|patch)" commits_filtered.txt || true)
-          OTHER=$(grep -viE "^- (feat|add|new|fix|bug|patch)" commits_filtered.txt || true)
-          rm -f commits_raw.txt commits_filtered.txt
-
-          # Generate CHANGELOG.md
+          # Generate CHANGELOG.md header
           cat > CHANGELOG.md << 'HEADER'
           # Changelog
 
@@ -79,21 +72,58 @@ jobs:
           echo "## [${VERSION}] - $(date '+%Y-%m-%d')" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
 
+          # Extract release summary from merged PRs
+          echo "### 📋 Release Summary" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
+          # Get merged PRs to production since last tag
+          gh pr list \
+            --base production \
+            --state merged \
+            --search "merged:>=${LAST_TAG_DATE}" \
+            --json number,title,body \
+            --jq '.[] | "#### PR #\(.number): \(.title)\n\(.body // "No description provided.")\n"' \
+            > pr_summaries.txt 2>/dev/null || echo "" > pr_summaries.txt
+
+          if [ -s pr_summaries.txt ]; then
+            # Extract just the Summary section from each PR body (between ## Summary and next ##)
+            while IFS= read -r line; do
+              echo "$line" >> CHANGELOG.md
+            done < pr_summaries.txt
+          else
+            echo "No PR descriptions available for this release." >> CHANGELOG.md
+          fi
+          echo "" >> CHANGELOG.md
+          rm -f pr_summaries.txt
+
+          # Generate detailed changelog from commits safely (write to file first to avoid shell injection)
+          git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
+          grep -v "chore: Sync develop" commits_raw.txt | grep -v "^\s*$" > commits_filtered.txt || echo "- Initial release" > commits_filtered.txt
+
+          # Categorize commits (read from file to avoid shell injection)
+          FEATURES=$(grep -iE "^- (feat|add|new)" commits_filtered.txt || true)
+          FIXES=$(grep -iE "^- (fix|bug|patch)" commits_filtered.txt || true)
+          OTHER=$(grep -viE "^- (feat|add|new|fix|bug|patch)" commits_filtered.txt || true)
+          rm -f commits_raw.txt commits_filtered.txt
+
+          echo "### 📝 Detailed Changes" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
           # Add categorized changes
           if [ -n "$FEATURES" ]; then
-            echo "### ✨ Features" >> CHANGELOG.md
+            echo "#### ✨ Features" >> CHANGELOG.md
             echo "$FEATURES" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
           fi
 
           if [ -n "$FIXES" ]; then
-            echo "### 🐛 Bug Fixes" >> CHANGELOG.md
+            echo "#### 🐛 Bug Fixes" >> CHANGELOG.md
             echo "$FIXES" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
           fi
 
           if [ -n "$OTHER" ]; then
-            echo "### 📝 Other Changes" >> CHANGELOG.md
+            echo "#### 📦 Other Changes" >> CHANGELOG.md
             echo "$OTHER" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
           fi
@@ -161,21 +191,26 @@ jobs:
           echo "TARBALL_SIZE=$TARBALL_SIZE" >> $GITHUB_ENV
           echo "TARBALL_NAME=$TARBALL" >> $GITHUB_ENV
 
+          # Rename CHANGELOG.md to include version for asset upload
+          RELEASE_NOTES="RELEASE-NOTES-v${VERSION}.md"
+          cp CHANGELOG.md "$RELEASE_NOTES"
+
           # Check if release already exists (idempotent - for workflow re-runs)
           if gh release view "v${VERSION}" > /dev/null 2>&1; then
             echo "Release v${VERSION} already exists, updating..."
-            gh release upload "v${VERSION}" "$TARBALL" --clobber
+            gh release upload "v${VERSION}" "$TARBALL" "$RELEASE_NOTES" --clobber
             gh release edit "v${VERSION}" --notes-file CHANGELOG.md
           else
             echo "Creating new release v${VERSION}..."
             gh release create "v${VERSION}" \
               --title "v${VERSION}" \
               --notes-file CHANGELOG.md \
-              "$TARBALL"
+              "$TARBALL" \
+              "$RELEASE_NOTES"
           fi
 
-          # Clean up tarball
-          rm -f "$TARBALL"
+          # Clean up
+          rm -f "$TARBALL" "$RELEASE_NOTES"
 
       - name: Notify Slack on success
         if: success() && !inputs.dry_run && steps.version-check.outputs.already_published != 'true'
@@ -188,6 +223,7 @@ jobs:
             PACKAGE_NAME=$(node -p "require('./package.json').name")
             NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
             GITHUB_RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
+            RELEASE_NOTES_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/RELEASE-NOTES-v${VERSION}.md"
             REPO_URL="https://github.com/${{ github.repository }}"
             RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
             # Use package size from GitHub Release step (stored in GITHUB_ENV)
@@ -214,7 +250,7 @@ jobs:
                   {
                     \"type\": \"context\",
                     \"elements\": [
-                      {\"type\": \"mrkdwn\", \"text\": \"<${REPO_URL}|View Repository>\"}
+                      {\"type\": \"mrkdwn\", \"text\": \"<${RELEASE_NOTES_URL}|Release Notes> · <${REPO_URL}|Repository>\"}
                     ]
                   }
                 ]

@@ -1,7 +1,19 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { UserProfile } from '../types'
+import type { Result } from '../types'
 import { debug } from '../utils/debug'
+
+// Lazy-loaded reference to refreshToken to avoid circular dependency at import time
+// Caches the promise (not the resolved value) to prevent race conditions with concurrent calls
+let refreshTokenFnPromise: Promise<() => Promise<Result<{ accessToken: string; expiresIn: number }>>> | null = null
+
+function getRefreshTokenFn() {
+  if (!refreshTokenFnPromise) {
+    refreshTokenFnPromise = import('./service').then((service) => service.refreshToken)
+  }
+  return refreshTokenFnPromise
+}
 
 /**
  * Pinia store for authentication state management
@@ -128,8 +140,7 @@ export const useAuthStore = defineStore('een-auth', () => {
 
     refreshPromise = (async () => {
       try {
-        // Import dynamically to avoid circular dependency
-        const { refreshToken } = await import('./service')
+        const refreshToken = await getRefreshTokenFn()
         const result = await refreshToken()
 
         if (result.error) {
