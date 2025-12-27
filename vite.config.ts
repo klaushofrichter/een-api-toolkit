@@ -30,6 +30,14 @@ export default defineConfig({
           vue: 'Vue',
           pinia: 'Pinia'
         }
+      },
+      // Suppress warning about dynamic/static import mixing - not relevant for single-file library bundle
+      onwarn(warning, warn) {
+        if (warning.code === 'MIXED_EXPORTS' ||
+            (warning.message && warning.message.includes('dynamic import will not move module'))) {
+          return
+        }
+        warn(warning)
       }
     },
     sourcemap: true
