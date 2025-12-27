@@ -30,6 +30,7 @@
     "docs": "npm run docs:api && npm run docs:ai-context",
     "docs:api": "typedoc",
     "docs:ai-context": "npx tsx scripts/generate-ai-context.ts",
+    "verify-package": "./scripts/verify-package.sh",
     "prepublishOnly": "npm run build && npm run docs",
     "prepare": "husky"
   },

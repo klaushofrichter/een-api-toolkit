@@ -38,8 +38,8 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build package
-        run: npm run build
+      - name: Build and verify package
+        run: npm run verify-package
 
       - name: Publish to npm
         if: ${{ !inputs.dry_run }}
