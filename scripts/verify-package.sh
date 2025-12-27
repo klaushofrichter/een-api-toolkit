@@ -9,7 +9,11 @@ echo ""
 
 # Step 1: Build the package
 echo "1. Building package..."
-npm run build > /dev/null 2>&1
+if ! npm run build > /tmp/build-output.log 2>&1; then
+  echo "   ✗ Build failed:"
+  cat /tmp/build-output.log
+  exit 1
+fi
 echo "   ✓ Build successful"
 echo ""
 
@@ -29,6 +33,16 @@ echo ""
 echo "3. Creating and verifying tarball..."
 # npm pack outputs the tarball name on the last line; filter out other output
 TARBALL=$(npm pack 2>&1 | grep -E '\.tgz$' | tail -1)
+
+# Validate tarball was created
+if [ -z "$TARBALL" ]; then
+  echo "   ✗ Failed to create tarball (empty filename)"
+  exit 1
+fi
+if [ ! -f "$TARBALL" ]; then
+  echo "   ✗ Tarball file not found: $TARBALL"
+  exit 1
+fi
 echo "   Created: $TARBALL"
 
 # Check tarball contains expected files
