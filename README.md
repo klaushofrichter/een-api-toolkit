@@ -206,6 +206,32 @@ npm run dev
 
 This starts the proxy at `http://localhost:8787`. The proxy must be running for authentication and API calls to work.
 
+### Running E2E Tests
+
+E2E tests use Playwright to authenticate with EEN and test actual API calls.
+
+**Prerequisites:**
+1. Ensure the OAuth proxy is running:
+   ```bash
+   ./scripts/restart-proxy.sh
+   ```
+
+2. Set test credentials in `.env`:
+   ```env
+   TEST_USER=your-test-email@example.com
+   TEST_PASSWORD=your-test-password
+   VITE_EEN_CLIENT_ID=your-client-id
+   VITE_PROXY_URL=http://localhost:8787
+   ```
+
+**Run tests:**
+```bash
+npm run test:e2e        # Run all E2E tests
+npm run test:e2e:ui     # Run with Playwright UI
+```
+
+**Token caching:** Auth tokens are cached in `e2e/.auth-state.json` (with 5-minute expiry buffer) to speed up repeated test runs. Delete this file to force re-authentication.
+
 ## Architecture
 
 ```

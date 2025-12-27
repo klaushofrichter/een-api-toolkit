@@ -34,5 +34,14 @@ module.exports = {
     'prefer-const': 'error',
     'no-var': 'error'
   },
-  ignorePatterns: ['dist', 'node_modules', '*.cjs']
+  ignorePatterns: ['dist', 'node_modules', '*.cjs'],
+  overrides: [
+    {
+      // Allow console.log in test files
+      files: ['**/__tests__/**', '**/e2e/**', '**/*.test.ts', '**/*.spec.ts'],
+      rules: {
+        'no-console': 'off'
+      }
+    }
+  ]
 }
