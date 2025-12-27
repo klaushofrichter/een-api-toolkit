@@ -1,5 +1,5 @@
 // Configuration
-export { initEenToolkit, getConfig, getProxyUrl, getClientId } from './config'
+export { initEenToolkit, getConfig, getProxyUrl, getClientId, getRedirectUri } from './config'
 
 // Types
 export type {
@@ -28,6 +28,9 @@ export {
   handleAuthCallback
 } from './auth'
 
+// Auth types
+export type { TokenResponse } from './auth'
+
 // Users - Plain functions
 export {
   getCurrentUser,
@@ -40,4 +43,11 @@ export {
   useCurrentUser,
   useUsers,
   useUser
+} from './users'
+
+// Users - Composable option types
+export type {
+  UseCurrentUserOptions,
+  UseUsersOptions,
+  UseUserOptions
 } from './users'

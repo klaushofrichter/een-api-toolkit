@@ -1,0 +1,21 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["./src/index.ts"],
+  "out": "./docs/api",
+  "plugin": ["typedoc-plugin-markdown"],
+  "readme": "none",
+  "name": "EEN API Toolkit",
+  "includeVersion": true,
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "excludeInternal": true,
+  "categorizeByGroup": true,
+  "categoryOrder": ["Authentication", "Users", "Types", "*"],
+  "sort": ["source-order"],
+  "gitRevision": "develop",
+  "sourceLinkTemplate": "https://github.com/klaushofrichter/een-api-toolkit/blob/{gitRevision}/{path}#L{line}",
+  "navigationLinks": {
+    "GitHub": "https://github.com/klaushofrichter/een-api-toolkit",
+    "EEN Developer Portal": "https://developer.eagleeyenetworks.com"
+  }
+}

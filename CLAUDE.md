@@ -384,6 +384,47 @@ Usage:
 ./scripts/cleanup-auth.sh            # Clean up after E2E tests
 ```
 
+## Documentation
+
+### Structure
+```
+docs/
+├── AI-CONTEXT.md        # Single-file AI reference (comprehensive)
+├── README.md            # Documentation index
+├── api/                 # Auto-generated TypeDoc API reference
+├── guides/              # In-depth guides
+└── getting-started/     # Setup guides
+examples/
+└── vue-basic/           # Complete Vue 3 example application
+```
+
+### Generation
+```bash
+npm run docs              # Generate all documentation
+npm run docs:api          # Generate TypeDoc API reference
+npm run docs:ai-context   # Generate AI-CONTEXT.md
+```
+
+### Key Files
+- **`docs/AI-CONTEXT.md`** - Complete reference for AI assistants, auto-generated from `scripts/generate-ai-context.ts`. Contains all APIs, types, patterns in one file.
+- **`docs/api/`** - Auto-generated from JSDoc comments via TypeDoc
+- **`examples/vue-basic/`** - Working example showing OAuth flow, composables, error handling
+
+### Versioning
+Documentation is generated on publish and versioned with releases:
+- `AI-CONTEXT.md` includes version and generation date
+- Run `npm run docs` before releasing
+- Docs are included in git for GitHub browsing
+
+### JSDoc Requirements
+All exported functions, types, and composables must have JSDoc with:
+- Brief description
+- `@remarks` for detailed explanation
+- `@param` for each parameter
+- `@returns` description
+- `@example` with complete, runnable code
+- `@category` for grouping (Authentication, Users, Types, etc.)
+
 ## Skills
 
 ### PR-and-check (`.claude/skills/PR-and-check/`)
