@@ -15,6 +15,7 @@
   },
   "files": [
     "dist",
+    "examples",
     "CHANGELOG.md"
   ],
   "scripts": {

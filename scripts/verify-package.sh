@@ -50,7 +50,8 @@ tar -tzf "$TARBALL" | grep -q "package/dist/index.js" || { echo "   ✗ Missing 
 tar -tzf "$TARBALL" | grep -q "package/dist/index.cjs" || { echo "   ✗ Missing index.cjs in tarball"; exit 1; }
 tar -tzf "$TARBALL" | grep -q "package/dist/index.d.ts" || { echo "   ✗ Missing index.d.ts in tarball"; exit 1; }
 tar -tzf "$TARBALL" | grep -q "package/package.json" || { echo "   ✗ Missing package.json in tarball"; exit 1; }
-echo "   ✓ Tarball contents verified"
+tar -tzf "$TARBALL" | grep -q "package/examples/vue-basic" || { echo "   ✗ Missing examples in tarball"; exit 1; }
+echo "   ✓ Tarball contents verified (dist, examples, package.json)"
 rm -f "$TARBALL"
 echo ""
 

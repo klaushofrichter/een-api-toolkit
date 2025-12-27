@@ -13,12 +13,32 @@ A complete example showing how to use the een-api-toolkit in a Vue 3 application
 
 ## Setup
 
-1. Copy the environment file:
+### Prerequisites
+
+1. **Start the OAuth proxy** (required for authentication):
+
+   The OAuth proxy is a separate project that handles token management securely.
+   Clone and run it from: https://github.com/klaushofrichter/een-oauth-proxy
+
    ```bash
+   # In a separate terminal, from the een-oauth-proxy directory
+   npm install
+   npm run dev
+   ```
+
+   The proxy should be running at `http://localhost:8787`.
+
+### Example Setup
+
+All commands below should be run from this example directory (`examples/vue-basic/`):
+
+2. Copy the environment file:
+   ```bash
+   # From examples/vue-basic/
    cp .env.example .env
    ```
 
-2. Edit `.env` with your EEN credentials:
+3. Edit `.env` with your EEN credentials:
    ```env
    VITE_EEN_CLIENT_ID=your-client-id
    VITE_PROXY_URL=http://localhost:8787
@@ -26,14 +46,9 @@ A complete example showing how to use the een-api-toolkit in a Vue 3 application
    VITE_REDIRECT_URI=http://127.0.0.1:3333
    ```
 
-3. Make sure the OAuth proxy is running:
-   ```bash
-   # In the een-oauth-proxy directory
-   npm run dev
-   ```
-
 4. Install dependencies and start:
    ```bash
+   # From examples/vue-basic/
    npm install
    npm run dev
    ```
