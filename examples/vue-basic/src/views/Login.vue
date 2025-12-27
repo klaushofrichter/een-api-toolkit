@@ -9,9 +9,9 @@ function login() {
 
 <template>
   <div class="login">
-    <h2>Login</h2>
+    <h2 data-testid="login-title">Login</h2>
     <p>Click the button below to login with your Eagle Eye Networks account.</p>
-    <button @click="login">Login with Eagle Eye Networks</button>
+    <button data-testid="login-button" @click="login">Login with Eagle Eye Networks</button>
   </div>
 </template>
 

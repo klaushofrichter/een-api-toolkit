@@ -26,10 +26,10 @@ watch(
   <div class="home">
     <h2>Welcome to the EEN API Toolkit Example</h2>
 
-    <div v-if="!isAuthenticated" class="not-authenticated">
-      <p>You are not logged in.</p>
+    <div v-if="!isAuthenticated" class="not-authenticated" data-testid="not-authenticated">
+      <p data-testid="not-authenticated-message">You are not logged in.</p>
       <router-link to="/login">
-        <button>Login with Eagle Eye Networks</button>
+        <button data-testid="login-button">Login with Eagle Eye Networks</button>
       </router-link>
     </div>
 

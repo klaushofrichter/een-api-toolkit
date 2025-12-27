@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "stop": "kill $(lsof -ti :3333) 2>/dev/null || true",
+    "stop": "npx kill-port 3333",
     "dev": "npm run stop && vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",

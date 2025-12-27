@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 
+const baseURL = process.env.VITE_REDIRECT_URI || 'http://127.0.0.1:3333'
+
 export default defineConfig({
   testDir: './e2e',
   testMatch: '**/*.spec.ts',
@@ -10,7 +12,7 @@ export default defineConfig({
   reporter: [['html', { open: 'never' }]],
   timeout: 30000,
   use: {
-    baseURL: 'http://127.0.0.1:3333',
+    baseURL,
     trace: 'on-first-retry',
     video: 'retain-on-failure'
   },
@@ -23,7 +25,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    url: 'http://127.0.0.1:3333',
+    url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 30000
   }
