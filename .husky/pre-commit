@@ -1,10 +1,12 @@
 #!/bin/bash
 
-# Pre-commit hook to increment version when source files change
+# Pre-commit hook to increment versions when source files change
 
-# Check if src or e2e folder has staged changes
+# Check if main package files have staged changes (root src/ and e2e/ only)
+# Note: .github/workflows changes don't affect the published npm package
+# Note: examples/vue-basic/e2e/ does NOT match ^e2e/ - patterns are mutually exclusive
 if git diff --cached --name-only | grep -qE "^(src|e2e)/"; then
-    echo "Incrementing version in package.json..."
+    echo "Incrementing main package version..."
 
     # Increment patch version
     npm version patch --no-git-tag-version || exit 1
@@ -15,7 +17,23 @@ if git diff --cached --name-only | grep -qE "^(src|e2e)/"; then
         git add package-lock.json
     fi
 
-    echo "Version incremented successfully"
+    echo "Main package version incremented successfully"
+fi
+
+# Check if example files have staged changes (independently versioned)
+if git diff --cached --name-only | grep -qE "^examples/vue-basic/"; then
+    echo "Incrementing example version..."
+
+    # Increment example patch version
+    (cd examples/vue-basic && npm version patch --no-git-tag-version) || exit 1
+
+    # Stage the updated example package files
+    git add examples/vue-basic/package.json
+    if [ -f "examples/vue-basic/package-lock.json" ]; then
+        git add examples/vue-basic/package-lock.json
+    fi
+
+    echo "Example version incremented successfully"
 fi
 
 exit 0

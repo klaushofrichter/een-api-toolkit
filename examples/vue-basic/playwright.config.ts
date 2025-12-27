@@ -1,4 +1,14 @@
 import { defineConfig, devices } from '@playwright/test'
+import dotenv from 'dotenv'
+import path from 'path'
+import { fileURLToPath } from 'url'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+// Load .env files: parent first, then local with override to replace any conflicts
+// In CI, env vars are passed directly via workflow
+dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+dotenv.config({ path: path.resolve(__dirname, '.env'), override: true })
 
 const redirectUri = process.env.VITE_REDIRECT_URI || 'http://127.0.0.1:3333'
 if (!redirectUri.startsWith('http://127.0.0.1:') && !redirectUri.startsWith('http://localhost:')) {
