@@ -20,7 +20,7 @@ jobs:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write  # Required for creating GitHub releases
 
     steps:
       - name: Checkout repository
@@ -39,6 +39,78 @@ jobs:
       - name: Run tests
         run: npm test
 
+      - name: Generate CHANGELOG.md from commits
+        env:
+          TZ: America/Chicago
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
+          RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
+
+          # Get commits since last tag for changelog
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -n "$LAST_TAG" ]; then
+            COMMIT_RANGE="${LAST_TAG}..HEAD"
+            COMPARE_URL="https://github.com/${{ github.repository }}/compare/${LAST_TAG}...v${VERSION}"
+          else
+            COMMIT_RANGE="HEAD"
+            COMPARE_URL="https://github.com/${{ github.repository }}/commits/v${VERSION}"
+          fi
+
+          # Generate changelog from commits safely (write to file first to avoid shell injection)
+          git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
+          grep -v "chore: Sync develop" commits_raw.txt | grep -v "^\s*$" > commits_filtered.txt || echo "- Initial release" > commits_filtered.txt
+
+          # Categorize commits (read from file to avoid shell injection)
+          FEATURES=$(grep -iE "^- (feat|add|new)" commits_filtered.txt || true)
+          FIXES=$(grep -iE "^- (fix|bug|patch)" commits_filtered.txt || true)
+          OTHER=$(grep -viE "^- (feat|add|new|fix|bug|patch)" commits_filtered.txt || true)
+          rm -f commits_raw.txt commits_filtered.txt
+
+          # Generate CHANGELOG.md
+          cat > CHANGELOG.md << 'HEADER'
+          # Changelog
+
+          All notable changes to this project will be documented in this file.
+
+          HEADER
+
+          echo "## [${VERSION}] - $(date '+%Y-%m-%d')" >> CHANGELOG.md
+          echo "" >> CHANGELOG.md
+
+          # Add categorized changes
+          if [ -n "$FEATURES" ]; then
+            echo "### ✨ Features" >> CHANGELOG.md
+            echo "$FEATURES" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          if [ -n "$FIXES" ]; then
+            echo "### 🐛 Bug Fixes" >> CHANGELOG.md
+            echo "$FIXES" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          if [ -n "$OTHER" ]; then
+            echo "### 📝 Other Changes" >> CHANGELOG.md
+            echo "$OTHER" >> CHANGELOG.md
+            echo "" >> CHANGELOG.md
+          fi
+
+          # Add links section
+          cat >> CHANGELOG.md << LINKS
+          ### Links
+          - [npm package](${NPM_URL})
+          - [Full Changelog](${COMPARE_URL})
+
+          ---
+          *Released: ${RELEASE_TIME}*
+          LINKS
+
+          echo "Generated CHANGELOG.md:"
+          cat CHANGELOG.md
+
       - name: Build and verify package
         run: npm run verify-package
 
@@ -53,15 +125,79 @@ jobs:
         if: ${{ inputs.dry_run }}
         run: echo "Dry run mode - skipping npm publish"
 
+      - name: Create GitHub Release
+        if: success() && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+
+          # Create the tarball for the release (CHANGELOG.md is included via package.json files array)
+          TARBALL=$(npm pack 2>&1 | grep -E '\.tgz$' | tail -1)
+
+          # Validate tarball was created
+          if [ -z "$TARBALL" ] || [ ! -f "$TARBALL" ]; then
+            echo "Error: Failed to create tarball"
+            exit 1
+          fi
+          echo "Created tarball: $TARBALL"
+
+          # Store tarball size for Slack notification
+          TARBALL_SIZE=$(du -h "$TARBALL" | cut -f1)
+          echo "TARBALL_SIZE=$TARBALL_SIZE" >> $GITHUB_ENV
+          echo "TARBALL_NAME=$TARBALL" >> $GITHUB_ENV
+
+          # Check if release already exists (idempotent - for workflow re-runs)
+          if gh release view "v${VERSION}" > /dev/null 2>&1; then
+            echo "Release v${VERSION} already exists, updating..."
+            gh release upload "v${VERSION}" "$TARBALL" --clobber
+            gh release edit "v${VERSION}" --notes-file CHANGELOG.md
+          else
+            echo "Creating new release v${VERSION}..."
+            gh release create "v${VERSION}" \
+              --title "v${VERSION}" \
+              --notes-file CHANGELOG.md \
+              "$TARBALL"
+          fi
+
+          # Clean up tarball
+          rm -f "$TARBALL"
+
       - name: Notify Slack on success
         if: success() && !inputs.dry_run
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+          TZ: America/Chicago
         run: |
           if [ -n "$SLACK_WEBHOOK" ]; then
             VERSION=$(node -p "require('./package.json').version")
+            PACKAGE_NAME=$(node -p "require('./package.json').name")
+            NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
+            GITHUB_RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
+            RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
+            # Use package size from GitHub Release step (stored in GITHUB_ENV)
+            PACKAGE_SIZE="${TARBALL_SIZE:-unknown}"
             curl -X POST -H 'Content-type: application/json' \
-              --data "{\"text\":\"een-api-toolkit v${VERSION} published to npm\"}" \
+              --data "{
+                \"blocks\": [
+                  {
+                    \"type\": \"section\",
+                    \"text\": {
+                      \"type\": \"mrkdwn\",
+                      \"text\": \":package: *${PACKAGE_NAME} v${VERSION}* published\"
+                    }
+                  },
+                  {
+                    \"type\": \"section\",
+                    \"fields\": [
+                      {\"type\": \"mrkdwn\", \"text\": \"*npm:*\n<${NPM_URL}|${PACKAGE_NAME}>\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*GitHub:*\n<${GITHUB_RELEASE_URL}|v${VERSION}>\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*Size:*\n${PACKAGE_SIZE}\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*Released:*\n${RELEASE_TIME}\"}
+                    ]
+                  }
+                ]
+              }" \
               "$SLACK_WEBHOOK"
           fi
 
