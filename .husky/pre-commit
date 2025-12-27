@@ -2,8 +2,8 @@
 
 # Pre-commit hook to increment version when source files change
 
-# Check if src or e2e folder has staged changes
-if git diff --cached --name-only | grep -qE "^(src|e2e)/"; then
+# Check if src, e2e, examples, or workflows folder has staged changes
+if git diff --cached --name-only | grep -qE "^(src|e2e|examples|\.github/workflows)/"; then
     echo "Incrementing version in package.json..."
 
     # Increment patch version
