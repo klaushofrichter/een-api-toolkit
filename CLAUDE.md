@@ -225,6 +225,22 @@ Isolated Vue 3 app that imports `een-api-toolkit` via npm. Use this to verify th
 - Version number tracked in `./package.json`
 - Husky auto-increments patch version on commit; minor/major updated manually
 
+### Branch Sync Best Practices
+
+**After merging a PR to production**, the develop branch must be synced to include the merge commit. This is automated via `.github/workflows/sync-develop.yml`, but if working locally:
+
+```bash
+# Before creating a new branch or making commits
+git fetch origin
+git merge origin/production
+
+# Or if on a feature branch, rebase on updated develop
+git fetch origin
+git rebase origin/develop
+```
+
+**Why this matters**: GitHub's "Create a merge commit" option creates a new commit on production. If develop doesn't have this commit, PRs from develop will show "branch is out-of-date" and may be blocked by branch protection (`strict: true`).
+
 ## Husky Setup
 
 Pre-commit hook auto-increments patch version when source files change:

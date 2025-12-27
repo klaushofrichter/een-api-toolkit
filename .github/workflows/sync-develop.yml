@@ -1,0 +1,34 @@
+name: Sync Develop with Production
+
+# Automatically sync develop branch after PR merges to production
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - production
+
+jobs:
+  sync:
+    # Only run if PR was merged (not just closed)
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync develop with production
+        run: |
+          git checkout develop
+          git merge origin/production -m "chore: Sync develop with production after PR #${{ github.event.pull_request.number }}"
+          git push origin develop
