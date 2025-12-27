@@ -5,10 +5,10 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Load .env from local directory first, then fall back to parent
+// Load .env from parent directory first as fallback, then local overrides
 // In CI, env vars are passed directly
-dotenv.config({ path: path.resolve(__dirname, '.env') })
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+dotenv.config({ path: path.resolve(__dirname, '.env'), override: true })
 
 const redirectUri = process.env.VITE_REDIRECT_URI || 'http://127.0.0.1:3333'
 if (!redirectUri.startsWith('http://127.0.0.1:') && !redirectUri.startsWith('http://localhost:')) {
