@@ -20,7 +20,7 @@ jobs:
     if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write  # Required for creating GitHub releases
 
     steps:
       - name: Checkout repository
@@ -53,6 +53,52 @@ jobs:
         if: ${{ inputs.dry_run }}
         run: echo "Dry run mode - skipping npm publish"
 
+      - name: Create GitHub Release
+        if: success() && !inputs.dry_run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TZ: America/Chicago
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
+          RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
+
+          # Create the tarball for the release
+          TARBALL=$(npm pack 2>&1 | grep -E '\.tgz$' | tail -1)
+          PACKAGE_SIZE=$(du -h "$TARBALL" | cut -f1)
+
+          # Generate release notes
+          cat > release-notes.md << EOF
+          ## 📦 ${PACKAGE_NAME} v${VERSION}
+
+          ### Installation
+          \`\`\`bash
+          npm install ${PACKAGE_NAME}@${VERSION}
+          \`\`\`
+
+          ### Package Details
+          | | |
+          |---|---|
+          | **npm** | [${PACKAGE_NAME}](${NPM_URL}) |
+          | **Version** | ${VERSION} |
+          | **Size** | ${PACKAGE_SIZE} |
+          | **Released** | ${RELEASE_TIME} |
+
+          ### Links
+          - [npm package](${NPM_URL})
+          - [Documentation](https://github.com/${{ github.repository }}#readme)
+          - [Changelog](https://github.com/${{ github.repository }}/commits/production)
+          EOF
+
+          # Create the release with the tarball attached
+          gh release create "v${VERSION}" \
+            --title "v${VERSION}" \
+            --notes-file release-notes.md \
+            "$TARBALL"
+
+          rm -f release-notes.md
+
       - name: Notify Slack on success
         if: success() && !inputs.dry_run
         env:
@@ -63,11 +109,12 @@ jobs:
             VERSION=$(node -p "require('./package.json').version")
             PACKAGE_NAME=$(node -p "require('./package.json').name")
             NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
+            GITHUB_RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
             RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
             # Get package size from the tarball
-            TARBALL=$(npm pack --dry-run 2>&1 | grep -E 'package size' | sed 's/.*package size: *//' | cut -d' ' -f1-2)
-            if [ -z "$TARBALL" ]; then
-              TARBALL="unknown"
+            PACKAGE_SIZE=$(npm pack --dry-run 2>&1 | grep -E 'package size' | sed 's/.*package size: *//' | cut -d' ' -f1-2)
+            if [ -z "$PACKAGE_SIZE" ]; then
+              PACKAGE_SIZE="unknown"
             fi
             curl -X POST -H 'Content-type: application/json' \
               --data "{
@@ -76,15 +123,15 @@ jobs:
                     \"type\": \"section\",
                     \"text\": {
                       \"type\": \"mrkdwn\",
-                      \"text\": \":package: *${PACKAGE_NAME} v${VERSION}* published to npm\"
+                      \"text\": \":package: *${PACKAGE_NAME} v${VERSION}* published\"
                     }
                   },
                   {
                     \"type\": \"section\",
                     \"fields\": [
-                      {\"type\": \"mrkdwn\", \"text\": \"*Package:*\n<${NPM_URL}|${PACKAGE_NAME}>\"},
-                      {\"type\": \"mrkdwn\", \"text\": \"*Version:*\n${VERSION}\"},
-                      {\"type\": \"mrkdwn\", \"text\": \"*Size:*\n${TARBALL}\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*npm:*\n<${NPM_URL}|${PACKAGE_NAME}>\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*GitHub:*\n<${GITHUB_RELEASE_URL}|v${VERSION}>\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*Size:*\n${PACKAGE_SIZE}\"},
                       {\"type\": \"mrkdwn\", \"text\": \"*Released:*\n${RELEASE_TIME}\"}
                     ]
                   }

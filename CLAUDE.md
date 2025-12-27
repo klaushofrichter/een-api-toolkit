@@ -287,8 +287,10 @@ Located in `.github/workflows/`.
 ### npm Publish (`npm-publish.yml`)
 - Triggers when PR is merged to production, or manually
 - Runs tests and package verification before publish
+- Publishes to npm registry
+- Creates GitHub Release with tarball attached
 - Supports dry-run mode for testing
-- Sends Slack notifications on success/failure
+- Sends Slack notifications with links to npm and GitHub Release
 
 ### Future Workflows (to be added)
 Reference `../een-oauth-proxy/.github/workflows/` for examples:
