@@ -145,7 +145,8 @@ TEST_USER=your-test-email@example.com
 TEST_PASSWORD=your-test-password
 
 # OAuth proxy URL (required for API calls)
-VITE_PROXY_URL=https://your-proxy.workers.dev
+# Use local proxy for development to avoid Cloudflare rate limits
+VITE_PROXY_URL=http://localhost:8787
 
 # npm access token for publishing (Automation type from npmjs.com)
 NPM_TOKEN=npm_xxxxxxxxxxxx
@@ -179,6 +180,17 @@ Required secrets:
 | `NPM_TOKEN` | npm publish token |
 | `SLACK_WEBHOOK` | Slack notifications |
 | `ANTHROPIC_API_KEY` | Claude code review |
+
+### Local Proxy Server
+
+For development, run the local OAuth proxy to avoid Cloudflare rate limits:
+
+```bash
+cd ../een-oauth-proxy/proxy
+npm run dev
+```
+
+This starts the proxy at `http://localhost:8787`. The proxy must be running for authentication and API calls to work.
 
 ## Architecture
 
