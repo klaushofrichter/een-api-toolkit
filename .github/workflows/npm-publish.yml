@@ -1,11 +1,11 @@
 name: Publish to npm
 
-# Publish to npm when a PR is merged to production, or manually triggered
+# Publish to npm when test-release workflow succeeds, or manually triggered
 on:
-  pull_request:
-    types: [closed]
-    branches:
-      - production
+  workflow_run:
+    workflows: ["Test Release"]
+    types:
+      - completed
   workflow_dispatch:
     inputs:
       dry_run:
@@ -16,8 +16,10 @@ on:
 
 jobs:
   publish:
-    # Run if: PR was merged, OR manually triggered
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    # Run if: test workflow succeeded, OR manually triggered
+    if: >
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Required for creating GitHub releases
@@ -25,6 +27,11 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Use commit SHA to avoid race condition if branch was deleted after merge
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
+          # Fetch all history for git describe and git log operations
+          fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -36,8 +43,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm test
+      - name: Build package
+        run: npm run build
 
       - name: Generate CHANGELOG.md from PRs and commits
         env:
@@ -72,24 +79,28 @@ jobs:
           echo "## [${VERSION}] - $(date '+%Y-%m-%d')" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
 
-          # Extract release summary from merged PRs
-          echo "### 📋 Release Summary" >> CHANGELOG.md
+          # Extract release summary from merged PRs in this release only
+          echo "### Release Summary" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
 
-          # Get merged PRs to production since last tag
-          gh pr list \
-            --base production \
-            --state merged \
-            --search "merged:>=${LAST_TAG_DATE}" \
-            --json number,title,body \
-            --jq '.[] | "#### PR #\(.number): \(.title)\n\(.body // "No description provided.")\n"' \
-            > pr_summaries.txt 2>/dev/null || echo "" > pr_summaries.txt
+          # Get PR numbers from merge commits in the commit range (only PRs in this release)
+          git log "$COMMIT_RANGE" --oneline --merges | grep -oE "Merge pull request #[0-9]+" | grep -oE "[0-9]+" | sort -u > pr_numbers.txt 2>/dev/null || echo "" > pr_numbers.txt
+
+          # Fetch details for each PR in this release
+          > pr_summaries.txt
+          if [ -s pr_numbers.txt ]; then
+            while read -r PR_NUM; do
+              if [ -n "$PR_NUM" ]; then
+                gh pr view "$PR_NUM" --json number,title,body \
+                  --jq '"#### PR #\(.number): \(.title)\n\(.body // "No description provided.")\n"' \
+                  >> pr_summaries.txt 2>/dev/null || true
+              fi
+            done < pr_numbers.txt
+          fi
+          rm -f pr_numbers.txt
 
           if [ -s pr_summaries.txt ]; then
-            # Extract just the Summary section from each PR body (between ## Summary and next ##)
-            while IFS= read -r line; do
-              echo "$line" >> CHANGELOG.md
-            done < pr_summaries.txt
+            cat pr_summaries.txt >> CHANGELOG.md
           else
             echo "No PR descriptions available for this release." >> CHANGELOG.md
           fi
@@ -97,7 +108,7 @@ jobs:
           rm -f pr_summaries.txt
 
           # Generate detailed changelog from commits safely (write to file first to avoid shell injection)
-          git log $COMMIT_RANGE --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
+          git log "$COMMIT_RANGE" --pretty=format:"- %s" --no-merges > commits_raw.txt 2>/dev/null || echo "- Initial release" > commits_raw.txt
           grep -v "chore: Sync develop" commits_raw.txt | grep -v "^\s*$" > commits_filtered.txt || echo "- Initial release" > commits_filtered.txt
 
           # Categorize commits (read from file to avoid shell injection)
@@ -106,24 +117,24 @@ jobs:
           OTHER=$(grep -viE "^- (feat|add|new|fix|bug|patch)" commits_filtered.txt || true)
           rm -f commits_raw.txt commits_filtered.txt
 
-          echo "### 📝 Detailed Changes" >> CHANGELOG.md
+          echo "### Detailed Changes" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
 
           # Add categorized changes
           if [ -n "$FEATURES" ]; then
-            echo "#### ✨ Features" >> CHANGELOG.md
+            echo "#### Features" >> CHANGELOG.md
             echo "$FEATURES" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
           fi
 
           if [ -n "$FIXES" ]; then
-            echo "#### 🐛 Bug Fixes" >> CHANGELOG.md
+            echo "#### Bug Fixes" >> CHANGELOG.md
             echo "$FIXES" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
           fi
 
           if [ -n "$OTHER" ]; then
-            echo "#### 📦 Other Changes" >> CHANGELOG.md
+            echo "#### Other Changes" >> CHANGELOG.md
             echo "$OTHER" >> CHANGELOG.md
             echo "" >> CHANGELOG.md
           fi
@@ -141,9 +152,6 @@ jobs:
           echo "Generated CHANGELOG.md:"
           cat CHANGELOG.md
 
-      - name: Build and verify package
-        run: npm run verify-package
-
       - name: Check if version already published
         id: version-check
         run: |
@@ -160,7 +168,7 @@ jobs:
 
       - name: Publish to npm
         if: ${{ !inputs.dry_run && steps.version-check.outputs.already_published != 'true' }}
-        # Use --ignore-scripts to skip prepublishOnly since we already built via verify-package
+        # Use --ignore-scripts to skip prepublishOnly since we already built
         run: npm publish --ignore-scripts
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
