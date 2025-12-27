@@ -143,3 +143,8 @@ e2e-results/
 playwright-report/
 e2e/.auth-state.json
 test-results/
+
+# Examples - allow .env.example but not actual .env
+examples/**/node_modules
+examples/**/.env
+!examples/**/.env.example

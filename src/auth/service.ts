@@ -7,9 +7,15 @@ import { debug } from '../utils/debug'
 const EEN_AUTH_URL = 'https://auth.eagleeyenetworks.com/oauth2/authorize'
 
 /**
- * Token response from the proxy
+ * Token response from the OAuth proxy.
+ *
+ * @remarks
+ * This is the response returned by the proxy's `/proxy/getAccessToken` endpoint
+ * after successfully exchanging an authorization code for an access token.
+ *
+ * @category Authentication
  */
-interface TokenResponse {
+export interface TokenResponse {
   accessToken: string
   expiresIn: number
   httpsBaseUrl: string | { hostname: string; port?: number }

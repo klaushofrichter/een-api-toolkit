@@ -6,3 +6,6 @@ export {
   revokeToken,
   handleAuthCallback
 } from './service'
+
+// Types
+export type { TokenResponse } from './service'
