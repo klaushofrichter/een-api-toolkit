@@ -5,8 +5,8 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Load .env from parent directory first as fallback, then local overrides
-// In CI, env vars are passed directly
+// Load .env files: parent first, then local with override to replace any conflicts
+// In CI, env vars are passed directly via workflow
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true })
 

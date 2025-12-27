@@ -72,48 +72,17 @@ test.describe('Vue Basic Example - Authenticated', () => {
     }
   })
 
-  test.afterAll(async ({ browser }) => {
-    // Clean up any auth state by closing browser context
-    const contexts = browser.contexts()
-    for (const context of contexts) {
-      await context.clearCookies()
-      await context.clearPermissions()
-    }
-  })
+  // Note: Playwright automatically handles context cleanup between tests,
+  // so no afterAll hook is needed for auth state cleanup
 
   test('complete OAuth login flow shows authenticated state', async ({ page }) => {
     // Verify initially not authenticated
     await page.goto('/')
     await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible()
+    await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
 
-    // Navigate to login page first
-    await page.click('[data-testid="nav-login"]')
-    await page.waitForURL('/login')
-
-    // Click login button and wait for OAuth redirect
-    await Promise.all([
-      page.waitForURL(/.*eagleeyenetworks.com.*/, { timeout: TIMEOUTS.OAUTH_REDIRECT }),
-      page.click('[data-testid="login-button"]')
-    ])
-
-    // Fill email
-    const emailInput = page.locator('#authentication--input__email')
-    await emailInput.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE })
-    await emailInput.fill(TEST_USER!)
-
-    // Click next
-    await page.getByRole('button', { name: 'Next' }).click()
-
-    // Fill password
-    const passwordInput = page.locator('#authentication--input__password')
-    await passwordInput.waitFor({ state: 'visible', timeout: TIMEOUTS.PASSWORD_VISIBLE })
-    await passwordInput.fill(TEST_PASSWORD!)
-
-    // Click sign in - use OR selector for robustness
-    await page.locator('#next, button:has-text("Sign in")').first().click()
-
-    // Wait for redirect back to app
-    await page.waitForURL('**/', { timeout: TIMEOUTS.AUTH_COMPLETE })
+    // Perform login using helper
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
 
     // Verify authenticated state - should see user info
     await expect(page.locator('[data-testid="not-authenticated"]')).not.toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
@@ -134,10 +103,9 @@ test.describe('Vue Basic Example - Authenticated', () => {
     await page.click('[data-testid="nav-users"]')
     await page.waitForURL('/users')
 
-    // Should see users list or loading state
-    await expect(
-      page.locator('.users-list, .loading, .error').first()
-    ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    // Should see users list (not error state)
+    await expect(page.locator('.users-list')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    await expect(page.locator('.error')).not.toBeVisible()
   })
 
   test('authenticated user can logout', async ({ page }) => {
@@ -172,14 +140,64 @@ test.describe('Vue Basic Example - Negative Auth Tests', () => {
     ).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
   })
 
-  test('OAuth page handles missing credentials gracefully', async ({ page }) => {
-    // This test verifies the app doesn't crash when OAuth flow is cancelled
+  test('login button initiates OAuth redirect', async ({ page }) => {
+    // Verify login button works and redirects to OAuth provider
     await page.goto('/')
     await expect(page.locator('[data-testid="login-button"]')).toBeVisible()
+    await expect(page.locator('[data-testid="login-button"]')).toBeEnabled()
 
-    // Clicking login should redirect to OAuth page
-    // We just verify the button exists and is clickable (don't complete OAuth)
-    const loginButton = page.locator('[data-testid="login-button"]')
-    await expect(loginButton).toBeEnabled()
+    // Click login and verify redirect to OAuth page
+    await Promise.all([
+      page.waitForURL(/.*eagleeyenetworks.com.*/, { timeout: TIMEOUTS.OAUTH_REDIRECT }),
+      page.click('[data-testid="login-button"]')
+    ])
+
+    // Verify we're on the OAuth page by checking for email input
+    const emailInput = page.locator('#authentication--input__email')
+    await expect(emailInput).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+  })
+})
+
+test.describe('Vue Basic Example - Failed Login', () => {
+  const TEST_USER = process.env.TEST_USER
+
+  test.beforeEach(async () => {
+    // Skip if no test user (we need a valid email format)
+    if (!TEST_USER) {
+      test.skip()
+    }
+  })
+
+  test('invalid password shows error on OAuth page', async ({ page }) => {
+    await page.goto('/')
+
+    // Click login and wait for OAuth redirect
+    await Promise.all([
+      page.waitForURL(/.*eagleeyenetworks.com.*/, { timeout: TIMEOUTS.OAUTH_REDIRECT }),
+      page.click('[data-testid="login-button"]')
+    ])
+
+    // Fill valid email
+    const emailInput = page.locator('#authentication--input__email')
+    await emailInput.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    await emailInput.fill(TEST_USER!)
+    await page.getByRole('button', { name: 'Next' }).click()
+
+    // Fill invalid password
+    const passwordInput = page.locator('#authentication--input__password')
+    await passwordInput.waitFor({ state: 'visible', timeout: TIMEOUTS.PASSWORD_VISIBLE })
+    await passwordInput.fill('invalid-password-12345!')
+
+    // Click sign in
+    await page.locator('#next, button:has-text("Sign in")').first().click()
+
+    // Should show error message on OAuth page (not redirect to app)
+    // The OAuth page should display an error for invalid credentials
+    await expect(
+      page.locator('.error, [class*="error"], [data-testid*="error"], #error, .alert-danger').first()
+    ).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    // Should still be on OAuth page, not redirected to app
+    await expect(page).not.toHaveURL(/127\.0\.0\.1/)
   })
 })
