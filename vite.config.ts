@@ -52,6 +52,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    exclude: ['e2e/**', 'node_modules/**', 'examples/**']
+    exclude: ['**/e2e/**', '**/node_modules/**', '**/examples/**']
   }
 })

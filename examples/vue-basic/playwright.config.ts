@@ -1,6 +1,10 @@
 import { defineConfig, devices } from '@playwright/test'
 
-const baseURL = process.env.VITE_REDIRECT_URI || 'http://127.0.0.1:3333'
+const redirectUri = process.env.VITE_REDIRECT_URI || 'http://127.0.0.1:3333'
+if (!redirectUri.startsWith('http://127.0.0.1:') && !redirectUri.startsWith('http://localhost:')) {
+  throw new Error('VITE_REDIRECT_URI must use localhost or 127.0.0.1 for security')
+}
+const baseURL = redirectUri
 
 export default defineConfig({
   testDir: './e2e',

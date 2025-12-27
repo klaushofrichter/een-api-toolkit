@@ -42,6 +42,7 @@ test.describe('Vue Basic Example - Unauthenticated', () => {
     await page.goto('/users')
 
     // Should be redirected to login page
+    await page.waitForURL('/login')
     await expect(page).toHaveURL('/login')
     await expect(page.locator('[data-testid="login-title"]')).toHaveText('Login')
   })
@@ -49,10 +50,12 @@ test.describe('Vue Basic Example - Unauthenticated', () => {
   test('navigation between pages works', async ({ page }) => {
     // Click Login link
     await page.click('[data-testid="nav-login"]')
+    await page.waitForURL('/login')
     await expect(page).toHaveURL('/login')
 
     // Click Home link
     await page.click('[data-testid="nav-home"]')
+    await page.waitForURL('/')
     await expect(page).toHaveURL('/')
   })
 })

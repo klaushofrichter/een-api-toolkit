@@ -47,6 +47,9 @@ jobs:
         run: npm exec playwright install -- --with-deps chromium
         working-directory: examples/vue-basic
 
+      # Note: These e2e tests only cover unauthenticated flows (login page, redirects, etc.)
+      # and do not require the OAuth proxy server. Authenticated flow tests would need
+      # the proxy running or mocked credentials.
       - name: Run example e2e tests
         run: npm run test:e2e
         working-directory: examples/vue-basic
