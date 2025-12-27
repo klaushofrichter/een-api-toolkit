@@ -114,8 +114,22 @@ jobs:
       - name: Build and verify package
         run: npm run verify-package
 
+      - name: Check if version already published
+        id: version-check
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          # Check if this version already exists on npm
+          if npm view "${PACKAGE_NAME}@${VERSION}" version > /dev/null 2>&1; then
+            echo "Version ${VERSION} already exists on npm - skipping publish"
+            echo "already_published=true" >> $GITHUB_OUTPUT
+          else
+            echo "Version ${VERSION} not yet published"
+            echo "already_published=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Publish to npm
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !inputs.dry_run && steps.version-check.outputs.already_published != 'true' }}
         # Use --ignore-scripts to skip prepublishOnly since we already built via verify-package
         run: npm publish --ignore-scripts
         env:
@@ -126,7 +140,7 @@ jobs:
         run: echo "Dry run mode - skipping npm publish"
 
       - name: Create GitHub Release
-        if: success() && !inputs.dry_run
+        if: success() && !inputs.dry_run && steps.version-check.outputs.already_published != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -164,7 +178,7 @@ jobs:
           rm -f "$TARBALL"
 
       - name: Notify Slack on success
-        if: success() && !inputs.dry_run
+        if: success() && !inputs.dry_run && steps.version-check.outputs.already_published != 'true'
         env:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
           TZ: America/Chicago
@@ -174,6 +188,7 @@ jobs:
             PACKAGE_NAME=$(node -p "require('./package.json').name")
             NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
             GITHUB_RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
+            REPO_URL="https://github.com/${{ github.repository }}"
             RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
             # Use package size from GitHub Release step (stored in GITHUB_ENV)
             PACKAGE_SIZE="${TARBALL_SIZE:-unknown}"
@@ -191,9 +206,15 @@ jobs:
                     \"type\": \"section\",
                     \"fields\": [
                       {\"type\": \"mrkdwn\", \"text\": \"*npm:*\n<${NPM_URL}|${PACKAGE_NAME}>\"},
-                      {\"type\": \"mrkdwn\", \"text\": \"*GitHub:*\n<${GITHUB_RELEASE_URL}|v${VERSION}>\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*GitHub Release:*\n<${GITHUB_RELEASE_URL}|v${VERSION}>\"},
                       {\"type\": \"mrkdwn\", \"text\": \"*Size:*\n${PACKAGE_SIZE}\"},
                       {\"type\": \"mrkdwn\", \"text\": \"*Released:*\n${RELEASE_TIME}\"}
+                    ]
+                  },
+                  {
+                    \"type\": \"context\",
+                    \"elements\": [
+                      {\"type\": \"mrkdwn\", \"text\": \"<${REPO_URL}|View Repository>\"}
                     ]
                   }
                 ]
@@ -207,7 +228,28 @@ jobs:
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
         run: |
           if [ -n "$SLACK_WEBHOOK" ]; then
+            PACKAGE_NAME=$(node -p "require('./package.json').name")
+            VERSION=$(node -p "require('./package.json').version")
+            REPO_URL="https://github.com/${{ github.repository }}"
+            ACTIONS_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
             curl -X POST -H 'Content-type: application/json' \
-              --data '{"text":"een-api-toolkit npm publish failed! Check GitHub Actions."}' \
+              --data "{
+                \"blocks\": [
+                  {
+                    \"type\": \"section\",
+                    \"text\": {
+                      \"type\": \"mrkdwn\",
+                      \"text\": \":x: *${PACKAGE_NAME} v${VERSION}* publish failed!\"
+                    }
+                  },
+                  {
+                    \"type\": \"section\",
+                    \"fields\": [
+                      {\"type\": \"mrkdwn\", \"text\": \"*Repository:*\n<${REPO_URL}|${{ github.repository }}>\"},
+                      {\"type\": \"mrkdwn\", \"text\": \"*Actions:*\n<${ACTIONS_URL}|View workflow run>\"}
+                    ]
+                  }
+                ]
+              }" \
               "$SLACK_WEBHOOK"
           fi
