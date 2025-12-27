@@ -5,14 +5,14 @@ import type { Result } from '../types'
 import { debug } from '../utils/debug'
 
 // Lazy-loaded reference to refreshToken to avoid circular dependency at import time
-let refreshTokenFn: (() => Promise<Result<{ accessToken: string; expiresIn: number }>>) | null = null
+// Caches the promise (not the resolved value) to prevent race conditions with concurrent calls
+let refreshTokenFnPromise: Promise<() => Promise<Result<{ accessToken: string; expiresIn: number }>>> | null = null
 
-async function getRefreshTokenFn() {
-  if (!refreshTokenFn) {
-    const service = await import('./service')
-    refreshTokenFn = service.refreshToken
+function getRefreshTokenFn() {
+  if (!refreshTokenFnPromise) {
+    refreshTokenFnPromise = import('./service').then((service) => service.refreshToken)
   }
-  return refreshTokenFn
+  return refreshTokenFnPromise
 }
 
 /**
