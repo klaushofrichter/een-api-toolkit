@@ -1,7 +1,7 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.0.4
-> **Generated:** 2025-12-27
+> **Version:** 0.0.11
+> **Generated:** 2025-12-28
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.

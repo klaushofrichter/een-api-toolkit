@@ -76,7 +76,7 @@ Only implement non-destructive GET and POST APIs until explicitly instructed to 
 
 ## API Reference
 
-- EEN API 3.0 spec: https://github.com/EENCloud/api-v3-documentation/tree/development/api/3.0
+- EEN API 3.0 spec: https://github.com/EENCloud/VMS-Developer-Portal
 - Developer portal: https://developer.eagleeyenetworks.com/reference/using-the-api
 
 ## Reference Implementations
