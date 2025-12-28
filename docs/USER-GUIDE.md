@@ -792,7 +792,9 @@ app.use(pinia)
 // 2. THEN initialize toolkit
 initEenToolkit({
   proxyUrl: import.meta.env.VITE_PROXY_URL,
-  clientId: import.meta.env.VITE_EEN_CLIENT_ID
+  clientId: import.meta.env.VITE_EEN_CLIENT_ID,
+  redirectUri: import.meta.env.VITE_REDIRECT_URI,
+  debug: import.meta.env.VITE_DEBUG === 'true'
 })
 
 app.mount('#app')
