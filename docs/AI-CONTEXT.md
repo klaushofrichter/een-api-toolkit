@@ -46,6 +46,72 @@
 
 ---
 
+## Critical Requirements
+
+### OAuth Redirect URI (IMPORTANT)
+
+The EEN Identity Provider performs an **exact string match** on the redirect URI. Applications MUST follow these rules:
+
+| Requirement | Correct | Incorrect |
+|-------------|---------|-----------|
+| Host | `127.0.0.1` | `localhost` |
+| Path | None (root path only) | `/callback` |
+| Trailing slash | No | `http://127.0.0.1:3333/` |
+
+**The only valid redirect URI is: `http://127.0.0.1:3333`**
+
+**Configure at:** [EEN Developer Portal - My Application](https://developer.eagleeyenetworks.com/page/my-application)
+
+### Application Requirements
+
+1. **Handle OAuth callbacks on the root path (`/`)** - not `/callback`
+2. **Run dev server on `127.0.0.1`** - not `localhost`
+3. **Register exactly `http://127.0.0.1:3333` with EEN at the Developer Portal
+
+### Router Pattern for OAuth Callbacks
+
+The root path must detect OAuth params and handle the callback:
+
+```typescript
+// router/index.ts
+{
+  path: '/',
+  name: 'home',
+  component: Home,
+  beforeEnter: (to, _from, next) => {
+    // If URL has OAuth params, redirect to callback handler
+    if (to.query.code && to.query.state) {
+      next({ name: 'callback', query: to.query })
+    } else {
+      next()
+    }
+  }
+}
+```
+
+### Vite Dev Server Configuration
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  server: {
+    host: '127.0.0.1',  // MUST use 127.0.0.1, not localhost
+    port: 3333,
+    strictPort: true
+  }
+})
+```
+
+### Common OAuth Errors
+
+| Error | Cause | Solution |
+|-------|-------|----------|
+| "Redirect URI mismatch" | URI doesn't match exactly | Use `http://127.0.0.1:3333` (no path, no trailing slash) |
+| Redirected back to login | Router guard blocks callback | Allow OAuth params through on root path |
+| Callback not processed | Wrong path or host | Handle callback on `/`, use `127.0.0.1` |
+
+---
+
 ## Core Types
 
 ### Result<T>

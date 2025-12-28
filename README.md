@@ -18,6 +18,16 @@ The project is also designed to **enable AI-assisted software development**. Wit
 - **Type-Safe** - Full TypeScript types from OpenAPI spec
 - **Predictable Errors** - Always returns `{data, error}`, no exceptions thrown
 
+## OAuth Proxy Requirement
+
+This toolkit's authentication is designed to work with [een-oauth-proxy](https://github.com/klaushofrichter/een-oauth-proxy), a secure OAuth proxy implementation that:
+
+- Keeps refresh tokens server-side (never exposed to the browser)
+- Handles token exchange and refresh automatically
+- Provides session management via secure cookies
+
+**Using a different proxy?** While other OAuth proxy implementations can be used, you may need to adapt the authentication flow. The toolkit expects specific proxy endpoints (`/oauth/authorize`, `/oauth/token`, `/proxy/refreshAccessToken`, `/proxy/revoke`).
+
 ## Quick Start
 
 ### 1. Install
@@ -37,6 +47,8 @@ cd een-oauth-proxy/proxy
 npm install
 npm run dev  # Runs at http://localhost:8787
 ```
+
+> **Important:** Your app must run on `http://127.0.0.1:3333` (not `localhost`) and handle OAuth callbacks on the root path `/`. The EEN Identity Provider requires an exact URI match. See [Troubleshooting](./docs/USER-GUIDE.md#oauth-redirect-uri-requirements-critical) for details.
 
 ### 3. Initialize in Your App
 
