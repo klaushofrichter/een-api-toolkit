@@ -17,13 +17,14 @@ import { test, expect, Page } from '@playwright/test'
  */
 
 // Timeout constants for consistent behavior
+// Values chosen based on OAuth flow timing requirements
 const TIMEOUTS = {
-  OAUTH_REDIRECT: 30000,
-  ELEMENT_VISIBLE: 15000,
-  PASSWORD_VISIBLE: 10000,
-  AUTH_COMPLETE: 30000,
-  UI_UPDATE: 10000,
-  PROXY_CHECK: 5000
+  OAUTH_REDIRECT: 30000,   // OAuth redirects can be slow on first load
+  ELEMENT_VISIBLE: 15000,  // Wait for OAuth page elements to render
+  PASSWORD_VISIBLE: 10000, // Password field appears after email validation
+  AUTH_COMPLETE: 30000,    // Full OAuth flow completion
+  UI_UPDATE: 10000,        // UI state updates after auth changes
+  PROXY_CHECK: 5000        // Quick check if proxy is running
 } as const
 
 const TEST_USER = process.env.TEST_USER
@@ -31,26 +32,31 @@ const TEST_PASSWORD = process.env.TEST_PASSWORD
 const PROXY_URL = process.env.VITE_PROXY_URL
 
 /**
- * Checks if the OAuth proxy is accessible
+ * Checks if the OAuth proxy is accessible.
+ * Returns true if proxy responds (even with 404), false if unreachable.
  */
 async function isProxyAccessible(): Promise<boolean> {
   if (!PROXY_URL) return false
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.PROXY_CHECK)
+
   try {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.PROXY_CHECK)
     const response = await fetch(PROXY_URL, {
       method: 'HEAD',
       signal: controller.signal
     })
-    clearTimeout(timeoutId)
-    return response.ok || response.status === 404 // 404 is ok, means proxy is running
+    // 404 is ok - means proxy is running but endpoint doesn't exist
+    return response.ok || response.status === 404
   } catch {
     return false
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 
 /**
- * Performs OAuth login flow through the UI
+ * Performs OAuth login flow through the UI.
+ * Starts from home page and completes full OAuth authentication.
  */
 async function performLogin(page: Page, username: string, password: string): Promise<void> {
   // Start at home page
@@ -82,15 +88,43 @@ async function performLogin(page: Page, username: string, password: string): Pro
   await page.waitForURL('**/', { timeout: TIMEOUTS.AUTH_COMPLETE })
 }
 
+/**
+ * Clears browser storage to reset auth state
+ */
+async function clearAuthState(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+}
+
 test.describe('Vue Basic Example', () => {
   // Check proxy accessibility once before all tests
   let proxyAccessible = false
+
+  // Helper functions to skip tests when prerequisites aren't met
+  function skipIfNoProxy() {
+    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
+  }
+
+  function skipIfNoCredentials() {
+    test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
+  }
+
+  function skipIfNoUser() {
+    test.skip(!TEST_USER, 'Test user not available')
+  }
 
   test.beforeAll(async () => {
     proxyAccessible = await isProxyAccessible()
     if (!proxyAccessible) {
       console.log('OAuth proxy not accessible - OAuth tests will be skipped')
     }
+  })
+
+  test.afterEach(async ({ page }) => {
+    // Clear auth state after each test to prevent state pollution
+    await clearAuthState(page)
   })
 
   test('shows login button when not authenticated', async ({ page }) => {
@@ -108,9 +142,8 @@ test.describe('Vue Basic Example', () => {
   })
 
   test('login button redirects to OAuth page', async ({ page }) => {
-    // Skip if proxy not accessible or credentials not available
-    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
-    test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
+    skipIfNoProxy()
+    skipIfNoCredentials()
 
     await page.goto('/')
     await expect(page.locator('[data-testid="login-button"]')).toBeVisible()
@@ -128,9 +161,8 @@ test.describe('Vue Basic Example', () => {
   })
 
   test('complete OAuth login flow', async ({ page }) => {
-    // Skip if proxy not accessible or credentials not available
-    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
-    test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
+    skipIfNoProxy()
+    skipIfNoCredentials()
 
     // Verify initially not authenticated
     await page.goto('/')
@@ -147,9 +179,8 @@ test.describe('Vue Basic Example', () => {
   })
 
   test('can view users list after login', async ({ page }) => {
-    // Skip if proxy not accessible or credentials not available
-    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
-    test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
+    skipIfNoProxy()
+    skipIfNoCredentials()
 
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.locator('[data-testid="nav-users"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
@@ -164,9 +195,8 @@ test.describe('Vue Basic Example', () => {
   })
 
   test('can logout after login', async ({ page }) => {
-    // Skip if proxy not accessible or credentials not available
-    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
-    test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
+    skipIfNoProxy()
+    skipIfNoCredentials()
 
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
@@ -181,9 +211,8 @@ test.describe('Vue Basic Example', () => {
   })
 
   test('invalid password shows error on OAuth page', async ({ page }) => {
-    // Skip if proxy not accessible or credentials not available
-    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
-    test.skip(!TEST_USER, 'Test user not available')
+    skipIfNoProxy()
+    skipIfNoUser()
 
     await page.goto('/')
 
