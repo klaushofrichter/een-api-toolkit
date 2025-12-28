@@ -66,7 +66,7 @@ The EEN Identity Provider performs an **exact string match** on the redirect URI
 
 1. **Handle OAuth callbacks on the root path (`/`)** - not `/callback`
 2. **Run dev server on `127.0.0.1`** - not `localhost`
-3. **Register exactly `http://127.0.0.1:3333` with EEN at the Developer Portal
+3. **Register exactly `http://127.0.0.1:3333` with EEN at the Developer Portal**
 
 ### Router Pattern for OAuth Callbacks
 
