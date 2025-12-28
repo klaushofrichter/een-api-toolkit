@@ -86,35 +86,35 @@ npm run dev
 The toolkit implements a secure OAuth pattern where **refresh tokens never reach the client**:
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                          Client Application                          │
-│  ┌─────────────────────────────────────────────────────────────┐    │
-│  │                     een-api-toolkit                          │    │
-│  │  ┌────────────────┐    ┌────────────────┐    ┌───────────┐  │    │
-│  │  │  Auth Service  │    │  API Services  │    │  Pinia    │  │    │
-│  │  │  - getAuthUrl  │    │  - getUsers    │    │  Store    │  │    │
-│  │  │  - callback    │    │  - getCameras  │    │  (token)  │  │    │
-│  │  │  - logout      │    │  - getBridges  │    │           │  │    │
-│  │  └────────────────┘    └────────────────┘    └───────────┘  │    │
-│  └─────────────────────────────────────────────────────────────┘    │
-│                                   │                                  │
-│              Only access token stored in browser                     │
-└───────────────────────────────────│──────────────────────────────────┘
-                                    │
-                                    ▼
-              ┌─────────────────────────────────────┐
-              │          OAuth Proxy                 │
-              │  (Cloudflare Worker / KV Store)     │
-              │                                      │
-              │  Stores refresh tokens securely      │
-              │  Exchanges tokens with EEN           │
-              │  Returns only access tokens          │
-              └─────────────────────────────────────┘
-                                    │
-                                    ▼
-              ┌─────────────────────────────────────┐
-              │          EEN API v3.0               │
-              └─────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│                            Client Application                                 │
+│  ┌────────────────────────────────────────────────────────────────────────┐  │
+│  │                        een-api-toolkit                                  │  │
+│  │  ┌────────────────┐    ┌────────────────┐    ┌───────────┐             │  │
+│  │  │  Auth Service  │    │  API Services  │    │  Pinia    │             │  │
+│  │  │  - getAuthUrl  │    │  - getUsers    │    │  Store    │             │  │
+│  │  │  - callback    │    │  - getCameras  │    │  (token)  │             │  │
+│  │  │  - logout      │    │  - getBridges  │    │           │             │  │
+│  │  └────────────────┘    └────────────────┘    └───────────┘             │  │
+│  └─────────│──────────────────────│───────────────────────────────────────┘  │
+│            │                      │                                          │
+│            │   Only access token stored in browser                           │
+└────────────│──────────────────────│──────────────────────────────────────────┘
+             │                      │
+Auth calls   │                      │  API calls (with Bearer token)
+             ▼                      ▼
+┌─────────────────────────┐    ┌─────────────────────────┐
+│      OAuth Proxy        │    │      EEN API v3.0       │
+│  (local or deployed)    │    │                         │
+│                         │    │  - /api/v3.0/users      │
+│  Stores refresh tokens  │    │  - /api/v3.0/cameras    │
+│  Returns access tokens  │    │  - /api/v3.0/bridges    │
+└─────────────────────────┘    └─────────────────────────┘
+             │
+             ▼
+┌─────────────────────────┐
+│       EEN OAuth         │
+└─────────────────────────┘
 ```
 
 ### Key Design Decisions
@@ -217,9 +217,10 @@ export async function getSensors(
     })
 
     if (!response.ok) {
+      // For a more robust implementation, see `handleErrorResponse` in `src/users/service.ts`
       return {
         data: null,
-        error: { code: 'API_ERROR', message: `HTTP ${response.status}` }
+        error: { code: 'API_ERROR', message: `API Error: ${response.statusText}`, status: response.status }
       }
     }
 
