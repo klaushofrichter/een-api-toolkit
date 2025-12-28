@@ -56,12 +56,17 @@ jobs:
 
       - name: Create proxy secrets file
         run: |
-          cat > ../een-oauth-proxy/proxy/.dev.vars << EOF
+          cat > ../een-oauth-proxy/proxy/.dev.vars << 'EOF'
           CLIENT_ID=${{ secrets.VITE_EEN_CLIENT_ID }}
           CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
           ADMIN_EMAILS=test@example.com
           ALLOWED_ORIGINS=http://127.0.0.1:3333
           EOF
+          # Remove leading whitespace (heredoc preserves YAML indentation)
+          sed -i 's/^[[:space:]]*//' ../een-oauth-proxy/proxy/.dev.vars
+          # Verify file was created correctly (mask secrets)
+          echo "Created .dev.vars:"
+          sed 's/CLIENT_ID=.*/CLIENT_ID=***/' ../een-oauth-proxy/proxy/.dev.vars | sed 's/CLIENT_SECRET=.*/CLIENT_SECRET=***/'
 
       - name: Start OAuth proxy
         run: |
