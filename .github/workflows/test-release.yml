@@ -39,6 +39,22 @@ jobs:
       - name: Build and verify package
         run: npm run verify-package
 
+      - name: Verify documentation is current
+        run: |
+          npm run docs
+          if [ -n "$(git status --porcelain docs/)" ]; then
+            echo "ERROR: Documentation is out of date"
+            echo "Run 'npm run docs' locally and commit the changes"
+            echo ""
+            echo "Changed files:"
+            git status --porcelain docs/
+            echo ""
+            echo "Diff:"
+            git diff docs/
+            exit 1
+          fi
+          echo "Documentation is up to date"
+
       - name: Install example dependencies
         run: npm ci
         working-directory: examples/vue-basic
