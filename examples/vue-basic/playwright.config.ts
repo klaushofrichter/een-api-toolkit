@@ -19,9 +19,10 @@ const baseURL = redirectUri
 export default defineConfig({
   testDir: './e2e',
   testMatch: '**/*.spec.ts',
-  fullyParallel: true,
+  fullyParallel: false, // Run tests sequentially for predictable order
   forbidOnly: !!process.env.CI,
-  retries: process.env.CI ? 2 : 0,
+  retries: 0, // No retries - fail fast
+  maxFailures: 1, // Stop on first failure
   workers: 1,
   reporter: [['html', { open: 'never' }]],
   timeout: 30000,

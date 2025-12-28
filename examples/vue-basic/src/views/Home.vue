@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { useAuthStore, useCurrentUser } from 'een-api-toolkit'
+import { useAuthStore, useCurrentUser, getAuthUrl } from 'een-api-toolkit'
 import { computed, watch } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+function login() {
+  window.location.href = getAuthUrl()
+}
 
 // Don't fetch on mount - we'll handle it reactively
 const { user, loading, error, fetch } = useCurrentUser({
@@ -28,9 +32,7 @@ watch(
 
     <div v-if="!isAuthenticated" class="not-authenticated" data-testid="not-authenticated">
       <p data-testid="not-authenticated-message">You are not logged in.</p>
-      <router-link to="/login">
-        <button data-testid="login-button">Login with Eagle Eye Networks</button>
-      </router-link>
+      <button data-testid="login-button" @click="login">Login with Eagle Eye Networks</button>
     </div>
 
     <div v-else class="authenticated">
