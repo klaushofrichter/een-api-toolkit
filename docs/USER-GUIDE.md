@@ -763,18 +763,9 @@ export default defineConfig({
 3. Check your dev server runs on `127.0.0.1:3333`, not `localhost:3333`
 4. Verify your router handles OAuth callbacks on the root path
 
-### "Toolkit not initialized"
+### "Toolkit not initialized" / "getActivePinia()" Error
 
-Ensure you call `initEenToolkit()` **after** installing Pinia:
-
-```typescript
-app.use(createPinia())  // First
-initEenToolkit({ ... }) // Then
-```
-
-### "getActivePinia()" Error
-
-**Symptom:** You see this error when the app starts or when using composables:
+**Symptom:** You see one of these errors when the app starts or when using composables:
 
 ```
 Error: [🍍]: "getActivePinia()" was called but there was no active Pinia.

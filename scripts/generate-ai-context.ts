@@ -716,7 +716,6 @@ app.use(pinia)
 initEenToolkit({
   proxyUrl: import.meta.env.VITE_PROXY_URL,
   clientId: import.meta.env.VITE_EEN_CLIENT_ID,
-  redirectUri: 'http://127.0.0.1:3333',
   debug: import.meta.env.DEV
 })
 
