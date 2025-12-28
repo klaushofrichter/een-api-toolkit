@@ -62,6 +62,8 @@ jobs:
           ADMIN_EMAILS=test@example.com
           ALLOWED_ORIGINS=http://127.0.0.1:3333
           EOF
+          # Remove leading whitespace from each line (heredoc preserves indentation)
+          sed -i 's/^[[:space:]]*//' ../een-oauth-proxy/proxy/.dev.vars
 
       - name: Start OAuth proxy
         run: |
