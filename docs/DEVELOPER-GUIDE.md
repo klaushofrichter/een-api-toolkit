@@ -124,6 +124,7 @@ Auth calls   │                      │  API calls (with Bearer token)
 3. **Auto Token Refresh**: Handled transparently by the auth service
 4. **Type Safety**: Types generated from OpenAPI spec
 5. **No Built-in Caching**: Consuming apps handle caching as needed
+6. **Pinia Dependency**: The toolkit uses Pinia internally for auth state management. Consuming apps must install and configure Pinia before calling `initEenToolkit()` or using any composables. Failure to do so results in a "getActivePinia() was called but there was no active Pinia" error.
 
 ## Code Structure
 

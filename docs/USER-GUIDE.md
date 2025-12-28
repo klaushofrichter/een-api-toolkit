@@ -135,11 +135,12 @@ import { initEenToolkit } from 'een-api-toolkit'
 import App from './App.vue'
 
 const app = createApp(App)
+const pinia = createPinia()
 
-// Pinia must be installed BEFORE initializing the toolkit
-app.use(createPinia())
+// IMPORTANT: Pinia must be installed BEFORE initializing the toolkit
+app.use(pinia)
 
-// Initialize with your configuration
+// Now initialize the toolkit
 initEenToolkit({
   proxyUrl: import.meta.env.VITE_PROXY_URL,
   clientId: import.meta.env.VITE_EEN_CLIENT_ID,
@@ -149,6 +150,12 @@ initEenToolkit({
 
 app.mount('#app')
 ```
+
+> **Important:** If you call `initEenToolkit()` or use any composables before installing Pinia, you will see this error:
+> ```
+> Error: [🍍]: "getActivePinia()" was called but there was no active Pinia.
+> Are you trying to use a store before calling "app.use(pinia)"?
+> ```
 
 ### Configuration Options
 
@@ -756,13 +763,41 @@ export default defineConfig({
 3. Check your dev server runs on `127.0.0.1:3333`, not `localhost:3333`
 4. Verify your router handles OAuth callbacks on the root path
 
-### "Toolkit not initialized"
+### "Toolkit not initialized" / "getActivePinia()" Error
 
-Ensure you call `initEenToolkit()` **after** installing Pinia:
+**Symptom:** You see one of these errors when the app starts or when using composables:
+
+```
+Error: [🍍]: "getActivePinia()" was called but there was no active Pinia.
+Are you trying to use a store before calling "app.use(pinia)"?
+```
+
+**Cause:** The toolkit's auth store is being accessed before Pinia is installed on the Vue app.
+
+**Solution:** Ensure Pinia is installed **before** calling `initEenToolkit()` or using any toolkit composables (`useCurrentUser`, `useUsers`, `useUser`, `useAuthStore`):
 
 ```typescript
-app.use(createPinia())  // First
-initEenToolkit({ ... }) // Then
+// main.ts - CORRECT ORDER
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import { initEenToolkit } from 'een-api-toolkit'
+import App from './App.vue'
+
+const app = createApp(App)
+const pinia = createPinia()
+
+// 1. Install Pinia FIRST
+app.use(pinia)
+
+// 2. THEN initialize toolkit
+initEenToolkit({
+  proxyUrl: import.meta.env.VITE_PROXY_URL,
+  clientId: import.meta.env.VITE_EEN_CLIENT_ID,
+  redirectUri: import.meta.env.VITE_REDIRECT_URI,
+  debug: import.meta.env.VITE_DEBUG === 'true'
+})
+
+app.mount('#app')
 ```
 
 ### "CORS error" on API calls
