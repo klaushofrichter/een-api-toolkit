@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('Vue Basic Example - Unauthenticated', () => {
+test.describe('Vue Basic Example - App', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
   })

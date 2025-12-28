@@ -1,6 +1,6 @@
-name: Publish to npm
+name: Publish Release
 
-# Publish to npm when test-release workflow succeeds, or manually triggered
+# Publish to npm and create GitHub Release when test-release workflow succeeds, or manually triggered
 on:
   workflow_run:
     workflows: ["Test Release"]

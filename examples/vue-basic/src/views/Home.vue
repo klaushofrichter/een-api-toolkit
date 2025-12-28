@@ -1,21 +1,41 @@
 <script setup lang="ts">
-import { useAuthStore, useCurrentUser } from 'een-api-toolkit'
-import { computed, watch } from 'vue'
+import { useAuthStore, useCurrentUser, getAuthUrl } from 'een-api-toolkit'
+import { computed, ref, watch } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
+const loginError = ref<string | null>(null)
+
+function login() {
+  try {
+    loginError.value = null
+    const authUrl = getAuthUrl()
+    window.location.href = authUrl
+  } catch (err) {
+    loginError.value = err instanceof Error ? err.message : 'Failed to initiate login'
+    console.error('Login error:', err)
+  }
+}
 
 // Don't fetch on mount - we'll handle it reactively
 const { user, loading, error, fetch } = useCurrentUser({
   immediate: false
 })
 
+// Guard to prevent concurrent fetch calls
+let fetchInProgress = false
+
 // Fetch user when authentication state changes
 watch(
   isAuthenticated,
-  (isAuth) => {
-    if (isAuth && !user.value) {
-      fetch()
+  async (isAuth) => {
+    if (isAuth && !user.value && !fetchInProgress) {
+      fetchInProgress = true
+      try {
+        await fetch()
+      } finally {
+        fetchInProgress = false
+      }
     }
   },
   { immediate: true }
@@ -28,9 +48,8 @@ watch(
 
     <div v-if="!isAuthenticated" class="not-authenticated" data-testid="not-authenticated">
       <p data-testid="not-authenticated-message">You are not logged in.</p>
-      <router-link to="/login">
-        <button data-testid="login-button">Login with Eagle Eye Networks</button>
-      </router-link>
+      <p v-if="loginError" class="error" data-testid="login-error">{{ loginError }}</p>
+      <button data-testid="login-button" @click="login">Login with Eagle Eye Networks</button>
     </div>
 
     <div v-else class="authenticated">

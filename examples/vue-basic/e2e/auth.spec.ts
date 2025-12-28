@@ -1,35 +1,62 @@
 import { test, expect, Page } from '@playwright/test'
 
 /**
- * Authenticated E2E tests for the Vue Basic Example
+ * E2E tests for the Vue Basic Example
  *
- * These tests perform the actual OAuth login flow through the UI:
+ * Tests the OAuth login flow through the UI:
  * 1. Click login button in the example app
  * 2. Enter credentials on EEN OAuth page
  * 3. Complete the OAuth callback
  * 4. Verify authenticated state
  *
  * Required environment variables:
- * - VITE_PROXY_URL: OAuth proxy URL
+ * - VITE_PROXY_URL: OAuth proxy URL (e.g., http://127.0.0.1:8787)
  * - VITE_EEN_CLIENT_ID: EEN OAuth client ID
  * - TEST_USER: Test user email
  * - TEST_PASSWORD: Test user password
  */
 
 // Timeout constants for consistent behavior
+// Values chosen based on OAuth flow timing requirements
 const TIMEOUTS = {
-  OAUTH_REDIRECT: 30000,
-  ELEMENT_VISIBLE: 15000,
-  PASSWORD_VISIBLE: 10000,
-  AUTH_COMPLETE: 30000,
-  UI_UPDATE: 10000
+  OAUTH_REDIRECT: 30000,   // OAuth redirects can be slow on first load
+  ELEMENT_VISIBLE: 15000,  // Wait for OAuth page elements to render
+  PASSWORD_VISIBLE: 10000, // Password field appears after email validation
+  AUTH_COMPLETE: 30000,    // Full OAuth flow completion
+  UI_UPDATE: 10000,        // UI state updates after auth changes
+  PROXY_CHECK: 5000        // Quick check if proxy is running
 } as const
 
+const TEST_USER = process.env.TEST_USER
+const TEST_PASSWORD = process.env.TEST_PASSWORD
+const PROXY_URL = process.env.VITE_PROXY_URL
+
 /**
- * Performs OAuth login flow through the UI
- * @param page - Playwright page object
- * @param username - Test user email
- * @param password - Test user password
+ * Checks if the OAuth proxy is accessible.
+ * Returns true if proxy responds (even with 404), false if unreachable.
+ */
+async function isProxyAccessible(): Promise<boolean> {
+  if (!PROXY_URL) return false
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.PROXY_CHECK)
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'HEAD',
+      signal: controller.signal
+    })
+    // 404 is ok - means proxy is running but endpoint doesn't exist
+    return response.ok || response.status === 404
+  } catch {
+    return false
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
+/**
+ * Performs OAuth login flow through the UI.
+ * Starts from home page and completes full OAuth authentication.
  */
 async function performLogin(page: Page, username: string, password: string): Promise<void> {
   // Start at home page
@@ -61,87 +88,63 @@ async function performLogin(page: Page, username: string, password: string): Pro
   await page.waitForURL('**/', { timeout: TIMEOUTS.AUTH_COMPLETE })
 }
 
-test.describe('Vue Basic Example - Authenticated', () => {
-  const TEST_USER = process.env.TEST_USER
-  const TEST_PASSWORD = process.env.TEST_PASSWORD
+/**
+ * Clears browser storage to reset auth state
+ */
+async function clearAuthState(page: Page): Promise<void> {
+  await page.evaluate(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+  })
+}
 
-  test.beforeEach(async () => {
-    // Skip all tests if credentials are not available
-    if (!TEST_USER || !TEST_PASSWORD) {
-      test.skip()
+test.describe('Vue Basic Example', () => {
+  // Check proxy accessibility once before all tests
+  let proxyAccessible = false
+
+  // Helper functions to skip tests when prerequisites aren't met
+  function skipIfNoProxy() {
+    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
+  }
+
+  function skipIfNoCredentials() {
+    test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
+  }
+
+  function skipIfNoUser() {
+    test.skip(!TEST_USER, 'Test user not available')
+  }
+
+  test.beforeAll(async () => {
+    proxyAccessible = await isProxyAccessible()
+    if (!proxyAccessible) {
+      console.log('OAuth proxy not accessible - OAuth tests will be skipped')
     }
   })
 
-  // Note: Playwright automatically handles context cleanup between tests,
-  // so no afterAll hook is needed for auth state cleanup
-
-  test('complete OAuth login flow shows authenticated state', async ({ page }) => {
-    // Verify initially not authenticated
-    await page.goto('/')
-    await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible()
-    await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
-
-    // Perform login using helper
-    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
-
-    // Verify authenticated state - should see user info
-    await expect(page.locator('[data-testid="not-authenticated"]')).not.toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
-
-    // Should see navigation links for authenticated users
-    await expect(page.locator('[data-testid="nav-users"]')).toBeVisible()
-    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible()
-
-    // Login link should not be visible
-    await expect(page.locator('[data-testid="nav-login"]')).not.toBeVisible()
+  test.afterEach(async ({ page }) => {
+    // Clear auth state after each test to prevent state pollution
+    await clearAuthState(page)
   })
 
-  test('authenticated user can view users list', async ({ page }) => {
-    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
-    await expect(page.locator('[data-testid="nav-users"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
-
-    // Navigate to users page
-    await page.click('[data-testid="nav-users"]')
-    await page.waitForURL('/users')
-
-    // Should see users list (not error state)
-    await expect(page.locator('.users-list')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
-    await expect(page.locator('.error')).not.toBeVisible()
-  })
-
-  test('authenticated user can logout', async ({ page }) => {
-    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
-    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
-
-    // Click logout
-    await page.click('[data-testid="nav-logout"]')
-
-    // Should redirect back to home and show not authenticated
-    await page.waitForURL('**/')
-    await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
-    await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
-  })
-})
-
-test.describe('Vue Basic Example - Negative Auth Tests', () => {
-  test('login button shows when not authenticated', async ({ page }) => {
+  test('shows login button when not authenticated', async ({ page }) => {
     await page.goto('/')
     await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible()
     await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
     await expect(page.locator('[data-testid="nav-logout"]')).not.toBeVisible()
   })
 
-  test('users page redirects or shows error when not authenticated', async ({ page }) => {
-    // Try to access users page directly without auth
+  test('users page shows not-authenticated state without login', async ({ page }) => {
     await page.goto('/users')
-
-    // Should either redirect to login or show an error/not-authenticated message
     await expect(
       page.locator('[data-testid="not-authenticated"], [data-testid="nav-login"], .error, .auth-required').first()
     ).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
   })
 
-  test('login button initiates OAuth redirect', async ({ page }) => {
-    // Verify login button works and redirects to OAuth provider
+  test('login button redirects to OAuth page', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
     await page.goto('/')
     await expect(page.locator('[data-testid="login-button"]')).toBeVisible()
     await expect(page.locator('[data-testid="login-button"]')).toBeEnabled()
@@ -152,23 +155,65 @@ test.describe('Vue Basic Example - Negative Auth Tests', () => {
       page.click('[data-testid="login-button"]')
     ])
 
-    // Verify we're on the OAuth page by checking for email input
+    // Verify we're on the OAuth page
     const emailInput = page.locator('#authentication--input__email')
     await expect(emailInput).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
   })
-})
 
-test.describe('Vue Basic Example - Failed Login', () => {
-  const TEST_USER = process.env.TEST_USER
+  test('complete OAuth login flow', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
 
-  test.beforeEach(async () => {
-    // Skip if no test user (we need a valid email format)
-    if (!TEST_USER) {
-      test.skip()
-    }
+    // Verify initially not authenticated
+    await page.goto('/')
+    await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible()
+
+    // Perform login
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+
+    // Verify authenticated state
+    await expect(page.locator('[data-testid="not-authenticated"]')).not.toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(page.locator('[data-testid="nav-users"]')).toBeVisible()
+    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible()
+    await expect(page.locator('[data-testid="nav-login"]')).not.toBeVisible()
+  })
+
+  test('can view users list after login', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.locator('[data-testid="nav-users"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    // Navigate to users page
+    await page.click('[data-testid="nav-users"]')
+    await page.waitForURL('/users')
+
+    // Should see users table (not error state)
+    await expect(page.locator('.users table')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    await expect(page.locator('.error')).not.toBeVisible()
+  })
+
+  test('can logout after login', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    // Click logout
+    await page.click('[data-testid="nav-logout"]')
+
+    // Should show not authenticated
+    await page.waitForURL('**/')
+    await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
   })
 
   test('invalid password shows error on OAuth page', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoUser()
+
     await page.goto('/')
 
     // Click login and wait for OAuth redirect
@@ -191,13 +236,12 @@ test.describe('Vue Basic Example - Failed Login', () => {
     // Click sign in
     await page.locator('#next, button:has-text("Sign in")').first().click()
 
-    // Should show error message on OAuth page (not redirect to app)
-    // The OAuth page should display an error for invalid credentials
+    // Should show error message on OAuth page
     await expect(
       page.locator('.error, [class*="error"], [data-testid*="error"], #error, .alert-danger').first()
     ).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-    // Should still be on OAuth page, not redirected to app
-    await expect(page).not.toHaveURL(/127\.0\.0\.1/)
+    // Should still be on OAuth page
+    await expect(page).toHaveURL(/eagleeyenetworks\.com/)
   })
 })
