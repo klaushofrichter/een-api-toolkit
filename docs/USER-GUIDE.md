@@ -622,6 +622,8 @@ async function handleLogout() {
 
 Edit `src/router/index.ts`:
 
+> **Important:** The EEN Identity Provider requires the OAuth callback to be handled on the root path (`/`), not `/callback`. The router must detect OAuth parameters and redirect internally.
+
 ```typescript
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from 'een-api-toolkit'
@@ -633,15 +635,37 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/login', component: Login },
-    { path: '/callback', component: Callback },
-    { path: '/', component: Dashboard, meta: { requiresAuth: true } }
+    {
+      path: '/callback',
+      name: 'callback',
+      component: Callback
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: Dashboard,
+      meta: { requiresAuth: true },
+      // IMPORTANT: Handle OAuth callback on root path
+      // EEN IDP only supports redirect to root (e.g., http://127.0.0.1:3333)
+      beforeEnter: (to, _from, next) => {
+        if (to.query.code && to.query.state) {
+          // OAuth callback - redirect to callback handler with params
+          next({ name: 'callback', query: to.query })
+        } else {
+          next()
+        }
+      }
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  // Skip auth check for callback route (it handles its own auth)
+  if (to.name === 'callback') {
+    next()
+  } else if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
   } else if (to.path === '/login' && authStore.isAuthenticated) {
     next('/')
