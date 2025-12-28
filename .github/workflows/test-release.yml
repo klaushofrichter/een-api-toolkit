@@ -56,13 +56,21 @@ jobs:
 
       - name: Create proxy secrets file
         run: |
+          set -euo pipefail
           # Use printf with quoted values to handle special characters (e.g., # in passwords)
           printf 'CLIENT_ID="%s"\n' "$CLIENT_ID" > ../een-oauth-proxy/proxy/.dev.vars
           printf 'CLIENT_SECRET="%s"\n' "$CLIENT_SECRET" >> ../een-oauth-proxy/proxy/.dev.vars
           printf 'ADMIN_EMAILS="%s"\n' "test@example.com" >> ../een-oauth-proxy/proxy/.dev.vars
           printf 'ALLOWED_ORIGINS="%s"\n' "http://127.0.0.1:3333" >> ../een-oauth-proxy/proxy/.dev.vars
-          # Verify file was created correctly (mask secrets)
-          echo "Created .dev.vars:"
+          # Restrict file permissions
+          chmod 600 ../een-oauth-proxy/proxy/.dev.vars
+          # Validate file structure before masking
+          echo "Validating .dev.vars structure:"
+          grep -q '^CLIENT_ID=' ../een-oauth-proxy/proxy/.dev.vars && echo "✓ CLIENT_ID present"
+          grep -q '^CLIENT_SECRET=' ../een-oauth-proxy/proxy/.dev.vars && echo "✓ CLIENT_SECRET present"
+          grep -q '^ADMIN_EMAILS=' ../een-oauth-proxy/proxy/.dev.vars && echo "✓ ADMIN_EMAILS present"
+          grep -q '^ALLOWED_ORIGINS=' ../een-oauth-proxy/proxy/.dev.vars && echo "✓ ALLOWED_ORIGINS present"
+          echo "Created .dev.vars (masked):"
           sed 's/=.*/=***/' ../een-oauth-proxy/proxy/.dev.vars
         env:
           CLIENT_ID: ${{ secrets.VITE_EEN_CLIENT_ID }}
