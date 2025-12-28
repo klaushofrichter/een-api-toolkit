@@ -622,6 +622,8 @@ async function handleLogout() {
 
 Edit `src/router/index.ts`:
 
+> **Important:** The EEN Identity Provider requires the OAuth callback to be handled on the root path (`/`), not `/callback`. The router must detect OAuth parameters and redirect internally.
+
 ```typescript
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from 'een-api-toolkit'
@@ -633,15 +635,37 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/login', component: Login },
-    { path: '/callback', component: Callback },
-    { path: '/', component: Dashboard, meta: { requiresAuth: true } }
+    {
+      path: '/callback',
+      name: 'callback',
+      component: Callback
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: Dashboard,
+      meta: { requiresAuth: true },
+      // IMPORTANT: Handle OAuth callback on root path
+      // EEN IDP only supports redirect to root (e.g., http://127.0.0.1:3333)
+      beforeEnter: (to, _from, next) => {
+        if (to.query.code && to.query.state) {
+          // OAuth callback - redirect to callback handler with params
+          next({ name: 'callback', query: to.query })
+        } else {
+          next()
+        }
+      }
+    }
   ]
 })
 
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+  // Skip auth check for callback route (it handles its own auth)
+  if (to.name === 'callback') {
+    next()
+  } else if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
   } else if (to.path === '/login' && authStore.isAuthenticated) {
     next('/')
@@ -669,6 +693,69 @@ Open http://127.0.0.1:5173 (or the port Vite assigns).
 
 ## Troubleshooting
 
+### OAuth Redirect URI Requirements (Critical)
+
+The EEN Identity Provider performs an **exact string match** on the redirect URI. Any deviation will cause OAuth to fail.
+
+**Requirements:**
+| Requirement | Correct | Incorrect |
+|-------------|---------|-----------|
+| Host | `127.0.0.1` | `localhost` |
+| Path | None (root only) | `/callback` |
+| Trailing slash | No | `http://127.0.0.1:3333/` |
+
+**Correct redirect URI:** `http://127.0.0.1:3333`
+
+**Registering your redirect URI with EEN:**
+Configure your OAuth client's redirect URI at the [EEN Developer Portal - My Application](https://developer.eagleeyenetworks.com/page/my-application).
+
+This means your application must:
+1. Handle OAuth callbacks on the **root path** (`/`)
+2. Run on `127.0.0.1:3333` (not `localhost:3333`)
+3. Register exactly `http://127.0.0.1:3333` with EEN at the Developer Portal
+
+**Router pattern for handling callbacks on root path:**
+
+```typescript
+// router/index.ts
+{
+  path: '/',
+  name: 'home',
+  component: Home,
+  beforeEnter: (to, _from, next) => {
+    // If URL has OAuth params, redirect to callback handler
+    if (to.query.code && to.query.state) {
+      next({ name: 'callback', query: to.query })
+    } else {
+      next()
+    }
+  }
+}
+```
+
+**Vite configuration:**
+
+```typescript
+// vite.config.ts
+export default defineConfig({
+  server: {
+    host: '127.0.0.1',  // Must use 127.0.0.1, not localhost
+    port: 3333,
+    strictPort: true
+  }
+})
+```
+
+### "Redirect URI mismatch" Error
+
+**Symptom:** OAuth provider returns an error about redirect URI not matching.
+
+**Solutions:**
+1. Verify `VITE_REDIRECT_URI` in `.env` is exactly `http://127.0.0.1:3333` (no trailing slash, no path)
+2. Ensure your EEN OAuth client is registered with the same exact URI
+3. Check your dev server runs on `127.0.0.1:3333`, not `localhost:3333`
+4. Verify your router handles OAuth callbacks on the root path
+
 ### "Toolkit not initialized"
 
 Ensure you call `initEenToolkit()` **after** installing Pinia:
@@ -690,7 +777,22 @@ ALLOWED_ORIGINS="http://127.0.0.1:3333,http://localhost:5173"
 
 1. Verify the proxy is running (`http://localhost:8787`)
 2. Check that `CLIENT_ID` and `CLIENT_SECRET` are correct in proxy config
-3. Ensure the redirect URI matches what's registered with EEN
+3. Ensure your app handles callbacks on the root path (see "OAuth Redirect URI Requirements" above)
+4. Check browser console for errors during callback processing
+
+### Redirected back to login after authentication
+
+**Symptom:** After entering credentials, you're redirected back to login instead of dashboard.
+
+**Causes:**
+1. Router guard blocking the callback before it's processed
+2. OAuth params not detected on root path
+3. Callback component not processing the authentication
+
+**Solutions:**
+1. Ensure router detects OAuth params (`code` and `state`) on root path
+2. Route guard must allow callbacks through without auth check
+3. Enable `VITE_DEBUG=true` and check console logs
 
 ### "Network error" on all requests
 
