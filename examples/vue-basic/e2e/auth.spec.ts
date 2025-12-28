@@ -89,13 +89,26 @@ async function performLogin(page: Page, username: string, password: string): Pro
 }
 
 /**
- * Clears browser storage to reset auth state
+ * Clears browser storage to reset auth state.
+ * Handles cases where localStorage isn't accessible (e.g., about:blank, cross-origin).
  */
 async function clearAuthState(page: Page): Promise<void> {
-  await page.evaluate(() => {
-    localStorage.clear()
-    sessionStorage.clear()
-  })
+  try {
+    // Only try to clear storage if we're on a page that allows it
+    const url = page.url()
+    if (url && url.startsWith('http')) {
+      await page.evaluate(() => {
+        try {
+          localStorage.clear()
+          sessionStorage.clear()
+        } catch {
+          // Ignore errors - storage may not be accessible
+        }
+      })
+    }
+  } catch {
+    // Ignore errors - page may be closed or in an inaccessible state
+  }
 }
 
 test.describe('Vue Basic Example', () => {
