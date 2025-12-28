@@ -669,6 +669,21 @@ function generateSetupGuide(): string {
 npm install een-api-toolkit
 \`\`\`
 
+### Prerequisites (IMPORTANT)
+
+The toolkit uses **Pinia for state management internally**. You must install and configure Pinia before initializing the toolkit:
+
+\`\`\`bash
+npm install pinia
+\`\`\`
+
+**Pinia must be installed on the Vue app instance BEFORE calling \`initEenToolkit()\` or using any composables** (\`useCurrentUser\`, \`useUsers\`, \`useUser\`). Failing to do so will result in:
+
+\`\`\`
+Error: [🍍]: "getActivePinia()" was called but there was no active Pinia.
+Are you trying to use a store before calling "app.use(pinia)"?
+\`\`\`
+
 ### Environment Variables
 
 Create a \`.env\` file:
@@ -692,12 +707,16 @@ import { initEenToolkit } from 'een-api-toolkit'
 import App from './App.vue'
 
 const app = createApp(App)
-app.use(createPinia())
+const pinia = createPinia()
 
-// Initialize toolkit AFTER Pinia
+// IMPORTANT: Install Pinia BEFORE initializing the toolkit
+app.use(pinia)
+
+// Now initialize the toolkit (Pinia must already be installed)
 initEenToolkit({
   proxyUrl: import.meta.env.VITE_PROXY_URL,
   clientId: import.meta.env.VITE_EEN_CLIENT_ID,
+  redirectUri: 'http://127.0.0.1:3333',
   debug: import.meta.env.DEV
 })
 
