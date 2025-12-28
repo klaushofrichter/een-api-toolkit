@@ -381,6 +381,7 @@ Secrets are configured in `.env` and synced to GitHub using:
 | Secret | Source | Purpose |
 |--------|--------|---------|
 | `VITE_EEN_CLIENT_ID` | .env | EEN OAuth client ID |
+| `CLIENT_SECRET` | .env | EEN OAuth client secret (for CI proxy) |
 | `TEST_USER` | .env | E2E test user email |
 | `TEST_PASSWORD` | .env | E2E test user password |
 | `VITE_PROXY_URL` | .env | OAuth proxy URL |
