@@ -231,7 +231,8 @@ jobs:
             PACKAGE_NAME=$(node -p "require('./package.json').name")
             NPM_URL="https://www.npmjs.com/package/${PACKAGE_NAME}"
             GITHUB_RELEASE_URL="https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
-            RELEASE_NOTES_URL="https://github.com/${{ github.repository }}/releases/download/v${VERSION}/RELEASE-NOTES-v${VERSION}.md"
+            # Link to GitHub Release page which displays release notes inline (not .md download)
+            RELEASE_NOTES_URL="https://github.com/${{ github.repository }}/releases/tag/v${VERSION}"
             REPO_URL="https://github.com/${{ github.repository }}"
             RELEASE_TIME=$(date '+%Y-%m-%d %H:%M:%S %Z')
             # Use package size from GitHub Release step (stored in GITHUB_ENV)

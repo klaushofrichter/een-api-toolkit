@@ -47,11 +47,60 @@ jobs:
         run: npm exec playwright install -- --with-deps chromium
         working-directory: examples/vue-basic
 
+      - name: Clone OAuth proxy
+        run: git clone --depth 1 https://github.com/klaushofrichter/een-oauth-proxy.git ../een-oauth-proxy
+
+      - name: Install proxy dependencies
+        run: npm ci
+        working-directory: ../een-oauth-proxy/proxy
+
+      - name: Create proxy secrets file
+        run: |
+          cat > ../een-oauth-proxy/proxy/.dev.vars << EOF
+          CLIENT_ID=${{ secrets.VITE_EEN_CLIENT_ID }}
+          CLIENT_SECRET=${{ secrets.CLIENT_SECRET }}
+          ADMIN_EMAILS=test@example.com
+          ALLOWED_ORIGINS=http://127.0.0.1:3333
+          EOF
+
+      - name: Start OAuth proxy
+        run: |
+          cd ../een-oauth-proxy/proxy
+          npx wrangler dev --port 8787 &
+          PROXY_PID=$!
+          echo "PROXY_PID=$PROXY_PID" >> $GITHUB_ENV
+
+          # Give wrangler a moment to start or fail
+          sleep 2
+
+          # Verify wrangler process is still running
+          if ! kill -0 $PROXY_PID 2>/dev/null; then
+            echo "ERROR: Wrangler failed to start"
+            exit 1
+          fi
+
+          # Wait for proxy to be ready
+          PROXY_READY=false
+          for i in {1..30}; do
+            if curl -s http://127.0.0.1:8787 > /dev/null 2>&1; then
+              echo "Proxy is ready"
+              PROXY_READY=true
+              break
+            fi
+            echo "Waiting for proxy... ($i/30)"
+            sleep 1
+          done
+
+          if [ "$PROXY_READY" != "true" ]; then
+            echo "ERROR: Proxy failed to become ready after 30 seconds"
+            exit 1
+          fi
+
       - name: Run example e2e tests
         run: npm run test:e2e
         working-directory: examples/vue-basic
         env:
-          VITE_PROXY_URL: ${{ secrets.VITE_PROXY_URL }}
+          VITE_PROXY_URL: http://127.0.0.1:8787
           VITE_EEN_CLIENT_ID: ${{ secrets.VITE_EEN_CLIENT_ID }}
           TEST_USER: ${{ secrets.TEST_USER }}
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
@@ -63,3 +112,12 @@ jobs:
           name: playwright-report
           path: examples/vue-basic/playwright-report/
           retention-days: 7
+
+      - name: Stop OAuth proxy
+        if: always()
+        run: |
+          if [ -n "$PROXY_PID" ]; then
+            kill $PROXY_PID 2>/dev/null || true
+          fi
+          # Also kill any remaining wrangler processes
+          pkill -f wrangler 2>/dev/null || true

@@ -380,13 +380,14 @@ Secrets are configured in `.env` and synced to GitHub using:
 
 | Secret | Source | Purpose |
 |--------|--------|---------|
-| `VITE_EEN_CLIENT_ID` | .env | EEN OAuth client ID |
-| `TEST_USER` | .env | E2E test user email |
-| `TEST_PASSWORD` | .env | E2E test user password |
-| `VITE_PROXY_URL` | .env | OAuth proxy URL |
+| `ANTHROPIC_API_KEY` | .env | Claude code review |
+| `CLIENT_SECRET` | .env | EEN OAuth client secret (for CI proxy) |
 | `NPM_TOKEN` | .env | npm publish token (from npmjs.com) |
 | `SLACK_WEBHOOK` | .env | Slack notifications |
-| `ANTHROPIC_API_KEY` | .env | Claude code review |
+| `TEST_PASSWORD` | .env | E2E test user password |
+| `TEST_USER` | .env | E2E test user email |
+| `VITE_EEN_CLIENT_ID` | .env | EEN OAuth client ID |
+| `VITE_PROXY_URL` | .env | OAuth proxy URL |
 
 ### Release Flow
 ```
