@@ -2,6 +2,12 @@
 
 A TypeScript library for the [Eagle Eye Networks](https://een.com/) Video API v3.0, designed for Vue 3 applications.
 
+## Purpose
+
+This toolkit aims to **simplify and accelerate web application development** for the EEN Video Platform. By providing ready-to-use composables, type-safe APIs, and secure authentication patterns, developers can focus on building features rather than wrestling with API integration details.
+
+The project is also designed to **enable AI-assisted software development**. With comprehensive documentation, clear code patterns, and an AI-optimized context file (`docs/AI-CONTEXT.md`), AI coding assistants can effectively help developers build, extend, and maintain applications using this toolkit.
+
 > **Note:** Work in progress - do not use in production yet.
 
 ## Key Features
