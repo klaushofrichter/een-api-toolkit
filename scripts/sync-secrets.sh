@@ -60,14 +60,14 @@ echo ""
 # Format: ENV_VAR_NAME:GITHUB_SECRET_NAME
 # If GITHUB_SECRET_NAME is omitted, ENV_VAR_NAME is used
 SECRETS_TO_SYNC=(
-    "TEST_USER"
-    "TEST_PASSWORD"
-    "VITE_EEN_CLIENT_ID"
+    "ANTHROPIC_API_KEY"
     "CLIENT_SECRET"
-    "VITE_PROXY_URL"
     "NPM_TOKEN"
     "SLACK_WEBHOOK"
-    "ANTHROPIC_API_KEY"
+    "TEST_PASSWORD"
+    "TEST_USER"
+    "VITE_EEN_CLIENT_ID"
+    "VITE_PROXY_URL"
 )
 
 # Parse .env file and set secrets
