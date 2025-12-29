@@ -16,6 +16,7 @@
   "files": [
     "dist",
     "examples",
+    "docs/AI-CONTEXT.md",
     "CHANGELOG.md"
   ],
   "scripts": {
