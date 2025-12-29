@@ -1,7 +1,7 @@
 # EEN API Toolkit - AI Reference
 
 > **Version:** 0.0.11
-> **Generated:** 2025-12-28
+> **Generated:** 2025-12-29
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -533,6 +533,57 @@ onMounted(async () => {
 })
 </script>
 ```
+
+### In-Place Login (Single Page Callback)
+
+When handling the OAuth callback on the same page that displays user data (without navigation), you must manually refresh the composable after authentication:
+
+```vue
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useCurrentUser, handleAuthCallback } from 'een-api-toolkit'
+
+// Composable initializes before token exists
+const { user, loading, error, refresh } = useCurrentUser({ immediate: false })
+
+onMounted(async () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const code = urlParams.get('code')
+  const state = urlParams.get('state')
+
+  if (code && state) {
+    // 1. Exchange code for token
+    const result = await handleAuthCallback(code, state)
+
+    if (result.error) {
+      console.error('Login failed:', result.error.message)
+      return
+    }
+
+    // 2. CRITICAL: Refresh user data now that we have a token
+    await refresh()
+
+    // 3. Clean URL (remove OAuth params)
+    window.history.replaceState({}, document.title, window.location.pathname)
+  } else {
+    // No OAuth params - fetch user if already authenticated
+    await refresh()
+  }
+})
+</script>
+
+<template>
+  <div v-if="loading">Loading...</div>
+  <div v-else-if="error">{{ error.message }}</div>
+  <div v-else-if="user">Welcome, {{ user.firstName }}!</div>
+  <div v-else>Please log in</div>
+</template>
+```
+
+**Key Points:**
+- `useCurrentUser()` initializes with the auth state at the moment it's called
+- `handleAuthCallback()` updates the token but doesn't trigger composable re-fetch
+- Always call `refresh()` after auth state changes if staying on the same page
 
 ---
 
