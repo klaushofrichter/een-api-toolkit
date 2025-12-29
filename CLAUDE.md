@@ -250,7 +250,7 @@ Pre-commit hook auto-increments patch version when source files or AI-CONTEXT.md
 npm install
 
 # Hook location: .husky/pre-commit
-# Triggers on: src/*, e2e/*, docs/AI-CONTEXT.md
+# Triggers on: src/**/*, e2e/**/*, docs/AI-CONTEXT.md
 # Runs: npm version patch --no-git-tag-version
 # Then stages updated package.json and package-lock.json
 ```

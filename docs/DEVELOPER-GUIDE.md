@@ -335,7 +335,7 @@ The pre-commit hook automatically increments the patch version when source files
 
 ```bash
 # .husky/pre-commit
-# Triggers on: src/*, e2e/*, docs/AI-CONTEXT.md
+# Triggers on: src/**/*, e2e/**/*, docs/AI-CONTEXT.md
 npm version patch --no-git-tag-version
 git add package.json package-lock.json
 ```
