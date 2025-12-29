@@ -244,12 +244,13 @@ git rebase origin/develop
 
 ## Husky Setup
 
-Pre-commit hook auto-increments patch version when source files change:
+Pre-commit hook auto-increments patch version when source files or package documentation changes:
 ```bash
 # Install husky (done via npm prepare script)
 npm install
 
 # Hook location: .husky/pre-commit
+# Triggers on: src/**/*, e2e/**/*, README.md, docs/AI-CONTEXT.md
 # Runs: npm version patch --no-git-tag-version
 # Then stages updated package.json and package-lock.json
 ```
