@@ -92,8 +92,7 @@ If you implement your own OAuth proxy, it must provide these endpoints:
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/oauth/authorize` | GET | Generate EEN OAuth authorization URL |
-| `/oauth/token` | POST | Exchange authorization code for tokens |
+| `/proxy/getAccessToken` | POST | Exchange authorization code for tokens |
 | `/proxy/refreshAccessToken` | POST | Refresh the access token |
 | `/proxy/revoke` | POST | Revoke session and tokens |
 
@@ -247,10 +246,10 @@ const baseUrl = authStore.baseUrl
 ### Implementing Logout
 
 ```typescript
-import { logout } from 'een-api-toolkit'
+import { revokeToken } from 'een-api-toolkit'
 
 async function handleLogout() {
-  const { error } = await logout()
+  const { error } = await revokeToken()
   if (error) {
     console.error('Logout failed:', error.message)
   }
@@ -352,7 +351,7 @@ Composables provide reactive state that updates automatically:
 
 ```vue
 <script setup>
-import { useCurrentUser, useUsers, useBridges, useCameras } from 'een-api-toolkit'
+import { useCurrentUser, useUsers, useUser } from 'een-api-toolkit'
 
 // Get current authenticated user
 const { user, loading, error, refresh } = useCurrentUser()
@@ -367,11 +366,8 @@ const {
   refresh: refreshUsers
 } = useUsers({ pageSize: 20 })
 
-// List bridges
-const { bridges, loading: bridgesLoading } = useBridges()
-
-// List cameras
-const { cameras, loading: camerasLoading } = useCameras()
+// Get a specific user by ID
+const { user: specificUser, loading: userLoading } = useUser('user-123')
 </script>
 
 <template>
@@ -398,7 +394,7 @@ const { cameras, loading: camerasLoading } = useCameras()
 Plain functions return a Promise with `{data, error}`:
 
 ```typescript
-import { getCurrentUser, getUsers, getBridges, getCameras } from 'een-api-toolkit'
+import { getCurrentUser, getUsers, getUser } from 'een-api-toolkit'
 
 // Get current user
 const { data: user, error } = await getCurrentUser()
@@ -416,13 +412,11 @@ if (usersResponse) {
   console.log('Next page:', usersResponse.nextPageToken)
 }
 
-// Get bridges
-const { data: bridgesResponse } = await getBridges()
-
-// Get cameras
-const { data: camerasResponse } = await getCameras({
-  pageSize: 100
-})
+// Get a specific user by ID
+const { data: specificUser } = await getUser('user-123')
+if (specificUser) {
+  console.log('User:', specificUser.email)
+}
 ```
 
 ### Pagination
@@ -460,7 +454,7 @@ async function fetchAllUsers() {
 All toolkit functions return `{data, error}` objects - they never throw exceptions:
 
 ```typescript
-const { data, error } = await getCameras()
+const { data, error } = await getUsers()
 
 if (error) {
   switch (error.code) {
@@ -496,7 +490,7 @@ if (error) {
 }
 
 // Safe to use data here
-processCameras(data)
+processUsers(data)
 ```
 
 ### Error Types
@@ -643,7 +637,7 @@ Create `src/views/Dashboard.vue`:
 
 ```vue
 <script setup lang="ts">
-import { useCurrentUser, useUsers, logout } from 'een-api-toolkit'
+import { useCurrentUser, useUsers, revokeToken } from 'een-api-toolkit'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
@@ -651,7 +645,7 @@ const { user, loading, error } = useCurrentUser()
 const { users, hasNextPage, fetchNextPage, loading: usersLoading } = useUsers({ pageSize: 10 })
 
 async function handleLogout() {
-  await logout()
+  await revokeToken()
   router.push('/login')
 }
 </script>

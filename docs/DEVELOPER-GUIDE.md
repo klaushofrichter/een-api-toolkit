@@ -93,8 +93,8 @@ The toolkit implements a secure OAuth pattern where **refresh tokens never reach
 │  │  ┌────────────────┐    ┌────────────────┐    ┌───────────┐             │  │
 │  │  │  Auth Service  │    │  API Services  │    │  Pinia    │             │  │
 │  │  │  - getAuthUrl  │    │  - getUsers    │    │  Store    │             │  │
-│  │  │  - callback    │    │  - getCameras  │    │  (token)  │             │  │
-│  │  │  - logout      │    │  - getBridges  │    │           │             │  │
+│  │  │  - callback    │    │  - getUser     │    │  (token)  │             │  │
+│  │  │  - revokeToken │    │  - getCurrentU │    │           │             │  │
 │  │  └────────────────┘    └────────────────┘    └───────────┘             │  │
 │  └─────────│──────────────────────│───────────────────────────────────────┘  │
 │            │                      │                                          │
@@ -107,8 +107,8 @@ Auth calls   │                      │  API calls (with Bearer token)
 │      OAuth Proxy        │    │      EEN API v3.0       │
 │  (local or deployed)    │    │                         │
 │                         │    │  - /api/v3.0/users      │
-│  Stores refresh tokens  │    │  - /api/v3.0/cameras    │
-│  Returns access tokens  │    │  - /api/v3.0/bridges    │
+│  Stores refresh tokens  │    │  - /api/v3.0/users/self │
+│  Returns access tokens  │    │  - /api/v3.0/users/{id} │
 └─────────────────────────┘    └─────────────────────────┘
              │
              ▼
@@ -131,24 +131,18 @@ Auth calls   │                      │  API calls (with Bearer token)
 ```
 src/
 ├── auth/                    # Authentication module
-│   ├── authService.ts       # OAuth flow: login, callback, logout, refresh
-│   ├── authStore.ts         # Pinia store: token, baseUrl, session state
+│   ├── service.ts           # OAuth flow: login, callback, revokeToken, refresh
+│   ├── store.ts             # Pinia store: token, baseUrl, session state
 │   └── index.ts             # Module exports
 │
 ├── users/                   # Users API module
-│   ├── userService.ts       # Plain functions: getUsers, getCurrentUser
-│   ├── useUsers.ts          # Composable: useUsers
-│   ├── useCurrentUser.ts    # Composable: useCurrentUser
+│   ├── service.ts           # Plain functions: getUsers, getUser, getCurrentUser
+│   ├── composables.ts       # Composables: useUsers, useUser, useCurrentUser
 │   └── index.ts             # Module exports
 │
-├── bridges/                 # Bridges API module (same pattern)
-├── cameras/                 # Cameras API module (same pattern)
-│
 ├── types/                   # TypeScript types
-│   ├── api.ts               # API response types
-│   ├── auth.ts              # Auth-related types
-│   ├── errors.ts            # Error types
-│   └── index.ts             # Type exports
+│   ├── index.ts             # All type definitions and exports
+│   └── ...
 │
 ├── utils/                   # Utilities
 │   ├── debug.ts             # Debug logging
@@ -157,6 +151,8 @@ src/
 ├── config.ts                # Global configuration
 └── index.ts                 # Package entry point
 ```
+
+> **Note:** Additional API modules (bridges, cameras, etc.) will follow the same pattern as users/ when implemented.
 
 ### Adding a New API Resource
 
