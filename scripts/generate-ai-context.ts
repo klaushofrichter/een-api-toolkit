@@ -691,10 +691,10 @@ function showOnlineCameras() {
 - \`nextPageToken: Ref<string | undefined>\` - Next page token
 - \`totalSize: Ref<number | undefined>\` - Total count
 - \`params: Ref<ListCamerasParams>\` - Current params
-- \`fetch(params?): Promise<Result>\` - Fetch with params
-- \`refresh(): Promise<Result>\` - Refresh current page
-- \`fetchNextPage(): Promise<Result | undefined>\` - Fetch next page
-- \`fetchPrevPage(): Promise<Result | undefined>\` - Fetch previous page
+- \`fetch(params?): Promise<Result<PaginatedResult<Camera>>>\` - Fetch with params
+- \`refresh(): Promise<Result<PaginatedResult<Camera>>>\` - Refresh current page
+- \`fetchNextPage(): Promise<Result<PaginatedResult<Camera>> | undefined>\` - Fetch next page
+- \`fetchPrevPage(): Promise<Result<PaginatedResult<Camera>> | undefined>\` - Fetch previous page
 - \`setParams(params): void\` - Update default params
 
 ### useCamera

@@ -1,4 +1,4 @@
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { getCameras, getCamera } from './service'
 import type { Camera, EenError, ListCamerasParams, GetCameraParams } from '../types'
 
@@ -215,7 +215,7 @@ export interface UseCameraOptions {
  * ```typescript
  * // With additional fields
  * const { camera } = useCamera('camera-123', {
- *   include: ['deviceInfo', 'streamUrls']
+ *   include: ['deviceInfo', 'status', 'shareDetails']
  * })
  *
  * // Access device info when loaded
@@ -274,6 +274,15 @@ export function useCamera(cameraId: string | (() => string), options?: UseCamera
   // Fetch immediately by default if cameraId is provided
   if (options?.immediate !== false && resolveCameraId()) {
     onMounted(fetch)
+  }
+
+  // Watch for camera ID changes when using a getter function
+  if (typeof cameraId === 'function') {
+    watch(cameraId, (newId, oldId) => {
+      if (newId && newId !== oldId) {
+        fetch()
+      }
+    })
   }
 
   return {

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.13**](../README.md)
+[**EEN API Toolkit v0.0.14**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraShareDetails
 
-Defined in: src/types/camera.ts:54
+Defined in: [src/types/camera.ts:54](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L54)
 
 Share details for shared cameras.
 
@@ -20,7 +20,7 @@ Contains information about camera sharing between accounts.
 
 > `optional` **shared**: `boolean`
 
-Defined in: src/types/camera.ts:56
+Defined in: [src/types/camera.ts:56](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L56)
 
 Whether the camera is shared
 
@@ -30,7 +30,7 @@ Whether the camera is shared
 
 > `optional` **accountId**: `string`
 
-Defined in: src/types/camera.ts:58
+Defined in: [src/types/camera.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L58)
 
 Account ID of the sharing account
 
@@ -40,7 +40,7 @@ Account ID of the sharing account
 
 > `optional` **firstResponder**: `boolean`
 
-Defined in: src/types/camera.ts:60
+Defined in: [src/types/camera.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L60)
 
 Whether shared for first responder access
 
@@ -50,6 +50,6 @@ Whether shared for first responder access
 
 > `optional` **permissions**: `string`[]
 
-Defined in: src/types/camera.ts:62
+Defined in: [src/types/camera.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L62)
 
 Permissions granted to the share recipient

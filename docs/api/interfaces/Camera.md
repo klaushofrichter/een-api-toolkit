@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.13**](../README.md)
+[**EEN API Toolkit v0.0.14**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Camera
 
-Defined in: src/types/camera.ts:166
+Defined in: [src/types/camera.ts:166](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L166)
 
 Camera entity from EEN API v3.0.
 
@@ -38,7 +38,7 @@ if (data) {
 
 > **id**: `string`
 
-Defined in: src/types/camera.ts:168
+Defined in: [src/types/camera.ts:168](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L168)
 
 Unique identifier for the camera
 
@@ -48,7 +48,7 @@ Unique identifier for the camera
 
 > **name**: `string`
 
-Defined in: src/types/camera.ts:170
+Defined in: [src/types/camera.ts:170](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L170)
 
 Display name of the camera
 
@@ -58,7 +58,7 @@ Display name of the camera
 
 > **accountId**: `string`
 
-Defined in: src/types/camera.ts:172
+Defined in: [src/types/camera.ts:172](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L172)
 
 ID of the account this camera belongs to
 
@@ -68,7 +68,7 @@ ID of the account this camera belongs to
 
 > `optional` **bridgeId**: `string` \| `null`
 
-Defined in: src/types/camera.ts:174
+Defined in: [src/types/camera.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L174)
 
 ID of the bridge this camera is connected to (null for direct-to-cloud)
 
@@ -78,7 +78,7 @@ ID of the bridge this camera is connected to (null for direct-to-cloud)
 
 > `optional` **locationId**: `string` \| `null`
 
-Defined in: src/types/camera.ts:176
+Defined in: [src/types/camera.ts:176](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L176)
 
 ID of the location where the camera is installed
 
@@ -88,7 +88,7 @@ ID of the location where the camera is installed
 
 > `optional` **guid**: `string`
 
-Defined in: src/types/camera.ts:178
+Defined in: [src/types/camera.ts:178](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L178)
 
 Globally unique identifier
 
@@ -98,7 +98,7 @@ Globally unique identifier
 
 > `optional` **macAddress**: `string`
 
-Defined in: src/types/camera.ts:180
+Defined in: [src/types/camera.ts:180](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L180)
 
 MAC address of the camera
 
@@ -108,7 +108,7 @@ MAC address of the camera
 
 > `optional` **ipAddress**: `string`
 
-Defined in: src/types/camera.ts:182
+Defined in: [src/types/camera.ts:182](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L182)
 
 IP address of the camera on the local network
 
@@ -118,7 +118,7 @@ IP address of the camera on the local network
 
 > `optional` **timezone**: `string`
 
-Defined in: src/types/camera.ts:184
+Defined in: [src/types/camera.ts:184](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L184)
 
 Timezone of the camera location (IANA timezone name)
 
@@ -126,11 +126,11 @@ Timezone of the camera location (IANA timezone name)
 
 ### status?
 
-> `optional` **status**: [`CameraStatus`](../type-aliases/CameraStatus.md)
+> `optional` **status**: [`CameraStatus`](../type-aliases/CameraStatus.md) \| \{ `connectionStatus?`: CameraStatus \| undefined; \}
 
-Defined in: src/types/camera.ts:186
+Defined in: [src/types/camera.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L186)
 
-Current status of the camera
+Current status of the camera (string or object with connectionStatus)
 
 ***
 
@@ -138,7 +138,7 @@ Current status of the camera
 
 > `optional` **tags**: `string`[]
 
-Defined in: src/types/camera.ts:188
+Defined in: [src/types/camera.ts:188](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L188)
 
 Tags assigned to this camera for organization
 
@@ -148,7 +148,7 @@ Tags assigned to this camera for organization
 
 > `optional` **packages**: `string`[]
 
-Defined in: src/types/camera.ts:190
+Defined in: [src/types/camera.ts:190](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L190)
 
 Feature packages enabled for this camera
 
@@ -158,7 +158,7 @@ Feature packages enabled for this camera
 
 > `optional` **multiCameraId**: `string` \| `null`
 
-Defined in: src/types/camera.ts:192
+Defined in: [src/types/camera.ts:192](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L192)
 
 ID of multi-camera group if part of one
 
@@ -168,7 +168,7 @@ ID of multi-camera group if part of one
 
 > `optional` **speakerId**: `string` \| `null`
 
-Defined in: src/types/camera.ts:194
+Defined in: [src/types/camera.ts:194](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L194)
 
 ID of associated speaker device
 
@@ -178,7 +178,7 @@ ID of associated speaker device
 
 > `optional` **deviceInfo**: [`CameraDeviceInfo`](CameraDeviceInfo.md)
 
-Defined in: src/types/camera.ts:196
+Defined in: [src/types/camera.ts:196](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L196)
 
 Device information (make, model, firmware)
 
@@ -188,7 +188,7 @@ Device information (make, model, firmware)
 
 > `optional` **shareDetails**: [`CameraShareDetails`](CameraShareDetails.md)
 
-Defined in: src/types/camera.ts:198
+Defined in: [src/types/camera.ts:198](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L198)
 
 Share details if camera is shared
 
@@ -198,7 +198,7 @@ Share details if camera is shared
 
 > `optional` **streamUrls**: [`CameraStreamUrls`](CameraStreamUrls.md)
 
-Defined in: src/types/camera.ts:200
+Defined in: [src/types/camera.ts:200](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L200)
 
 Stream URLs for accessing camera media
 
@@ -208,7 +208,7 @@ Stream URLs for accessing camera media
 
 > `optional` **rtspConnectionSettings**: [`CameraRtspConnectionSettings`](CameraRtspConnectionSettings.md)
 
-Defined in: src/types/camera.ts:202
+Defined in: [src/types/camera.ts:202](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L202)
 
 RTSP connection settings
 
@@ -218,7 +218,7 @@ RTSP connection settings
 
 > `optional` **devicePosition**: [`CameraDevicePosition`](CameraDevicePosition.md)
 
-Defined in: src/types/camera.ts:204
+Defined in: [src/types/camera.ts:204](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L204)
 
 Physical position of the camera
 
@@ -228,7 +228,7 @@ Physical position of the camera
 
 > `optional` **enabledAnalytics**: `string`[]
 
-Defined in: src/types/camera.ts:206
+Defined in: [src/types/camera.ts:206](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L206)
 
 List of enabled analytics on this camera
 
@@ -238,7 +238,7 @@ List of enabled analytics on this camera
 
 > `optional` **recordingModes**: [`CameraRecordingModes`](CameraRecordingModes.md)
 
-Defined in: src/types/camera.ts:208
+Defined in: [src/types/camera.ts:208](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L208)
 
 Recording mode settings
 
@@ -248,7 +248,7 @@ Recording mode settings
 
 > `optional` **createdAt**: `string`
 
-Defined in: src/types/camera.ts:210
+Defined in: [src/types/camera.ts:210](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L210)
 
 ISO 8601 timestamp when the camera was created
 
@@ -258,6 +258,6 @@ ISO 8601 timestamp when the camera was created
 
 > `optional` **updatedAt**: `string`
 
-Defined in: src/types/camera.ts:212
+Defined in: [src/types/camera.ts:212](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L212)
 
 ISO 8601 timestamp when the camera was last updated

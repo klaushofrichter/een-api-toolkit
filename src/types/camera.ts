@@ -182,8 +182,8 @@ export interface Camera {
   ipAddress?: string
   /** Timezone of the camera location (IANA timezone name) */
   timezone?: string
-  /** Current status of the camera */
-  status?: CameraStatus
+  /** Current status of the camera (string or object with connectionStatus) */
+  status?: CameraStatus | { connectionStatus?: CameraStatus }
   /** Tags assigned to this camera for organization */
   tags?: string[]
   /** Feature packages enabled for this camera */
@@ -304,15 +304,15 @@ export interface ListCamerasParams {
   layoutId?: string
 
   // Share filters (nested field syntax in API: shareDetails.*)
-  /** Filter by shared status */
+  /** Filter by shared status. Maps to `shareDetails.shared` in the API query. */
   shared?: boolean
-  /** Filter by sharing account ID */
+  /** Filter by sharing account ID. Maps to `shareDetails.accountId` in the API query. */
   sharedCameraAccount?: string
-  /** Filter by first responder sharing */
+  /** Filter by first responder sharing. Maps to `shareDetails.firstResponder` in the API query. */
   firstResponder?: boolean
 
   // Device filters (nested field syntax in API: deviceInfo.*)
-  /** Filter by direct-to-cloud connection */
+  /** Filter by direct-to-cloud connection. Maps to `deviceInfo.directToCloud` in the API query. */
   directToCloud?: boolean
 
   // Speaker filter

@@ -295,7 +295,8 @@ async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
   try {
     const errorData = await response.json()
     message = errorData.message ?? errorData.error ?? response.statusText
-  } catch {
+  } catch (parseError) {
+    debug('Failed to parse error response JSON:', parseError)
     message = response.statusText || 'Unknown error'
   }
 

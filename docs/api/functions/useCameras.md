@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.13**](../README.md)
+[**EEN API Toolkit v0.0.14**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **useCameras**(`initialParams?`, `options?`): `object`
 
-Defined in: src/cameras/composables.ts:72
+Defined in: [src/cameras/composables.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/cameras/composables.ts#L72)
 
 Vue 3 composable for listing cameras with pagination.
 

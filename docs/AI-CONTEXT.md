@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.0.13
+> **Version:** 0.0.14
 > **Generated:** 2025-12-29
 >
 > This file is optimized for AI assistants. It contains all API signatures,
@@ -643,10 +643,10 @@ function showOnlineCameras() {
 - `nextPageToken: Ref<string | undefined>` - Next page token
 - `totalSize: Ref<number | undefined>` - Total count
 - `params: Ref<ListCamerasParams>` - Current params
-- `fetch(params?): Promise<Result>` - Fetch with params
-- `refresh(): Promise<Result>` - Refresh current page
-- `fetchNextPage(): Promise<Result | undefined>` - Fetch next page
-- `fetchPrevPage(): Promise<Result | undefined>` - Fetch previous page
+- `fetch(params?): Promise<Result<PaginatedResult<Camera>>>` - Fetch with params
+- `refresh(): Promise<Result<PaginatedResult<Camera>>>` - Refresh current page
+- `fetchNextPage(): Promise<Result<PaginatedResult<Camera>> | undefined>` - Fetch next page
+- `fetchPrevPage(): Promise<Result<PaginatedResult<Camera>> | undefined>` - Fetch previous page
 - `setParams(params): void` - Update default params
 
 ### useCamera

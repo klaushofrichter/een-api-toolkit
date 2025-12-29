@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.13**](../README.md)
+[**EEN API Toolkit v0.0.14**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **useCamera**(`cameraId`, `options?`): `object`
 
-Defined in: src/cameras/composables.ts:231
+Defined in: [src/cameras/composables.ts:231](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/cameras/composables.ts#L231)
 
 Vue 3 composable for getting a single camera by ID.
 
@@ -32,7 +32,7 @@ Reactive camera state and control functions
 
 ### camera
 
-> **camera**: `Ref`\<\{ `id`: `string`; `name`: `string`; `accountId`: `string`; `bridgeId?`: `string` \| `null`; `locationId?`: `string` \| `null`; `guid?`: `string`; `macAddress?`: `string`; `ipAddress?`: `string`; `timezone?`: `string`; `status?`: [`CameraStatus`](../type-aliases/CameraStatus.md); `tags?`: `string`[]; `packages?`: `string`[]; `multiCameraId?`: `string` \| `null`; `speakerId?`: `string` \| `null`; `deviceInfo?`: \{ `make?`: `string`; `model?`: `string`; `firmwareVersion?`: `string`; `directToCloud?`: `boolean`; `serialNumber?`: `string`; `resolution?`: `string`; `type?`: `string`; \}; `shareDetails?`: \{ `shared?`: `boolean`; `accountId?`: `string`; `firstResponder?`: `boolean`; `permissions?`: `string`[]; \}; `streamUrls?`: \{ `hls?`: `string`; `rtsp?`: `string`; `webrtc?`: `string`; `jpeg?`: `string`; \}; `rtspConnectionSettings?`: \{ `url?`: `string`; `username?`: `string`; `password?`: `string`; `transport?`: `"tcp"` \| `"udp"`; \}; `devicePosition?`: \{ `latitude?`: `number`; `longitude?`: `number`; `altitude?`: `number`; `floor?`: `number`; `azimuth?`: `number`; \}; `enabledAnalytics?`: `string`[]; `recordingModes?`: \{ `continuous?`: `boolean`; `motion?`: `boolean`; `scheduled?`: `boolean`; \}; `createdAt?`: `string`; `updatedAt?`: `string`; \} \| `null`, [`Camera`](../interfaces/Camera.md) \| \{ `id`: `string`; `name`: `string`; `accountId`: `string`; `bridgeId?`: `string` \| `null`; `locationId?`: `string` \| `null`; `guid?`: `string`; `macAddress?`: `string`; `ipAddress?`: `string`; `timezone?`: `string`; `status?`: [`CameraStatus`](../type-aliases/CameraStatus.md); `tags?`: `string`[]; `packages?`: `string`[]; `multiCameraId?`: `string` \| `null`; `speakerId?`: `string` \| `null`; `deviceInfo?`: \{ `make?`: `string`; `model?`: `string`; `firmwareVersion?`: `string`; `directToCloud?`: `boolean`; `serialNumber?`: `string`; `resolution?`: `string`; `type?`: `string`; \}; `shareDetails?`: \{ `shared?`: `boolean`; `accountId?`: `string`; `firstResponder?`: `boolean`; `permissions?`: `string`[]; \}; `streamUrls?`: \{ `hls?`: `string`; `rtsp?`: `string`; `webrtc?`: `string`; `jpeg?`: `string`; \}; `rtspConnectionSettings?`: \{ `url?`: `string`; `username?`: `string`; `password?`: `string`; `transport?`: `"tcp"` \| `"udp"`; \}; `devicePosition?`: \{ `latitude?`: `number`; `longitude?`: `number`; `altitude?`: `number`; `floor?`: `number`; `azimuth?`: `number`; \}; `enabledAnalytics?`: `string`[]; `recordingModes?`: \{ `continuous?`: `boolean`; `motion?`: `boolean`; `scheduled?`: `boolean`; \}; `createdAt?`: `string`; `updatedAt?`: `string`; \} \| `null`\>
+> **camera**: `Ref`\<\{ `id`: `string`; `name`: `string`; `accountId`: `string`; `bridgeId?`: `string` \| `null`; `locationId?`: `string` \| `null`; `guid?`: `string`; `macAddress?`: `string`; `ipAddress?`: `string`; `timezone?`: `string`; `status?`: [`CameraStatus`](../type-aliases/CameraStatus.md) \| \{ `connectionStatus?`: CameraStatus \| undefined; \}; `tags?`: `string`[]; `packages?`: `string`[]; `multiCameraId?`: `string` \| `null`; `speakerId?`: `string` \| `null`; `deviceInfo?`: \{ `make?`: `string`; `model?`: `string`; `firmwareVersion?`: `string`; `directToCloud?`: `boolean`; `serialNumber?`: `string`; `resolution?`: `string`; `type?`: `string`; \}; `shareDetails?`: \{ `shared?`: `boolean`; `accountId?`: `string`; `firstResponder?`: `boolean`; `permissions?`: `string`[]; \}; `streamUrls?`: \{ `hls?`: `string`; `rtsp?`: `string`; `webrtc?`: `string`; `jpeg?`: `string`; \}; `rtspConnectionSettings?`: \{ `url?`: `string`; `username?`: `string`; `password?`: `string`; `transport?`: `"tcp"` \| `"udp"`; \}; `devicePosition?`: \{ `latitude?`: `number`; `longitude?`: `number`; `altitude?`: `number`; `floor?`: `number`; `azimuth?`: `number`; \}; `enabledAnalytics?`: `string`[]; `recordingModes?`: \{ `continuous?`: `boolean`; `motion?`: `boolean`; `scheduled?`: `boolean`; \}; `createdAt?`: `string`; `updatedAt?`: `string`; \} \| `null`, [`Camera`](../interfaces/Camera.md) \| \{ `id`: `string`; `name`: `string`; `accountId`: `string`; `bridgeId?`: `string` \| `null`; `locationId?`: `string` \| `null`; `guid?`: `string`; `macAddress?`: `string`; `ipAddress?`: `string`; `timezone?`: `string`; `status?`: [`CameraStatus`](../type-aliases/CameraStatus.md) \| \{ `connectionStatus?`: CameraStatus \| undefined; \}; `tags?`: `string`[]; `packages?`: `string`[]; `multiCameraId?`: `string` \| `null`; `speakerId?`: `string` \| `null`; `deviceInfo?`: \{ `make?`: `string`; `model?`: `string`; `firmwareVersion?`: `string`; `directToCloud?`: `boolean`; `serialNumber?`: `string`; `resolution?`: `string`; `type?`: `string`; \}; `shareDetails?`: \{ `shared?`: `boolean`; `accountId?`: `string`; `firstResponder?`: `boolean`; `permissions?`: `string`[]; \}; `streamUrls?`: \{ `hls?`: `string`; `rtsp?`: `string`; `webrtc?`: `string`; `jpeg?`: `string`; \}; `rtspConnectionSettings?`: \{ `url?`: `string`; `username?`: `string`; `password?`: `string`; `transport?`: `"tcp"` \| `"udp"`; \}; `devicePosition?`: \{ `latitude?`: `number`; `longitude?`: `number`; `altitude?`: `number`; `floor?`: `number`; `azimuth?`: `number`; \}; `enabledAnalytics?`: `string`[]; `recordingModes?`: \{ `continuous?`: `boolean`; `motion?`: `boolean`; `scheduled?`: `boolean`; \}; `createdAt?`: `string`; `updatedAt?`: `string`; \} \| `null`\>
 
 The camera, or null if not loaded
 
@@ -106,7 +106,7 @@ const { camera: routeCamera } = useCamera(() => route.params.id as string)
 ```typescript
 // With additional fields
 const { camera } = useCamera('camera-123', {
-  include: ['deviceInfo', 'streamUrls']
+  include: ['deviceInfo', 'status', 'shareDetails']
 })
 
 // Access device info when loaded
