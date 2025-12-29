@@ -122,6 +122,15 @@ const { users, hasNextPage, fetchNextPage } = useUsers({ pageSize: 10 })
 ```typescript
 import { getUsers, getCurrentUser } from 'een-api-toolkit'
 
+// Get current authenticated user
+const { data: currentUser, error: userError } = await getCurrentUser()
+if (userError) {
+  console.error(userError.code, userError.message)
+} else {
+  console.log('Current user:', currentUser.email)
+}
+
+// Get list of users
 const { data: users, error } = await getUsers()
 if (error) {
   console.error(error.code, error.message)
