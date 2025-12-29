@@ -293,6 +293,8 @@ export default router
 
 If you want to handle the OAuth callback on the same page that displays user data (without navigating to a separate callback route), you must manually refresh the composable after authentication completes:
 
+> **⚠️ Important:** When handling OAuth callbacks on the same page, you must call `refresh()` after `handleAuthCallback()` to update the user data.
+
 ```vue
 <script setup lang="ts">
 import { onMounted } from 'vue'
@@ -307,7 +309,6 @@ onMounted(async () => {
   const state = urlParams.get('state')
 
   if (code && state) {
-    // Handle OAuth callback
     const result = await handleAuthCallback(code, state)
 
     if (result.error) {
@@ -315,15 +316,13 @@ onMounted(async () => {
       return
     }
 
-    // CRITICAL: Refresh user data now that we have a token
-    await refresh()
-
-    // Clean URL (remove OAuth params)
+    // Clean URL after successful auth
     window.history.replaceState({}, document.title, window.location.pathname)
-  } else {
-    // No OAuth params - fetch user if already authenticated
-    await refresh()
   }
+
+  // Refresh user data - runs after successful auth callback,
+  // or on initial load if no callback was processed
+  await refresh()
 })
 
 function login() {
