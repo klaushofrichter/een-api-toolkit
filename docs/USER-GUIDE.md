@@ -289,6 +289,61 @@ router.beforeEach((to, from, next) => {
 export default router
 ```
 
+### In-Place Login (Single Page Callback)
+
+If you want to handle the OAuth callback on the same page that displays user data (without navigating to a separate callback route), you must manually refresh the composable after authentication completes:
+
+> **⚠️ Important:** When handling OAuth callbacks on the same page, you must call `refresh()` after `handleAuthCallback()` to update the user data.
+
+```vue
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useCurrentUser, handleAuthCallback, getAuthUrl } from 'een-api-toolkit'
+
+// Initialize composable - don't fetch immediately since we may not be authenticated yet
+const { user, loading, error, refresh } = useCurrentUser({ immediate: false })
+
+onMounted(async () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const code = urlParams.get('code')
+  const state = urlParams.get('state')
+
+  if (code && state) {
+    const result = await handleAuthCallback(code, state)
+
+    if (result.error) {
+      console.error('Login failed:', result.error.message)
+      return
+    }
+
+    // Clean URL after successful auth
+    window.history.replaceState({}, document.title, window.location.pathname)
+  }
+
+  // Refresh user data - runs after successful auth callback,
+  // or on initial load if no callback was processed
+  await refresh()
+})
+
+function login() {
+  window.location.href = getAuthUrl()
+}
+</script>
+
+<template>
+  <div v-if="loading">Loading...</div>
+  <div v-else-if="error">{{ error.message }}</div>
+  <div v-else-if="user">Welcome, {{ user.firstName }}!</div>
+  <button v-else @click="login">Login with EEN</button>
+</template>
+```
+
+**Why is `refresh()` needed?**
+
+- `useCurrentUser()` initializes with the authentication state at the moment it's called
+- `handleAuthCallback()` updates the token in the auth store, but doesn't automatically trigger a re-fetch in existing composable instances
+- Always call `refresh()` after operations that change authentication state (login, logout) if you're staying on the same page
+
 ## Using the API
 
 ### Vue Composables (Reactive)

@@ -586,6 +586,56 @@ onMounted(async () => {
 </script>
 \`\`\`
 
+### In-Place Login (Single Page Callback)
+
+When handling the OAuth callback on the same page that displays user data (without navigation), you must manually refresh the composable after authentication:
+
+> **⚠️ Important:** When handling OAuth callbacks on the same page, you must call \`refresh()\` after \`handleAuthCallback()\` to update the user data.
+
+\`\`\`vue
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useCurrentUser, handleAuthCallback } from 'een-api-toolkit'
+
+// Composable initializes before token exists
+const { user, loading, error, refresh } = useCurrentUser({ immediate: false })
+
+onMounted(async () => {
+  const urlParams = new URLSearchParams(window.location.search)
+  const code = urlParams.get('code')
+  const state = urlParams.get('state')
+
+  if (code && state) {
+    const result = await handleAuthCallback(code, state)
+
+    if (result.error) {
+      console.error('Login failed:', result.error.message)
+      return
+    }
+
+    // Clean URL after successful auth
+    window.history.replaceState({}, document.title, window.location.pathname)
+  }
+
+  // Refresh user data - runs after successful auth callback,
+  // or on initial load if no callback was processed
+  await refresh()
+})
+</script>
+
+<template>
+  <div v-if="loading">Loading...</div>
+  <div v-else-if="error">{{ error.message }}</div>
+  <div v-else-if="user">Welcome, {{ user.firstName }}!</div>
+  <div v-else>Please log in</div>
+</template>
+\`\`\`
+
+**Key Points:**
+- \`useCurrentUser()\` initializes with the auth state at the moment it's called
+- \`handleAuthCallback()\` updates the token but doesn't trigger composable re-fetch
+- Always call \`refresh()\` after auth state changes if staying on the same page
+
 ---
 
 `
