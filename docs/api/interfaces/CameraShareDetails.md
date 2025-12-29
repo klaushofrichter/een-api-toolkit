@@ -1,0 +1,55 @@
+[**EEN API Toolkit v0.0.13**](../README.md)
+
+***
+
+[EEN API Toolkit](../README.md) / CameraShareDetails
+
+# Interface: CameraShareDetails
+
+Defined in: src/types/camera.ts:54
+
+Share details for shared cameras.
+
+## Remarks
+
+Contains information about camera sharing between accounts.
+
+## Properties
+
+### shared?
+
+> `optional` **shared**: `boolean`
+
+Defined in: src/types/camera.ts:56
+
+Whether the camera is shared
+
+***
+
+### accountId?
+
+> `optional` **accountId**: `string`
+
+Defined in: src/types/camera.ts:58
+
+Account ID of the sharing account
+
+***
+
+### firstResponder?
+
+> `optional` **firstResponder**: `boolean`
+
+Defined in: src/types/camera.ts:60
+
+Whether shared for first responder access
+
+***
+
+### permissions?
+
+> `optional` **permissions**: `string`[]
+
+Defined in: src/types/camera.ts:62
+
+Permissions granted to the share recipient

@@ -64,6 +64,13 @@ function generateQuickReference(): string {
 | \`getUsers(params?)\` | List all users (paginated) | \`Result<PaginatedResult<User>>\` |
 | \`getUser(userId, params?)\` | Get a specific user | \`Result<User>\` |
 
+### Camera Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| \`getCameras(params?)\` | List all cameras (paginated) | \`Result<PaginatedResult<Camera>>\` |
+| \`getCamera(cameraId, params?)\` | Get a specific camera | \`Result<Camera>\` |
+
 ### Vue 3 Composables
 
 | Composable | Purpose | Returns |
@@ -71,6 +78,8 @@ function generateQuickReference(): string {
 | \`useCurrentUser(options?)\` | Reactive current user | \`{ user, loading, error, refresh }\` |
 | \`useUsers(params?, options?)\` | Reactive user list with pagination | \`{ users, loading, hasNextPage, fetchNextPage, ... }\` |
 | \`useUser(userId, options?)\` | Reactive single user | \`{ user, loading, error, refresh }\` |
+| \`useCameras(params?, options?)\` | Reactive camera list with pagination | \`{ cameras, loading, hasNextPage, fetchNextPage, ... }\` |
+| \`useCamera(cameraId, options?)\` | Reactive single camera | \`{ camera, loading, error, refresh }\` |
 
 ---
 
@@ -245,7 +254,65 @@ interface UserProfile {
 }
 \`\`\`
 
-### Parameter Types
+### Camera
+
+\`\`\`typescript
+type CameraStatus =
+  | 'online' | 'offline' | 'deviceOffline' | 'bridgeOffline'
+  | 'invalidCredentials' | 'error' | 'streaming' | 'registered'
+  | 'attaching' | 'initializing'
+
+interface Camera {
+  id: string
+  name: string
+  accountId: string
+  bridgeId?: string | null
+  locationId?: string | null
+  status?: CameraStatus
+  timezone?: string
+  guid?: string
+  ipAddress?: string
+  macAddress?: string
+  tags?: string[]
+  notes?: string
+  multiCameraId?: string
+  recordingModes?: CameraRecordingModes
+  deviceInfo?: CameraDeviceInfo
+  shareDetails?: CameraShareDetails
+  devicePosition?: CameraDevicePosition
+  enabledAnalytics?: string[]
+  packages?: string[]
+  createdAt?: string
+  updatedAt?: string
+}
+
+interface CameraDeviceInfo {
+  make?: string           // Manufacturer (e.g., "Axis", "Hikvision")
+  model?: string          // Model name
+  firmwareVersion?: string
+  directToCloud?: boolean // Direct-to-cloud camera (no bridge)
+  serialNumber?: string
+  resolution?: string
+  type?: string           // Camera type (e.g., "IP", "Analog")
+}
+
+interface CameraShareDetails {
+  shared?: boolean
+  accountId?: string      // Sharing account ID
+  firstResponder?: boolean
+  permissions?: string[]
+}
+
+interface CameraDevicePosition {
+  latitude?: number
+  longitude?: number
+  altitude?: number
+  floor?: number
+  azimuth?: number
+}
+\`\`\`
+
+### User Parameter Types
 
 \`\`\`typescript
 interface ListUsersParams {
@@ -256,6 +323,41 @@ interface ListUsersParams {
 
 interface GetUserParams {
   include?: string[]   // Additional fields to include
+}
+\`\`\`
+
+### Camera Parameter Types
+
+\`\`\`typescript
+interface ListCamerasParams {
+  pageSize?: number           // Results per page
+  pageToken?: string          // Pagination token
+  include?: string[]          // Additional fields to include
+  sort?: string[]             // Sort order
+  status__in?: CameraStatus[] // Filter by status
+  status__ne?: CameraStatus   // Exclude by status
+  tags__contains?: string[]   // Filter by tags (all must match)
+  tags__any?: string[]        // Filter by tags (any match)
+  name?: string               // Exact name match
+  name__contains?: string     // Partial name match
+  name__in?: string[]         // Name in list
+  id__in?: string[]           // ID in list
+  id__notIn?: string[]        // ID not in list
+  bridgeId__in?: string[]     // Bridge ID filter
+  locationId__in?: string[]   // Location ID filter
+  shared?: boolean            // Shared camera filter
+  directToCloud?: boolean     // Direct-to-cloud filter
+  q?: string                  // Full-text search
+  // ... and more filter parameters
+}
+
+interface GetCameraParams {
+  include?: string[]  // Valid values: bridge, account, status, locationSummary,
+                      // deviceAddress, timeZone, notes, tags, devicePosition,
+                      // networkInfo, deviceInfo, effectivePermissions, firmware,
+                      // shareDetails, visibleByBridges, capabilities, analog,
+                      // packages, dewarpConfig, adminCredentials,
+                      // publicSafetySharing, enabledAnalytics
 }
 \`\`\`
 
@@ -385,6 +487,54 @@ const { data: userWithPerms } = await getUser('user-id-123', {
 })
 \`\`\`
 
+### getCameras
+
+List cameras with optional pagination and filtering.
+
+\`\`\`typescript
+import { getCameras } from 'een-api-toolkit'
+
+// Basic usage
+const { data, error } = await getCameras()
+
+// With pagination
+const { data } = await getCameras({ pageSize: 50 })
+
+// With status filter
+const { data } = await getCameras({
+  pageSize: 20,
+  status__in: ['online', 'streaming']
+})
+
+// With search
+const { data } = await getCameras({
+  q: 'front door',
+  include: ['deviceInfo', 'status']
+})
+\`\`\`
+
+### getCamera
+
+Get a specific camera by ID.
+
+\`\`\`typescript
+import { getCamera } from 'een-api-toolkit'
+
+const { data, error } = await getCamera('camera-id-123')
+
+if (error) {
+  if (error.code === 'NOT_FOUND') {
+    console.log('Camera not found')
+  }
+  return
+}
+
+// With additional fields
+const { data: cameraWithDetails } = await getCamera('camera-id-123', {
+  include: ['deviceInfo', 'status', 'shareDetails']
+})
+\`\`\`
+
 ---
 
 `
@@ -496,6 +646,87 @@ const { user: userWithPerms } = useUser('user-123', {
 - \`error: Ref<EenError | null>\` - Last error
 - \`fetch(params?): Promise<Result<User>>\` - Fetch user
 - \`refresh(): Promise<Result<User>>\` - Refresh user
+
+### useCameras
+
+Reactive composable for listing cameras with pagination and filtering.
+
+\`\`\`vue
+<script setup>
+import { useCameras } from 'een-api-toolkit'
+
+const {
+  cameras,
+  loading,
+  error,
+  hasNextPage,
+  fetchNextPage,
+  refresh,
+  setParams
+} = useCameras({ pageSize: 20 })
+
+// Filter by status
+function showOnlineCameras() {
+  setParams({ status__in: ['online', 'streaming'] })
+  refresh()
+}
+</script>
+
+<template>
+  <ul>
+    <li v-for="camera in cameras" :key="camera.id">
+      {{ camera.name }} - {{ camera.status || 'Unknown' }}
+    </li>
+  </ul>
+  <button v-if="hasNextPage" @click="fetchNextPage">Load More</button>
+</template>
+\`\`\`
+
+**Returns:**
+- \`cameras: Ref<Camera[]>\` - Array of cameras
+- \`loading: Ref<boolean>\` - Fetch in progress
+- \`error: Ref<EenError | null>\` - Last error
+- \`hasNextPage: ComputedRef<boolean>\` - More pages available
+- \`hasPrevPage: ComputedRef<boolean>\` - Previous page available
+- \`nextPageToken: Ref<string | undefined>\` - Next page token
+- \`totalSize: Ref<number | undefined>\` - Total count
+- \`params: Ref<ListCamerasParams>\` - Current params
+- \`fetch(params?): Promise<Result>\` - Fetch with params
+- \`refresh(): Promise<Result>\` - Refresh current page
+- \`fetchNextPage(): Promise<Result | undefined>\` - Fetch next page
+- \`fetchPrevPage(): Promise<Result | undefined>\` - Fetch previous page
+- \`setParams(params): void\` - Update default params
+
+### useCamera
+
+Reactive composable for a single camera by ID.
+
+\`\`\`vue
+<script setup>
+import { useCamera } from 'een-api-toolkit'
+import { useRoute } from 'vue-router'
+
+const route = useRoute()
+
+// Static ID
+const { camera, loading, error } = useCamera('camera-123')
+
+// Reactive ID from route
+const { camera: routeCamera } = useCamera(() => route.params.id as string)
+
+// With additional fields
+const { camera: cameraWithDetails } = useCamera('camera-123', {
+  include: ['deviceInfo', 'status', 'shareDetails']
+})
+</script>
+\`\`\`
+
+**Returns:**
+- \`camera: Ref<Camera | null>\` - The camera
+- \`loading: Ref<boolean>\` - Fetch in progress
+- \`error: Ref<EenError | null>\` - Last error
+- \`fetch(params?): Promise<Result<Camera>>\` - Fetch camera
+- \`refresh(): Promise<Result<Camera>>\` - Refresh camera
 
 ---
 
