@@ -12,8 +12,8 @@ The project is also designed to **enable AI-assisted software development**. Wit
 
 ## Key Features
 
-- **Vue 3 Composables** - Reactive state with `useUsers()`, `useCameras()`, `useBridges()`
-- **Plain Functions** - Framework-agnostic `getUsers()`, `getCameras()`, `getBridges()`
+- **Vue 3 Composables** - Reactive state with `useCurrentUser()`, `useUsers()`, `useUser()`
+- **Plain Functions** - Framework-agnostic `getCurrentUser()`, `getUsers()`, `getUser()`
 - **Secure OAuth** - Token management via proxy (refresh tokens never exposed to client)
 - **Type-Safe** - Full TypeScript types from OpenAPI spec
 - **Predictable Errors** - Always returns `{data, error}`, no exceptions thrown
@@ -26,7 +26,7 @@ This toolkit's authentication is designed to work with [een-oauth-proxy](https:/
 - Handles token exchange and refresh automatically
 - Provides session management via secure cookies
 
-**Using a different proxy?** While other OAuth proxy implementations can be used, you may need to adapt the authentication flow. The toolkit expects specific proxy endpoints (`/oauth/authorize`, `/oauth/token`, `/proxy/refreshAccessToken`, `/proxy/revoke`).
+**Using a different proxy?** While other OAuth proxy implementations can be used, you may need to adapt the authentication flow. The toolkit expects specific proxy endpoints (`/proxy/getAccessToken`, `/proxy/refreshAccessToken`, `/proxy/revoke`).
 
 ## Quick Start
 
@@ -120,13 +120,13 @@ const { users, hasNextPage, fetchNextPage } = useUsers({ pageSize: 10 })
 **Plain Functions (framework-agnostic):**
 
 ```typescript
-import { getUsers, getCameras } from 'een-api-toolkit'
+import { getUsers, getCurrentUser } from 'een-api-toolkit'
 
 const { data: users, error } = await getUsers()
 if (error) {
   console.error(error.code, error.message)
 } else {
-  console.log('Users:', users)
+  console.log('Users:', users.results)
 }
 ```
 
@@ -140,7 +140,7 @@ if (error) {
 │  │  ┌──────────────┐    ┌────────────────────┐                    │  │
 │  │  │ Composables  │    │  Plain Functions   │                    │  │
 │  │  │ useUsers()   │    │  getUsers()        │                    │  │
-│  │  │ useCameras() │    │  getCameras()      │                    │  │
+│  │  │ useUser()    │    │  getUser()         │                    │  │
 │  │  └──────────────┘    └────────────────────┘                    │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 │                    │                              │                   │
