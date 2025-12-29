@@ -331,16 +331,16 @@ feature/* ──→ develop ──→ production
 
 ### Husky Pre-commit Hook
 
-The pre-commit hook automatically increments the patch version when source files or `docs/AI-CONTEXT.md` change:
+The pre-commit hook automatically increments the patch version when source files or package documentation changes:
 
 ```bash
 # .husky/pre-commit
-# Triggers on: src/**/*, e2e/**/*, docs/AI-CONTEXT.md
+# Triggers on: src/**/*, e2e/**/*, README.md, docs/AI-CONTEXT.md
 npm version patch --no-git-tag-version
 git add package.json package-lock.json
 ```
 
-> **Note:** AI-CONTEXT.md triggers version bumps because it's included in the npm package. This ensures consumers always get the latest AI context documentation.
+> **Note:** README.md and AI-CONTEXT.md trigger version bumps because they're included in the npm package. This ensures consumers always get the latest documentation.
 
 ### Creating a PR
 
