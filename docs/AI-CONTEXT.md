@@ -1,12 +1,106 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.0.17
+> **Version:** 0.0.18
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
 >
 > For the full EEN API documentation, see the
 > [Eagle Eye Networks Developer Portal](https://developer.eagleeyenetworks.com).
+
+---
+
+## Prerequisites & Installation (READ FIRST)
+
+> **⚠️ CRITICAL:** This section contains essential setup requirements.
+> Skipping these steps will cause runtime errors.
+
+### Prerequisites
+
+Before using the een-api-toolkit, ensure you have:
+
+| Requirement | Details |
+|-------------|---------|
+| **Vue 3.x** | The toolkit is built for Vue 3 Composition API |
+| **Pinia** | Required peer dependency for state management |
+| **Vite** | Recommended build tool (dev server must run on `127.0.0.1:3333`) |
+| **OAuth Proxy** | Required for secure token management (see [een-oauth-proxy](https://github.com/klaushofrichter/een-oauth-proxy)) |
+
+### Installation
+
+```bash
+npm install een-api-toolkit pinia
+```
+
+### Complete Setup (main.ts)
+
+> **⚠️ CRITICAL:** Pinia MUST be installed on the Vue app BEFORE calling
+> `initEenToolkit()` or using any composables. Failure to do so will cause
+> a runtime error.
+
+```typescript
+// main.ts - Complete Setup Example
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import { initEenToolkit } from 'een-api-toolkit'
+import App from './App.vue'
+import router from './router'
+
+const app = createApp(App)
+const pinia = createPinia()
+
+// Step 1: Install Pinia FIRST (required)
+app.use(pinia)
+
+// Step 2: Install router if using Vue Router
+app.use(router)
+
+// Step 3: Initialize the toolkit (Pinia must already be installed)
+initEenToolkit({
+  proxyUrl: import.meta.env.VITE_PROXY_URL,      // e.g., 'http://localhost:8787'
+  clientId: import.meta.env.VITE_EEN_CLIENT_ID,  // Your EEN OAuth client ID
+  redirectUri: 'http://127.0.0.1:3333',          // Must be exactly this
+  debug: import.meta.env.VITE_DEBUG === 'true'
+})
+
+// Step 4: Mount the app
+app.mount('#app')
+```
+
+### Environment Variables (.env)
+
+```env
+VITE_PROXY_URL=http://localhost:8787
+VITE_EEN_CLIENT_ID=your-een-client-id
+VITE_DEBUG=true
+```
+
+### Common Errors
+
+#### "getActivePinia() was called but there was no active Pinia"
+
+**Cause:** Pinia was not installed before `initEenToolkit()` was called or before using composables.
+
+**Solution:** Ensure your `main.ts` calls `app.use(pinia)` BEFORE `initEenToolkit()`:
+
+```typescript
+const app = createApp(App)
+const pinia = createPinia()
+
+app.use(pinia)           // ✅ First - install Pinia
+initEenToolkit({...})    // ✅ Second - initialize toolkit
+app.mount('#app')        // ✅ Last - mount app
+```
+
+#### "Redirect URI mismatch"
+
+**Cause:** OAuth redirect URI doesn't exactly match `http://127.0.0.1:3333`.
+
+**Solution:**
+- Use `127.0.0.1` not `localhost`
+- Use port `3333`
+- No trailing slash, no path
+- Register this exact URI at [EEN Developer Portal](https://developer.eagleeyenetworks.com/page/my-application)
 
 ---
 
@@ -881,69 +975,11 @@ console.log(data.email) // Safe
 
 ---
 
-## Setup Guide
-
-### Installation
-
-```bash
-npm install een-api-toolkit
-```
-
-### Prerequisites (IMPORTANT)
-
-The toolkit uses **Pinia for state management internally**. You must install and configure Pinia before initializing the toolkit:
-
-```bash
-npm install pinia
-```
-
-**Pinia must be installed on the Vue app instance BEFORE calling `initEenToolkit()` or using any composables** (`useCurrentUser`, `useUsers`, `useUser`). Failing to do so will result in:
-
-```
-Error: [🍍]: "getActivePinia()" was called but there was no active Pinia.
-Are you trying to use a store before calling "app.use(pinia)"?
-```
-
-### Environment Variables
-
-Create a `.env` file:
-
-```env
-VITE_PROXY_URL=https://your-proxy.workers.dev
-VITE_EEN_CLIENT_ID=your-een-client-id
-# IMPORTANT: EEN IDP only permits this exact redirect URI
-VITE_REDIRECT_URI=http://127.0.0.1:3333
-VITE_DEBUG=true
-```
-
-> **Important:** The EEN Identity Provider only permits `http://127.0.0.1:3333` as the OAuth redirect URI. Do not use `localhost` or other ports.
-
-### Basic Setup (main.ts)
-
-```typescript
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-import { initEenToolkit } from 'een-api-toolkit'
-import App from './App.vue'
-
-const app = createApp(App)
-const pinia = createPinia()
-
-// IMPORTANT: Install Pinia BEFORE initializing the toolkit
-app.use(pinia)
-
-// Now initialize the toolkit (Pinia must already be installed)
-initEenToolkit({
-  proxyUrl: import.meta.env.VITE_PROXY_URL,
-  clientId: import.meta.env.VITE_EEN_CLIENT_ID,
-  redirectUri: import.meta.env.VITE_REDIRECT_URI,
-  debug: import.meta.env.VITE_DEBUG === 'true'
-})
-
-app.mount('#app')
-```
+## Additional Setup Details
 
 ### OAuth Callback Route
+
+Set up a callback route to handle the OAuth response:
 
 ```typescript
 // router/index.ts
@@ -988,6 +1024,37 @@ onMounted(async () => {
 </template>
 ```
 
+### Login Component
+
+```vue
+<!-- views/Login.vue -->
+<script setup>
+import { getAuthUrl } from 'een-api-toolkit'
+
+function login() {
+  window.location.href = getAuthUrl()
+}
+</script>
+
+<template>
+  <div>
+    <h1>Login</h1>
+    <button @click="login">Sign in with Eagle Eye Networks</button>
+  </div>
+</template>
+```
+
+### Logout
+
+```typescript
+import { revokeToken } from 'een-api-toolkit'
+
+async function logout() {
+  await revokeToken()
+  router.push('/login')
+}
+```
+
 ---
 
 ## External Resources
@@ -995,3 +1062,4 @@ onMounted(async () => {
 - [Eagle Eye Networks Developer Portal](https://developer.eagleeyenetworks.com)
 - [EEN API v3.0 Reference](https://developer.eagleeyenetworks.com/reference/using-the-api)
 - [GitHub Repository](https://github.com/klaushofrichter/een-api-toolkit)
+- [OAuth Proxy](https://github.com/klaushofrichter/een-oauth-proxy) - Required for secure token management
