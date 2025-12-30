@@ -119,12 +119,12 @@ Auth calls   │                      │  API calls (with Bearer token)
 
 ### Key Design Decisions
 
-1. **Dual API Style**: Both composables (reactive) and plain functions (framework-agnostic)
+1. **Plain Async Functions**: Simple API with `{data, error}` return pattern
 2. **Result Objects**: Always return `{data, error}`, never throw exceptions
 3. **Auto Token Refresh**: Handled transparently by the auth service
 4. **Type Safety**: Types generated from OpenAPI spec
 5. **No Built-in Caching**: Consuming apps handle caching as needed
-6. **Pinia Dependency**: The toolkit uses Pinia internally for auth state management. Consuming apps must install and configure Pinia before calling `initEenToolkit()` or using any composables. Failure to do so results in a "getActivePinia() was called but there was no active Pinia" error.
+6. **Pinia Dependency**: The toolkit uses Pinia internally for auth state management. Consuming apps must install and configure Pinia before calling `initEenToolkit()` or using `useAuthStore()`. Failure to do so results in a "getActivePinia() was called but there was no active Pinia" error.
 
 ## Code Structure
 
@@ -137,7 +137,10 @@ src/
 │
 ├── users/                   # Users API module
 │   ├── service.ts           # Plain functions: getUsers, getUser, getCurrentUser
-│   ├── composables.ts       # Composables: useUsers, useUser, useCurrentUser
+│   └── index.ts             # Module exports
+│
+├── cameras/                 # Cameras API module
+│   ├── service.ts           # Plain functions: getCameras, getCamera
 │   └── index.ts             # Module exports
 │
 ├── types/                   # TypeScript types
@@ -152,7 +155,7 @@ src/
 └── index.ts                 # Package entry point
 ```
 
-> **Note:** Additional API modules (bridges, cameras, etc.) will follow the same pattern as users/ when implemented.
+> **Note:** Additional API modules (bridges, etc.) will follow the same pattern when implemented.
 
 ### Adding a New API Resource
 
@@ -232,85 +235,21 @@ export async function getSensors(
 }
 ```
 
-3. **Create the composable** (`src/sensors/useSensors.ts`):
+3. **Export from module** (`src/sensors/index.ts`):
 
 ```typescript
-import { ref, computed, onMounted } from 'vue'
-import { getSensors, type Sensor, type GetSensorsParams } from './sensorService'
-
-export function useSensors(params?: GetSensorsParams) {
-  const sensors = ref<Sensor[]>([])
-  const loading = ref(false)
-  const error = ref<{ code: string; message: string } | null>(null)
-  const nextPageToken = ref<string | undefined>()
-
-  const hasNextPage = computed(() => !!nextPageToken.value)
-
-  async function fetch(pageToken?: string) {
-    loading.value = true
-    error.value = null
-
-    const result = await getSensors({
-      ...params,
-      pageToken
-    })
-
-    loading.value = false
-
-    if (result.error) {
-      error.value = result.error
-      return
-    }
-
-    if (pageToken) {
-      sensors.value.push(...result.data.results)
-    } else {
-      sensors.value = result.data.results
-    }
-
-    nextPageToken.value = result.data.nextPageToken
-  }
-
-  async function fetchNextPage() {
-    if (hasNextPage.value) {
-      await fetch(nextPageToken.value)
-    }
-  }
-
-  async function refresh() {
-    nextPageToken.value = undefined
-    await fetch()
-  }
-
-  onMounted(() => fetch())
-
-  return {
-    sensors,
-    loading,
-    error,
-    hasNextPage,
-    fetchNextPage,
-    refresh
-  }
-}
+export { getSensors } from './service'
 ```
 
-4. **Export from module** (`src/sensors/index.ts`):
+4. **Add to package exports** (`src/index.ts`):
 
 ```typescript
-export * from './sensorService'
-export * from './useSensors'
+export { getSensors } from './sensors'
 ```
 
-5. **Add to package exports** (`src/index.ts`):
+5. **Add tests** (unit and E2E)
 
-```typescript
-export * from './sensors'
-```
-
-6. **Add tests** (unit and E2E)
-
-7. **Update documentation** (JSDoc, AI-CONTEXT.md)
+6. **Update documentation** (JSDoc, AI-CONTEXT.md)
 
 ## Development Workflow
 

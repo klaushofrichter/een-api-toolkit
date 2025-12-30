@@ -288,113 +288,14 @@ router.beforeEach((to, from, next) => {
 export default router
 ```
 
-### In-Place Login (Single Page Callback)
-
-If you want to handle the OAuth callback on the same page that displays user data (without navigating to a separate callback route), you must manually refresh the composable after authentication completes:
-
-> **⚠️ Important:** When handling OAuth callbacks on the same page, you must call `refresh()` after `handleAuthCallback()` to update the user data.
-
-```vue
-<script setup lang="ts">
-import { onMounted } from 'vue'
-import { useCurrentUser, handleAuthCallback, getAuthUrl } from 'een-api-toolkit'
-
-// Initialize composable - don't fetch immediately since we may not be authenticated yet
-const { user, loading, error, refresh } = useCurrentUser({ immediate: false })
-
-onMounted(async () => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const code = urlParams.get('code')
-  const state = urlParams.get('state')
-
-  if (code && state) {
-    const result = await handleAuthCallback(code, state)
-
-    if (result.error) {
-      console.error('Login failed:', result.error.message)
-      return
-    }
-
-    // Clean URL after successful auth
-    window.history.replaceState({}, document.title, window.location.pathname)
-  }
-
-  // Refresh user data - runs after successful auth callback,
-  // or on initial load if no callback was processed
-  await refresh()
-})
-
-function login() {
-  window.location.href = getAuthUrl()
-}
-</script>
-
-<template>
-  <div v-if="loading">Loading...</div>
-  <div v-else-if="error">{{ error.message }}</div>
-  <div v-else-if="user">Welcome, {{ user.firstName }}!</div>
-  <button v-else @click="login">Login with EEN</button>
-</template>
-```
-
-**Why is `refresh()` needed?**
-
-- `useCurrentUser()` initializes with the authentication state at the moment it's called
-- `handleAuthCallback()` updates the token in the auth store, but doesn't automatically trigger a re-fetch in existing composable instances
-- Always call `refresh()` after operations that change authentication state (login, logout) if you're staying on the same page
-
 ## Using the API
 
-### Vue Composables (Reactive)
+### Plain Async Functions
 
-Composables provide reactive state that updates automatically:
-
-```vue
-<script setup>
-import { useCurrentUser, useUsers, useUser } from 'een-api-toolkit'
-
-// Get current authenticated user
-const { user, loading, error, refresh } = useCurrentUser()
-
-// List users with pagination
-const {
-  users,
-  loading: usersLoading,
-  error: usersError,
-  hasNextPage,
-  fetchNextPage,
-  refresh: refreshUsers
-} = useUsers({ pageSize: 20 })
-
-// Get a specific user by ID
-const { user: specificUser, loading: userLoading } = useUser('user-123')
-</script>
-
-<template>
-  <div v-if="loading">Loading user...</div>
-  <div v-else-if="error">Error: {{ error.message }}</div>
-  <div v-else>
-    <h1>Welcome, {{ user.firstName }} {{ user.lastName }}</h1>
-    <p>Email: {{ user.email }}</p>
-
-    <h2>Users ({{ users.length }})</h2>
-    <ul>
-      <li v-for="u in users" :key="u.id">{{ u.email }}</li>
-    </ul>
-    <button v-if="hasNextPage" @click="fetchNextPage" :disabled="usersLoading">
-      {{ usersLoading ? 'Loading...' : 'Load More' }}
-    </button>
-    <button @click="refreshUsers">Refresh</button>
-  </div>
-</template>
-```
-
-### Plain Functions (Framework-Agnostic)
-
-Plain functions return a Promise with `{data, error}`:
+All API functions return a Promise with `{data, error}`:
 
 ```typescript
-import { getCurrentUser, getUsers, getUser } from 'een-api-toolkit'
+import { getCurrentUser, getUsers, getUser, getCameras, getCamera } from 'een-api-toolkit'
 
 // Get current user
 const { data: user, error } = await getCurrentUser()
@@ -416,6 +317,24 @@ if (usersResponse) {
 const { data: specificUser } = await getUser('user-123')
 if (specificUser) {
   console.log('User:', specificUser.email)
+}
+
+// Get cameras with filters
+const { data: camerasResponse } = await getCameras({
+  pageSize: 20,
+  include: ['deviceInfo', 'status'],
+  status__in: ['online']
+})
+if (camerasResponse) {
+  console.log('Online cameras:', camerasResponse.results)
+}
+
+// Get a specific camera by ID
+const { data: camera } = await getCamera('camera-123', {
+  include: ['deviceInfo', 'status', 'shareDetails']
+})
+if (camera) {
+  console.log('Camera:', camera.name, camera.status)
 }
 ```
 
@@ -637,17 +556,64 @@ Create `src/views/Dashboard.vue`:
 
 ```vue
 <script setup lang="ts">
-import { useCurrentUser, useUsers, revokeToken } from 'een-api-toolkit'
+import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
+import { getCurrentUser, getUsers, revokeToken, type UserProfile, type User, type EenError } from 'een-api-toolkit'
 
 const router = useRouter()
-const { user, loading, error } = useCurrentUser()
-const { users, hasNextPage, fetchNextPage, loading: usersLoading } = useUsers({ pageSize: 10 })
+
+// Reactive state for current user
+const user = ref<UserProfile | null>(null)
+const loading = ref(false)
+const error = ref<EenError | null>(null)
+
+// Reactive state for users list
+const users = ref<User[]>([])
+const usersLoading = ref(false)
+const nextPageToken = ref<string | undefined>(undefined)
+const hasNextPage = computed(() => !!nextPageToken.value)
+
+async function fetchUser() {
+  loading.value = true
+  const result = await getCurrentUser()
+  loading.value = false
+  if (result.error) {
+    error.value = result.error
+  } else {
+    user.value = result.data
+  }
+}
+
+async function fetchUsers() {
+  usersLoading.value = true
+  const result = await getUsers({ pageSize: 10 })
+  usersLoading.value = false
+  if (!result.error) {
+    users.value = result.data.results
+    nextPageToken.value = result.data.nextPageToken
+  }
+}
+
+async function fetchNextPage() {
+  if (!nextPageToken.value) return
+  usersLoading.value = true
+  const result = await getUsers({ pageSize: 10, pageToken: nextPageToken.value })
+  usersLoading.value = false
+  if (!result.error) {
+    users.value.push(...result.data.results)
+    nextPageToken.value = result.data.nextPageToken
+  }
+}
 
 async function handleLogout() {
   await revokeToken()
   router.push('/login')
 }
+
+onMounted(() => {
+  fetchUser()
+  fetchUsers()
+})
 </script>
 
 <template>
@@ -823,7 +789,7 @@ Are you trying to use a store before calling "app.use(pinia)"?
 
 **Cause:** The toolkit's auth store is being accessed before Pinia is installed on the Vue app.
 
-**Solution:** Ensure Pinia is installed **before** calling `initEenToolkit()` or using any toolkit composables (`useCurrentUser`, `useUsers`, `useUser`, `useAuthStore`):
+**Solution:** Ensure Pinia is installed **before** calling `initEenToolkit()` or using `useAuthStore()`:
 
 ```typescript
 // main.ts - CORRECT ORDER

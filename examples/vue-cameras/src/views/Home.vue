@@ -1,12 +1,37 @@
 <script setup lang="ts">
-import { useAuthStore, useCurrentUser } from 'een-api-toolkit'
-import { computed } from 'vue'
+import { useAuthStore, getCurrentUser, type UserProfile, type EenError } from 'een-api-toolkit'
+import { computed, ref, onMounted } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 
-// Fetch current user if authenticated
-const { user, loading, error } = useCurrentUser({ immediate: true })
+// Reactive state for current user
+const user = ref<UserProfile | null>(null)
+const loading = ref(false)
+const error = ref<EenError | null>(null)
+
+async function fetchUser() {
+  if (!isAuthenticated.value) return
+
+  loading.value = true
+  error.value = null
+
+  const result = await getCurrentUser()
+  if (result.error) {
+    error.value = result.error
+    user.value = null
+  } else {
+    user.value = result.data
+  }
+
+  loading.value = false
+}
+
+onMounted(() => {
+  if (isAuthenticated.value) {
+    fetchUser()
+  }
+})
 </script>
 
 <template>
@@ -38,8 +63,8 @@ const { user, loading, error } = useCurrentUser({ immediate: true })
     <div class="description">
       <h3>About This Example</h3>
       <p>
-        This example demonstrates how to use the <code>useCameras</code> and
-        <code>useCamera</code> composables from the EEN API Toolkit to display
+        This example demonstrates how to use the <code>getCameras</code> and
+        <code>getCamera</code> functions from the EEN API Toolkit to display
         and manage cameras from the Eagle Eye Networks platform.
       </p>
       <h4>Features</h4>

@@ -1,20 +1,54 @@
 <script setup lang="ts">
+import { ref, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useCamera, type CameraStatus } from 'een-api-toolkit'
+import { getCamera, type Camera, type CameraStatus, type EenError } from 'een-api-toolkit'
 
 const route = useRoute()
 
-// Fetch camera with all details
-const { camera, loading, error, refresh } = useCamera(
-  () => route.params.id as string,
-  {
-    include: ['deviceInfo', 'status', 'shareDetails', 'devicePosition', 'networkInfo', 'tags']
+// Reactive state
+const camera = ref<Camera | null>(null)
+const loading = ref(false)
+const error = ref<EenError | null>(null)
+
+async function fetchCamera() {
+  const id = route.params.id as string
+  if (!id) {
+    error.value = { code: 'VALIDATION_ERROR', message: 'Camera ID is required' }
+    return
   }
-)
+
+  loading.value = true
+  error.value = null
+
+  const result = await getCamera(id, {
+    include: ['deviceInfo', 'status', 'shareDetails', 'devicePosition', 'networkInfo', 'tags']
+  })
+
+  if (result.error) {
+    error.value = result.error
+    camera.value = null
+  } else {
+    camera.value = result.data
+  }
+
+  loading.value = false
+}
+
+function refresh() {
+  return fetchCamera()
+}
+
+// Helper to extract status string from the union type
+function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStatus }): CameraStatus | undefined {
+  if (!status) return undefined
+  if (typeof status === 'string') return status
+  return status.connectionStatus
+}
 
 // Get status badge class
-function getStatusClass(status?: CameraStatus): string {
-  switch (status) {
+function getStatusClass(status?: CameraStatus | { connectionStatus?: CameraStatus }): string {
+  const statusStr = getStatusString(status)
+  switch (statusStr) {
     case 'online':
     case 'streaming':
       return 'status-online'
@@ -29,6 +63,20 @@ function getStatusClass(status?: CameraStatus): string {
       return 'status-unknown'
   }
 }
+
+onMounted(() => {
+  fetchCamera()
+})
+
+// Watch for route param changes
+watch(
+  () => route.params.id,
+  (newId, oldId) => {
+    if (newId && newId !== oldId) {
+      fetchCamera()
+    }
+  }
+)
 </script>
 
 <template>
@@ -53,7 +101,7 @@ function getStatusClass(status?: CameraStatus): string {
         </div>
         <div class="header-actions">
           <span :class="['status-badge', getStatusClass(camera.status)]">
-            {{ camera.status || 'Unknown' }}
+            {{ getStatusString(camera.status) || 'Unknown' }}
           </span>
           <button @click="refresh">Refresh</button>
         </div>

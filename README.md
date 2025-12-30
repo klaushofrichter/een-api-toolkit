@@ -4,7 +4,7 @@ A TypeScript library for the [Eagle Eye Networks](https://een.com/) Video API v3
 
 ## Purpose
 
-This toolkit aims to **simplify and accelerate web application development** for the EEN Video Platform. By providing ready-to-use composables, type-safe APIs, and secure authentication patterns, developers can focus on building features rather than wrestling with API integration details.
+This toolkit aims to **simplify and accelerate web application development** for the EEN Video Platform. By providing type-safe APIs and secure authentication patterns, developers can focus on building features rather than wrestling with API integration details.
 
 The project is also designed to **enable AI-assisted software development**. With comprehensive documentation, clear code patterns, and an AI-optimized context file (`docs/AI-CONTEXT.md`), AI coding assistants can effectively help developers build, extend, and maintain applications using this toolkit.
 
@@ -12,11 +12,11 @@ The project is also designed to **enable AI-assisted software development**. Wit
 
 ## Key Features
 
-- **Vue 3 Composables** - Reactive state with `useCurrentUser()`, `useUsers()`, `useUser()`
-- **Plain Functions** - Framework-agnostic `getCurrentUser()`, `getUsers()`, `getUser()`
+- **Plain Async Functions** - Simple API calls with `getCurrentUser()`, `getUsers()`, `getUser()`, `getCameras()`, `getCamera()`
 - **Secure OAuth** - Token management via proxy (refresh tokens never exposed to client)
 - **Type-Safe** - Full TypeScript types from OpenAPI spec
 - **Predictable Errors** - Always returns `{data, error}`, no exceptions thrown
+- **Pinia Auth Store** - Reactive authentication state management
 
 ## OAuth Proxy Requirement
 
@@ -94,33 +94,8 @@ const onCallback = async (code: string, state: string) => {
 
 ### 5. Use the API
 
-**Vue Composables (reactive):**
-
-```vue
-<script setup>
-import { useCurrentUser, useUsers } from 'een-api-toolkit'
-
-const { user, loading, error } = useCurrentUser()
-const { users, hasNextPage, fetchNextPage } = useUsers({ pageSize: 10 })
-</script>
-
-<template>
-  <div v-if="loading">Loading...</div>
-  <div v-else-if="error">{{ error.message }}</div>
-  <div v-else>
-    <h1>Welcome, {{ user.firstName }}</h1>
-    <ul>
-      <li v-for="u in users" :key="u.id">{{ u.email }}</li>
-    </ul>
-    <button v-if="hasNextPage" @click="fetchNextPage">Load More</button>
-  </div>
-</template>
-```
-
-**Plain Functions (framework-agnostic):**
-
 ```typescript
-import { getUsers, getCurrentUser } from 'een-api-toolkit'
+import { getUsers, getCurrentUser, getCameras } from 'een-api-toolkit'
 
 // Get current authenticated user
 const { data: currentUser, error: userError } = await getCurrentUser()
@@ -130,12 +105,25 @@ if (userError) {
   console.log('Current user:', currentUser.email)
 }
 
-// Get list of users
-const { data: users, error } = await getUsers()
+// Get list of users with pagination
+const { data: usersData, error } = await getUsers({ pageSize: 10 })
 if (error) {
   console.error(error.code, error.message)
 } else {
-  console.log('Users:', users.results)
+  console.log('Users:', usersData.results)
+  if (usersData.nextPageToken) {
+    // Fetch next page
+    const { data: nextPage } = await getUsers({ pageToken: usersData.nextPageToken })
+  }
+}
+
+// Get list of cameras
+const { data: camerasData, error: cameraError } = await getCameras({
+  pageSize: 20,
+  include: ['deviceInfo', 'status']
+})
+if (!cameraError) {
+  console.log('Cameras:', camerasData.results)
 }
 ```
 
@@ -146,16 +134,16 @@ if (error) {
 │                         Your Vue 3 App                                │
 │  ┌────────────────────────────────────────────────────────────────┐  │
 │  │                   import from 'een-api-toolkit'                 │  │
-│  │  ┌──────────────┐    ┌────────────────────┐                    │  │
-│  │  │ Composables  │    │  Plain Functions   │                    │  │
-│  │  │ useUsers()   │    │  getUsers()        │                    │  │
-│  │  │ useUser()    │    │  getUser()         │                    │  │
-│  │  └──────────────┘    └────────────────────┘                    │  │
+│  │           ┌────────────────────────────────────┐               │  │
+│  │           │     Plain Async Functions          │               │  │
+│  │           │     getUsers(), getCameras()       │               │  │
+│  │           │     getUser(), getCamera()         │               │  │
+│  │           └────────────────────────────────────┘               │  │
 │  └────────────────────────────────────────────────────────────────┘  │
-│                    │                              │                   │
-│                    ▼                              ▼                   │
+│                                      │                               │
+│                                      ▼                               │
 │       ┌─────────────────────┐        ┌─────────────────────┐         │
-│       │   Pinia Auth Store  │        │   API Calls with    │         │
+│       │   Pinia Auth Store  │◄──────►│   API Calls with    │         │
 │       │   (token, baseUrl)  │        │   Bearer Token      │         │
 │       └─────────────────────┘        └─────────────────────┘         │
 └────────────────────│─────────────────────────────│───────────────────┘

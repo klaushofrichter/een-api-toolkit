@@ -1,14 +1,49 @@
 <script setup lang="ts">
-import { useUsers } from 'een-api-toolkit'
+import { ref, computed, onMounted } from 'vue'
+import { getUsers, type User, type EenError, type ListUsersParams } from 'een-api-toolkit'
 
-const {
-  users,
-  loading,
-  error,
-  hasNextPage,
-  fetchNextPage,
-  refresh
-} = useUsers({ pageSize: 10 })
+// Reactive state
+const users = ref<User[]>([])
+const loading = ref(false)
+const error = ref<EenError | null>(null)
+const nextPageToken = ref<string | undefined>(undefined)
+
+const hasNextPage = computed(() => !!nextPageToken.value)
+
+const params = ref<ListUsersParams>({ pageSize: 10 })
+
+async function fetchUsers(fetchParams?: ListUsersParams) {
+  loading.value = true
+  error.value = null
+
+  const mergedParams = { ...params.value, ...fetchParams }
+  const result = await getUsers(mergedParams)
+
+  if (result.error) {
+    error.value = result.error
+    users.value = []
+    nextPageToken.value = undefined
+  } else {
+    users.value = result.data.results
+    nextPageToken.value = result.data.nextPageToken
+  }
+
+  loading.value = false
+  return result
+}
+
+function refresh() {
+  return fetchUsers()
+}
+
+async function fetchNextPage() {
+  if (!nextPageToken.value) return
+  return fetchUsers({ ...params.value, pageToken: nextPageToken.value })
+}
+
+onMounted(() => {
+  fetchUsers()
+})
 </script>
 
 <template>

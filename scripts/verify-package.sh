@@ -60,7 +60,9 @@ echo "4. Verifying TypeScript declarations..."
 # Check that the .d.ts file has expected exports
 if grep -q "export.*initEenToolkit" dist/index.d.ts && \
    grep -q "export.*getAuthUrl" dist/index.d.ts && \
-   grep -q "export.*useCurrentUser" dist/index.d.ts && \
+   grep -q "export.*getCurrentUser" dist/index.d.ts && \
+   grep -q "export.*getUsers" dist/index.d.ts && \
+   grep -q "export.*getCameras" dist/index.d.ts && \
    grep -q "export.*Result" dist/index.d.ts; then
   echo "   ✓ Key exports found in declarations"
 else

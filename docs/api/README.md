@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.0.18**
+**EEN API Toolkit v0.0.19**
 
 ***
 
-# EEN API Toolkit v0.0.18
+# EEN API Toolkit v0.0.19
 
 ## Interfaces
 
@@ -16,9 +16,6 @@
 - [UserProfile](interfaces/UserProfile.md)
 - [ListUsersParams](interfaces/ListUsersParams.md)
 - [GetUserParams](interfaces/GetUserParams.md)
-- [UseCurrentUserOptions](interfaces/UseCurrentUserOptions.md)
-- [UseUsersOptions](interfaces/UseUsersOptions.md)
-- [UseUserOptions](interfaces/UseUserOptions.md)
 
 ### Types
 
@@ -28,8 +25,6 @@
 
 ### Cameras
 
-- [UseCamerasOptions](interfaces/UseCamerasOptions.md)
-- [UseCameraOptions](interfaces/UseCameraOptions.md)
 - [CameraDeviceInfo](interfaces/CameraDeviceInfo.md)
 - [CameraShareDetails](interfaces/CameraShareDetails.md)
 - [CameraStreamUrls](interfaces/CameraStreamUrls.md)
@@ -63,17 +58,12 @@
 
 ### Users
 
-- [useCurrentUser](functions/useCurrentUser.md)
-- [useUsers](functions/useUsers.md)
-- [useUser](functions/useUser.md)
 - [getCurrentUser](functions/getCurrentUser.md)
 - [getUsers](functions/getUsers.md)
 - [getUser](functions/getUser.md)
 
 ### Cameras
 
-- [useCameras](functions/useCameras.md)
-- [useCamera](functions/useCamera.md)
 - [getCameras](functions/getCameras.md)
 - [getCamera](functions/getCamera.md)
 

@@ -20,7 +20,7 @@ Start with the **[User Guide](./USER-GUIDE.md)** which covers:
 - OAuth proxy setup (using [een-oauth-proxy](https://github.com/klaushofrichter/een-oauth-proxy))
 - Configuration options
 - Authentication flow implementation
-- Using composables and plain functions
+- Using API functions
 - Error handling patterns
 - Building an app from scratch
 - Troubleshooting common issues

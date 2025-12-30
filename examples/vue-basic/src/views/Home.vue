@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useAuthStore, useCurrentUser, getAuthUrl } from 'een-api-toolkit'
+import { useAuthStore, getCurrentUser, getAuthUrl, type UserProfile, type EenError } from 'een-api-toolkit'
 import { computed, ref, watch } from 'vue'
 
 const authStore = useAuthStore()
@@ -17,25 +17,40 @@ function login() {
   }
 }
 
-// Don't fetch on mount - we'll handle it reactively
-const { user, loading, error, fetch } = useCurrentUser({
-  immediate: false
-})
+// Reactive state for current user
+const user = ref<UserProfile | null>(null)
+const loading = ref(false)
+const error = ref<EenError | null>(null)
 
 // Guard to prevent concurrent fetch calls
 let fetchInProgress = false
+
+async function fetchUser() {
+  if (fetchInProgress) return
+  fetchInProgress = true
+  loading.value = true
+  error.value = null
+
+  try {
+    const result = await getCurrentUser()
+    if (result.error) {
+      error.value = result.error
+      user.value = null
+    } else {
+      user.value = result.data
+    }
+  } finally {
+    loading.value = false
+    fetchInProgress = false
+  }
+}
 
 // Fetch user when authentication state changes
 watch(
   isAuthenticated,
   async (isAuth) => {
     if (isAuth && !user.value && !fetchInProgress) {
-      fetchInProgress = true
-      try {
-        await fetch()
-      } finally {
-        fetchInProgress = false
-      }
+      await fetchUser()
     }
   },
   { immediate: true }
