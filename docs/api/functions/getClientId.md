@@ -8,7 +8,7 @@
 
 > **getClientId**(): `string` \| `undefined`
 
-Defined in: [src/config.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/config.ts#L37)
+Defined in: [src/config.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L37)
 
 Get the client ID
 

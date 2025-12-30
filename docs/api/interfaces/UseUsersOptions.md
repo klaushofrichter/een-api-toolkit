@@ -6,7 +6,7 @@
 
 # Interface: UseUsersOptions
 
-Defined in: [src/users/composables.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/users/composables.ts#L108)
+Defined in: [src/users/composables.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/composables.ts#L108)
 
 Options for the useUsers composable.
 
@@ -16,7 +16,7 @@ Options for the useUsers composable.
 
 > `optional` **immediate**: `boolean`
 
-Defined in: [src/users/composables.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/users/composables.ts#L113)
+Defined in: [src/users/composables.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/composables.ts#L113)
 
 Whether to fetch users immediately on mount.
 

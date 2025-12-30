@@ -8,7 +8,7 @@
 
 > **refreshToken**(): `Promise`\<[`Result`](../type-aliases/Result.md)\<\{ `accessToken`: `string`; `expiresIn`: `number`; \}\>\>
 
-Defined in: [src/auth/service.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L94)
+Defined in: [src/auth/service.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L94)
 
 Refresh the access token using stored refresh token
 

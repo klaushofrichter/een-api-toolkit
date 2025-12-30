@@ -6,7 +6,7 @@
 
 # Interface: UserProfile
 
-Defined in: [src/types/user.ts:53](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L53)
+Defined in: [src/types/user.ts:53](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L53)
 
 Current authenticated user profile.
 
@@ -21,7 +21,7 @@ This is returned by [getCurrentUser](../functions/getCurrentUser.md) and stored 
 
 > **id**: `string`
 
-Defined in: [src/types/user.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L55)
+Defined in: [src/types/user.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L55)
 
 Unique identifier for the user
 
@@ -31,7 +31,7 @@ Unique identifier for the user
 
 > **email**: `string`
 
-Defined in: [src/types/user.ts:57](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L57)
+Defined in: [src/types/user.ts:57](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L57)
 
 User's email address
 
@@ -41,7 +41,7 @@ User's email address
 
 > **firstName**: `string`
 
-Defined in: [src/types/user.ts:59](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L59)
+Defined in: [src/types/user.ts:59](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L59)
 
 User's first name
 
@@ -51,7 +51,7 @@ User's first name
 
 > **lastName**: `string`
 
-Defined in: [src/types/user.ts:61](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L61)
+Defined in: [src/types/user.ts:61](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L61)
 
 User's last name
 
@@ -61,7 +61,7 @@ User's last name
 
 > `optional` **accountId**: `string`
 
-Defined in: [src/types/user.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L63)
+Defined in: [src/types/user.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L63)
 
 ID of the account this user belongs to
 
@@ -71,7 +71,7 @@ ID of the account this user belongs to
 
 > `optional` **timeZone**: `string`
 
-Defined in: [src/types/user.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L65)
+Defined in: [src/types/user.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L65)
 
 User's timezone
 
@@ -81,6 +81,6 @@ User's timezone
 
 > `optional` **language**: `string`
 
-Defined in: [src/types/user.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L67)
+Defined in: [src/types/user.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L67)
 
 User's preferred language

@@ -6,7 +6,7 @@
 
 # Interface: CameraDeviceInfo
 
-Defined in: [src/types/camera.ts:29](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L29)
+Defined in: [src/types/camera.ts:29](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L29)
 
 Device information for a camera.
 
@@ -20,7 +20,7 @@ Contains hardware and firmware details about the physical camera device.
 
 > `optional` **make**: `string`
 
-Defined in: [src/types/camera.ts:31](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L31)
+Defined in: [src/types/camera.ts:31](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L31)
 
 Camera manufacturer (e.g., "Axis", "Hikvision")
 
@@ -30,7 +30,7 @@ Camera manufacturer (e.g., "Axis", "Hikvision")
 
 > `optional` **model**: `string`
 
-Defined in: [src/types/camera.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L33)
+Defined in: [src/types/camera.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L33)
 
 Camera model
 
@@ -40,7 +40,7 @@ Camera model
 
 > `optional` **firmwareVersion**: `string`
 
-Defined in: [src/types/camera.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L35)
+Defined in: [src/types/camera.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L35)
 
 Firmware version
 
@@ -50,7 +50,7 @@ Firmware version
 
 > `optional` **directToCloud**: `boolean`
 
-Defined in: [src/types/camera.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L37)
+Defined in: [src/types/camera.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L37)
 
 Whether camera connects directly to cloud (no bridge)
 
@@ -60,7 +60,7 @@ Whether camera connects directly to cloud (no bridge)
 
 > `optional` **serialNumber**: `string`
 
-Defined in: [src/types/camera.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L39)
+Defined in: [src/types/camera.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L39)
 
 Serial number
 
@@ -70,7 +70,7 @@ Serial number
 
 > `optional` **resolution**: `string`
 
-Defined in: [src/types/camera.ts:41](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L41)
+Defined in: [src/types/camera.ts:41](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L41)
 
 Resolution capabilities
 
@@ -80,6 +80,6 @@ Resolution capabilities
 
 > `optional` **type**: `string`
 
-Defined in: [src/types/camera.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L43)
+Defined in: [src/types/camera.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L43)
 
 Camera type (e.g., "IP", "Analog")

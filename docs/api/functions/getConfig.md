@@ -8,7 +8,7 @@
 
 > **getConfig**(): [`EenToolkitConfig`](../interfaces/EenToolkitConfig.md)
 
-Defined in: [src/config.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/config.ts#L23)
+Defined in: [src/config.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L23)
 
 Get the current configuration
 

@@ -12,7 +12,7 @@
   "categorizeByGroup": true,
   "categoryOrder": ["Authentication", "Users", "Types", "*"],
   "sort": ["source-order"],
-  "gitRevision": "develop",
+  "gitRevision": "production",
   "sourceLinkTemplate": "https://github.com/klaushofrichter/een-api-toolkit/blob/{gitRevision}/{path}#L{line}",
   "navigationLinks": {
     "GitHub": "https://github.com/klaushofrichter/een-api-toolkit",

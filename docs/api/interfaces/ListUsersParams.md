@@ -6,7 +6,7 @@
 
 # Interface: ListUsersParams
 
-Defined in: [src/types/user.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L88)
+Defined in: [src/types/user.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L88)
 
 Parameters for listing users.
 
@@ -31,7 +31,7 @@ const { data } = await getUsers({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/user.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L90)
+Defined in: [src/types/user.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L90)
 
 Number of results per page (default: 100, max: 1000)
 
@@ -41,7 +41,7 @@ Number of results per page (default: 100, max: 1000)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/user.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L92)
+Defined in: [src/types/user.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L92)
 
 Token for fetching a specific page
 
@@ -51,6 +51,6 @@ Token for fetching a specific page
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/user.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/user.ts#L94)
+Defined in: [src/types/user.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L94)
 
 Additional fields to include in the response (e.g., ['permissions'])

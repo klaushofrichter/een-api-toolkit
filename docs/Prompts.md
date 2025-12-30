@@ -9,7 +9,7 @@ This document contains example prompts that developers can use with AI coding as
 3. The AI will generate a complete application based on the prompt
 4. Customize the generated code as needed
 
-> **Tip:** For best results, ensure the AI has access to the [AI-CONTEXT.md](./AI-CONTEXT.md) file, which contains comprehensive API documentation optimized for AI assistants.
+> **Tip:** For best results, ensure the AI has access to the [AI-CONTEXT.md](./AI-CONTEXT.md) file, which contains comprehensive API documentation optimized for AI assistants. This file is also included in the npm package at `node_modules/een-api-toolkit/docs/AI-CONTEXT.md`.
 
 ---
 
@@ -22,7 +22,7 @@ This document contains example prompts that developers can use with AI coding as
 ```
 We are building a Vue 3 web app that accesses the EEN Video Platform by using the een-api-toolkit (npm install een-api-toolkit@latest). The app allows login to the service and lists all users. This should include pagination for accounts with more than 10 users. When clicking on a user, we want to see details for that user in a modal window.
 
-Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/develop/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
+Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
 
 Here are configuration details:
 VITE_EEN_CLIENT_ID="YOUR-CLIENT_ID"
@@ -53,7 +53,7 @@ We are building a Vue 3 web app that accesses the EEN Video Platform by using th
 4. Click on a camera to see detailed information including device info, location, and tags
 5. A refresh button to reload the camera list
 
-Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/develop/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
+Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
 
 Here are configuration details:
 VITE_EEN_CLIENT_ID="YOUR-CLIENT_ID"

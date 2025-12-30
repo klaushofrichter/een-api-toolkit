@@ -8,7 +8,7 @@
 
 > **useCamera**(`cameraId`, `options?`): `object`
 
-Defined in: [src/cameras/composables.ts:231](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/cameras/composables.ts#L231)
+Defined in: [src/cameras/composables.ts:231](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/cameras/composables.ts#L231)
 
 Vue 3 composable for getting a single camera by ID.
 

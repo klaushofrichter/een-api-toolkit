@@ -8,7 +8,7 @@
 
 > **getCameras**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Camera`](../interfaces/Camera.md)\>\>\>
 
-Defined in: [src/cameras/service.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/cameras/service.ts#L49)
+Defined in: [src/cameras/service.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/cameras/service.ts#L49)
 
 List cameras with optional pagination and filtering.
 

@@ -6,7 +6,7 @@
 
 # Interface: CameraDevicePosition
 
-Defined in: [src/types/camera.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L111)
+Defined in: [src/types/camera.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L111)
 
 Camera position/location data.
 
@@ -20,7 +20,7 @@ Physical location and orientation of the camera.
 
 > `optional` **latitude**: `number`
 
-Defined in: [src/types/camera.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L113)
+Defined in: [src/types/camera.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L113)
 
 Latitude coordinate
 
@@ -30,7 +30,7 @@ Latitude coordinate
 
 > `optional` **longitude**: `number`
 
-Defined in: [src/types/camera.ts:115](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L115)
+Defined in: [src/types/camera.ts:115](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L115)
 
 Longitude coordinate
 
@@ -40,7 +40,7 @@ Longitude coordinate
 
 > `optional` **altitude**: `number`
 
-Defined in: [src/types/camera.ts:117](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L117)
+Defined in: [src/types/camera.ts:117](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L117)
 
 Altitude in meters
 
@@ -50,7 +50,7 @@ Altitude in meters
 
 > `optional` **floor**: `number`
 
-Defined in: [src/types/camera.ts:119](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L119)
+Defined in: [src/types/camera.ts:119](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L119)
 
 Floor level
 
@@ -60,6 +60,6 @@ Floor level
 
 > `optional` **azimuth**: `number`
 
-Defined in: [src/types/camera.ts:121](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L121)
+Defined in: [src/types/camera.ts:121](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L121)
 
 Direction camera is facing (0-360 degrees)

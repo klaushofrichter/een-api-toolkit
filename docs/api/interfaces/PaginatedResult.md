@@ -6,7 +6,7 @@
 
 # Interface: PaginatedResult\<T\>
 
-Defined in: [src/types/common.ts:122](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L122)
+Defined in: [src/types/common.ts:122](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L122)
 
 Paginated response from list operations.
 
@@ -29,7 +29,7 @@ The type of items in the results array
 
 > **results**: `T`[]
 
-Defined in: [src/types/common.ts:124](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L124)
+Defined in: [src/types/common.ts:124](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L124)
 
 Array of items for this page
 
@@ -39,7 +39,7 @@ Array of items for this page
 
 > `optional` **nextPageToken**: `string`
 
-Defined in: [src/types/common.ts:126](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L126)
+Defined in: [src/types/common.ts:126](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L126)
 
 Token to fetch the next page (undefined if no more pages)
 
@@ -49,7 +49,7 @@ Token to fetch the next page (undefined if no more pages)
 
 > `optional` **prevPageToken**: `string`
 
-Defined in: [src/types/common.ts:128](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L128)
+Defined in: [src/types/common.ts:128](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L128)
 
 Token to fetch the previous page (undefined if on first page)
 
@@ -59,6 +59,6 @@ Token to fetch the previous page (undefined if on first page)
 
 > `optional` **totalSize**: `number`
 
-Defined in: [src/types/common.ts:130](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L130)
+Defined in: [src/types/common.ts:130](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L130)
 
 Total number of items across all pages (may not be provided by all endpoints)

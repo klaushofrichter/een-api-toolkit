@@ -8,7 +8,7 @@
 
 > **getProxyUrl**(): `string` \| `undefined`
 
-Defined in: [src/config.ts:30](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/config.ts#L30)
+Defined in: [src/config.ts:30](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L30)
 
 Get the proxy URL
 

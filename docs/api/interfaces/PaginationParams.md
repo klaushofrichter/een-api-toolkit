@@ -6,7 +6,7 @@
 
 # Interface: PaginationParams
 
-Defined in: [src/types/common.ts:105](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L105)
+Defined in: [src/types/common.ts:105](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L105)
 
 Pagination parameters for list operations.
 
@@ -36,7 +36,7 @@ if (data.nextPageToken) {
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/common.ts:107](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L107)
+Defined in: [src/types/common.ts:107](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L107)
 
 Number of results per page (default varies by endpoint, typically 100)
 
@@ -46,6 +46,6 @@ Number of results per page (default varies by endpoint, typically 100)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/common.ts:109](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L109)
+Defined in: [src/types/common.ts:109](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L109)
 
 Token for fetching a specific page (from previous response's nextPageToken)

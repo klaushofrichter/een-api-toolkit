@@ -8,7 +8,7 @@
 
 > **Result**\<`T`\> = \{ `data`: `T`; `error`: `null`; \} \| \{ `data`: `null`; `error`: [`EenError`](../interfaces/EenError.md); \}
 
-Defined in: [src/types/common.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L78)
+Defined in: [src/types/common.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L78)
 
 Result type for all API operations - functions never throw exceptions.
 

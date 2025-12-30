@@ -8,7 +8,7 @@
 
 > **initEenToolkit**(`options`): `void`
 
-Defined in: [src/config.ts:11](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/config.ts#L11)
+Defined in: [src/config.ts:11](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L11)
 
 Initialize the EEN API Toolkit
 

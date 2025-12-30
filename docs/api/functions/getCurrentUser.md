@@ -8,7 +8,7 @@
 
 > **getCurrentUser**(): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`UserProfile`](../interfaces/UserProfile.md)\>\>
 
-Defined in: [src/users/service.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/users/service.ts#L33)
+Defined in: [src/users/service.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/service.ts#L33)
 
 Get the current authenticated user's profile.
 
