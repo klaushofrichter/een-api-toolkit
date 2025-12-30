@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.15**](../README.md)
+[**EEN API Toolkit v0.0.16**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListCamerasParams
 
-Defined in: [src/types/camera.ts:251](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L251)
+Defined in: [src/types/camera.ts:251](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L251)
 
 Parameters for listing cameras.
 
@@ -49,7 +49,7 @@ const { data: filtered } = await getCameras({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/camera.ts:254](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L254)
+Defined in: [src/types/camera.ts:254](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L254)
 
 Number of results per page (default: 100, max: 1000)
 
@@ -59,7 +59,7 @@ Number of results per page (default: 100, max: 1000)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/camera.ts:256](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L256)
+Defined in: [src/types/camera.ts:256](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L256)
 
 Token for fetching a specific page
 
@@ -69,7 +69,7 @@ Token for fetching a specific page
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/camera.ts:260](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L260)
+Defined in: [src/types/camera.ts:260](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L260)
 
 Additional fields to include in the response
 
@@ -79,7 +79,7 @@ Additional fields to include in the response
 
 > `optional` **sort**: `string`[]
 
-Defined in: [src/types/camera.ts:262](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L262)
+Defined in: [src/types/camera.ts:262](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L262)
 
 Fields to sort by (prefix with - for descending)
 
@@ -89,7 +89,7 @@ Fields to sort by (prefix with - for descending)
 
 > `optional` **locationId\_\_in**: `string`[]
 
-Defined in: [src/types/camera.ts:266](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L266)
+Defined in: [src/types/camera.ts:266](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L266)
 
 Filter by location IDs
 
@@ -99,7 +99,7 @@ Filter by location IDs
 
 > `optional` **bridgeId\_\_in**: `string`[]
 
-Defined in: [src/types/camera.ts:268](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L268)
+Defined in: [src/types/camera.ts:268](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L268)
 
 Filter by bridge IDs
 
@@ -109,7 +109,7 @@ Filter by bridge IDs
 
 > `optional` **multiCameraId**: `string`
 
-Defined in: [src/types/camera.ts:272](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L272)
+Defined in: [src/types/camera.ts:272](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L272)
 
 Filter by exact multi-camera ID
 
@@ -119,7 +119,7 @@ Filter by exact multi-camera ID
 
 > `optional` **multiCameraId\_\_ne**: `string`
 
-Defined in: [src/types/camera.ts:274](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L274)
+Defined in: [src/types/camera.ts:274](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L274)
 
 Filter by multi-camera ID not equal to
 
@@ -129,7 +129,7 @@ Filter by multi-camera ID not equal to
 
 > `optional` **multiCameraId\_\_in**: `string`[]
 
-Defined in: [src/types/camera.ts:276](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L276)
+Defined in: [src/types/camera.ts:276](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L276)
 
 Filter by multi-camera IDs (any match)
 
@@ -139,7 +139,7 @@ Filter by multi-camera IDs (any match)
 
 > `optional` **tags\_\_contains**: `string`[]
 
-Defined in: [src/types/camera.ts:280](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L280)
+Defined in: [src/types/camera.ts:280](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L280)
 
 Filter by tags (all tags must be present)
 
@@ -149,7 +149,7 @@ Filter by tags (all tags must be present)
 
 > `optional` **tags\_\_any**: `string`[]
 
-Defined in: [src/types/camera.ts:282](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L282)
+Defined in: [src/types/camera.ts:282](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L282)
 
 Filter by tags (any tag must be present)
 
@@ -159,7 +159,7 @@ Filter by tags (any tag must be present)
 
 > `optional` **packages\_\_contains**: `string`[]
 
-Defined in: [src/types/camera.ts:284](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L284)
+Defined in: [src/types/camera.ts:284](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L284)
 
 Filter by packages (all must be present)
 
@@ -169,7 +169,7 @@ Filter by packages (all must be present)
 
 > `optional` **name**: `string`
 
-Defined in: [src/types/camera.ts:288](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L288)
+Defined in: [src/types/camera.ts:288](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L288)
 
 Filter by exact name
 
@@ -179,7 +179,7 @@ Filter by exact name
 
 > `optional` **name\_\_contains**: `string`
 
-Defined in: [src/types/camera.ts:290](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L290)
+Defined in: [src/types/camera.ts:290](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L290)
 
 Filter by name containing substring (case-insensitive)
 
@@ -189,7 +189,7 @@ Filter by name containing substring (case-insensitive)
 
 > `optional` **name\_\_in**: `string`[]
 
-Defined in: [src/types/camera.ts:292](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L292)
+Defined in: [src/types/camera.ts:292](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L292)
 
 Filter by exact names (any match)
 
@@ -199,7 +199,7 @@ Filter by exact names (any match)
 
 > `optional` **id\_\_in**: `string`[]
 
-Defined in: [src/types/camera.ts:296](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L296)
+Defined in: [src/types/camera.ts:296](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L296)
 
 Filter by camera IDs
 
@@ -209,7 +209,7 @@ Filter by camera IDs
 
 > `optional` **id\_\_notIn**: `string`[]
 
-Defined in: [src/types/camera.ts:298](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L298)
+Defined in: [src/types/camera.ts:298](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L298)
 
 Exclude camera IDs
 
@@ -219,7 +219,7 @@ Exclude camera IDs
 
 > `optional` **id\_\_contains**: `string`
 
-Defined in: [src/types/camera.ts:300](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L300)
+Defined in: [src/types/camera.ts:300](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L300)
 
 Filter by ID containing substring
 
@@ -229,7 +229,7 @@ Filter by ID containing substring
 
 > `optional` **layoutId**: `string`
 
-Defined in: [src/types/camera.ts:304](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L304)
+Defined in: [src/types/camera.ts:304](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L304)
 
 Filter by layout ID
 
@@ -239,7 +239,7 @@ Filter by layout ID
 
 > `optional` **shared**: `boolean`
 
-Defined in: [src/types/camera.ts:308](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L308)
+Defined in: [src/types/camera.ts:308](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L308)
 
 Filter by shared status. Maps to `shareDetails.shared` in the API query.
 
@@ -249,7 +249,7 @@ Filter by shared status. Maps to `shareDetails.shared` in the API query.
 
 > `optional` **sharedCameraAccount**: `string`
 
-Defined in: [src/types/camera.ts:310](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L310)
+Defined in: [src/types/camera.ts:310](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L310)
 
 Filter by sharing account ID. Maps to `shareDetails.accountId` in the API query.
 
@@ -259,7 +259,7 @@ Filter by sharing account ID. Maps to `shareDetails.accountId` in the API query.
 
 > `optional` **firstResponder**: `boolean`
 
-Defined in: [src/types/camera.ts:312](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L312)
+Defined in: [src/types/camera.ts:312](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L312)
 
 Filter by first responder sharing. Maps to `shareDetails.firstResponder` in the API query.
 
@@ -269,7 +269,7 @@ Filter by first responder sharing. Maps to `shareDetails.firstResponder` in the 
 
 > `optional` **directToCloud**: `boolean`
 
-Defined in: [src/types/camera.ts:316](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L316)
+Defined in: [src/types/camera.ts:316](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L316)
 
 Filter by direct-to-cloud connection. Maps to `deviceInfo.directToCloud` in the API query.
 
@@ -279,7 +279,7 @@ Filter by direct-to-cloud connection. Maps to `deviceInfo.directToCloud` in the 
 
 > `optional` **speakerId\_\_in**: `string`[]
 
-Defined in: [src/types/camera.ts:320](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L320)
+Defined in: [src/types/camera.ts:320](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L320)
 
 Filter by speaker IDs
 
@@ -289,7 +289,7 @@ Filter by speaker IDs
 
 > `optional` **q**: `string`
 
-Defined in: [src/types/camera.ts:324](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L324)
+Defined in: [src/types/camera.ts:324](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L324)
 
 Full-text search query
 
@@ -299,7 +299,7 @@ Full-text search query
 
 > `optional` **qRelevance\_\_gte**: `number`
 
-Defined in: [src/types/camera.ts:326](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L326)
+Defined in: [src/types/camera.ts:326](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L326)
 
 Minimum search relevance score
 
@@ -309,7 +309,7 @@ Minimum search relevance score
 
 > `optional` **enabledAnalytics\_\_contains**: `string`[]
 
-Defined in: [src/types/camera.ts:330](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L330)
+Defined in: [src/types/camera.ts:330](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L330)
 
 Filter by enabled analytics (all must be present)
 
@@ -319,7 +319,7 @@ Filter by enabled analytics (all must be present)
 
 > `optional` **status\_\_in**: [`CameraStatus`](../type-aliases/CameraStatus.md)[]
 
-Defined in: [src/types/camera.ts:334](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L334)
+Defined in: [src/types/camera.ts:334](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L334)
 
 Filter by status values (any match)
 
@@ -329,6 +329,6 @@ Filter by status values (any match)
 
 > `optional` **status\_\_ne**: [`CameraStatus`](../type-aliases/CameraStatus.md)
 
-Defined in: [src/types/camera.ts:336](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L336)
+Defined in: [src/types/camera.ts:336](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L336)
 
 Filter by status not equal to

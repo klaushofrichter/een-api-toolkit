@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.15**](../README.md)
+[**EEN API Toolkit v0.0.16**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **useCurrentUser**(`options?`): `object`
 
-Defined in: [src/users/composables.ts:61](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/users/composables.ts#L61)
+Defined in: [src/users/composables.ts:61](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/composables.ts#L61)
 
 Vue 3 composable for getting the current authenticated user.
 

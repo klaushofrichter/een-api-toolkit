@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.15**](../README.md)
+[**EEN API Toolkit v0.0.16**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getUsers**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`User`](../interfaces/User.md)\>\>\>
 
-Defined in: [src/users/service.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/users/service.ts#L118)
+Defined in: [src/users/service.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/service.ts#L118)
 
 List users with optional pagination and filtering.
 

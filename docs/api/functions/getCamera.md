@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.15**](../README.md)
+[**EEN API Toolkit v0.0.16**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getCamera**(`cameraId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Camera`](../interfaces/Camera.md)\>\>
 
-Defined in: [src/cameras/service.ts:240](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/cameras/service.ts#L240)
+Defined in: [src/cameras/service.ts:240](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/cameras/service.ts#L240)
 
 Get a specific camera by ID.
 

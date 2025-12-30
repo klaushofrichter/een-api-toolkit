@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.15**](../README.md)
+[**EEN API Toolkit v0.0.16**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraStreamUrls
 
-Defined in: [src/types/camera.ts:73](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L73)
+Defined in: [src/types/camera.ts:73](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L73)
 
 Stream URLs for camera media.
 
@@ -20,7 +20,7 @@ Contains URLs for accessing various camera stream formats.
 
 > `optional` **hls**: `string`
 
-Defined in: [src/types/camera.ts:75](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L75)
+Defined in: [src/types/camera.ts:75](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L75)
 
 HLS stream URL
 
@@ -30,7 +30,7 @@ HLS stream URL
 
 > `optional` **rtsp**: `string`
 
-Defined in: [src/types/camera.ts:77](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L77)
+Defined in: [src/types/camera.ts:77](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L77)
 
 RTSP stream URL
 
@@ -40,7 +40,7 @@ RTSP stream URL
 
 > `optional` **webrtc**: `string`
 
-Defined in: [src/types/camera.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L79)
+Defined in: [src/types/camera.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L79)
 
 WebRTC stream URL
 
@@ -50,6 +50,6 @@ WebRTC stream URL
 
 > `optional` **jpeg**: `string`
 
-Defined in: [src/types/camera.ts:81](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/camera.ts#L81)
+Defined in: [src/types/camera.ts:81](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L81)
 
 JPEG snapshot URL

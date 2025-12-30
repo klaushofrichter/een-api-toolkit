@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.15**](../README.md)
+[**EEN API Toolkit v0.0.16**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getRedirectUri**(): `string`
 
-Defined in: [src/config.ts:44](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/config.ts#L44)
+Defined in: [src/config.ts:44](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L44)
 
 Get the redirect URI
 
