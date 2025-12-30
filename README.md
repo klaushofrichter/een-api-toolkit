@@ -183,6 +183,7 @@ if (error) {
 | **[API Reference](./docs/api/)** | Auto-generated TypeDoc documentation |
 | **[Example App](./examples/vue-basic/)** | Complete Vue 3 example with OAuth flow |
 | **[AI Context](./docs/AI-CONTEXT.md)** | Single-file reference for AI assistants |
+| **[AI Prompts](./docs/Prompts.md)** | Example prompts for generating apps with AI |
 
 ## External Resources
 

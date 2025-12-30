@@ -25,7 +25,6 @@ function generateHeader(): string {
   return `# EEN API Toolkit - AI Reference
 
 > **Version:** ${packageJson.version}
-> **Generated:** ${new Date().toISOString().split('T')[0]}
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
