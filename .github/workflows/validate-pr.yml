@@ -21,13 +21,14 @@ jobs:
           node-version: '20'
 
       - name: Check version consistency
+        # Note: jq is pre-installed on ubuntu-latest runners
         run: |
           set -e
 
           echo "=== Version Consistency Check ==="
           echo ""
 
-          # Get version from package.json
+          # Get version from package.json (jq is pre-installed on Ubuntu runners)
           PKG_VERSION=$(jq -r .version package.json)
           echo "package.json version: $PKG_VERSION"
 

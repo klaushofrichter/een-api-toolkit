@@ -985,13 +985,14 @@ The `beforeEnter` guard shown in the "Critical Requirements" section redirects O
 // router/index.ts
 {
   path: '/callback',
+  name: 'callback',
   component: () => import('./views/Callback.vue')
 }
 ```
 
 ```vue
 <!-- views/Callback.vue -->
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { handleAuthCallback } from 'een-api-toolkit'
