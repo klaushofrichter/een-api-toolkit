@@ -1043,19 +1043,20 @@ function generateSetupGuide(): string {
 
 ### OAuth Callback Route
 
-Set up a callback route to handle the OAuth response:
+The \`beforeEnter\` guard shown in the "Critical Requirements" section redirects OAuth responses to a named route called 'callback'. Here is how to set up that route and its component:
 
 \`\`\`typescript
 // router/index.ts
 {
   path: '/callback',
+  name: 'callback',
   component: () => import('./views/Callback.vue')
 }
 \`\`\`
 
 \`\`\`vue
 <!-- views/Callback.vue -->
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { handleAuthCallback } from 'een-api-toolkit'
@@ -1108,15 +1109,26 @@ function login() {
 </template>
 \`\`\`
 
-### Logout
+### Logout Component
 
-\`\`\`typescript
+\`\`\`vue
+<!-- In a component, e.g., App.vue or a NavBar component -->
+<script setup lang="ts">
 import { revokeToken } from 'een-api-toolkit'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
 
 async function logout() {
   await revokeToken()
+  // Redirect to login page after token is revoked
   router.push('/login')
 }
+</script>
+
+<template>
+  <button @click="logout">Logout</button>
+</template>
 \`\`\`
 
 ---

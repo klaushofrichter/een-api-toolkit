@@ -1,0 +1,152 @@
+name: Validate PR
+
+# Run on PRs to production to catch issues before merge
+on:
+  pull_request:
+    branches:
+      - production
+
+jobs:
+  validate-versions:
+    name: Validate Version Consistency
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check version consistency
+        # Note: jq is pre-installed on ubuntu-latest runners
+        run: |
+          set -e
+
+          echo "=== Version Consistency Check ==="
+          echo ""
+
+          # Get version from package.json (jq is pre-installed on Ubuntu runners)
+          PKG_VERSION=$(jq -r .version package.json)
+          echo "package.json version: $PKG_VERSION"
+
+          # Get version from AI-CONTEXT.md
+          AI_VERSION=$(grep -oP '^\> \*\*Version:\*\* \K[0-9]+\.[0-9]+\.[0-9]+' docs/AI-CONTEXT.md || echo "NOT_FOUND")
+          echo "AI-CONTEXT.md version: $AI_VERSION"
+
+          # Get version from docs/api/README.md (TypeDoc header)
+          API_VERSION=$(head -1 docs/api/README.md | grep -oP 'v\K[0-9]+\.[0-9]+\.[0-9]+' || echo "NOT_FOUND")
+          echo "docs/api version: $API_VERSION"
+
+          echo ""
+
+          # Check AI-CONTEXT.md version
+          if [ "$AI_VERSION" = "NOT_FOUND" ]; then
+            echo "ERROR: Could not find version in docs/AI-CONTEXT.md"
+            exit 1
+          fi
+
+          if [ "$PKG_VERSION" != "$AI_VERSION" ]; then
+            echo "ERROR: Version mismatch!"
+            echo "  package.json: $PKG_VERSION"
+            echo "  AI-CONTEXT.md: $AI_VERSION"
+            echo ""
+            echo "Fix: Run 'npm run docs' and commit the changes"
+            exit 1
+          fi
+
+          # Check docs/api version
+          if [ "$API_VERSION" = "NOT_FOUND" ]; then
+            echo "ERROR: Could not find version in docs/api/README.md"
+            exit 1
+          fi
+
+          if [ "$PKG_VERSION" != "$API_VERSION" ]; then
+            echo "ERROR: Version mismatch!"
+            echo "  package.json: $PKG_VERSION"
+            echo "  docs/api: $API_VERSION"
+            echo ""
+            echo "Fix: Run 'npm run docs' and commit the changes"
+            exit 1
+          fi
+
+          echo "All versions match: $PKG_VERSION"
+
+      - name: Check if version already published
+        run: |
+          set -e
+
+          echo "=== npm Version Check ==="
+          echo ""
+
+          PKG_VERSION=$(jq -r .version package.json)
+          PKG_NAME=$(jq -r .name package.json)
+
+          # Get published version (returns empty if not published)
+          PUBLISHED_VERSION=$(npm view "$PKG_NAME" version 2>/dev/null || echo "")
+
+          if [ -z "$PUBLISHED_VERSION" ]; then
+            echo "Package not yet published to npm"
+            echo "Version $PKG_VERSION will be the first release"
+            exit 0
+          fi
+
+          echo "Current npm version: $PUBLISHED_VERSION"
+          echo "PR version: $PKG_VERSION"
+
+          if [ "$PKG_VERSION" = "$PUBLISHED_VERSION" ]; then
+            echo ""
+            echo "WARNING: Version $PKG_VERSION is already published to npm!"
+            echo "If this PR contains changes that should be released,"
+            echo "bump the version with 'npm version patch' before merging."
+            echo ""
+            # Don't fail - allow docs-only PRs that don't need a new version
+            # Just warn so reviewers are aware
+          else
+            echo ""
+            echo "Version $PKG_VERSION is new (not yet published)"
+          fi
+
+  quick-tests:
+    name: Quick Validation Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linting
+        run: npm run lint
+
+      - name: Run type checking
+        run: npm run typecheck
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Build package
+        run: npm run build
+
+      - name: Verify documentation is current
+        run: |
+          npm run docs
+          if [ -n "$(git status --porcelain docs/)" ]; then
+            echo "ERROR: Documentation is out of date"
+            echo "Run 'npm run docs' locally and commit the changes"
+            echo ""
+            echo "Changed files:"
+            git status --porcelain docs/
+            exit 1
+          fi
+          echo "Documentation is up to date"
