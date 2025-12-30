@@ -22,10 +22,10 @@ if git diff --cached --name-only | grep -qE "^(src|e2e)/|^README\.md$"; then
         git add package-lock.json
     fi
 
-    # Regenerate AI-CONTEXT.md with the new version
-    echo "Regenerating AI-CONTEXT.md with new version..."
-    npm run docs:ai-context --silent || exit 1
-    git add docs/AI-CONTEXT.md
+    # Regenerate all documentation with the new version
+    echo "Regenerating documentation with new version..."
+    npm run docs --silent || exit 1
+    git add docs/
 
     echo "Main package version incremented successfully"
 fi
