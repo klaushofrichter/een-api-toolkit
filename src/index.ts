@@ -12,7 +12,17 @@ export type {
   User,
   UserProfile,
   ListUsersParams,
-  GetUserParams
+  GetUserParams,
+  Camera,
+  CameraStatus,
+  CameraDeviceInfo,
+  CameraShareDetails,
+  CameraStreamUrls,
+  CameraRtspConnectionSettings,
+  CameraDevicePosition,
+  CameraRecordingModes,
+  ListCamerasParams,
+  GetCameraParams
 } from './types'
 
 // Type helpers
@@ -51,3 +61,21 @@ export type {
   UseUsersOptions,
   UseUserOptions
 } from './users'
+
+// Cameras - Plain functions
+export {
+  getCameras,
+  getCamera
+} from './cameras'
+
+// Cameras - Composables
+export {
+  useCameras,
+  useCamera
+} from './cameras'
+
+// Cameras - Composable option types
+export type {
+  UseCamerasOptions,
+  UseCameraOptions
+} from './cameras'

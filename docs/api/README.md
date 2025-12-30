@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.0.13**
+**EEN API Toolkit v0.0.15**
 
 ***
 
-# EEN API Toolkit v0.0.13
+# EEN API Toolkit v0.0.15
 
 ## Interfaces
 
@@ -26,6 +26,20 @@
 - [PaginationParams](interfaces/PaginationParams.md)
 - [PaginatedResult](interfaces/PaginatedResult.md)
 
+### Cameras
+
+- [UseCamerasOptions](interfaces/UseCamerasOptions.md)
+- [UseCameraOptions](interfaces/UseCameraOptions.md)
+- [CameraDeviceInfo](interfaces/CameraDeviceInfo.md)
+- [CameraShareDetails](interfaces/CameraShareDetails.md)
+- [CameraStreamUrls](interfaces/CameraStreamUrls.md)
+- [CameraRtspConnectionSettings](interfaces/CameraRtspConnectionSettings.md)
+- [CameraDevicePosition](interfaces/CameraDevicePosition.md)
+- [CameraRecordingModes](interfaces/CameraRecordingModes.md)
+- [Camera](interfaces/Camera.md)
+- [ListCamerasParams](interfaces/ListCamerasParams.md)
+- [GetCameraParams](interfaces/GetCameraParams.md)
+
 ### Configuration
 
 - [EenToolkitConfig](interfaces/EenToolkitConfig.md)
@@ -36,6 +50,10 @@
 
 - [ErrorCode](type-aliases/ErrorCode.md)
 - [Result](type-aliases/Result.md)
+
+### Cameras
+
+- [CameraStatus](type-aliases/CameraStatus.md)
 
 ## Variables
 
@@ -51,6 +69,13 @@
 - [getCurrentUser](functions/getCurrentUser.md)
 - [getUsers](functions/getUsers.md)
 - [getUser](functions/getUser.md)
+
+### Cameras
+
+- [useCameras](functions/useCameras.md)
+- [useCamera](functions/useCamera.md)
+- [getCameras](functions/getCameras.md)
+- [getCamera](functions/getCamera.md)
 
 ### Other
 
