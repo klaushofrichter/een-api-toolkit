@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Login from '../views/Login.vue'
 import Callback from '../views/Callback.vue'
 import LiveCamera from '../views/LiveCamera.vue'
+import RecordedImage from '../views/RecordedImage.vue'
 import Logout from '../views/Logout.vue'
 
 const router = createRouter({
@@ -37,6 +38,12 @@ const router = createRouter({
       path: '/live',
       name: 'live',
       component: LiveCamera,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/recorded',
+      name: 'recorded',
+      component: RecordedImage,
       meta: { requiresAuth: true }
     },
     {

@@ -17,20 +17,26 @@ const authStore = useAuthStore()
 
     <div v-else class="authenticated" data-testid="authenticated">
       <p>You are logged in!</p>
-      <router-link to="/live">
-        <button data-testid="view-live-button">View Live Camera</button>
-      </router-link>
+      <div class="button-group">
+        <router-link to="/live">
+          <button data-testid="view-live-button">View Live Camera</button>
+        </router-link>
+        <router-link to="/recorded">
+          <button data-testid="view-recorded-button">View Recorded Images</button>
+        </router-link>
+      </div>
     </div>
 
     <div class="description">
       <h3>About This Example</h3>
       <p>
-        This example demonstrates using the EEN Media API to fetch live images from cameras.
+        This example demonstrates using the EEN Media API to fetch live and recorded images from cameras.
         It showcases the following toolkit functions:
       </p>
       <ul>
         <li><code>getCameras()</code> - List available cameras</li>
         <li><code>getLiveImage()</code> - Fetch live preview images</li>
+        <li><code>getRecordedImage()</code> - Fetch recorded images with timeline navigation</li>
       </ul>
     </div>
   </div>
@@ -55,6 +61,13 @@ const authStore = useAuthStore()
 .authenticated p {
   margin-bottom: 20px;
   color: #666;
+}
+
+.button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .description {

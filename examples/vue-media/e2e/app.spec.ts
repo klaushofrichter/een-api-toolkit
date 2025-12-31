@@ -36,8 +36,8 @@ test.describe('vue-media example app', () => {
     // Check navigation is present
     await expect(page.getByRole('navigation')).toBeVisible()
 
-    // Navigate to login via nav link
-    await page.getByRole('link', { name: 'Login' }).click()
+    // Navigate to login via nav link (use testid to be specific)
+    await page.getByTestId('nav-login').click()
     await expect(page).toHaveURL('/login')
 
     // Navigate back home
@@ -51,5 +51,13 @@ test.describe('vue-media example app', () => {
     // Check for the function descriptions
     await expect(page.getByText('getCameras()')).toBeVisible()
     await expect(page.getByText('getLiveImage()')).toBeVisible()
+    await expect(page.getByText('getRecordedImage()')).toBeVisible()
+  })
+
+  test('recorded route redirects to login when not authenticated', async ({ page }) => {
+    await page.goto('/recorded')
+
+    // Should redirect to login page (auth guard)
+    await expect(page).toHaveURL('/login')
   })
 })
