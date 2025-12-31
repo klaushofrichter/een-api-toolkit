@@ -726,6 +726,7 @@ onMounted(() => {
   <div v-if="loading">Loading...</div>
   <div v-else-if="error">{{ error.message }}</div>
   <div v-else-if="user">Welcome, {{ user.firstName }}!</div>
+  <div v-else>Not authenticated or user data not available.</div>
 </template>
 \`\`\`
 
