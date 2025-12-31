@@ -29,7 +29,15 @@ export type {
   BridgeNetworkInfo,
   BridgeDevicePosition,
   ListBridgesParams,
-  GetBridgeParams
+  GetBridgeParams,
+  MediaType,
+  MediaStreamType,
+  MediaInterval,
+  ListMediaParams,
+  GetLiveImageParams,
+  GetRecordedImageParams,
+  LiveImageResult,
+  RecordedImageResult
 } from './types'
 
 // Type helpers
@@ -66,3 +74,10 @@ export {
   getBridges,
   getBridge
 } from './bridges'
+
+// Media - Plain functions
+export {
+  listMedia,
+  getLiveImage,
+  getRecordedImage
+} from './media'

@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.1.4**
+**EEN API Toolkit v0.1.7**
 
 ***
 
-# EEN API Toolkit v0.1.4
+# EEN API Toolkit v0.1.7
 
 ## Interfaces
 
@@ -48,6 +48,15 @@
 
 - [EenToolkitConfig](interfaces/EenToolkitConfig.md)
 
+### Media
+
+- [MediaInterval](interfaces/MediaInterval.md)
+- [ListMediaParams](interfaces/ListMediaParams.md)
+- [GetLiveImageParams](interfaces/GetLiveImageParams.md)
+- [LiveImageResult](interfaces/LiveImageResult.md)
+- [GetRecordedImageParams](interfaces/GetRecordedImageParams.md)
+- [RecordedImageResult](interfaces/RecordedImageResult.md)
+
 ## Type Aliases
 
 ### Types
@@ -62,6 +71,11 @@
 ### Cameras
 
 - [CameraStatus](type-aliases/CameraStatus.md)
+
+### Media
+
+- [MediaType](type-aliases/MediaType.md)
+- [MediaStreamType](type-aliases/MediaStreamType.md)
 
 ## Variables
 
@@ -84,6 +98,12 @@
 
 - [getCameras](functions/getCameras.md)
 - [getCamera](functions/getCamera.md)
+
+### Media
+
+- [listMedia](functions/listMedia.md)
+- [getLiveImage](functions/getLiveImage.md)
+- [getRecordedImage](functions/getRecordedImage.md)
 
 ### Other
 
