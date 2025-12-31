@@ -22,7 +22,14 @@ export type {
   CameraDevicePosition,
   CameraRecordingModes,
   ListCamerasParams,
-  GetCameraParams
+  GetCameraParams,
+  Bridge,
+  BridgeStatus,
+  BridgeDeviceInfo,
+  BridgeNetworkInfo,
+  BridgeDevicePosition,
+  ListBridgesParams,
+  GetBridgeParams
 } from './types'
 
 // Type helpers
@@ -53,3 +60,9 @@ export {
   getCameras,
   getCamera
 } from './cameras'
+
+// Bridges - Plain functions
+export {
+  getBridges,
+  getBridge
+} from './bridges'
