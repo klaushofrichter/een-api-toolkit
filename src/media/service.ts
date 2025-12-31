@@ -14,6 +14,13 @@ import { debug } from '../utils/debug'
 
 /**
  * Convert ArrayBuffer to base64 string.
+ *
+ * @remarks
+ * **Memory Considerations**: This function loads the entire image into memory
+ * as a string. For typical camera preview images (<500KB), this is efficient.
+ * For larger images (>2MB), consider streaming or chunked processing in the
+ * consuming application. Base64 encoding adds ~33% size overhead.
+ *
  * @internal
  */
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
@@ -151,6 +158,10 @@ export async function listMedia(params: ListMediaParams): Promise<Result<Paginat
  * base64 data URL that can be used directly in an HTML img element.
  *
  * Note: Live images only support the 'preview' stream type.
+ *
+ * **Memory Considerations**: Images are loaded into memory and base64 encoded,
+ * adding ~33% size overhead. Typical preview images are <500KB. For high-frequency
+ * polling, consider implementing error backoff and limiting concurrent requests.
  *
  * For more details, see the
  * [EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getliveimage).

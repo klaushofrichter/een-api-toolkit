@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.5**](../README.md)
+[**EEN API Toolkit v0.1.6**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getLiveImage**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`LiveImageResult`](../interfaces/LiveImageResult.md)\>\>
 
-Defined in: [src/media/service.ts:187](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L187)
+Defined in: [src/media/service.ts:198](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L198)
 
 Get a live image from a camera.
 
@@ -33,6 +33,10 @@ a new image is available from the device. The image is returned as a
 base64 data URL that can be used directly in an HTML img element.
 
 Note: Live images only support the 'preview' stream type.
+
+**Memory Considerations**: Images are loaded into memory and base64 encoded,
+adding ~33% size overhead. Typical preview images are <500KB. For high-frequency
+polling, consider implementing error backoff and limiting concurrent requests.
 
 For more details, see the
 [EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getliveimage).

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getCameras, getLiveImage } from 'een-api-toolkit'
-import type { Camera, LiveImageResult } from 'een-api-toolkit'
+import type { Camera } from 'een-api-toolkit'
 
 const cameras = ref<Camera[]>([])
 const selectedCameraId = ref<string | null>(null)
@@ -12,6 +12,13 @@ const loadingImage = ref(false)
 const error = ref<string | null>(null)
 const refreshInterval = ref<ReturnType<typeof setInterval> | null>(null)
 const autoRefresh = ref(true)
+
+// Configurable refresh interval (in milliseconds)
+const REFRESH_INTERVAL_MS = 5000
+
+// Error recovery: track consecutive failures for backoff
+const consecutiveErrors = ref(0)
+const MAX_CONSECUTIVE_ERRORS = 3
 
 async function loadCameras() {
   loading.value = true
@@ -45,12 +52,25 @@ async function fetchLiveImage() {
   if (result.error) {
     error.value = result.error.message
     loadingImage.value = false
+    consecutiveErrors.value++
+
+    // Stop auto-refresh after too many consecutive errors
+    if (consecutiveErrors.value >= MAX_CONSECUTIVE_ERRORS && autoRefresh.value) {
+      autoRefresh.value = false
+      stopAutoRefresh()
+      error.value = `${result.error.message} (Auto-refresh stopped after ${MAX_CONSECUTIVE_ERRORS} failures)`
+    }
     return
   }
 
-  const data = result.data as LiveImageResult
-  imageData.value = data.imageData
-  imageTimestamp.value = data.timestamp
+  // Reset error count on success
+  consecutiveErrors.value = 0
+  error.value = null
+
+  if (result.data) {
+    imageData.value = result.data.imageData
+    imageTimestamp.value = result.data.timestamp
+  }
   loadingImage.value = false
 }
 
@@ -58,17 +78,29 @@ async function selectCamera(cameraId: string) {
   selectedCameraId.value = cameraId
   imageData.value = null
   error.value = null
+  consecutiveErrors.value = 0
   await fetchLiveImage()
 }
 
 function startAutoRefresh() {
   if (refreshInterval.value) return
 
-  refreshInterval.value = setInterval(() => {
+  consecutiveErrors.value = 0
+  refreshInterval.value = setInterval(async () => {
     if (autoRefresh.value && selectedCameraId.value) {
-      fetchLiveImage()
+      try {
+        await fetchLiveImage()
+      } catch (err) {
+        // Catch any unexpected errors to prevent interval from breaking
+        console.error('Auto-refresh error:', err)
+        consecutiveErrors.value++
+        if (consecutiveErrors.value >= MAX_CONSECUTIVE_ERRORS) {
+          autoRefresh.value = false
+          stopAutoRefresh()
+        }
+      }
     }
-  }, 5000) // Refresh every 5 seconds
+  }, REFRESH_INTERVAL_MS)
 }
 
 function stopAutoRefresh() {
@@ -81,6 +113,7 @@ function stopAutoRefresh() {
 function toggleAutoRefresh() {
   autoRefresh.value = !autoRefresh.value
   if (autoRefresh.value) {
+    consecutiveErrors.value = 0
     startAutoRefresh()
   } else {
     stopAutoRefresh()
