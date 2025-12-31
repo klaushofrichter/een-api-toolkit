@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import { onMounted } from 'vue'
 import { useAuthStore } from 'een-api-toolkit'
 
 const authStore = useAuthStore()
+
+// Initialize auth store from localStorage on app mount
+onMounted(() => {
+  authStore.initialize()
+})
 </script>
 
 <template>
@@ -12,6 +18,7 @@ const authStore = useAuthStore()
         <router-link to="/" data-testid="nav-home">Home</router-link>
         <router-link v-if="!authStore.isAuthenticated" to="/login" data-testid="nav-login">Login</router-link>
         <router-link v-if="authStore.isAuthenticated" to="/live" data-testid="nav-live">Live Camera</router-link>
+        <router-link v-if="authStore.isAuthenticated" to="/recorded" data-testid="nav-recorded">Recorded</router-link>
         <router-link v-if="authStore.isAuthenticated" to="/logout" data-testid="nav-logout">Logout</router-link>
       </nav>
     </header>

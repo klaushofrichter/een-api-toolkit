@@ -2,9 +2,10 @@
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getCameras, getLiveImage } from 'een-api-toolkit'
 import type { Camera } from 'een-api-toolkit'
+import { useSelectedCamera } from '../composables/useSelectedCamera'
 
 const cameras = ref<Camera[]>([])
-const selectedCameraId = ref<string | null>(null)
+const { selectedCameraId, setSelectedCamera } = useSelectedCamera()
 const imageData = ref<string | null>(null)
 const imageTimestamp = ref<string | null>(null)
 const loading = ref(true)
@@ -44,9 +45,13 @@ async function loadCameras() {
   cameras.value = result.data?.results || []
   loading.value = false
 
-  // Auto-select first camera if available
-  if (cameras.value.length > 0 && !selectedCameraId.value) {
-    selectedCameraId.value = cameras.value[0].id
+  // Use shared camera if valid, otherwise auto-select first camera
+  if (cameras.value.length > 0) {
+    const isValidCamera = selectedCameraId.value &&
+      cameras.value.some(c => c.id === selectedCameraId.value)
+    if (!isValidCamera) {
+      setSelectedCamera(cameras.value[0].id)
+    }
     await fetchLiveImage()
   }
 }
@@ -93,7 +98,7 @@ async function fetchLiveImage() {
 }
 
 async function selectCamera(cameraId: string) {
-  selectedCameraId.value = cameraId
+  setSelectedCamera(cameraId)
   imageData.value = null
   error.value = null
   consecutiveErrors.value = 0
@@ -229,6 +234,9 @@ onUnmounted(() => {
     <div class="navigation">
       <router-link to="/">
         <button>Back to Home</button>
+      </router-link>
+      <router-link to="/recorded">
+        <button data-testid="view-recorded-button">View Recorded Images</button>
       </router-link>
       <router-link to="/logout">
         <button>Logout</button>
