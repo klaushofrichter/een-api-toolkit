@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.3**](../README.md)
+[**EEN API Toolkit v0.1.4**](../README.md)
 
 ***
 
@@ -53,3 +53,13 @@ Altitude in meters
 Defined in: [src/types/bridge.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L78)
 
 Floor level
+
+***
+
+### azimuth?
+
+> `optional` **azimuth**: `number`
+
+Defined in: [src/types/bridge.ts:80](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L80)
+
+Direction bridge is facing (0-360 degrees)

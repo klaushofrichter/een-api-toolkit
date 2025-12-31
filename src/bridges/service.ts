@@ -106,9 +106,6 @@ export async function getBridges(params?: ListBridgesParams): Promise<Result<Pag
   if (params?.id__notIn && params.id__notIn.length > 0) {
     queryParams.append('id__notIn', params.id__notIn.join(','))
   }
-  if (params?.id__contains) {
-    queryParams.append('id__contains', params.id__contains)
-  }
 
   // Search
   if (params?.q) {

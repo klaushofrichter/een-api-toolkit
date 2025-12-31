@@ -76,6 +76,8 @@ export interface BridgeDevicePosition {
   altitude?: number
   /** Floor level */
   floor?: number
+  /** Direction bridge is facing (0-360 degrees) */
+  azimuth?: number
 }
 
 /**
@@ -205,8 +207,6 @@ export interface ListBridgesParams {
   id__in?: string[]
   /** Exclude bridge IDs */
   id__notIn?: string[]
-  /** Filter by ID containing substring */
-  id__contains?: string
 
   // Search
   /** Full-text search query */
