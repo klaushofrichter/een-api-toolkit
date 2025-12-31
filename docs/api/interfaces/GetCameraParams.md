@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.18**](../README.md)
+[**EEN API Toolkit v0.1.2**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetCameraParams
 
-Defined in: [src/types/camera.ts:359](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L359)
+Defined in: [src/types/camera.ts:381](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L381)
 
 Parameters for getting a single camera.
 
@@ -33,7 +33,7 @@ const { data } = await getCamera('camera-123', {
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/camera.ts:368](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L368)
+Defined in: [src/types/camera.ts:390](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L390)
 
 Additional fields to include in the response.
 Valid values: bridge, account, status, locationSummary, deviceAddress,

@@ -182,7 +182,29 @@ export interface Camera {
   ipAddress?: string
   /** Timezone of the camera location (IANA timezone name) */
   timezone?: string
-  /** Current status of the camera (string or object with connectionStatus) */
+  /**
+   * Current status of the camera.
+   *
+   * @remarks
+   * The API may return status as either a string (`CameraStatus`) or an object
+   * with a `connectionStatus` property, depending on the `include` parameters.
+   *
+   * Use the helper function to safely extract the status string:
+   * ```typescript
+   * function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStatus }): CameraStatus | undefined {
+   *   if (!status) return undefined
+   *   if (typeof status === 'string') return status
+   *   return status.connectionStatus
+   * }
+   * ```
+   *
+   * Or use optional chaining with type guards:
+   * ```typescript
+   * const statusValue = typeof camera.status === 'string'
+   *   ? camera.status
+   *   : camera.status?.connectionStatus
+   * ```
+   */
   status?: CameraStatus | { connectionStatus?: CameraStatus }
   /** Tags assigned to this camera for organization */
   tags?: string[]

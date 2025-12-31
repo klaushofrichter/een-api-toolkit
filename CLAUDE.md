@@ -27,9 +27,9 @@ Organized by resource (mirrors EEN API structure):
 ```
 src/
 ├── auth/           # Authentication: Pinia store + auth service
-├── users/          # User API: service functions + composables
-├── bridges/        # Bridge API: service functions + composables (future)
-├── cameras/        # Camera API: service functions + composables (future)
+├── users/          # User API: service functions
+├── bridges/        # Bridge API: service functions (future)
+├── cameras/        # Camera API: service functions
 ├── types/          # TypeScript types
 ├── utils/          # Utility functions (debug, etc.)
 ├── config.ts       # Toolkit configuration
@@ -37,14 +37,12 @@ src/
 ```
 
 ### Key Patterns
-- **API Style**: Both plain async functions AND Vue 3 composables
-  - Plain functions: `getUsers()`, `getCameras()` - familiar, easy to test, framework-agnostic
-  - Composables: `useUsers()`, `useCameras()` - reactive state for Vue 3 apps
+- **API Style**: Plain async functions - `getUsers()`, `getCameras()`, `getUser()`, `getCamera()` - familiar, easy to test
 - **Authentication**: Pinia store exported for direct use (`useAuthStore()`)
 - **Error Handling**: Return `{data, error}` result objects, never throw exceptions
 - **Type Generation**: Auto-generate from OpenAPI spec using openapi-typescript
 - **Pagination**: Follow EEN API's native pagination approach
-- **Data Fetching**: On demand only, expose `refresh()` method
+- **Data Fetching**: On demand only
 - **Logging**: Debug mode via `VITE_DEBUG=true` environment variable
 - **Caching**: None built-in (consuming apps handle if needed)
 
@@ -53,16 +51,16 @@ src/
 - Uses OAuth via proxy server from `../een-oauth-proxy`
 
 ### Package Export
-Single entry point supporting both patterns:
+Single entry point:
 ```typescript
-// Vue composables (reactive)
-import { useUsers, useCameras, useBridges, useAuthStore } from 'een-api-toolkit'
+// Plain async functions
+import { getUsers, getUser, getCameras, getCamera, getCurrentUser } from 'een-api-toolkit'
 
-// Plain async functions (framework-agnostic)
-import { getUsers, getCameras, getBridges } from 'een-api-toolkit'
+// Auth store and helpers
+import { useAuthStore, initEenToolkit, getAuthUrl, handleAuthCallback } from 'een-api-toolkit'
 
-// Auth helpers
-import { initEenToolkit, getAuthUrl, handleAuthCallback } from 'een-api-toolkit'
+// Types
+import type { User, Camera, EenError, Result } from 'een-api-toolkit'
 ```
 
 ## API Implementation Priority
@@ -431,7 +429,7 @@ docs/
 ├── guides/              # In-depth guides
 └── getting-started/     # Setup guides
 examples/
-└── vue-basic/           # Complete Vue 3 example application
+└── vue-users/           # Complete Vue 3 example application
 ```
 
 ### Generation
@@ -444,7 +442,7 @@ npm run docs:ai-context   # Generate AI-CONTEXT.md
 ### Key Files
 - **`docs/AI-CONTEXT.md`** - Complete reference for AI assistants, auto-generated from `scripts/generate-ai-context.ts`. Contains all APIs, types, patterns in one file.
 - **`docs/api/`** - Auto-generated from JSDoc comments via TypeDoc
-- **`examples/vue-basic/`** - Working example showing OAuth flow, composables, error handling
+- **`examples/vue-users/`** - Working example showing OAuth flow and error handling
 
 ### Versioning
 Documentation is generated on publish and versioned with releases:
@@ -453,7 +451,7 @@ Documentation is generated on publish and versioned with releases:
 - Docs are included in git for GitHub browsing
 
 ### JSDoc Requirements
-All exported functions, types, and composables must have JSDoc with:
+All exported functions and types must have JSDoc with:
 - Brief description
 - `@remarks` for detailed explanation
 - `@param` for each parameter

@@ -53,8 +53,8 @@ test.describe('Cameras Example App', () => {
 
     // Check the about section
     await expect(page.locator('.description h3')).toContainText('About This Example')
-    await expect(page.locator('.description')).toContainText('useCameras')
-    await expect(page.locator('.description')).toContainText('useCamera')
+    await expect(page.locator('.description')).toContainText('getCameras')
+    await expect(page.locator('.description')).toContainText('getCamera')
   })
 
   test('should have correct navigation structure', async ({ page }) => {

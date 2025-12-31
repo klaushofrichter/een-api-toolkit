@@ -1,45 +1,70 @@
 <script setup lang="ts">
-import { useAuthStore, useCurrentUser } from 'een-api-toolkit'
-import { computed } from 'vue'
+import { useAuthStore, getCurrentUser, type UserProfile, type EenError } from 'een-api-toolkit'
+import { computed, ref, onMounted } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 
-// Fetch current user if authenticated
-const { user, loading, error } = useCurrentUser({ immediate: true })
+// Reactive state for current user
+const user = ref<UserProfile | null>(null)
+const loading = ref(false)
+const error = ref<EenError | null>(null)
+
+async function fetchUser() {
+  if (!isAuthenticated.value) return
+
+  loading.value = true
+  error.value = null
+
+  const result = await getCurrentUser()
+  if (result.error) {
+    error.value = result.error
+    user.value = null
+  } else {
+    user.value = result.data
+  }
+
+  loading.value = false
+}
+
+onMounted(() => {
+  if (isAuthenticated.value) {
+    fetchUser()
+  }
+})
 </script>
 
 <template>
   <div class="home">
     <h2>Welcome to the EEN Cameras Example</h2>
 
-    <div v-if="isAuthenticated">
+    <div v-if="isAuthenticated" data-testid="authenticated">
       <div v-if="loading" class="loading">Loading user info...</div>
       <div v-else-if="error" class="error">{{ error.message }}</div>
-      <div v-else-if="user" class="user-info">
+      <div v-else-if="user" class="user-info" data-testid="user-info">
         <p>Logged in as: <strong>{{ user.firstName }} {{ user.lastName }}</strong></p>
         <p>Email: {{ user.email }}</p>
       </div>
 
       <div class="actions">
         <router-link to="/cameras">
-          <button>View Cameras</button>
+          <button data-testid="view-cameras-button">View Cameras</button>
         </router-link>
       </div>
     </div>
 
-    <div v-else class="login-prompt">
+    <div v-else class="login-prompt" data-testid="not-authenticated">
       <p>Please log in to view your cameras.</p>
       <router-link to="/login">
-        <button>Login</button>
+        <button data-testid="login-button">Login</button>
       </router-link>
     </div>
 
     <div class="description">
       <h3>About This Example</h3>
       <p>
-        This example demonstrates how to use the <code>useCameras</code> and
-        <code>useCamera</code> composables from the EEN API Toolkit to display
+        This example demonstrates how to use the <code>getCameras</code> and
+        <code>getCamera</code> functions from the EEN API Toolkit to display
         and manage cameras from the Eagle Eye Networks platform.
       </p>
       <h4>Features</h4>

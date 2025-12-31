@@ -1,16 +1,16 @@
 import { test, expect } from '@playwright/test'
 
-test.describe('Vue Basic Example - App', () => {
+test.describe('Vue Users Example - App', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/')
   })
 
   test('app loads with correct title', async ({ page }) => {
-    await expect(page).toHaveTitle(/EEN API Toolkit/)
+    await expect(page).toHaveTitle(/EEN Users/)
   })
 
   test('header displays app name', async ({ page }) => {
-    await expect(page.locator('[data-testid="app-title"]')).toHaveText('EEN API Toolkit Example')
+    await expect(page.locator('[data-testid="app-title"]')).toHaveText('EEN Users Example')
   })
 
   test('navigation shows Home and Login links when not authenticated', async ({ page }) => {

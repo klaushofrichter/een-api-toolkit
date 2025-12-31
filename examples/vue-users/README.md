@@ -1,4 +1,4 @@
-# EEN API Toolkit - Vue 3 Example
+# EEN API Toolkit - Vue Users Example
 
 A complete example showing how to use the een-api-toolkit in a Vue 3 application.
 
@@ -30,11 +30,11 @@ A complete example showing how to use the een-api-toolkit in a Vue 3 application
 
 ### Example Setup
 
-All commands below should be run from this example directory (`examples/vue-basic/`):
+All commands below should be run from this example directory (`examples/vue-users/`):
 
 2. Copy the environment file:
    ```bash
-   # From examples/vue-basic/
+   # From examples/vue-users/
    cp .env.example .env
    ```
 
@@ -48,7 +48,7 @@ All commands below should be run from this example directory (`examples/vue-basi
 
 4. Install dependencies and start:
    ```bash
-   # From examples/vue-basic/
+   # From examples/vue-users/
    npm install
    npm run dev
    ```

@@ -10,7 +10,7 @@
 | **[Developer Guide](./DEVELOPER-GUIDE.md)** | Contributors | Architecture, testing, CI/CD, publishing |
 | **[API Reference](./api/)** | All | Auto-generated TypeDoc documentation |
 | **[AI-CONTEXT.md](./AI-CONTEXT.md)** | AI Assistants | Single-file comprehensive reference |
-| **[Example App](../examples/vue-basic/)** | All | Complete Vue 3 example application |
+| **[Example App](../examples/vue-users/)** | All | Complete Vue 3 example application |
 
 ## For App Developers
 
@@ -20,7 +20,7 @@ Start with the **[User Guide](./USER-GUIDE.md)** which covers:
 - OAuth proxy setup (using [een-oauth-proxy](https://github.com/klaushofrichter/een-oauth-proxy))
 - Configuration options
 - Authentication flow implementation
-- Using composables and plain functions
+- Using API functions
 - Error handling patterns
 - Building an app from scratch
 - Troubleshooting common issues

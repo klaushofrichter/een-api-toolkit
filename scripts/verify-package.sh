@@ -50,7 +50,7 @@ tar -tzf "$TARBALL" | grep -q "package/dist/index.js" || { echo "   ✗ Missing 
 tar -tzf "$TARBALL" | grep -q "package/dist/index.cjs" || { echo "   ✗ Missing index.cjs in tarball"; exit 1; }
 tar -tzf "$TARBALL" | grep -q "package/dist/index.d.ts" || { echo "   ✗ Missing index.d.ts in tarball"; exit 1; }
 tar -tzf "$TARBALL" | grep -q "package/package.json" || { echo "   ✗ Missing package.json in tarball"; exit 1; }
-tar -tzf "$TARBALL" | grep -q "package/examples/vue-basic" || { echo "   ✗ Missing examples in tarball"; exit 1; }
+tar -tzf "$TARBALL" | grep -q "package/examples/vue-users" || { echo "   ✗ Missing examples in tarball"; exit 1; }
 echo "   ✓ Tarball contents verified (dist, examples, package.json)"
 rm -f "$TARBALL"
 echo ""
@@ -60,7 +60,9 @@ echo "4. Verifying TypeScript declarations..."
 # Check that the .d.ts file has expected exports
 if grep -q "export.*initEenToolkit" dist/index.d.ts && \
    grep -q "export.*getAuthUrl" dist/index.d.ts && \
-   grep -q "export.*useCurrentUser" dist/index.d.ts && \
+   grep -q "export.*getCurrentUser" dist/index.d.ts && \
+   grep -q "export.*getUsers" dist/index.d.ts && \
+   grep -q "export.*getCameras" dist/index.d.ts && \
    grep -q "export.*Result" dist/index.d.ts; then
   echo "   ✓ Key exports found in declarations"
 else

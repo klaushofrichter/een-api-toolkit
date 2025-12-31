@@ -31,16 +31,16 @@ if git diff --cached --name-only | grep -qE "^(src|e2e)/|^README\.md$"; then
 fi
 
 # Check if example files have staged changes (independently versioned)
-if git diff --cached --name-only | grep -qE "^examples/vue-basic/"; then
+if git diff --cached --name-only | grep -qE "^examples/vue-users/"; then
     echo "Incrementing example version..."
 
     # Increment example patch version
-    (cd examples/vue-basic && npm version patch --no-git-tag-version) || exit 1
+    (cd examples/vue-users && npm version patch --no-git-tag-version) || exit 1
 
     # Stage the updated example package files
-    git add examples/vue-basic/package.json
-    if [ -f "examples/vue-basic/package-lock.json" ]; then
-        git add examples/vue-basic/package-lock.json
+    git add examples/vue-users/package.json
+    if [ -f "examples/vue-users/package-lock.json" ]; then
+        git add examples/vue-users/package-lock.json
     fi
 
     echo "Example version incremented successfully"

@@ -11,10 +11,10 @@ const isAuthenticated = computed(() => authStore.isAuthenticated)
     <header>
       <h1>EEN Cameras Example</h1>
       <nav>
-        <router-link to="/">Home</router-link>
-        <router-link v-if="isAuthenticated" to="/cameras">Cameras</router-link>
-        <router-link v-if="!isAuthenticated" to="/login">Login</router-link>
-        <router-link v-if="isAuthenticated" to="/logout">Logout</router-link>
+        <router-link to="/" data-testid="nav-home">Home</router-link>
+        <router-link v-if="isAuthenticated" to="/cameras" data-testid="nav-cameras">Cameras</router-link>
+        <router-link v-if="!isAuthenticated" to="/login" data-testid="nav-login">Login</router-link>
+        <router-link v-if="isAuthenticated" to="/logout" data-testid="nav-logout">Logout</router-link>
       </nav>
     </header>
     <main>

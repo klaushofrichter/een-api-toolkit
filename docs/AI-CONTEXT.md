@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.0.18
+> **Version:** 0.1.2
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -35,7 +35,7 @@ npm install een-api-toolkit pinia
 ### Complete Setup (main.ts)
 
 > **⚠️ CRITICAL:** Pinia MUST be installed on the Vue app BEFORE calling
-> `initEenToolkit()` or using any composables. Failure to do so will cause
+> `initEenToolkit()` or using `useAuthStore()`. Failure to do so will cause
 > a runtime error.
 
 ```typescript
@@ -79,7 +79,7 @@ VITE_DEBUG=true
 
 #### "getActivePinia() was called but there was no active Pinia"
 
-**Cause:** Pinia was not installed before `initEenToolkit()` was called or before using composables.
+**Cause:** Pinia was not installed before `initEenToolkit()` was called or before using `useAuthStore()`.
 
 **Solution:** Ensure your `main.ts` calls `app.use(pinia)` BEFORE `initEenToolkit()`:
 
@@ -135,16 +135,6 @@ app.mount('#app')        // ✅ Last - mount app
 |----------|---------|---------|
 | `getCameras(params?)` | List all cameras (paginated) | `Result<PaginatedResult<Camera>>` |
 | `getCamera(cameraId, params?)` | Get a specific camera | `Result<Camera>` |
-
-### Vue 3 Composables
-
-| Composable | Purpose | Returns |
-|------------|---------|---------|
-| `useCurrentUser(options?)` | Reactive current user | `{ user, loading, error, refresh }` |
-| `useUsers(params?, options?)` | Reactive user list with pagination | `{ users, loading, hasNextPage, fetchNextPage, ... }` |
-| `useUser(userId, options?)` | Reactive single user | `{ user, loading, error, refresh }` |
-| `useCameras(params?, options?)` | Reactive camera list with pagination | `{ cameras, loading, hasNextPage, fetchNextPage, ... }` |
-| `useCamera(cameraId, options?)` | Reactive single camera | `{ camera, loading, error, refresh }` |
 
 ---
 
@@ -586,195 +576,6 @@ const { data: cameraWithDetails } = await getCamera('camera-id-123', {
 
 ---
 
-## Vue 3 Composables
-
-### useCurrentUser
-
-Reactive composable for the current authenticated user.
-
-```vue
-<script setup>
-import { useCurrentUser } from 'een-api-toolkit'
-
-const { user, loading, error, refresh } = useCurrentUser()
-
-// Options:
-// { immediate: false } - don't fetch on mount
-</script>
-
-<template>
-  <div v-if="loading">Loading...</div>
-  <div v-else-if="error">Error: {{ error.message }}</div>
-  <div v-else-if="user">
-    <h1>Welcome, {{ user.firstName }}!</h1>
-    <button @click="refresh">Refresh</button>
-  </div>
-</template>
-```
-
-**Returns:**
-- `user: Ref<UserProfile | null>` - The user profile
-- `loading: Ref<boolean>` - Fetch in progress
-- `error: Ref<EenError | null>` - Last error
-- `fetch(): Promise<Result<UserProfile>>` - Fetch user
-- `refresh(): Promise<Result<UserProfile>>` - Alias for fetch
-
-### useUsers
-
-Reactive composable for listing users with pagination.
-
-```vue
-<script setup>
-import { useUsers } from 'een-api-toolkit'
-
-const {
-  users,
-  loading,
-  error,
-  hasNextPage,
-  fetchNextPage,
-  refresh
-} = useUsers({ pageSize: 20 })
-</script>
-
-<template>
-  <ul>
-    <li v-for="user in users" :key="user.id">
-      {{ user.firstName }} {{ user.lastName }}
-    </li>
-  </ul>
-  <button v-if="hasNextPage" @click="fetchNextPage">Load More</button>
-</template>
-```
-
-**Returns:**
-- `users: Ref<User[]>` - Array of users
-- `loading: Ref<boolean>` - Fetch in progress
-- `error: Ref<EenError | null>` - Last error
-- `hasNextPage: ComputedRef<boolean>` - More pages available
-- `hasPrevPage: ComputedRef<boolean>` - Previous page available
-- `nextPageToken: Ref<string | undefined>` - Next page token
-- `totalSize: Ref<number | undefined>` - Total count
-- `fetch(params?): Promise<Result>` - Fetch with params
-- `refresh(): Promise<Result>` - Refresh current page
-- `fetchNextPage(): Promise<Result | undefined>` - Fetch next page
-- `fetchPrevPage(): Promise<Result | undefined>` - Fetch previous page
-- `setParams(params): void` - Update default params
-
-### useUser
-
-Reactive composable for a single user by ID.
-
-```vue
-<script setup>
-import { useUser } from 'een-api-toolkit'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-
-// Static ID
-const { user, loading, error } = useUser('user-123')
-
-// Reactive ID from route
-const { user: routeUser } = useUser(() => route.params.id as string)
-
-// With options
-const { user: userWithPerms } = useUser('user-123', {
-  include: ['permissions']
-})
-</script>
-```
-
-**Returns:**
-- `user: Ref<User | null>` - The user
-- `loading: Ref<boolean>` - Fetch in progress
-- `error: Ref<EenError | null>` - Last error
-- `fetch(params?): Promise<Result<User>>` - Fetch user
-- `refresh(): Promise<Result<User>>` - Refresh user
-
-### useCameras
-
-Reactive composable for listing cameras with pagination and filtering.
-
-```vue
-<script setup>
-import { useCameras } from 'een-api-toolkit'
-
-const {
-  cameras,
-  loading,
-  error,
-  hasNextPage,
-  fetchNextPage,
-  refresh,
-  setParams
-} = useCameras({ pageSize: 20 })
-
-// Filter by status
-function showOnlineCameras() {
-  setParams({ status__in: ['online', 'streaming'] })
-  refresh()
-}
-</script>
-
-<template>
-  <ul>
-    <li v-for="camera in cameras" :key="camera.id">
-      {{ camera.name }} - {{ camera.status || 'Unknown' }}
-    </li>
-  </ul>
-  <button v-if="hasNextPage" @click="fetchNextPage">Load More</button>
-</template>
-```
-
-**Returns:**
-- `cameras: Ref<Camera[]>` - Array of cameras
-- `loading: Ref<boolean>` - Fetch in progress
-- `error: Ref<EenError | null>` - Last error
-- `hasNextPage: ComputedRef<boolean>` - More pages available
-- `hasPrevPage: ComputedRef<boolean>` - Previous page available
-- `nextPageToken: Ref<string | undefined>` - Next page token
-- `totalSize: Ref<number | undefined>` - Total count
-- `params: Ref<ListCamerasParams>` - Current params
-- `fetch(params?): Promise<Result<PaginatedResult<Camera>>>` - Fetch with params
-- `refresh(): Promise<Result<PaginatedResult<Camera>>>` - Refresh current page
-- `fetchNextPage(): Promise<Result<PaginatedResult<Camera>> | undefined>` - Fetch next page
-- `fetchPrevPage(): Promise<Result<PaginatedResult<Camera>> | undefined>` - Fetch previous page
-- `setParams(params): void` - Update default params
-
-### useCamera
-
-Reactive composable for a single camera by ID.
-
-```vue
-<script setup>
-import { useCamera } from 'een-api-toolkit'
-import { useRoute } from 'vue-router'
-
-const route = useRoute()
-
-// Static ID
-const { camera, loading, error } = useCamera('camera-123')
-
-// Reactive ID from route
-const { camera: routeCamera } = useCamera(() => route.params.id as string)
-
-// With additional fields
-const { camera: cameraWithDetails } = useCamera('camera-123', {
-  include: ['deviceInfo', 'status', 'shareDetails']
-})
-</script>
-```
-
-**Returns:**
-- `camera: Ref<Camera | null>` - The camera
-- `loading: Ref<boolean>` - Fetch in progress
-- `error: Ref<EenError | null>` - Last error
-- `fetch(params?): Promise<Result<Camera>>` - Fetch camera
-- `refresh(): Promise<Result<Camera>>` - Refresh camera
-
----
-
 ## Common Patterns
 
 ### Error Handling
@@ -839,59 +640,32 @@ router.beforeEach((to, from, next) => {
 })
 ```
 
-### Composable with Conditional Fetch
-
-```vue
-<script setup>
-import { useCurrentUser } from 'een-api-toolkit'
-import { onMounted } from 'vue'
-
-// Don't fetch on mount
-const { user, fetch } = useCurrentUser({ immediate: false })
-
-onMounted(async () => {
-  // Only fetch if some condition is met
-  if (shouldFetchUser()) {
-    await fetch()
-  }
-})
-</script>
-```
-
-### In-Place Login (Single Page Callback)
-
-When handling the OAuth callback on the same page that displays user data (without navigation), you must manually refresh the composable after authentication:
-
-> **⚠️ Important:** When handling OAuth callbacks on the same page, you must call `refresh()` after `handleAuthCallback()` to update the user data.
+### Vue Component Example
 
 ```vue
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useCurrentUser, handleAuthCallback } from 'een-api-toolkit'
+import { ref, onMounted } from 'vue'
+import { getCurrentUser, type UserProfile, type EenError } from 'een-api-toolkit'
 
-// Composable initializes before token exists
-const { user, loading, error, refresh } = useCurrentUser({ immediate: false })
+const user = ref<UserProfile | null>(null)
+const loading = ref(false)
+const error = ref<EenError | null>(null)
 
-onMounted(async () => {
-  const urlParams = new URLSearchParams(window.location.search)
-  const code = urlParams.get('code')
-  const state = urlParams.get('state')
+async function fetchUser() {
+  loading.value = true
+  const result = await getCurrentUser()
+  loading.value = false
 
-  if (code && state) {
-    const result = await handleAuthCallback(code, state)
-
-    if (result.error) {
-      console.error('Login failed:', result.error.message)
-      return
-    }
-
-    // Clean URL after successful auth
-    window.history.replaceState({}, document.title, window.location.pathname)
+  if (result.error) {
+    error.value = result.error
+    return
   }
 
-  // Refresh user data - runs after successful auth callback,
-  // or on initial load if no callback was processed
-  await refresh()
+  user.value = result.data
+}
+
+onMounted(() => {
+  fetchUser()
 })
 </script>
 
@@ -899,14 +673,9 @@ onMounted(async () => {
   <div v-if="loading">Loading...</div>
   <div v-else-if="error">{{ error.message }}</div>
   <div v-else-if="user">Welcome, {{ user.firstName }}!</div>
-  <div v-else>Please log in</div>
+  <div v-else>Not authenticated or user data not available.</div>
 </template>
 ```
-
-**Key Points:**
-- `useCurrentUser()` initializes with the auth state at the moment it's called
-- `handleAuthCallback()` updates the token but doesn't trigger composable re-fetch
-- Always call `refresh()` after auth state changes if staying on the same page
 
 ---
 

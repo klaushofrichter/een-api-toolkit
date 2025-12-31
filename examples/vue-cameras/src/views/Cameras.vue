@@ -1,25 +1,64 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { useCameras, type CameraStatus } from 'een-api-toolkit'
+import { ref, computed, watch, onMounted } from 'vue'
+import { getCameras, type Camera, type CameraStatus, type EenError, type ListCamerasParams } from 'een-api-toolkit'
 
 // Status filter
 const statusFilter = ref<CameraStatus | ''>('')
 
-// Initial fetch with common includes
-const {
-  cameras,
-  loading,
-  error,
-  hasNextPage,
-  totalSize,
-  fetchNextPage,
-  refresh,
-  setParams,
-  fetch
-} = useCameras({
+// Reactive state
+const cameras = ref<Camera[]>([])
+const loading = ref(false)
+const error = ref<EenError | null>(null)
+const nextPageToken = ref<string | undefined>(undefined)
+const totalSize = ref<number | undefined>(undefined)
+
+const hasNextPage = computed(() => !!nextPageToken.value)
+
+const params = ref<ListCamerasParams>({
   pageSize: 20,
   include: ['deviceInfo', 'status']
 })
+
+async function fetchCameras(fetchParams?: ListCamerasParams, append = false) {
+  loading.value = true
+  error.value = null
+
+  const mergedParams = { ...params.value, ...fetchParams }
+  const result = await getCameras(mergedParams)
+
+  if (result.error) {
+    error.value = result.error
+    if (!append) {
+      cameras.value = []
+      totalSize.value = undefined
+    }
+    nextPageToken.value = undefined
+  } else {
+    if (append) {
+      cameras.value = [...cameras.value, ...result.data.results]
+    } else {
+      cameras.value = result.data.results
+    }
+    nextPageToken.value = result.data.nextPageToken
+    totalSize.value = result.data.totalSize
+  }
+
+  loading.value = false
+  return result
+}
+
+function refresh() {
+  return fetchCameras()
+}
+
+async function fetchNextPage() {
+  if (!nextPageToken.value) return
+  return fetchCameras({ ...params.value, pageToken: nextPageToken.value }, true)
+}
+
+function setParams(newParams: ListCamerasParams) {
+  params.value = newParams
+}
 
 // Watch for status filter changes
 watch(statusFilter, async (newStatus) => {
@@ -35,12 +74,20 @@ watch(statusFilter, async (newStatus) => {
       include: ['deviceInfo', 'status']
     })
   }
-  await fetch()
+  await fetchCameras()
 })
 
+// Helper to extract status string from the union type
+function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStatus }): CameraStatus | undefined {
+  if (!status) return undefined
+  if (typeof status === 'string') return status
+  return status.connectionStatus
+}
+
 // Get status badge class
-function getStatusClass(status?: CameraStatus): string {
-  switch (status) {
+function getStatusClass(status?: CameraStatus | { connectionStatus?: CameraStatus }): string {
+  const statusStr = getStatusString(status)
+  switch (statusStr) {
     case 'online':
     case 'streaming':
       return 'status-online'
@@ -55,6 +102,10 @@ function getStatusClass(status?: CameraStatus): string {
       return 'status-unknown'
   }
 }
+
+onMounted(() => {
+  fetchCameras()
+})
 </script>
 
 <template>
@@ -100,7 +151,7 @@ function getStatusClass(status?: CameraStatus): string {
           <div class="camera-header">
             <h3>{{ camera.name }}</h3>
             <span :class="['status-badge', getStatusClass(camera.status)]">
-              {{ camera.status || 'Unknown' }}
+              {{ getStatusString(camera.status) || 'Unknown' }}
             </span>
           </div>
           <div class="camera-details">
