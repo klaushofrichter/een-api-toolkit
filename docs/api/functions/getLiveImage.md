@@ -1,0 +1,63 @@
+[**EEN API Toolkit v0.1.5**](../README.md)
+
+***
+
+[EEN API Toolkit](../README.md) / getLiveImage
+
+# Function: getLiveImage()
+
+> **getLiveImage**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`LiveImageResult`](../interfaces/LiveImageResult.md)\>\>
+
+Defined in: [src/media/service.ts:187](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L187)
+
+Get a live image from a camera.
+
+## Parameters
+
+### params
+
+[`GetLiveImageParams`](../interfaces/GetLiveImageParams.md)
+
+Parameters including the required deviceId
+
+## Returns
+
+`Promise`\<[`Result`](../type-aliases/Result.md)\<[`LiveImageResult`](../interfaces/LiveImageResult.md)\>\>
+
+A Result containing the live image data or an error
+
+## Remarks
+
+Fetches a new live image from the specified camera. This call waits until
+a new image is available from the device. The image is returned as a
+base64 data URL that can be used directly in an HTML img element.
+
+Note: Live images only support the 'preview' stream type.
+
+For more details, see the
+[EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getliveimage).
+
+## Example
+
+```typescript
+import { getLiveImage } from 'een-api-toolkit'
+
+const { data, error } = await getLiveImage({ deviceId: 'camera-123' })
+
+if (data) {
+  // Display in an img element
+  document.getElementById('cameraImage').src = data.imageData
+  console.log('Image timestamp:', data.timestamp)
+}
+
+// Continuously update the image
+async function refreshLoop() {
+  while (true) {
+    const { data } = await getLiveImage({ deviceId: 'camera-123' })
+    if (data) {
+      imgElement.src = data.imageData
+    }
+    await new Promise(r => setTimeout(r, 1000))
+  }
+}
+```

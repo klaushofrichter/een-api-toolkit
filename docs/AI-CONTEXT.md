@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.1.4
+> **Version:** 0.1.5
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -142,6 +142,14 @@ app.mount('#app')        // ✅ Last - mount app
 |----------|---------|---------|
 | `getBridges(params?)` | List all bridges (paginated) | `Result<PaginatedResult<Bridge>>` |
 | `getBridge(bridgeId, params?)` | Get a specific bridge | `Result<Bridge>` |
+
+### Media Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `listMedia(params)` | List media intervals for a device | `Result<PaginatedResult<MediaInterval>>` |
+| `getLiveImage(params)` | Get live preview image from camera | `Result<LiveImageResult>` |
+| `getRecordedImage(params)` | Get recorded image from history | `Result<RecordedImageResult>` |
 
 ---
 
@@ -489,6 +497,74 @@ interface GetBridgeParams {
 }
 ```
 
+### Media Types
+
+```typescript
+type MediaType = 'video' | 'image'
+type MediaStreamType = 'preview' | 'main'
+
+interface MediaInterval {
+  type: MediaStreamType
+  deviceId: string
+  mediaType: MediaType
+  startTimestamp: string  // ISO 8601
+  endTimestamp: string    // ISO 8601
+  flvUrl?: string | null
+  rtspUrl?: string
+  rtspOverSslUrl?: string
+  hlsUrl?: string
+  mp4Url?: string
+  multipartUrl?: string
+  webSocketLiveUrl?: string
+}
+
+interface ListMediaParams {
+  deviceId: string          // Required - camera ID
+  type: MediaStreamType     // 'preview' or 'main'
+  mediaType: MediaType      // 'video' or 'image'
+  startTimestamp: string    // ISO 8601 start time
+  endTimestamp?: string     // ISO 8601 end time
+  coalesce?: boolean        // Merge adjacent intervals
+  include?: string[]        // Additional fields to include
+  pageToken?: string
+  pageSize?: number
+}
+
+interface GetLiveImageParams {
+  deviceId: string          // Required - camera ID
+  type?: 'preview'          // Only 'preview' supported for live images
+}
+
+interface LiveImageResult {
+  imageData: string         // Base64 data URL (data:image/jpeg;base64,...)
+  timestamp: string | null  // X-Een-Timestamp header value
+  prevToken: string | null  // X-Een-PrevToken for navigation
+}
+
+interface GetRecordedImageParams {
+  deviceId?: string         // Camera ID (optional if using pageToken)
+  pageToken?: string        // Token for specific image
+  type?: MediaStreamType    // 'preview' or 'main'
+  timestamp__lt?: string    // Before timestamp
+  timestamp__lte?: string   // At or before timestamp
+  timestamp?: string        // Exact timestamp
+  timestamp__gte?: string   // At or after timestamp
+  timestamp__gt?: string    // After timestamp
+  overlayId__in?: string[]  // Overlay filter
+  include?: string[]        // Additional fields
+  targetWidth?: number      // Resize width
+  targetHeight?: number     // Resize height
+}
+
+interface RecordedImageResult {
+  imageData: string         // Base64 data URL
+  timestamp: string | null  // X-Een-Timestamp header value
+  nextToken: string | null  // X-Een-NextToken for next image
+  prevToken: string | null  // X-Een-PrevToken for previous image
+  overlaySvg: string | null // X-Een-OverlaySvg for overlays
+}
+```
+
 ---
 
 ## API Reference
@@ -705,6 +781,85 @@ if (error) {
 const { data: bridgeWithDetails } = await getBridge('bridge-id-123', {
   include: ['deviceInfo', 'networkInfo', 'status']
 })
+```
+
+### listMedia
+
+List media intervals for a camera. Useful for finding when recordings exist.
+
+```typescript
+import { listMedia } from 'een-api-toolkit'
+
+const { data, error } = await listMedia({
+  deviceId: 'camera-id-123',
+  type: 'preview',
+  mediaType: 'video',
+  startTimestamp: '2024-01-01T00:00:00.000Z',
+  endTimestamp: '2024-01-02T00:00:00.000Z'
+})
+
+if (error) {
+  console.error('Failed to list media:', error.message)
+  return
+}
+
+// Get available recording intervals
+for (const interval of data.results) {
+  console.log(`Recording: ${interval.startTimestamp} - ${interval.endTimestamp}`)
+}
+```
+
+### getLiveImage
+
+Get a live preview image from a camera. Returns base64-encoded image data.
+
+```typescript
+import { getLiveImage } from 'een-api-toolkit'
+
+const { data, error } = await getLiveImage({
+  deviceId: 'camera-id-123'
+})
+
+if (error) {
+  console.error('Failed to get live image:', error.message)
+  return
+}
+
+// Use in an <img> element
+const imgElement = document.querySelector('img')
+imgElement.src = data.imageData  // data:image/jpeg;base64,...
+
+// Timestamp of the image
+console.log('Image timestamp:', data.timestamp)
+```
+
+### getRecordedImage
+
+Get a recorded image from camera history. Supports timestamp-based navigation.
+
+```typescript
+import { getRecordedImage } from 'een-api-toolkit'
+
+// Get image at specific timestamp
+const { data, error } = await getRecordedImage({
+  deviceId: 'camera-id-123',
+  timestamp: '2024-01-15T14:30:00.000Z'
+})
+
+if (error) {
+  console.error('Failed to get recorded image:', error.message)
+  return
+}
+
+// Display the image
+imgElement.src = data.imageData
+
+// Navigate to next/previous image
+if (data.nextToken) {
+  const { data: nextImage } = await getRecordedImage({
+    pageToken: data.nextToken
+  })
+}
 ```
 
 ---
