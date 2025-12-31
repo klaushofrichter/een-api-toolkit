@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.1.2
+> **Version:** 0.1.4
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -135,6 +135,13 @@ app.mount('#app')        // ✅ Last - mount app
 |----------|---------|---------|
 | `getCameras(params?)` | List all cameras (paginated) | `Result<PaginatedResult<Camera>>` |
 | `getCamera(cameraId, params?)` | Get a specific camera | `Result<Camera>` |
+
+### Bridge Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `getBridges(params?)` | List all bridges (paginated) | `Result<PaginatedResult<Bridge>>` |
+| `getBridge(bridgeId, params?)` | Get a specific bridge | `Result<Bridge>` |
 
 ---
 
@@ -404,6 +411,84 @@ interface GetCameraParams {
 }
 ```
 
+### Bridge
+
+```typescript
+type BridgeStatus =
+  | 'online' | 'offline' | 'error' | 'idle'
+  | 'registered' | 'attaching' | 'initializing'
+
+interface Bridge {
+  id: string
+  name: string
+  accountId: string
+  locationId?: string | null
+  guid?: string
+  timezone?: string
+  status?: BridgeStatus | { connectionStatus?: BridgeStatus }
+  tags?: string[]
+  deviceInfo?: BridgeDeviceInfo
+  networkInfo?: BridgeNetworkInfo
+  devicePosition?: BridgeDevicePosition
+  cameraCount?: number
+  createdAt?: string
+  updatedAt?: string
+}
+
+interface BridgeDeviceInfo {
+  make?: string           // Manufacturer
+  model?: string          // Model name
+  firmwareVersion?: string
+  serialNumber?: string
+  hardwareVersion?: string
+}
+
+interface BridgeNetworkInfo {
+  localIpAddress?: string
+  publicIpAddress?: string
+  macAddress?: string
+  subnetMask?: string
+  gateway?: string
+  dnsServers?: string[]
+}
+
+interface BridgeDevicePosition {
+  latitude?: number
+  longitude?: number
+  altitude?: number
+  floor?: number
+  azimuth?: number
+}
+```
+
+### Bridge Parameter Types
+
+```typescript
+interface ListBridgesParams {
+  pageSize?: number           // Results per page
+  pageToken?: string          // Pagination token
+  include?: string[]          // Additional fields to include
+  sort?: string[]             // Sort order
+  status__in?: BridgeStatus[] // Filter by status
+  status__ne?: BridgeStatus   // Exclude by status
+  tags__contains?: string[]   // Filter by tags (all must match)
+  tags__any?: string[]        // Filter by tags (any match)
+  name?: string               // Exact name match
+  name__contains?: string     // Partial name match
+  name__in?: string[]         // Name in list
+  id__in?: string[]           // ID in list
+  id__notIn?: string[]        // ID not in list
+  locationId__in?: string[]   // Location ID filter
+  q?: string                  // Full-text search
+  qRelevance__gte?: number    // Minimum relevance score
+}
+
+interface GetBridgeParams {
+  include?: string[]  // Valid values: status, deviceInfo, networkInfo,
+                      // devicePosition, tags, effectivePermissions, etc.
+}
+```
+
 ---
 
 ## API Reference
@@ -571,6 +656,54 @@ if (error) {
 // With additional fields
 const { data: cameraWithDetails } = await getCamera('camera-id-123', {
   include: ['deviceInfo', 'status', 'shareDetails']
+})
+```
+
+### getBridges
+
+List bridges with optional pagination and filtering.
+
+```typescript
+import { getBridges } from 'een-api-toolkit'
+
+// Basic usage
+const { data, error } = await getBridges()
+
+// With pagination
+const { data } = await getBridges({ pageSize: 50 })
+
+// With status filter
+const { data } = await getBridges({
+  pageSize: 20,
+  status__in: ['online']
+})
+
+// With search
+const { data } = await getBridges({
+  q: 'office',
+  include: ['deviceInfo', 'status', 'networkInfo']
+})
+```
+
+### getBridge
+
+Get a specific bridge by ID.
+
+```typescript
+import { getBridge } from 'een-api-toolkit'
+
+const { data, error } = await getBridge('bridge-id-123')
+
+if (error) {
+  if (error.code === 'NOT_FOUND') {
+    console.log('Bridge not found')
+  }
+  return
+}
+
+// With additional fields
+const { data: bridgeWithDetails } = await getBridge('bridge-id-123', {
+  include: ['deviceInfo', 'networkInfo', 'status']
 })
 ```
 

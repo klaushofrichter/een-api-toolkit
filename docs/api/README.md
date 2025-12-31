@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.1.2**
+**EEN API Toolkit v0.1.4**
 
 ***
 
-# EEN API Toolkit v0.1.2
+# EEN API Toolkit v0.1.4
 
 ## Interfaces
 
@@ -22,6 +22,15 @@
 - [EenError](interfaces/EenError.md)
 - [PaginationParams](interfaces/PaginationParams.md)
 - [PaginatedResult](interfaces/PaginatedResult.md)
+
+### Bridges
+
+- [BridgeDeviceInfo](interfaces/BridgeDeviceInfo.md)
+- [BridgeNetworkInfo](interfaces/BridgeNetworkInfo.md)
+- [BridgeDevicePosition](interfaces/BridgeDevicePosition.md)
+- [Bridge](interfaces/Bridge.md)
+- [ListBridgesParams](interfaces/ListBridgesParams.md)
+- [GetBridgeParams](interfaces/GetBridgeParams.md)
 
 ### Cameras
 
@@ -46,6 +55,10 @@
 - [ErrorCode](type-aliases/ErrorCode.md)
 - [Result](type-aliases/Result.md)
 
+### Bridges
+
+- [BridgeStatus](type-aliases/BridgeStatus.md)
+
 ### Cameras
 
 - [CameraStatus](type-aliases/CameraStatus.md)
@@ -61,6 +74,11 @@
 - [getCurrentUser](functions/getCurrentUser.md)
 - [getUsers](functions/getUsers.md)
 - [getUser](functions/getUser.md)
+
+### Bridges
+
+- [getBridges](functions/getBridges.md)
+- [getBridge](functions/getBridge.md)
 
 ### Cameras
 
