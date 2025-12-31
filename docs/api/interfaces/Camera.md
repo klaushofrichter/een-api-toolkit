@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.19**](../README.md)
+[**EEN API Toolkit v0.1.1**](../README.md)
 
 ***
 
@@ -128,9 +128,30 @@ Timezone of the camera location (IANA timezone name)
 
 > `optional` **status**: [`CameraStatus`](../type-aliases/CameraStatus.md) \| \{ `connectionStatus?`: CameraStatus \| undefined; \}
 
-Defined in: [src/types/camera.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L186)
+Defined in: [src/types/camera.ts:208](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L208)
 
-Current status of the camera (string or object with connectionStatus)
+Current status of the camera.
+
+#### Remarks
+
+The API may return status as either a string (`CameraStatus`) or an object
+with a `connectionStatus` property, depending on the `include` parameters.
+
+Use the helper function to safely extract the status string:
+```typescript
+function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStatus }): CameraStatus | undefined {
+  if (!status) return undefined
+  if (typeof status === 'string') return status
+  return status.connectionStatus
+}
+```
+
+Or use optional chaining with type guards:
+```typescript
+const statusValue = typeof camera.status === 'string'
+  ? camera.status
+  : camera.status?.connectionStatus
+```
 
 ***
 
@@ -138,7 +159,7 @@ Current status of the camera (string or object with connectionStatus)
 
 > `optional` **tags**: `string`[]
 
-Defined in: [src/types/camera.ts:188](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L188)
+Defined in: [src/types/camera.ts:210](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L210)
 
 Tags assigned to this camera for organization
 
@@ -148,7 +169,7 @@ Tags assigned to this camera for organization
 
 > `optional` **packages**: `string`[]
 
-Defined in: [src/types/camera.ts:190](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L190)
+Defined in: [src/types/camera.ts:212](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L212)
 
 Feature packages enabled for this camera
 
@@ -158,7 +179,7 @@ Feature packages enabled for this camera
 
 > `optional` **multiCameraId**: `string` \| `null`
 
-Defined in: [src/types/camera.ts:192](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L192)
+Defined in: [src/types/camera.ts:214](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L214)
 
 ID of multi-camera group if part of one
 
@@ -168,7 +189,7 @@ ID of multi-camera group if part of one
 
 > `optional` **speakerId**: `string` \| `null`
 
-Defined in: [src/types/camera.ts:194](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L194)
+Defined in: [src/types/camera.ts:216](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L216)
 
 ID of associated speaker device
 
@@ -178,7 +199,7 @@ ID of associated speaker device
 
 > `optional` **deviceInfo**: [`CameraDeviceInfo`](CameraDeviceInfo.md)
 
-Defined in: [src/types/camera.ts:196](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L196)
+Defined in: [src/types/camera.ts:218](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L218)
 
 Device information (make, model, firmware)
 
@@ -188,7 +209,7 @@ Device information (make, model, firmware)
 
 > `optional` **shareDetails**: [`CameraShareDetails`](CameraShareDetails.md)
 
-Defined in: [src/types/camera.ts:198](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L198)
+Defined in: [src/types/camera.ts:220](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L220)
 
 Share details if camera is shared
 
@@ -198,7 +219,7 @@ Share details if camera is shared
 
 > `optional` **streamUrls**: [`CameraStreamUrls`](CameraStreamUrls.md)
 
-Defined in: [src/types/camera.ts:200](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L200)
+Defined in: [src/types/camera.ts:222](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L222)
 
 Stream URLs for accessing camera media
 
@@ -208,7 +229,7 @@ Stream URLs for accessing camera media
 
 > `optional` **rtspConnectionSettings**: [`CameraRtspConnectionSettings`](CameraRtspConnectionSettings.md)
 
-Defined in: [src/types/camera.ts:202](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L202)
+Defined in: [src/types/camera.ts:224](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L224)
 
 RTSP connection settings
 
@@ -218,7 +239,7 @@ RTSP connection settings
 
 > `optional` **devicePosition**: [`CameraDevicePosition`](CameraDevicePosition.md)
 
-Defined in: [src/types/camera.ts:204](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L204)
+Defined in: [src/types/camera.ts:226](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L226)
 
 Physical position of the camera
 
@@ -228,7 +249,7 @@ Physical position of the camera
 
 > `optional` **enabledAnalytics**: `string`[]
 
-Defined in: [src/types/camera.ts:206](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L206)
+Defined in: [src/types/camera.ts:228](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L228)
 
 List of enabled analytics on this camera
 
@@ -238,7 +259,7 @@ List of enabled analytics on this camera
 
 > `optional` **recordingModes**: [`CameraRecordingModes`](CameraRecordingModes.md)
 
-Defined in: [src/types/camera.ts:208](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L208)
+Defined in: [src/types/camera.ts:230](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L230)
 
 Recording mode settings
 
@@ -248,7 +269,7 @@ Recording mode settings
 
 > `optional` **createdAt**: `string`
 
-Defined in: [src/types/camera.ts:210](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L210)
+Defined in: [src/types/camera.ts:232](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L232)
 
 ISO 8601 timestamp when the camera was created
 
@@ -258,6 +279,6 @@ ISO 8601 timestamp when the camera was created
 
 > `optional` **updatedAt**: `string`
 
-Defined in: [src/types/camera.ts:212](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L212)
+Defined in: [src/types/camera.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L234)
 
 ISO 8601 timestamp when the camera was last updated

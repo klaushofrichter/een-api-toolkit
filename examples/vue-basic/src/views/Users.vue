@@ -12,7 +12,7 @@ const hasNextPage = computed(() => !!nextPageToken.value)
 
 const params = ref<ListUsersParams>({ pageSize: 10 })
 
-async function fetchUsers(fetchParams?: ListUsersParams) {
+async function fetchUsers(fetchParams?: ListUsersParams, append = false) {
   loading.value = true
   error.value = null
 
@@ -21,10 +21,16 @@ async function fetchUsers(fetchParams?: ListUsersParams) {
 
   if (result.error) {
     error.value = result.error
-    users.value = []
+    if (!append) {
+      users.value = []
+    }
     nextPageToken.value = undefined
   } else {
-    users.value = result.data.results
+    if (append) {
+      users.value = [...users.value, ...result.data.results]
+    } else {
+      users.value = result.data.results
+    }
     nextPageToken.value = result.data.nextPageToken
   }
 
@@ -38,7 +44,7 @@ function refresh() {
 
 async function fetchNextPage() {
   if (!nextPageToken.value) return
-  return fetchUsers({ ...params.value, pageToken: nextPageToken.value })
+  return fetchUsers({ ...params.value, pageToken: nextPageToken.value }, true)
 }
 
 onMounted(() => {

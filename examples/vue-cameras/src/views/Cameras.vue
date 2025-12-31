@@ -19,7 +19,7 @@ const params = ref<ListCamerasParams>({
   include: ['deviceInfo', 'status']
 })
 
-async function fetchCameras(fetchParams?: ListCamerasParams) {
+async function fetchCameras(fetchParams?: ListCamerasParams, append = false) {
   loading.value = true
   error.value = null
 
@@ -28,11 +28,17 @@ async function fetchCameras(fetchParams?: ListCamerasParams) {
 
   if (result.error) {
     error.value = result.error
-    cameras.value = []
+    if (!append) {
+      cameras.value = []
+      totalSize.value = undefined
+    }
     nextPageToken.value = undefined
-    totalSize.value = undefined
   } else {
-    cameras.value = result.data.results
+    if (append) {
+      cameras.value = [...cameras.value, ...result.data.results]
+    } else {
+      cameras.value = result.data.results
+    }
     nextPageToken.value = result.data.nextPageToken
     totalSize.value = result.data.totalSize
   }
@@ -47,7 +53,7 @@ function refresh() {
 
 async function fetchNextPage() {
   if (!nextPageToken.value) return
-  return fetchCameras({ ...params.value, pageToken: nextPageToken.value })
+  return fetchCameras({ ...params.value, pageToken: nextPageToken.value }, true)
 }
 
 function setParams(newParams: ListCamerasParams) {
