@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.6**](../README.md)
+[**EEN API Toolkit v0.1.7**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EenToolkitConfig
 
-Defined in: [src/types/common.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L155)
+Defined in: [src/types/common.ts:156](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L156)
 
 Configuration for initializing the toolkit.
 
@@ -35,7 +35,7 @@ initEenToolkit({
 
 > `optional` **proxyUrl**: `string`
 
-Defined in: [src/types/common.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L157)
+Defined in: [src/types/common.ts:158](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L158)
 
 URL of the OAuth proxy server (required for API calls)
 
@@ -45,7 +45,7 @@ URL of the OAuth proxy server (required for API calls)
 
 > `optional` **clientId**: `string`
 
-Defined in: [src/types/common.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L159)
+Defined in: [src/types/common.ts:160](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L160)
 
 EEN OAuth client ID (required for authentication)
 
@@ -55,7 +55,7 @@ EEN OAuth client ID (required for authentication)
 
 > `optional` **redirectUri**: `string`
 
-Defined in: [src/types/common.ts:161](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L161)
+Defined in: [src/types/common.ts:162](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L162)
 
 OAuth redirect URI (default: http://127.0.0.1:3333)
 
@@ -65,6 +65,6 @@ OAuth redirect URI (default: http://127.0.0.1:3333)
 
 > `optional` **debug**: `boolean`
 
-Defined in: [src/types/common.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L163)
+Defined in: [src/types/common.ts:164](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L164)
 
 Enable debug logging to console

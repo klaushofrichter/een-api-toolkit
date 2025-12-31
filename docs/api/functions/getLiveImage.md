@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.6**](../README.md)
+[**EEN API Toolkit v0.1.7**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getLiveImage**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`LiveImageResult`](../interfaces/LiveImageResult.md)\>\>
 
-Defined in: [src/media/service.ts:198](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L198)
+Defined in: [src/media/service.ts:227](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L227)
 
 Get a live image from a camera.
 
@@ -54,14 +54,21 @@ if (data) {
   console.log('Image timestamp:', data.timestamp)
 }
 
-// Continuously update the image
+// Continuously update the image with proper error handling
+let isRunning = true
 async function refreshLoop() {
-  while (true) {
-    const { data } = await getLiveImage({ deviceId: 'camera-123' })
+  const imgElement = document.getElementById('cameraImage') as HTMLImageElement
+  while (isRunning) {
+    const { data, error } = await getLiveImage({ deviceId: 'camera-123' })
+    if (error) {
+      console.error('Refresh failed:', error.message)
+      break // Stop on error
+    }
     if (data) {
       imgElement.src = data.imageData
     }
     await new Promise(r => setTimeout(r, 1000))
   }
 }
+// Call refreshLoop() to start, set isRunning = false to stop
 ```

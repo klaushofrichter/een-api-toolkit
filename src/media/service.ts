@@ -12,6 +12,19 @@ import type {
 } from '../types'
 import { debug } from '../utils/debug'
 
+/** Default timeout for media requests in milliseconds */
+const DEFAULT_TIMEOUT_MS = 30000
+
+/**
+ * Create an AbortController with a timeout.
+ * @internal
+ */
+function createTimeoutController(timeoutMs: number = DEFAULT_TIMEOUT_MS): { controller: AbortController; timeoutId: ReturnType<typeof setTimeout> } {
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
+  return { controller, timeoutId }
+}
+
 /**
  * Convert ArrayBuffer to base64 string.
  *
@@ -25,13 +38,14 @@ import { debug } from '../utils/debug'
  */
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer)
-  let binary = ''
-  for (let i = 0; i < bytes.byteLength; i++) {
-    const byte = bytes[i]
-    if (byte !== undefined) {
-      binary += String.fromCharCode(byte)
-    }
+  // Use chunked approach with array join for O(n) complexity instead of O(n²) string concatenation
+  const chunkSize = 8192
+  const chunks: string[] = []
+  for (let i = 0; i < bytes.byteLength; i += chunkSize) {
+    const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.byteLength))
+    chunks.push(String.fromCharCode.apply(null, chunk as unknown as number[]))
   }
+  const binary = chunks.join('')
   // Use btoa in browser, Buffer in Node.js
   if (typeof btoa === 'function') {
     return btoa(binary)
@@ -127,13 +141,16 @@ export async function listMedia(params: ListMediaParams): Promise<Result<Paginat
   const url = `${authStore.baseUrl}/api/v3.0/media?${queryParams.toString()}`
   debug('Fetching media intervals:', url)
 
+  const { controller, timeoutId } = createTimeoutController()
+
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${authStore.token}`
-      }
+      },
+      signal: controller.signal
     })
 
     if (!response.ok) {
@@ -145,7 +162,12 @@ export async function listMedia(params: ListMediaParams): Promise<Result<Paginat
 
     return success(data)
   } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      return failure('NETWORK_ERROR', 'Request timed out')
+    }
     return failure('NETWORK_ERROR', `Failed to fetch media intervals: ${String(err)}`)
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 
@@ -181,16 +203,23 @@ export async function listMedia(params: ListMediaParams): Promise<Result<Paginat
  *   console.log('Image timestamp:', data.timestamp)
  * }
  *
- * // Continuously update the image
+ * // Continuously update the image with proper error handling
+ * let isRunning = true
  * async function refreshLoop() {
- *   while (true) {
- *     const { data } = await getLiveImage({ deviceId: 'camera-123' })
+ *   const imgElement = document.getElementById('cameraImage') as HTMLImageElement
+ *   while (isRunning) {
+ *     const { data, error } = await getLiveImage({ deviceId: 'camera-123' })
+ *     if (error) {
+ *       console.error('Refresh failed:', error.message)
+ *       break // Stop on error
+ *     }
  *     if (data) {
  *       imgElement.src = data.imageData
  *     }
  *     await new Promise(r => setTimeout(r, 1000))
  *   }
  * }
+ * // Call refreshLoop() to start, set isRunning = false to stop
  * ```
  *
  * @category Media
@@ -210,11 +239,8 @@ export async function getLiveImage(params: GetLiveImageParams): Promise<Result<L
     return failure('VALIDATION_ERROR', 'Device ID is required')
   }
 
-  // Live images only support 'preview' type
+  // Live images only support 'preview' type (enforced by TypeScript)
   const type = params.type ?? 'preview'
-  if (type !== 'preview') {
-    return failure('VALIDATION_ERROR', 'Live image type must be "preview"')
-  }
 
   const queryParams = new URLSearchParams()
   queryParams.append('deviceId', params.deviceId)
@@ -223,13 +249,16 @@ export async function getLiveImage(params: GetLiveImageParams): Promise<Result<L
   const url = `${authStore.baseUrl}/api/v3.0/media/liveImage.jpeg?${queryParams.toString()}`
   debug('Fetching live image:', url)
 
+  const { controller, timeoutId } = createTimeoutController()
+
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Accept': 'image/jpeg',
         'Authorization': `Bearer ${authStore.token}`
-      }
+      },
+      signal: controller.signal
     })
 
     // Get headers before checking response.ok
@@ -253,7 +282,12 @@ export async function getLiveImage(params: GetLiveImageParams): Promise<Result<L
       prevToken
     })
   } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      return failure('NETWORK_ERROR', 'Request timed out')
+    }
     return failure('NETWORK_ERROR', `Failed to fetch live image: ${String(err)}`)
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 
@@ -381,13 +415,16 @@ export async function getRecordedImage(params: GetRecordedImageParams): Promise<
   const url = `${authStore.baseUrl}/api/v3.0/media/recordedImage.jpeg?${queryParams.toString()}`
   debug('Fetching recorded image:', url)
 
+  const { controller, timeoutId } = createTimeoutController()
+
   try {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Accept': 'image/jpeg',
         'Authorization': `Bearer ${authStore.token}`
-      }
+      },
+      signal: controller.signal
     })
 
     // Get headers before checking response.ok
@@ -415,7 +452,12 @@ export async function getRecordedImage(params: GetRecordedImageParams): Promise<
       overlaySvg
     })
   } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      return failure('NETWORK_ERROR', 'Request timed out')
+    }
     return failure('NETWORK_ERROR', `Failed to fetch recorded image: ${String(err)}`)
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 
@@ -444,7 +486,7 @@ async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
     case 429:
       return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
     case 503:
-      return failure('API_ERROR', `Service unavailable: ${message}`, status)
+      return failure('SERVICE_UNAVAILABLE', `Service unavailable: ${message}`, status)
     default:
       return failure('API_ERROR', `API error: ${message}`, status)
   }

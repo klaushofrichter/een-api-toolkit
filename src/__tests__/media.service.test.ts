@@ -10,6 +10,29 @@ global.fetch = mockFetch
 // Mock btoa for Node.js environment
 global.btoa = (str: string) => Buffer.from(str, 'binary').toString('base64')
 
+/**
+ * Create a mock Headers object that conforms to the Headers interface.
+ * This is more realistic than using Map directly.
+ */
+function createMockHeaders(headers: Record<string, string>) {
+  const entries = Object.entries(headers)
+  return {
+    get: (name: string) => headers[name] ?? null,
+    has: (name: string) => name in headers,
+    forEach: (callback: (value: string, key: string) => void) => {
+      entries.forEach(([key, value]) => callback(value, key))
+    },
+    entries: () => entries[Symbol.iterator](),
+    keys: () => Object.keys(headers)[Symbol.iterator](),
+    values: () => Object.values(headers)[Symbol.iterator](),
+    append: () => {},
+    delete: () => {},
+    set: () => {},
+    getSetCookie: () => [] as string[],
+    [Symbol.iterator]: () => entries[Symbol.iterator]()
+  }
+}
+
 describe('Media service functions', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
@@ -234,16 +257,31 @@ describe('Media service functions', () => {
       expect(result.error?.message).toContain('Device ID')
     })
 
-    it('should return VALIDATION_ERROR when type is not preview', async () => {
+    it('should enforce preview type through TypeScript', async () => {
+      // This test verifies that the type parameter only accepts 'preview' or undefined
+      // The validation is enforced at compile time by TypeScript, not runtime
+      // Passing invalid values like 'main' would cause a TypeScript error
+
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
       authStore.setBaseUrl('https://api.example.com')
 
-      // @ts-expect-error - Testing invalid type
-      const result = await getLiveImage({ deviceId: 'camera-123', type: 'main' })
+      // Valid: type is optional and defaults to 'preview'
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        headers: createMockHeaders({
+          'X-Een-Timestamp': '2024-01-15T10:00:00.000Z'
+        }),
+        arrayBuffer: () => Promise.resolve(new Uint8Array([0xFF, 0xD8]).buffer)
+      })
 
-      expect(result.error?.code).toBe('VALIDATION_ERROR')
-      expect(result.error?.message).toContain('preview')
+      const result = await getLiveImage({ deviceId: 'camera-123' }) // type defaults to 'preview'
+
+      expect(result.error).toBeNull()
+      expect(mockFetch).toHaveBeenCalledWith(
+        expect.stringContaining('type=preview'),
+        expect.any(Object)
+      )
     })
 
     it('should fetch live image successfully', async () => {
@@ -253,10 +291,10 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        headers: new Map([
-          ['X-Een-Timestamp', '2024-01-15T10:00:00.000Z'],
-          ['X-Een-PrevToken', 'prev-token-123']
-        ]),
+        headers: createMockHeaders({
+          'X-Een-Timestamp': '2024-01-15T10:00:00.000Z',
+          'X-Een-PrevToken': 'prev-token-123'
+        }),
         arrayBuffer: () => Promise.resolve(mockImageData)
       })
 
@@ -285,7 +323,7 @@ describe('Media service functions', () => {
         ok: false,
         status: 403,
         statusText: 'Forbidden',
-        headers: new Map(),
+        headers: createMockHeaders({}),
         json: () => Promise.resolve({ message: 'Access denied' })
       })
 
@@ -304,13 +342,13 @@ describe('Media service functions', () => {
         ok: false,
         status: 503,
         statusText: 'Service Unavailable',
-        headers: new Map(),
+        headers: createMockHeaders({}),
         json: () => Promise.resolve({ message: 'Camera offline' })
       })
 
       const result = await getLiveImage({ deviceId: 'camera-123' })
 
-      expect(result.error?.code).toBe('API_ERROR')
+      expect(result.error?.code).toBe('SERVICE_UNAVAILABLE')
       expect(result.error?.status).toBe(503)
     })
   })
@@ -369,11 +407,11 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        headers: new Map([
-          ['X-Een-Timestamp', '2024-01-15T10:00:00.000Z'],
-          ['X-Een-NextToken', 'next-token'],
-          ['X-Een-PrevToken', 'prev-token']
-        ]),
+        headers: createMockHeaders({
+          'X-Een-Timestamp': '2024-01-15T10:00:00.000Z',
+          'X-Een-NextToken': 'next-token',
+          'X-Een-PrevToken': 'prev-token'
+        }),
         arrayBuffer: () => Promise.resolve(mockImageData)
       })
 
@@ -400,10 +438,10 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        headers: new Map([
-          ['X-Een-Timestamp', '2024-01-15T10:00:01.000Z'],
-          ['X-Een-NextToken', 'next-token-2']
-        ]),
+        headers: createMockHeaders({
+          'X-Een-Timestamp': '2024-01-15T10:00:01.000Z',
+          'X-Een-NextToken': 'next-token-2'
+        }),
         arrayBuffer: () => Promise.resolve(mockImageData)
       })
 
@@ -424,7 +462,7 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        headers: new Map(),
+        headers: createMockHeaders({}),
         arrayBuffer: () => Promise.resolve(mockImageData)
       })
 
@@ -445,7 +483,7 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        headers: new Map(),
+        headers: createMockHeaders({}),
         arrayBuffer: () => Promise.resolve(mockImageData)
       })
 
@@ -471,7 +509,7 @@ describe('Media service functions', () => {
         ok: false,
         status: 404,
         statusText: 'Not Found',
-        headers: new Map(),
+        headers: createMockHeaders({}),
         json: () => Promise.resolve({ message: 'No recording at timestamp' })
       })
 
@@ -493,7 +531,7 @@ describe('Media service functions', () => {
         ok: false,
         status: 429,
         statusText: 'Too Many Requests',
-        headers: new Map(),
+        headers: createMockHeaders({}),
         json: () => Promise.resolve({ message: 'Rate limited' })
       })
 

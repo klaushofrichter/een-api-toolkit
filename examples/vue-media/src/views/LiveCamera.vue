@@ -20,11 +20,20 @@ const REFRESH_INTERVAL_MS = 5000
 const consecutiveErrors = ref(0)
 const MAX_CONSECUTIVE_ERRORS = 3
 
+// Track component lifecycle to prevent memory leaks
+const isMounted = ref(true)
+
+// Track current request to handle race conditions during camera switching
+let currentRequestId = 0
+
 async function loadCameras() {
   loading.value = true
   error.value = null
 
   const result = await getCameras()
+
+  // Check if component is still mounted
+  if (!isMounted.value) return
 
   if (result.error) {
     error.value = result.error.message
@@ -45,9 +54,18 @@ async function loadCameras() {
 async function fetchLiveImage() {
   if (!selectedCameraId.value) return
 
+  // Increment request ID to track this specific request
+  const requestId = ++currentRequestId
+  const cameraId = selectedCameraId.value
+
   loadingImage.value = true
 
-  const result = await getLiveImage({ deviceId: selectedCameraId.value })
+  const result = await getLiveImage({ deviceId: cameraId })
+
+  // Check if component is still mounted and this is still the current request
+  if (!isMounted.value || requestId !== currentRequestId) {
+    return // Discard stale response
+  }
 
   if (result.error) {
     error.value = result.error.message
@@ -87,7 +105,7 @@ function startAutoRefresh() {
 
   consecutiveErrors.value = 0
   refreshInterval.value = setInterval(async () => {
-    if (autoRefresh.value && selectedCameraId.value) {
+    if (autoRefresh.value && selectedCameraId.value && isMounted.value) {
       try {
         await fetchLiveImage()
       } catch (err) {
@@ -135,6 +153,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
+  isMounted.value = false
   stopAutoRefresh()
 })
 </script>

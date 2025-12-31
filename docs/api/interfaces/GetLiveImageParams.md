@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.6**](../README.md)
+[**EEN API Toolkit v0.1.7**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetLiveImageParams
 
-Defined in: [src/types/media.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L131)
+Defined in: [src/types/media.ts:133](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L133)
 
 Parameters for getting a live image.
 
@@ -40,7 +40,7 @@ if (data) {
 
 > **deviceId**: `string`
 
-Defined in: [src/types/media.ts:133](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L133)
+Defined in: [src/types/media.ts:135](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L135)
 
 The ID of the device (camera) - required
 
@@ -50,6 +50,6 @@ The ID of the device (camera) - required
 
 > `optional` **type**: `"preview"`
 
-Defined in: [src/types/media.ts:135](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L135)
+Defined in: [src/types/media.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L137)
 
 Stream type - only 'preview' is supported for live images

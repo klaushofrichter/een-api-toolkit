@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.6**](../README.md)
+[**EEN API Toolkit v0.1.7**](../README.md)
 
 ***
 
@@ -123,3 +123,13 @@ Multipart URL (if requested via include)
 Defined in: [src/types/media.ts:53](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L53)
 
 MP4 URL (if requested via include)
+
+***
+
+### wsLiveUrl?
+
+> `optional` **wsLiveUrl**: `string`
+
+Defined in: [src/types/media.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L55)
+
+WebSocket live URL (if requested via include)

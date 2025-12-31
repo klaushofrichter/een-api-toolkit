@@ -51,6 +51,8 @@ export interface MediaInterval {
   multipartUrl?: string
   /** MP4 URL (if requested via include) */
   mp4Url?: string | null
+  /** WebSocket live URL (if requested via include) */
+  wsLiveUrl?: string
 }
 
 /**
@@ -92,7 +94,7 @@ export interface ListMediaParams {
   coalesce?: boolean
   /**
    * Additional fields to include in the response.
-   * Valid values: flvUrl, rtspUrl, rtspsUrl, hlsUrl, multipartUrl, mp4Url
+   * Valid values: flvUrl, rtspUrl, rtspsUrl, hlsUrl, multipartUrl, mp4Url, wsLiveUrl
    */
   include?: string[]
   /** Token for fetching a specific page */

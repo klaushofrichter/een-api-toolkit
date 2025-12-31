@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.1.6
+> **Version:** 0.1.7
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -511,11 +511,11 @@ interface MediaInterval {
   endTimestamp: string    // ISO 8601
   flvUrl?: string | null
   rtspUrl?: string
-  rtspOverSslUrl?: string
+  rtspsUrl?: string
   hlsUrl?: string
   mp4Url?: string
   multipartUrl?: string
-  webSocketLiveUrl?: string
+  wsLiveUrl?: string
 }
 
 interface ListMediaParams {
@@ -525,7 +525,7 @@ interface ListMediaParams {
   startTimestamp: string    // ISO 8601 start time
   endTimestamp?: string     // ISO 8601 end time
   coalesce?: boolean        // Merge adjacent intervals
-  include?: string[]        // Additional fields to include
+  include?: string[]        // e.g., ['flvUrl', 'hlsUrl', 'wsLiveUrl']
   pageToken?: string
   pageSize?: number
 }
@@ -551,7 +551,7 @@ interface GetRecordedImageParams {
   timestamp__gte?: string   // At or after timestamp
   timestamp__gt?: string    // After timestamp
   overlayId__in?: string[]  // Overlay filter
-  include?: string[]        // Additional fields
+  include?: string[]        // e.g., ['overlayEmbedded', 'overlaySvgHeader']
   targetWidth?: number      // Resize width
   targetHeight?: number     // Resize height
 }
@@ -852,13 +852,17 @@ if (error) {
 }
 
 // Display the image
-imgElement.src = data.imageData
+const imgElement = document.querySelector('img')
+if (imgElement) {
+  imgElement.src = data.imageData
+}
 
 // Navigate to next/previous image
 if (data.nextToken) {
   const { data: nextImage } = await getRecordedImage({
     pageToken: data.nextToken
   })
+  // Use nextImage...
 }
 ```
 

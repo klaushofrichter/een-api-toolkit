@@ -17,6 +17,7 @@ export type ErrorCode =
   | 'NOT_FOUND'
   | 'FORBIDDEN'
   | 'RATE_LIMITED'
+  | 'SERVICE_UNAVAILABLE'
   | 'UNKNOWN_ERROR'
 
 /**
