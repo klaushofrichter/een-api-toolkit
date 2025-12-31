@@ -38,25 +38,25 @@ onMounted(() => {
   <div class="home">
     <h2>Welcome to the EEN Cameras Example</h2>
 
-    <div v-if="isAuthenticated">
+    <div v-if="isAuthenticated" data-testid="authenticated">
       <div v-if="loading" class="loading">Loading user info...</div>
       <div v-else-if="error" class="error">{{ error.message }}</div>
-      <div v-else-if="user" class="user-info">
+      <div v-else-if="user" class="user-info" data-testid="user-info">
         <p>Logged in as: <strong>{{ user.firstName }} {{ user.lastName }}</strong></p>
         <p>Email: {{ user.email }}</p>
       </div>
 
       <div class="actions">
         <router-link to="/cameras">
-          <button>View Cameras</button>
+          <button data-testid="view-cameras-button">View Cameras</button>
         </router-link>
       </div>
     </div>
 
-    <div v-else class="login-prompt">
+    <div v-else class="login-prompt" data-testid="not-authenticated">
       <p>Please log in to view your cameras.</p>
       <router-link to="/login">
-        <button>Login</button>
+        <button data-testid="login-button">Login</button>
       </router-link>
     </div>
 

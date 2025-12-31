@@ -323,7 +323,7 @@ npm run test:e2e
 npm run test:e2e:ui
 ```
 
-E2E tests are in `examples/vue-basic/e2e/`.
+E2E tests are in `examples/vue-users/e2e/`.
 
 **Token Caching**: Auth tokens are cached in `e2e/.auth-state.json` to speed up repeated test runs. Delete this file to force re-authentication.
 

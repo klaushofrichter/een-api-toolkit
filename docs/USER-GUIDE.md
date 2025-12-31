@@ -869,4 +869,4 @@ This logs API requests, token operations, and auth state changes to the console.
 
 ## Example Application
 
-See the [vue-basic example](../examples/vue-basic/) for a complete working application demonstrating all features.
+See the [vue-users example](../examples/vue-users/) for a complete working application demonstrating all features.

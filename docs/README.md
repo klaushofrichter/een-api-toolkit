@@ -10,7 +10,7 @@
 | **[Developer Guide](./DEVELOPER-GUIDE.md)** | Contributors | Architecture, testing, CI/CD, publishing |
 | **[API Reference](./api/)** | All | Auto-generated TypeDoc documentation |
 | **[AI-CONTEXT.md](./AI-CONTEXT.md)** | AI Assistants | Single-file comprehensive reference |
-| **[Example App](../examples/vue-basic/)** | All | Complete Vue 3 example application |
+| **[Example App](../examples/vue-users/)** | All | Complete Vue 3 example application |
 
 ## For App Developers
 

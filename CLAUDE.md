@@ -429,7 +429,7 @@ docs/
 ├── guides/              # In-depth guides
 └── getting-started/     # Setup guides
 examples/
-└── vue-basic/           # Complete Vue 3 example application
+└── vue-users/           # Complete Vue 3 example application
 ```
 
 ### Generation
@@ -442,7 +442,7 @@ npm run docs:ai-context   # Generate AI-CONTEXT.md
 ### Key Files
 - **`docs/AI-CONTEXT.md`** - Complete reference for AI assistants, auto-generated from `scripts/generate-ai-context.ts`. Contains all APIs, types, patterns in one file.
 - **`docs/api/`** - Auto-generated from JSDoc comments via TypeDoc
-- **`examples/vue-basic/`** - Working example showing OAuth flow and error handling
+- **`examples/vue-users/`** - Working example showing OAuth flow and error handling
 
 ### Versioning
 Documentation is generated on publish and versioned with releases:

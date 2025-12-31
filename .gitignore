@@ -151,4 +151,4 @@ examples/**/.env
 
 # Generated during publish
 CHANGELOG.md
-examples/vue-basic/e2e/.auth-state.json
+examples/vue-users/e2e/.auth-state.json

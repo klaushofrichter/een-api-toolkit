@@ -9,7 +9,7 @@ const isAuthenticated = computed(() => authStore.isAuthenticated)
 <template>
   <div class="app">
     <header>
-      <h1 data-testid="app-title">EEN API Toolkit Example</h1>
+      <h1 data-testid="app-title">EEN Users Example</h1>
       <nav>
         <router-link data-testid="nav-home" to="/">Home</router-link>
         <router-link data-testid="nav-users" v-if="isAuthenticated" to="/users">Users</router-link>

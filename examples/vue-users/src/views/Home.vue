@@ -59,7 +59,7 @@ watch(
 
 <template>
   <div class="home">
-    <h2>Welcome to the EEN API Toolkit Example</h2>
+    <h2>Welcome to the EEN Users Example</h2>
 
     <div v-if="!isAuthenticated" class="not-authenticated" data-testid="not-authenticated">
       <p data-testid="not-authenticated-message">You are not logged in.</p>
