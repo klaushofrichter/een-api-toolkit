@@ -199,18 +199,16 @@ test.describe('vue-media authenticated tests', () => {
     }
   })
 
-  test('authenticated user sees cameras on live page', async ({ page }) => {
-    // Set up localStorage with auth state before navigating
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys (matches auth store)
+  /**
+   * Helper function to inject auth state into localStorage
+   */
+  async function injectAuthState(page: import('@playwright/test').Page) {
     await page.evaluate(
       ({ token, baseUrl, sessionId, tokenExpiration }) => {
         localStorage.setItem('een_token', token)
         localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
         localStorage.setItem('een_refreshTokenMarker', 'present')
         localStorage.setItem('een_sessionId', sessionId)
-        // Parse baseUrl to extract hostname
         const url = new URL(baseUrl)
         localStorage.setItem('een_hostname', url.hostname)
         if (url.port) {
@@ -219,8 +217,16 @@ test.describe('vue-media authenticated tests', () => {
       },
       authState
     )
+  }
 
-    // Navigate to live page
+  test.beforeEach(async ({ page }) => {
+    // Navigate to home and inject auth state before each test
+    await page.goto('/')
+    await injectAuthState(page)
+  })
+
+  test('authenticated user sees cameras on live page', async ({ page }) => {
+    // Navigate to live page (auth already injected by beforeEach)
     await page.goto('/live')
 
     // Should show the live camera view
@@ -269,23 +275,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('authenticated home page shows view live button', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
-    // Reload to apply auth state
+    // Reload to apply auth state (already injected by beforeEach)
     await page.reload()
 
     // Should show authenticated state
@@ -295,22 +285,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('refresh button fetches new image', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
+    // Navigate to live page (auth already injected by beforeEach)
     await page.goto('/live')
 
     // Wait for initial load
@@ -340,23 +315,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('authenticated home page shows view recorded button', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
-    // Reload to apply auth state
+    // Reload to apply auth state (already injected by beforeEach)
     await page.reload()
 
     // Should show authenticated state with both buttons
@@ -366,22 +325,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('recorded image page shows camera selector and time picker', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
+    // Navigate to recorded page (auth already injected by beforeEach)
     await page.goto('/recorded')
 
     // Should show the recorded image page
@@ -413,22 +357,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('recorded image page auto-loads image on mount', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
+    // Navigate to recorded page (auth already injected by beforeEach)
     await page.goto('/recorded')
 
     // Wait for cameras to load
@@ -467,22 +396,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('recorded image navigation buttons work', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
+    // Navigate to recorded page (auth already injected by beforeEach)
     await page.goto('/recorded')
 
     // Wait for cameras to load
@@ -541,22 +455,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('recorded image page loads with past date via Go button', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
+    // Navigate to recorded page (auth already injected by beforeEach)
     await page.goto('/recorded')
 
     // Wait for cameras to load
@@ -610,22 +509,7 @@ test.describe('vue-media authenticated tests', () => {
   })
 
   test('camera selection persists between live and recorded pages', async ({ page }) => {
-    await page.goto('/')
-
-    // Inject auth state into individual localStorage keys
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) localStorage.setItem('een_port', url.port)
-      },
-      authState
-    )
-
+    // Navigate to live page (auth already injected by beforeEach)
     await page.goto('/live')
 
     // Wait for cameras to load

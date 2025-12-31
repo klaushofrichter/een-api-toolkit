@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getCameras, getRecordedImage } from 'een-api-toolkit'
-import type { Camera } from 'een-api-toolkit'
+import type { Camera, GetRecordedImageParams } from 'een-api-toolkit'
 import { useSelectedCamera } from '../composables/useSelectedCamera'
+
+// Constants
+const ONE_HOUR_MS = 60 * 60 * 1000
 
 const cameras = ref<Camera[]>([])
 const { selectedCameraId, setSelectedCamera } = useSelectedCamera()
@@ -26,7 +29,7 @@ let currentRequestId = 0
 const selectedDateTime = ref(getDefaultDateTime())
 
 function getDefaultDateTime(): string {
-  const date = new Date(Date.now() - 3600000) // 1 hour ago
+  const date = new Date(Date.now() - ONE_HOUR_MS)
   return formatDateTimeLocal(date)
 }
 
@@ -113,30 +116,37 @@ async function loadCameras() {
   }
 }
 
-async function fetchImageFromPicker() {
-  if (!selectedCameraId.value) return
+/**
+ * Clear all image-related state
+ */
+function clearImageState() {
+  imageData.value = null
+  imageTimestamp.value = null
+  nextToken.value = null
+  prevToken.value = null
+}
 
+/**
+ * Core image fetching function - handles loading state, race conditions, and error handling
+ */
+async function _fetchImage(params: GetRecordedImageParams) {
   const requestId = ++currentRequestId
-  const cameraId = selectedCameraId.value
-
   loadingImage.value = true
   error.value = null
 
-  const timestamp = toApiTimestamp(selectedDateTime.value)
+  const result = await getRecordedImage(params)
 
-  const result = await getRecordedImage({
-    deviceId: cameraId,
-    type: 'preview',
-    timestamp__gte: timestamp
-  })
-
+  // Check if component is still mounted and this is still the current request
   if (!isMounted.value || requestId !== currentRequestId) {
     return
   }
 
+  loadingImage.value = false
+
   if (result.error) {
     error.value = result.error.message
-    loadingImage.value = false
+    // Clear stale data on error to avoid showing outdated image
+    clearImageState()
     return
   }
 
@@ -146,79 +156,53 @@ async function fetchImageFromPicker() {
     nextToken.value = result.data.nextToken
     prevToken.value = result.data.prevToken
     updateTimePickerFromImage()
+  } else {
+    // Handle successful responses that don't contain an image
+    clearImageState()
   }
-  loadingImage.value = false
+}
+
+async function fetchImageFromPicker() {
+  if (!selectedCameraId.value) return
+
+  const timestamp = toApiTimestamp(selectedDateTime.value)
+  await _fetchImage({
+    deviceId: selectedCameraId.value,
+    type: 'preview',
+    timestamp__gte: timestamp
+  })
 }
 
 async function navigatePrev() {
   if (!prevToken.value) return
-
-  const requestId = ++currentRequestId
-  loadingImage.value = true
-  error.value = null
-
-  const result = await getRecordedImage({
-    pageToken: prevToken.value
-  })
-
-  if (!isMounted.value || requestId !== currentRequestId) {
-    return
-  }
-
-  if (result.error) {
-    error.value = result.error.message
-    loadingImage.value = false
-    return
-  }
-
-  if (result.data) {
-    imageData.value = result.data.imageData
-    imageTimestamp.value = result.data.timestamp
-    nextToken.value = result.data.nextToken
-    prevToken.value = result.data.prevToken
-    updateTimePickerFromImage()
-  }
-  loadingImage.value = false
+  await _fetchImage({ pageToken: prevToken.value })
 }
 
 async function navigateNext() {
   if (!nextToken.value) return
-
-  const requestId = ++currentRequestId
-  loadingImage.value = true
-  error.value = null
-
-  const result = await getRecordedImage({
-    pageToken: nextToken.value
-  })
-
-  if (!isMounted.value || requestId !== currentRequestId) {
-    return
-  }
-
-  if (result.error) {
-    error.value = result.error.message
-    loadingImage.value = false
-    return
-  }
-
-  if (result.data) {
-    imageData.value = result.data.imageData
-    imageTimestamp.value = result.data.timestamp
-    nextToken.value = result.data.nextToken
-    prevToken.value = result.data.prevToken
-    updateTimePickerFromImage()
-  }
-  loadingImage.value = false
+  await _fetchImage({ pageToken: nextToken.value })
 }
 
+/**
+ * Handle camera selection change with proper race condition handling
+ */
 async function selectCamera(cameraId: string) {
+  if (!isMounted.value) return
+
   setSelectedCamera(cameraId)
-  imageData.value = null
+  clearImageState()
   error.value = null
-  nextToken.value = null
-  prevToken.value = null
   await fetchImageFromPicker()
+}
+
+/**
+ * Typed event handler for camera select change
+ */
+function handleCameraChange(event: Event) {
+  const target = event.target as HTMLSelectElement | null
+  if (target?.value) {
+    selectCamera(target.value)
+  }
 }
 
 onMounted(() => {
@@ -253,8 +237,9 @@ onUnmounted(() => {
         <select
           id="camera-select"
           :value="selectedCameraId"
-          @change="selectCamera(($event.target as HTMLSelectElement).value)"
+          @change="handleCameraChange"
           data-testid="camera-select"
+          aria-label="Select a camera to view recorded images"
         >
           <option v-for="camera in cameras" :key="camera.id" :value="camera.id">
             {{ camera.name || camera.id }}
@@ -269,8 +254,14 @@ onUnmounted(() => {
           type="datetime-local"
           v-model="selectedDateTime"
           data-testid="datetime-input"
+          aria-label="Select date and time for recorded image"
         />
-        <button @click="fetchImageFromPicker" :disabled="loadingImage" data-testid="go-button">
+        <button
+          @click="fetchImageFromPicker"
+          :disabled="loadingImage"
+          data-testid="go-button"
+          aria-label="Load image from selected time"
+        >
           Go
         </button>
       </div>
@@ -280,6 +271,7 @@ onUnmounted(() => {
           @click="navigatePrev"
           :disabled="loadingImage || !prevToken"
           data-testid="prev-button"
+          aria-label="Go to previous recorded image"
         >
           ← Previous
         </button>
@@ -287,6 +279,7 @@ onUnmounted(() => {
           @click="navigateNext"
           :disabled="loadingImage || !nextToken"
           data-testid="next-button"
+          aria-label="Go to next recorded image"
         >
           Next →
         </button>
