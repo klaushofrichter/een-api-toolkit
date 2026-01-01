@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.8**](../README.md)
+[**EEN API Toolkit v0.1.9**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listFeeds**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`ListFeedsResult`](../interfaces/ListFeedsResult.md)\>\>
 
-Defined in: [src/feeds/service.ts:59](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/feeds/service.ts#L59)
+Defined in: [src/feeds/service.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/feeds/service.ts#L60)
 
 List feeds with optional filtering and pagination.
 
@@ -42,6 +42,7 @@ For more details, see the
 
 ```typescript
 import { listFeeds } from 'een-api-toolkit'
+import type { Feed } from 'een-api-toolkit'
 
 // Get all feeds
 const { data, error } = await listFeeds()

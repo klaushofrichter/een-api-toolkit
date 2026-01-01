@@ -23,6 +23,7 @@ import { debug } from '../utils/debug'
  * @example
  * ```typescript
  * import { listFeeds } from 'een-api-toolkit'
+ * import type { Feed } from 'een-api-toolkit'
  *
  * // Get all feeds
  * const { data, error } = await listFeeds()
@@ -128,27 +129,26 @@ export async function listFeeds(params?: ListFeedsParams): Promise<Result<ListFe
 async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
   const status = response.status
 
-  let message: string
+  let apiMessage: string | undefined
   try {
     const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
+    apiMessage = errorData.message ?? errorData.error
   } catch (parseError) {
     debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
   }
 
   switch (status) {
     case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
+      return failure('AUTH_REQUIRED', apiMessage || 'Authentication failed', status)
     case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
+      return failure('FORBIDDEN', apiMessage || 'Access denied', status)
     case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
+      return failure('NOT_FOUND', apiMessage || 'Not found', status)
     case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
+      return failure('RATE_LIMITED', apiMessage || 'Rate limited', status)
     case 503:
-      return failure('SERVICE_UNAVAILABLE', `Service unavailable: ${message}`, status)
+      return failure('SERVICE_UNAVAILABLE', apiMessage || 'Service unavailable', status)
     default:
-      return failure('API_ERROR', `API error: ${message}`, status)
+      return failure('API_ERROR', apiMessage || response.statusText || 'API error', status)
   }
 }

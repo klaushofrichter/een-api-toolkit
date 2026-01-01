@@ -16,6 +16,21 @@ const isMounted = ref(true)
 // Track current request to handle race conditions
 let currentRequestId = 0
 
+// AbortController for cancelling in-flight requests
+let abortController: AbortController | null = null
+
+// URL field labels for display (data-driven approach)
+const URL_LABELS: Partial<Record<keyof Feed, string>> = {
+  hlsUrl: 'HLS',
+  multipartUrl: 'Multipart',
+  flvUrl: 'FLV',
+  rtspUrl: 'RTSP',
+  rtspsUrl: 'RTSPS',
+  localRtspUrl: 'Local RTSP',
+  webRtcUrl: 'WebRTC',
+  audioPushHttpsUrl: 'Audio Push'
+}
+
 async function loadCameras() {
   loading.value = true
   error.value = null
@@ -42,6 +57,12 @@ async function loadCameras() {
 
 async function fetchFeeds() {
   if (!selectedCameraId.value) return
+
+  // Cancel any in-flight request
+  if (abortController) {
+    abortController.abort()
+  }
+  abortController = new AbortController()
 
   const requestId = ++currentRequestId
   loadingFeeds.value = true
@@ -78,23 +99,16 @@ async function selectCamera(cameraId: string) {
 }
 
 function handleCameraChange(event: Event) {
-  const target = event.target as HTMLSelectElement | null
-  if (target?.value) {
+  const target = event.target as HTMLSelectElement
+  if (target.value) {
     selectCamera(target.value)
   }
 }
 
 function getAvailableUrls(feed: Feed): string[] {
-  const urls: string[] = []
-  if (feed.hlsUrl) urls.push('HLS')
-  if (feed.multipartUrl) urls.push('Multipart')
-  if (feed.flvUrl) urls.push('FLV')
-  if (feed.rtspUrl) urls.push('RTSP')
-  if (feed.rtspsUrl) urls.push('RTSPS')
-  if (feed.localRtspUrl) urls.push('Local RTSP')
-  if (feed.webRtcUrl) urls.push('WebRTC')
-  if (feed.audioPushHttpsUrl) urls.push('Audio Push')
-  return urls
+  return (Object.keys(URL_LABELS) as (keyof Feed)[])
+    .filter(key => feed[key])
+    .map(key => URL_LABELS[key]!)
 }
 
 onMounted(() => {
@@ -103,6 +117,10 @@ onMounted(() => {
 
 onUnmounted(() => {
   isMounted.value = false
+  // Cancel any in-flight request on unmount
+  if (abortController) {
+    abortController.abort()
+  }
 })
 </script>
 
