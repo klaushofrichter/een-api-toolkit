@@ -37,7 +37,13 @@ export type {
   GetLiveImageParams,
   GetRecordedImageParams,
   LiveImageResult,
-  RecordedImageResult
+  RecordedImageResult,
+  Feed,
+  FeedStreamType,
+  FeedMediaType,
+  FeedIncludeOption,
+  ListFeedsParams,
+  ListFeedsResult
 } from './types'
 
 // Type helpers
@@ -81,3 +87,8 @@ export {
   getLiveImage,
   getRecordedImage
 } from './media'
+
+// Feeds - Plain functions
+export {
+  listFeeds
+} from './feeds'

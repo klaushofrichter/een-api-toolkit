@@ -1,0 +1,1 @@
+export { listFeeds } from './service'

@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.1.7**
+**EEN API Toolkit v0.1.10**
 
 ***
 
-# EEN API Toolkit v0.1.7
+# EEN API Toolkit v0.1.10
 
 ## Interfaces
 
@@ -48,6 +48,12 @@
 
 - [EenToolkitConfig](interfaces/EenToolkitConfig.md)
 
+### Feeds
+
+- [Feed](interfaces/Feed.md)
+- [ListFeedsParams](interfaces/ListFeedsParams.md)
+- [ListFeedsResult](interfaces/ListFeedsResult.md)
+
 ### Media
 
 - [MediaInterval](interfaces/MediaInterval.md)
@@ -71,6 +77,12 @@
 ### Cameras
 
 - [CameraStatus](type-aliases/CameraStatus.md)
+
+### Feeds
+
+- [FeedStreamType](type-aliases/FeedStreamType.md)
+- [FeedMediaType](type-aliases/FeedMediaType.md)
+- [FeedIncludeOption](type-aliases/FeedIncludeOption.md)
 
 ### Media
 
@@ -98,6 +110,10 @@
 
 - [getCameras](functions/getCameras.md)
 - [getCamera](functions/getCamera.md)
+
+### Feeds
+
+- [listFeeds](functions/listFeeds.md)
 
 ### Media
 
