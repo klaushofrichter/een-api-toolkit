@@ -338,6 +338,98 @@ if (camera) {
 }
 ```
 
+### Media API (Live and Recorded Images)
+
+```typescript
+import { getLiveImage, getRecordedImage, listMedia } from 'een-api-toolkit'
+
+// Get live preview image
+const { data: liveImage, error } = await getLiveImage({
+  deviceId: 'camera-123'
+})
+if (liveImage) {
+  // imageData is a base64 data URL (data:image/jpeg;base64,...)
+  imgElement.src = liveImage.imageData
+}
+
+// Get recorded image from a specific time
+const { data: recordedImage } = await getRecordedImage({
+  deviceId: 'camera-123',
+  type: 'preview',
+  timestamp__gte: '2025-01-15T14:30:00.000-08:00'  // ISO 8601 with timezone offset
+})
+if (recordedImage) {
+  imgElement.src = recordedImage.imageData
+
+  // Navigate to next/previous image using tokens
+  if (recordedImage.nextToken) {
+    const { data: nextImage } = await getRecordedImage({
+      pageToken: recordedImage.nextToken
+    })
+  }
+}
+
+// List media intervals (find when recordings exist)
+const { data: mediaList } = await listMedia({
+  deviceId: 'camera-123',
+  type: 'preview',
+  mediaType: 'video',
+  startTimestamp: '2025-01-01T00:00:00.000+00:00',
+  endTimestamp: '2025-01-02T00:00:00.000+00:00'
+})
+```
+
+#### EEN Timestamp Format (Critical)
+
+The EEN API requires timestamps in **ISO 8601 format with explicit timezone offset**. The `Z` suffix (UTC) is **not accepted** for recorded image queries.
+
+| Format | Example | Valid |
+|--------|---------|-------|
+| With offset | `2025-01-15T14:30:00.000-08:00` | ✅ Yes |
+| With offset | `2025-01-15T22:30:00.000+00:00` | ✅ Yes |
+| With Z suffix | `2025-01-15T22:30:00.000Z` | ❌ No |
+
+**Correct timestamp formatting function:**
+
+```typescript
+function toApiTimestamp(date: Date): string {
+  // Get timezone offset in minutes
+  const offsetMinutes = date.getTimezoneOffset()
+  const offsetSign = offsetMinutes <= 0 ? '+' : '-'
+  const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(2, '0')
+  const offsetMins = String(Math.abs(offsetMinutes) % 60).padStart(2, '0')
+  const offset = `${offsetSign}${offsetHours}:${offsetMins}`
+
+  // Format date components
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000${offset}`
+}
+
+// Usage
+const timestamp = toApiTimestamp(new Date())
+// Result: "2025-01-15T14:30:00.000-08:00"
+```
+
+**Common mistake:**
+
+```typescript
+// WRONG - toISOString() returns Z suffix which is not accepted
+const timestamp = new Date().toISOString()
+// Returns: "2025-01-15T22:30:00.000Z" ❌
+
+// CORRECT - use explicit timezone offset
+const timestamp = toApiTimestamp(new Date())
+// Returns: "2025-01-15T14:30:00.000-08:00" ✅
+```
+
+**Note on milliseconds:** The milliseconds component (`.000`) is included for API format consistency. For `getRecordedImage` queries, the API returns the nearest available image to the requested timestamp, so sub-second precision is typically not critical.
+
 ### Pagination
 
 The EEN API uses cursor-based pagination:
