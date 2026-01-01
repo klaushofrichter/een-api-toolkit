@@ -374,8 +374,8 @@ const { data: mediaList } = await listMedia({
   deviceId: 'camera-123',
   type: 'preview',
   mediaType: 'video',
-  startTimestamp: '2025-01-01T00:00:00.000Z',
-  endTimestamp: '2025-01-02T00:00:00.000Z'
+  startTimestamp: '2025-01-01T00:00:00.000+00:00',
+  endTimestamp: '2025-01-02T00:00:00.000+00:00'
 })
 ```
 
@@ -427,6 +427,8 @@ const timestamp = new Date().toISOString()
 const timestamp = toApiTimestamp(new Date())
 // Returns: "2025-01-15T14:30:00.000-08:00" ✅
 ```
+
+**Note on milliseconds:** The milliseconds component (`.000`) is included for API format consistency. For `getRecordedImage` queries, the API returns the nearest available image to the requested timestamp, so sub-second precision is typically not critical.
 
 ### Pagination
 
