@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.9**](../README.md)
+[**EEN API Toolkit v0.1.10**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Feed
 
-Defined in: [src/types/feeds.ts:93](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L93)
+Defined in: [src/types/feeds.ts:104](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L104)
 
 A feed representing a stream from a device.
 
@@ -37,7 +37,7 @@ const feed: Feed = {
 
 > **id**: `string`
 
-Defined in: [src/types/feeds.ts:95](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L95)
+Defined in: [src/types/feeds.ts:106](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L106)
 
 Unique feed identifier (typically deviceId-type format)
 
@@ -47,7 +47,7 @@ Unique feed identifier (typically deviceId-type format)
 
 > **type**: [`FeedStreamType`](../type-aliases/FeedStreamType.md)
 
-Defined in: [src/types/feeds.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L98)
+Defined in: [src/types/feeds.ts:109](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L109)
 
 Stream type of the feed
 
@@ -57,7 +57,7 @@ Stream type of the feed
 
 > **deviceId**: `string`
 
-Defined in: [src/types/feeds.ts:101](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L101)
+Defined in: [src/types/feeds.ts:112](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L112)
 
 ID of the device generating this feed
 
@@ -67,7 +67,7 @@ ID of the device generating this feed
 
 > **mediaType**: [`FeedMediaType`](../type-aliases/FeedMediaType.md)
 
-Defined in: [src/types/feeds.ts:104](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L104)
+Defined in: [src/types/feeds.ts:115](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L115)
 
 Media type of the feed content
 
@@ -77,7 +77,7 @@ Media type of the feed content
 
 > `optional` **flvUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:107](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L107)
+Defined in: [src/types/feeds.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L118)
 
 Flash Video URL (if requested via include)
 
@@ -87,7 +87,7 @@ Flash Video URL (if requested via include)
 
 > `optional` **rtspUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:110](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L110)
+Defined in: [src/types/feeds.ts:121](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L121)
 
 RTSP URL (if requested via include)
 
@@ -97,7 +97,7 @@ RTSP URL (if requested via include)
 
 > `optional` **rtspsUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L113)
+Defined in: [src/types/feeds.ts:124](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L124)
 
 RTSP over TLS URL (if requested via include)
 
@@ -107,7 +107,7 @@ RTSP over TLS URL (if requested via include)
 
 > `optional` **localRtspUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:116](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L116)
+Defined in: [src/types/feeds.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L127)
 
 Local RTSP URL to bridge (if requested via include)
 
@@ -117,7 +117,7 @@ Local RTSP URL to bridge (if requested via include)
 
 > `optional` **hlsUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:119](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L119)
+Defined in: [src/types/feeds.ts:130](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L130)
 
 HLS URL (if requested via include)
 
@@ -127,7 +127,7 @@ HLS URL (if requested via include)
 
 > `optional` **multipartUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:122](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L122)
+Defined in: [src/types/feeds.ts:133](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L133)
 
 Multipart URL for raw frames (if requested via include)
 
@@ -137,7 +137,7 @@ Multipart URL for raw frames (if requested via include)
 
 > `optional` **webRtcUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:125](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L125)
+Defined in: [src/types/feeds.ts:136](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L136)
 
 WebRTC URL (if requested via include)
 
@@ -147,6 +147,6 @@ WebRTC URL (if requested via include)
 
 > `optional` **audioPushHttpsUrl**: `string` \| `null`
 
-Defined in: [src/types/feeds.ts:128](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L128)
+Defined in: [src/types/feeds.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L139)
 
 Audio push URL for speakers (if requested via include)

@@ -106,7 +106,8 @@ export async function listFeeds(params?: ListFeedsParams): Promise<Result<ListFe
       headers: {
         'Accept': 'application/json',
         'Authorization': `Bearer ${authStore.token}`
-      }
+      },
+      signal: params?.signal
     })
 
     if (!response.ok) {

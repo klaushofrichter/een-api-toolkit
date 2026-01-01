@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.9**](../README.md)
+[**EEN API Toolkit v0.1.10**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListFeedsParams
 
-Defined in: [src/types/feeds.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L155)
+Defined in: [src/types/feeds.ts:166](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L166)
 
 Parameters for listing feeds.
 
@@ -37,7 +37,7 @@ const params: ListFeedsParams = {
 
 > `optional` **deviceId**: `string`
 
-Defined in: [src/types/feeds.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L157)
+Defined in: [src/types/feeds.ts:168](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L168)
 
 Filter by single device ID
 
@@ -47,7 +47,7 @@ Filter by single device ID
 
 > `optional` **deviceId\_\_in**: `string`[]
 
-Defined in: [src/types/feeds.ts:160](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L160)
+Defined in: [src/types/feeds.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L171)
 
 Filter by multiple device IDs
 
@@ -57,7 +57,7 @@ Filter by multiple device IDs
 
 > `optional` **type**: [`FeedStreamType`](../type-aliases/FeedStreamType.md)
 
-Defined in: [src/types/feeds.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L163)
+Defined in: [src/types/feeds.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L174)
 
 Filter by stream type
 
@@ -67,7 +67,7 @@ Filter by stream type
 
 > `optional` **include**: [`FeedIncludeOption`](../type-aliases/FeedIncludeOption.md)[]
 
-Defined in: [src/types/feeds.ts:166](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L166)
+Defined in: [src/types/feeds.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L177)
 
 URL fields to include in response
 
@@ -77,7 +77,7 @@ URL fields to include in response
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/feeds.ts:169](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L169)
+Defined in: [src/types/feeds.ts:180](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L180)
 
 Number of results per page
 
@@ -87,6 +87,16 @@ Number of results per page
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/feeds.ts:172](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L172)
+Defined in: [src/types/feeds.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L183)
 
 Pagination cursor from previous response
+
+***
+
+### signal?
+
+> `optional` **signal**: `AbortSignal`
+
+Defined in: [src/types/feeds.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L186)
+
+AbortSignal for cancelling the request

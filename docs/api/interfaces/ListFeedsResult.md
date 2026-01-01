@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.9**](../README.md)
+[**EEN API Toolkit v0.1.10**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListFeedsResult
 
-Defined in: [src/types/feeds.ts:196](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L196)
+Defined in: [src/types/feeds.ts:210](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L210)
 
 Result from listing feeds.
 
@@ -34,7 +34,7 @@ const result: ListFeedsResult = {
 
 > **results**: [`Feed`](Feed.md)[]
 
-Defined in: [src/types/feeds.ts:198](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L198)
+Defined in: [src/types/feeds.ts:212](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L212)
 
 Array of feed objects
 
@@ -44,7 +44,7 @@ Array of feed objects
 
 > `optional` **nextPageToken**: `string`
 
-Defined in: [src/types/feeds.ts:201](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L201)
+Defined in: [src/types/feeds.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L215)
 
 Token for fetching next page (undefined if no more results)
 
@@ -54,6 +54,6 @@ Token for fetching next page (undefined if no more results)
 
 > `optional` **totalSize**: `number`
 
-Defined in: [src/types/feeds.ts:204](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L204)
+Defined in: [src/types/feeds.ts:218](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L218)
 
 Total number of feeds available (may not always be provided)

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 import { getCameras, listFeeds } from 'een-api-toolkit'
-import type { Camera, Feed } from 'een-api-toolkit'
+import type { Camera, Feed, FeedIncludeOption } from 'een-api-toolkit'
 
 const cameras = ref<Camera[]>([])
 const selectedCameraId = ref<string | null>(null)
@@ -20,7 +20,8 @@ let currentRequestId = 0
 let abortController: AbortController | null = null
 
 // URL field labels for display (data-driven approach)
-const URL_LABELS: Partial<Record<keyof Feed, string>> = {
+// Uses FeedIncludeOption type to ensure only URL fields are included, not other Feed properties
+const URL_LABELS: Record<FeedIncludeOption, string> = {
   hlsUrl: 'HLS',
   multipartUrl: 'Multipart',
   flvUrl: 'FLV',
@@ -70,10 +71,14 @@ async function fetchFeeds() {
 
   const result = await listFeeds({
     deviceId: selectedCameraId.value,
-    include: ['hlsUrl', 'multipartUrl', 'flvUrl', 'rtspUrl']
+    include: ['hlsUrl', 'multipartUrl', 'flvUrl', 'rtspUrl'],
+    signal: abortController.signal
   })
 
-  // Check if component is still mounted and this is the current request
+  // Guard against stale responses:
+  // - isMounted check prevents memory leaks by not updating state after unmount
+  // - requestId check prevents race conditions when rapid camera switching causes
+  //   overlapping requests where an older response arrives after a newer one
   if (!isMounted.value || requestId !== currentRequestId) {
     return
   }
@@ -101,14 +106,18 @@ async function selectCamera(cameraId: string) {
 function handleCameraChange(event: Event) {
   const target = event.target as HTMLSelectElement
   if (target.value) {
-    selectCamera(target.value)
+    // Defensive error handling - selectCamera handles errors internally via fetchFeeds,
+    // but we catch here to handle any unexpected errors during the camera change flow
+    selectCamera(target.value).catch((err) => {
+      error.value = `Failed to select camera: ${String(err)}`
+    })
   }
 }
 
 function getAvailableUrls(feed: Feed): string[] {
-  return (Object.keys(URL_LABELS) as (keyof Feed)[])
+  return (Object.keys(URL_LABELS) as FeedIncludeOption[])
     .filter(key => feed[key])
-    .map(key => URL_LABELS[key]!)
+    .map(key => URL_LABELS[key])
 }
 
 onMounted(() => {

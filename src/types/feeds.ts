@@ -67,6 +67,17 @@ export type FeedIncludeOption =
   | 'audioPushHttpsUrl'
 
 /**
+ * Union type of URL field names on the Feed interface.
+ *
+ * @remarks
+ * This type represents only the URL fields of a Feed, not other properties
+ * like `id`, `type`, or `deviceId`. Use this for type-safe URL field operations.
+ *
+ * @category Feeds
+ */
+export type FeedUrlField = FeedIncludeOption
+
+/**
  * A feed representing a stream from a device.
  *
  * @remarks
@@ -170,6 +181,9 @@ export interface ListFeedsParams {
 
   /** Pagination cursor from previous response */
   pageToken?: string
+
+  /** AbortSignal for cancelling the request */
+  signal?: AbortSignal
 }
 
 /**
