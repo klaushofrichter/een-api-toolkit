@@ -565,6 +565,40 @@ interface RecordedImageResult {
 }
 ```
 
+### EEN Timestamp Format (CRITICAL)
+
+The EEN API requires timestamps in **ISO 8601 format with explicit timezone offset**. The `Z` suffix (UTC) is **not accepted** for recorded image queries.
+
+| Format | Example | Valid |
+|--------|---------|-------|
+| With offset | `2025-01-15T14:30:00.000-08:00` | ✅ Yes |
+| With offset | `2025-01-15T22:30:00.000+00:00` | ✅ Yes |
+| With Z suffix | `2025-01-15T22:30:00.000Z` | ❌ No (400 Bad Request) |
+
+**Correct timestamp formatting:**
+
+```typescript
+function toApiTimestamp(date: Date): string {
+  const offsetMinutes = date.getTimezoneOffset()
+  const offsetSign = offsetMinutes <= 0 ? '+' : '-'
+  const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(2, '0')
+  const offsetMins = String(Math.abs(offsetMinutes) % 60).padStart(2, '0')
+  const offset = `${offsetSign}${offsetHours}:${offsetMins}`
+
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000${offset}`
+}
+// Returns: "2025-01-15T14:30:00.000-08:00"
+```
+
+**Common mistake:** Using `date.toISOString()` returns `Z` suffix which causes 400 Bad Request errors.
+
 ---
 
 ## API Reference
