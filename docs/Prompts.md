@@ -85,7 +85,7 @@ We are building a Vue 3 web app that accesses the EEN Video Platform by using th
 4. When clicking on a camera card, show a modal window with a live main video feed from that camera
 5. Loading states and error handling
 
-Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/develop/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
+Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
 
 The node_modules for een-api-toolkit includes examples, including the main video player implementation here: ./node_modules/een-api-toolkit/examples/vue-feeds/src/views/Feeds.vue
 

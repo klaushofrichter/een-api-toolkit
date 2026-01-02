@@ -1,4 +1,5 @@
 import { test, expect, Page } from '@playwright/test'
+import { baseURL } from '../playwright.config'
 
 /**
  * E2E tests for the Vue Users Example
@@ -84,8 +85,9 @@ async function performLogin(page: Page, username: string, password: string): Pro
   // Click sign in - use OR selector for robustness
   await page.locator('#next, button:has-text("Sign in")').first().click()
 
-  // Wait for auth to complete and redirect to app
-  await page.waitForURL('**/', { timeout: TIMEOUTS.AUTH_COMPLETE })
+  // Wait for redirect back to the app using configured baseURL
+  const baseURLPattern = new RegExp(baseURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  await page.waitForURL(baseURLPattern, { timeout: TIMEOUTS.AUTH_COMPLETE })
 }
 
 /**
@@ -217,8 +219,9 @@ test.describe('Vue Users Example', () => {
     // Click logout
     await page.click('[data-testid="nav-logout"]')
 
-    // Should show not authenticated
-    await page.waitForURL('**/')
+    // Should show not authenticated - wait for redirect to app baseURL
+    const baseURLPattern = new RegExp(baseURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+    await page.waitForURL(baseURLPattern)
     await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
     await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
   })
