@@ -1,10 +1,10 @@
 {
   "name": "een-api-toolkit-example",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "private": true,
   "type": "module",
   "scripts": {
-    "stop": "lsof -ti :3333 | xargs kill -9 2>/dev/null || echo 'Port 3333 is free'",
+    "stop": "lsof -ti :3333 2>/dev/null | xargs -r kill -9 || echo 'Port 3333 is free'",
     "dev": "npm run stop && vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",

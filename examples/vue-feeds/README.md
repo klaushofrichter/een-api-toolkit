@@ -28,10 +28,10 @@ A Vue 3 example demonstrating how to list camera feeds and display live video us
 
 This example demonstrates two different approaches to live video:
 
-| Mode | Stream Type | Technology | Browser Support |
-|------|-------------|------------|-----------------|
-| **Preview** | Multipart URL | Session cookie + img tag | All modern browsers |
-| **Live SDK** | WebCodecs | JWT + Live Video SDK | Chrome 94+, Edge 94+, Opera 80+ |
+| Mode | Stream Type | Technology | Latency | Browser Support |
+|------|-------------|------------|---------|-----------------|
+| **Preview** | Multipart URL | Session cookie + img tag | ~2-5s | All modern browsers |
+| **Live SDK** | WebCodecs | JWT + Live Video SDK | <1s | Chrome 94+, Edge 94+, Opera 80+ |
 
 ## Setup
 
@@ -78,6 +78,8 @@ All commands below should be run from this example directory (`examples/vue-feed
 5. Open http://127.0.0.1:3333 in your browser.
 
 **Important:** The EEN Identity Provider only permits `http://127.0.0.1:3333` as the OAuth redirect URI. Do not use `localhost` or other ports.
+
+**Note:** Development and testing was done on macOS. The `npm run stop` command uses `lsof`, which is not available on Windows. Windows users should manually stop any process on port 3333 or use `npx kill-port 3333` instead.
 
 ## Project Structure
 

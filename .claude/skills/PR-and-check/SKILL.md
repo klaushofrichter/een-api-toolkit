@@ -48,7 +48,10 @@ description: Use this skill when you are requested to create a PR for a feature 
   - confirm the run is for the correct branch
   - if workflow failed to start, report error and stop
 - Poll for completion (check once per minute, max 10 minutes total):
-  - `gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,conclusion`
+  - Use separate bash commands with `sleep 60 && gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,conclusion`
+  - IMPORTANT: Do NOT use complex shell constructs like `for i in {1..10}` as they cause parse errors
+  - Make sequential individual bash calls, checking the status after each one
+  - If status is "completed", stop polling
 - Check the result:
   - if the workflow did not finish within 10 minutes, report timeout and stop
   - view the review: `gh pr view <pr-number> --comments` or check the PR review file artifact

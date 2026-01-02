@@ -67,6 +67,8 @@ All commands below should be run from this example directory (`examples/vue-came
 
 **Important:** The EEN Identity Provider only permits `http://127.0.0.1:3333` as the OAuth redirect URI. Do not use `localhost` or other ports.
 
+**Note:** Development and testing was done on macOS. The `npm run stop` command uses `lsof`, which is not available on Windows. Windows users should manually stop any process on port 3333 or use `npx kill-port 3333` instead.
+
 ## Project Structure
 
 ```
