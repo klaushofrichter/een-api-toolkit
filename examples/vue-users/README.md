@@ -55,8 +55,6 @@ All commands below should be run from this example directory (`examples/vue-user
    npm run dev
    ```
 
-   **Note:** `npm run dev` calls `npx kill-port 3333` before starting Vite, which will block for 10-15 seconds while it checks/clears the port.
-
 5. Open http://127.0.0.1:3333 in your browser.
 
 **Important:** The EEN Identity Provider only permits `http://127.0.0.1:3333` as the OAuth redirect URI. Do not use `localhost` or other ports.
