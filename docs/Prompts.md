@@ -70,6 +70,42 @@ VITE_PROXY_URL=http://127.0.0.1:8787
 
 ---
 
+## Live Video Viewer App
+
+**Description:** A Vue 3 application that displays cameras in a 3x3 grid with live preview images and a modal for live main video streaming.
+
+**Prompt:**
+
+```
+We are building a Vue 3 web app that accesses the EEN Video Platform by using the een-api-toolkit (npm install een-api-toolkit@latest). The app allows login to the service and lists up to 9 cameras for that user in a 3x3 grid with a live preview image on each camera card. Include the following features:
+
+1. Display cameras in a 3x3 grid layout (9 cameras per page)
+2. Each camera card shows a live preview image that auto-refreshes
+3. Pagination when there are more than 9 cameras available
+4. When clicking on a camera card, show a modal window with a live main video feed from that camera
+5. Loading states and error handling
+
+Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/develop/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
+
+The node_modules for een-api-toolkit includes examples, including the main video player implementation here: ./node_modules/een-api-toolkit/examples/vue-feeds/src/views/Feeds.vue
+
+Here are configuration details:
+VITE_EEN_CLIENT_ID="YOUR-CLIENT_ID"
+VITE_PROXY_URL=http://127.0.0.1:8787
+```
+
+**Expected Features:**
+- OAuth login flow with EEN Identity Provider
+- 3x3 camera grid with live preview images
+- Auto-refreshing preview thumbnails
+- Pagination for accounts with more than 9 cameras
+- Click-to-view live main video in modal
+- Video player with proper media session handling
+- Loading states and error handling
+- Logout functionality
+
+---
+
 ## Tips for Writing Custom Prompts
 
 When writing your own prompts for AI assistants, include:
