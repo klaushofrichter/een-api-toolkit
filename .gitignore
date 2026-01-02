@@ -153,3 +153,5 @@ examples/**/.env
 examples/vue-users/e2e/.auth-state.json
 examples/vue-feeds/e2e/.auth-state.json
 examples/vue-media/e2e/.auth-state.json
+# macOS
+.DS_Store
