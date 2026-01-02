@@ -32,6 +32,11 @@ function generateHeader(): string {
 > For the full EEN API documentation, see the
 > [Eagle Eye Networks Developer Portal](https://developer.eagleeyenetworks.com).
 
+> **Working Examples:** The installed package includes complete Vue 3 example applications
+> at \`./node_modules/een-api-toolkit/examples/\`. These demonstrate OAuth authentication,
+> user management, camera listing, live/recorded media, and video feeds. For Live Main
+> Video streaming, see \`./node_modules/een-api-toolkit/examples/vue-feeds/src/views/Feeds.vue\`.
+
 ---
 
 `
