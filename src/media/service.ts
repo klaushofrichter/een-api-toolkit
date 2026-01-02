@@ -8,7 +8,9 @@ import type {
   GetLiveImageParams,
   GetRecordedImageParams,
   LiveImageResult,
-  RecordedImageResult
+  RecordedImageResult,
+  MediaSessionResponse,
+  MediaSessionResult
 } from '../types'
 import { debug } from '../utils/debug'
 
@@ -489,5 +491,200 @@ async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
       return failure('SERVICE_UNAVAILABLE', `Service unavailable: ${message}`, status)
     default:
       return failure('API_ERROR', `API error: ${message}`, status)
+  }
+}
+
+/**
+ * Get the media session URL for setting cookies.
+ *
+ * @remarks
+ * Fetches the URL needed to set the media session cookie. The returned URL
+ * must be called separately (with credentials included) to actually set the
+ * cookie. This is the first step in the two-step media session initialization
+ * process.
+ *
+ * For most use cases, prefer using {@link initMediaSession} which handles
+ * both steps automatically.
+ *
+ * For more details, see the
+ * [EEN API Documentation](https://developer.eagleeyenetworks.com/docs/watch-live-video).
+ *
+ * @returns A Result containing the media session URL or an error
+ *
+ * @example
+ * ```typescript
+ * import { getMediaSession } from 'een-api-toolkit'
+ *
+ * // Get the session URL (step 1)
+ * const { data, error } = await getMediaSession()
+ *
+ * if (data) {
+ *   console.log('Session URL:', data.url)
+ *   // Now call data.url with credentials: 'include' to set the cookie
+ * }
+ * ```
+ *
+ * @category Media
+ */
+export async function getMediaSession(): Promise<Result<MediaSessionResponse>> {
+  const authStore = useAuthStore()
+
+  if (!authStore.isAuthenticated) {
+    return failure('AUTH_REQUIRED', 'Authentication required')
+  }
+
+  if (!authStore.baseUrl) {
+    return failure('AUTH_REQUIRED', 'Base URL not configured')
+  }
+
+  const url = `${authStore.baseUrl}/api/v3.0/media/session`
+  debug('Fetching media session:', url)
+
+  const { controller, timeoutId } = createTimeoutController()
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${authStore.token}`
+      },
+      signal: controller.signal
+    })
+
+    if (!response.ok) {
+      return handleErrorResponse(response)
+    }
+
+    const data = await response.json() as MediaSessionResponse
+    debug('Media session URL received:', data.url)
+
+    return success(data)
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      return failure('NETWORK_ERROR', 'Request timed out')
+    }
+    return failure('NETWORK_ERROR', `Failed to fetch media session: ${String(err)}`)
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
+/**
+ * Initialize the media session by setting the session cookie.
+ *
+ * @remarks
+ * This function handles the two-step process of setting up a media session:
+ * 1. Fetches the session URL from `/api/v3.0/media/session`
+ * 2. Calls that URL with credentials to set the session cookie
+ *
+ * Once the session cookie is set, the browser can access media streams
+ * (like multipart preview URLs) without explicit Authorization headers.
+ * This is required for using media URLs directly in HTML elements like
+ * `<img>` or `<video>`.
+ *
+ * **Important**: This function must be called in a browser environment
+ * where cookies can be set. It uses `credentials: 'include'` to ensure
+ * the cookie is stored.
+ *
+ * For more details, see the
+ * [EEN API Documentation](https://developer.eagleeyenetworks.com/docs/watch-live-video).
+ *
+ * @returns A Result containing the session result or an error
+ *
+ * @example
+ * ```typescript
+ * import { initMediaSession, listFeeds } from 'een-api-toolkit'
+ *
+ * // Initialize the media session (do this once after login)
+ * const { data, error } = await initMediaSession()
+ *
+ * if (error) {
+ *   console.error('Failed to init media session:', error.message)
+ *   return
+ * }
+ *
+ * // Now you can use multipart URLs directly in <img> elements
+ * const { data: feeds } = await listFeeds({
+ *   deviceId: 'camera-123',
+ *   include: ['multipartUrl']
+ * })
+ *
+ * if (feeds?.results[0]?.multipartUrl) {
+ *   // This works because the session cookie is set
+ *   imgElement.src = feeds.results[0].multipartUrl
+ * }
+ * ```
+ *
+ * @category Media
+ */
+export async function initMediaSession(): Promise<Result<MediaSessionResult>> {
+  const authStore = useAuthStore()
+
+  if (!authStore.isAuthenticated) {
+    return failure('AUTH_REQUIRED', 'Authentication required')
+  }
+
+  // Step 1: Get the media session URL
+  const sessionResult = await getMediaSession()
+
+  if (sessionResult.error) {
+    return failure(
+      sessionResult.error.code,
+      `Failed to get media session: ${sessionResult.error.message}`,
+      sessionResult.error.status
+    )
+  }
+
+  if (!sessionResult.data?.url) {
+    return failure('API_ERROR', 'No session URL returned from media session endpoint')
+  }
+
+  const sessionUrl = sessionResult.data.url
+  debug('Calling session URL to set cookie:', sessionUrl)
+
+  const { controller, timeoutId } = createTimeoutController()
+
+  try {
+    // Step 2: Call the session URL to set the cookie
+    const response = await fetch(sessionUrl, {
+      method: 'GET',
+      credentials: 'include', // Critical: include cookies in the request/response
+      headers: {
+        'Accept': '*/*',
+        'Authorization': `Bearer ${authStore.token}`
+      },
+      signal: controller.signal
+    })
+
+    // The session endpoint typically returns 204 No Content on success
+    // but may also return 200 OK
+    if (!response.ok && response.status !== 204) {
+      const status = response.status
+
+      let message: string
+      try {
+        const errorData = await response.json()
+        message = errorData.message ?? errorData.error ?? response.statusText
+      } catch {
+        message = response.statusText || 'Unknown error'
+      }
+
+      return failure('API_ERROR', `Failed to set media session cookie: ${message}`, status)
+    }
+
+    debug('Media session cookie set successfully')
+
+    return success({
+      success: true,
+      sessionUrl
+    })
+  } catch (err) {
+    if (err instanceof Error && err.name === 'AbortError') {
+      return failure('NETWORK_ERROR', 'Request timed out while setting session cookie')
+    }
+    return failure('NETWORK_ERROR', `Failed to set media session cookie: ${String(err)}`)
+  } finally {
+    clearTimeout(timeoutId)
   }
 }

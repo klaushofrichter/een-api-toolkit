@@ -10,6 +10,7 @@ This guide covers everything you need to use een-api-toolkit in your Vue 3 appli
 - [Configuration](#configuration)
 - [Authentication Flow](#authentication-flow)
 - [Using the API](#using-the-api)
+  - [Live Video Streaming](#live-video-streaming)
 - [Error Handling](#error-handling)
 - [Building an App from Scratch](#building-an-app-from-scratch)
 - [Troubleshooting](#troubleshooting)
@@ -430,9 +431,237 @@ const timestamp = toApiTimestamp(new Date())
 
 **Note on milliseconds:** The milliseconds component (`.000`) is included for API format consistency. For `getRecordedImage` queries, the API returns the nearest available image to the requested timestamp, so sub-second precision is typically not critical.
 
-### Pagination
+### Live Video Streaming
 
-The EEN API uses cursor-based pagination:
+The toolkit supports two methods for displaying live video from cameras:
+
+1. **Preview streams** - Low-resolution multipart JPEG streams, ideal for thumbnails and monitoring views
+2. **Main streams** - High-resolution video using the EEN Live Video SDK
+
+#### Preview Streams (Multipart URL)
+
+Preview streams use multipart URLs with cookie-based authentication. This is suitable for displaying multiple camera thumbnails or low-bandwidth scenarios.
+
+**Step 1: Initialize the media session (once after login)**
+
+```typescript
+import { initMediaSession } from 'een-api-toolkit'
+
+// Call this once after the user authenticates
+const { data, error } = await initMediaSession()
+
+if (error) {
+  console.error('Failed to initialize media session:', error.message)
+  return
+}
+
+console.log('Media session initialized')
+```
+
+**Step 2: Get feeds with multipart URLs**
+
+```typescript
+import { listFeeds } from 'een-api-toolkit'
+
+const { data, error } = await listFeeds({
+  deviceId: 'camera-123',
+  type: 'preview',
+  include: ['multipartUrl']
+})
+
+if (data?.results[0]?.multipartUrl) {
+  // Use directly in an <img> element - the session cookie handles auth
+  imgElement.src = data.results[0].multipartUrl
+}
+```
+
+**Complete Vue example:**
+
+```vue
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { initMediaSession, listFeeds, type Feed } from 'een-api-toolkit'
+
+const feed = ref<Feed | null>(null)
+const error = ref<string | null>(null)
+
+onMounted(async () => {
+  // Initialize media session for cookie-based auth
+  const sessionResult = await initMediaSession()
+  if (sessionResult.error) {
+    error.value = sessionResult.error.message
+    return
+  }
+
+  // Get preview feed with multipart URL
+  const feedsResult = await listFeeds({
+    deviceId: 'camera-123',
+    type: 'preview',
+    include: ['multipartUrl']
+  })
+
+  if (feedsResult.data?.results[0]) {
+    feed.value = feedsResult.data.results[0]
+  }
+})
+</script>
+
+<template>
+  <div>
+    <p v-if="error" class="error">{{ error }}</p>
+    <img
+      v-else-if="feed?.multipartUrl"
+      :src="feed.multipartUrl"
+      alt="Live camera preview"
+    />
+  </div>
+</template>
+```
+
+#### Main Streams (Live Video SDK)
+
+For high-resolution video, use the [EEN Live Video SDK](https://developer.eagleeyenetworks.com/docs/live-video-web-sdk). This provides WebCodecs-based playback with low latency.
+
+**Step 1: Install the SDK**
+
+```bash
+npm install @een/live-video-web-sdk
+```
+
+**Step 2: Initialize the player**
+
+```typescript
+import LivePlayer from '@een/live-video-web-sdk'
+import { useAuthStore } from 'een-api-toolkit'
+
+const authStore = useAuthStore()
+
+// Create video element
+const videoElement = document.getElementById('live-video') as HTMLVideoElement
+
+// Initialize player
+const player = new LivePlayer()
+
+await player.start({
+  videoElement,
+  cameraId: 'camera-123',      // The camera's device ID
+  baseUrl: authStore.baseUrl,   // e.g., 'https://c001.eagleeyenetworks.com'
+  jwt: authStore.token          // The current access token
+})
+
+// To stop playback
+player.stop()
+```
+
+**Complete Vue example:**
+
+```vue
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { useAuthStore, listFeeds, type Feed } from 'een-api-toolkit'
+import LivePlayer from '@een/live-video-web-sdk'
+
+const authStore = useAuthStore()
+const videoRef = ref<HTMLVideoElement | null>(null)
+const feed = ref<Feed | null>(null)
+const error = ref<string | null>(null)
+const isConnected = ref(false)
+
+let player: LivePlayer | null = null
+
+async function startLiveStream(deviceId: string) {
+  if (!videoRef.value || !authStore.baseUrl || !authStore.token) {
+    error.value = 'Video element or authentication not available'
+    return
+  }
+
+  // Clean up existing player
+  stopLiveStream()
+
+  try {
+    player = new LivePlayer()
+
+    await player.start({
+      videoElement: videoRef.value,
+      cameraId: deviceId,
+      baseUrl: authStore.baseUrl,
+      jwt: authStore.token
+    })
+
+    isConnected.value = true
+  } catch (err) {
+    error.value = `Failed to start live stream: ${String(err)}`
+    isConnected.value = false
+  }
+}
+
+function stopLiveStream() {
+  if (player) {
+    try {
+      player.stop()
+    } catch {
+      // Ignore cleanup errors
+    }
+    player = null
+  }
+  isConnected.value = false
+}
+
+onMounted(async () => {
+  // Get main feed for the camera
+  const feedsResult = await listFeeds({
+    deviceId: 'camera-123',
+    type: 'main'
+  })
+
+  if (feedsResult.data?.results[0]) {
+    feed.value = feedsResult.data.results[0]
+    await nextTick()
+    await startLiveStream(feed.value.deviceId)
+  }
+})
+
+onUnmounted(() => {
+  stopLiveStream()
+})
+</script>
+
+<template>
+  <div>
+    <p v-if="error" class="error">{{ error }}</p>
+    <video
+      ref="videoRef"
+      controls
+      autoplay
+      muted
+      playsinline
+    />
+    <p v-if="isConnected">Connected to live stream</p>
+  </div>
+</template>
+```
+
+#### Choosing Between Preview and Main Streams
+
+| Feature | Preview (Multipart) | Main (Live SDK) |
+|---------|---------------------|-----------------|
+| Resolution | Low (preview quality) | High (full resolution) |
+| Latency | ~1-2 seconds | ~500ms (WebCodecs) |
+| Browser support | All browsers | Chromium-based (WebCodecs) |
+| Use case | Thumbnails, multi-camera views | Single camera full-screen |
+| Authentication | Session cookie | JWT token |
+| Element | `<img>` | `<video>` |
+
+#### Media Session API Reference
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `getMediaSession()` | Get media session URL | `Result<MediaSessionResponse>` |
+| `initMediaSession()` | Initialize session cookie | `Result<MediaSessionResult>` |
+
+The media session must be initialized once after login before using multipart URLs in `<img>` elements. The session cookie is automatically included in subsequent requests.
+
+### Pagination
 
 ```typescript
 import { getUsers } from 'een-api-toolkit'

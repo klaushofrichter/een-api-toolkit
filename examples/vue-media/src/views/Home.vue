@@ -36,7 +36,7 @@ const authStore = useAuthStore()
       <ul>
         <li><code>getCameras()</code> - List available cameras</li>
         <li><code>getLiveImage()</code> - Fetch live preview images</li>
-        <li><code>getRecordedImage()</code> - Fetch recorded images with timeline navigation</li>
+        <li><code>getRecordedImage()</code> - Fetch recorded preview images</li>
       </ul>
     </div>
   </div>

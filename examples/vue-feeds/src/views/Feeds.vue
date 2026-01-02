@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue'
-import { getCameras, listFeeds } from 'een-api-toolkit'
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { getCameras, listFeeds, initMediaSession, useAuthStore } from 'een-api-toolkit'
 import type { Camera, Feed, FeedIncludeOption } from 'een-api-toolkit'
+import LivePlayer from '@een/live-video-web-sdk'
+
+const authStore = useAuthStore()
 
 const cameras = ref<Camera[]>([])
 const selectedCameraId = ref<string | null>(null)
@@ -9,6 +12,24 @@ const feeds = ref<Feed[]>([])
 const loading = ref(true)
 const loadingFeeds = ref(false)
 const error = ref<string | null>(null)
+
+// Modal state
+const showModal = ref(false)
+const selectedFeed = ref<Feed | null>(null)
+const mediaSessionInitialized = ref(false)
+const mediaSessionError = ref<string | null>(null)
+
+// Player mode: 'preview' | 'live'
+type PlayerMode = 'preview' | 'live'
+const playerMode = ref<PlayerMode>('preview')
+
+// Video element ref
+const videoRef = ref<HTMLVideoElement | null>(null)
+
+// Live SDK player state
+let livePlayerInstance: LivePlayer | null = null
+const livePlayerLoading = ref(false)
+const livePlayerConnected = ref(false)
 
 // Track component lifecycle to prevent memory leaks
 const isMounted = ref(true)
@@ -120,8 +141,157 @@ function getAvailableUrls(feed: Feed): string[] {
     .map(key => URL_LABELS[key])
 }
 
+// Initialize media session for cookie-based authentication
+async function initializeMediaSession() {
+  if (mediaSessionInitialized.value) return true
+
+  mediaSessionError.value = null
+  const result = await initMediaSession()
+
+  if (result.error) {
+    mediaSessionError.value = result.error.message
+    return false
+  }
+
+  mediaSessionInitialized.value = true
+  return true
+}
+
+// Check if feed supports multipart preview
+function hasMultipartUrl(feed: Feed): boolean {
+  return !!feed.multipartUrl
+}
+
+// Check if feed should use multipart preview
+function isPreviewFeed(feed: Feed): boolean {
+  return feed.type === 'preview' && hasMultipartUrl(feed)
+}
+
+// Check if feed supports Live SDK (main feed - uses deviceId)
+function supportsLiveSdk(feed: Feed): boolean {
+  return feed.type === 'main' && !!feed.deviceId
+}
+
+// Initialize Live SDK player for a feed
+async function initLivePlayer(feed: Feed) {
+  if (!feed.deviceId || !videoRef.value) return
+
+  // Verify auth is available
+  if (!authStore.baseUrl || !authStore.token) {
+    error.value = 'Authentication required for Live SDK'
+    return
+  }
+
+  // Clean up any existing player
+  destroyLivePlayer()
+
+  livePlayerLoading.value = true
+  livePlayerConnected.value = false
+
+  try {
+    const videoElement = videoRef.value
+
+    const config = {
+      videoElement,
+      cameraId: feed.deviceId,
+      baseUrl: authStore.baseUrl,
+      jwt: authStore.token
+    }
+
+    livePlayerInstance = new LivePlayer()
+    await livePlayerInstance.start(config)
+
+    livePlayerConnected.value = true
+  } catch (err) {
+    error.value = `Live SDK Error: ${String(err)}`
+    livePlayerConnected.value = false
+  } finally {
+    livePlayerLoading.value = false
+  }
+}
+
+// Destroy Live SDK player instance
+function destroyLivePlayer() {
+  if (livePlayerInstance) {
+    try {
+      livePlayerInstance.stop()
+    } catch (err) {
+      // Ignore errors during cleanup
+    }
+    livePlayerInstance = null
+  }
+  livePlayerLoading.value = false
+  livePlayerConnected.value = false
+}
+
+// Clean up all players
+function destroyAllPlayers() {
+  destroyLivePlayer()
+}
+
+// Handle video element errors
+function handleVideoError() {
+  error.value = 'Video playback error occurred'
+  livePlayerConnected.value = false
+}
+
+// Open the live preview modal for a feed
+async function openFeedPreview(feed: Feed, mode: PlayerMode = 'preview') {
+  // Validate mode is supported for this feed
+  if (mode === 'preview' && !isPreviewFeed(feed)) {
+    error.value = 'This feed does not support preview mode'
+    return
+  }
+  if (mode === 'live' && !supportsLiveSdk(feed)) {
+    error.value = 'This feed does not support Live SDK'
+    return
+  }
+
+  // For preview mode, initialize media session
+  if (mode === 'preview') {
+    const initialized = await initializeMediaSession()
+    if (!initialized) {
+      error.value = mediaSessionError.value || 'Failed to initialize media session'
+      return
+    }
+  }
+
+  playerMode.value = mode
+  selectedFeed.value = feed
+  showModal.value = true
+
+  // For live mode, initialize player after modal is shown
+  if (mode === 'live') {
+    await nextTick()
+    await initLivePlayer(feed)
+  }
+}
+
+// Close the modal
+function closeModal() {
+  destroyAllPlayers()
+  showModal.value = false
+  selectedFeed.value = null
+  playerMode.value = 'preview'
+}
+
+// Handle clicking outside the modal to close it
+function handleModalBackdropClick(event: Event) {
+  if ((event.target as HTMLElement).classList.contains('modal-overlay')) {
+    closeModal()
+  }
+}
+
+// Handle escape key to close modal
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && showModal.value) {
+    closeModal()
+  }
+}
+
 onMounted(() => {
   loadCameras()
+  window.addEventListener('keydown', handleKeydown)
 })
 
 onUnmounted(() => {
@@ -130,6 +300,10 @@ onUnmounted(() => {
   if (abortController) {
     abortController.abort()
   }
+  // Clean up all players
+  destroyAllPlayers()
+  // Remove keydown listener
+  window.removeEventListener('keydown', handleKeydown)
 })
 </script>
 
@@ -194,6 +368,7 @@ onUnmounted(() => {
               <th>Type</th>
               <th>Media Type</th>
               <th>Available URLs</th>
+              <th>Preview</th>
             </tr>
           </thead>
           <tbody>
@@ -210,6 +385,31 @@ onUnmounted(() => {
                   {{ getAvailableUrls(feed).join(', ') }}
                 </span>
                 <span v-else class="no-urls">None</span>
+              </td>
+              <td data-testid="feed-preview">
+                <div class="button-group-cell">
+                  <!-- Preview button for preview feeds -->
+                  <button
+                    v-if="isPreviewFeed(feed)"
+                    @click="openFeedPreview(feed, 'preview')"
+                    class="view-button"
+                    data-testid="view-preview-button"
+                    title="Multipart preview stream"
+                  >
+                    View
+                  </button>
+                  <!-- Live SDK button for main feeds -->
+                  <button
+                    v-if="supportsLiveSdk(feed)"
+                    @click="openFeedPreview(feed, 'live')"
+                    class="view-button live-button"
+                    data-testid="view-live-button"
+                    title="Live Video SDK (WebCodecs)"
+                  >
+                    Live
+                  </button>
+                  <span v-if="!isPreviewFeed(feed) && !supportsLiveSdk(feed)" class="no-preview">-</span>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -228,6 +428,74 @@ onUnmounted(() => {
       <router-link to="/logout">
         <button>Logout</button>
       </router-link>
+    </div>
+
+    <!-- Live Preview Modal -->
+    <div
+      v-if="showModal && selectedFeed"
+      class="modal-overlay"
+      @click="handleModalBackdropClick"
+      data-testid="preview-modal"
+    >
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3>
+            <template v-if="playerMode === 'live'">Live Stream (SDK)</template>
+            <template v-else>Live Preview</template>
+          </h3>
+          <button @click="closeModal" class="close-button" aria-label="Close modal">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="feed-info">
+            <p><strong>Feed ID:</strong> {{ selectedFeed.id }}</p>
+            <p><strong>Type:</strong> {{ selectedFeed.type }}</p>
+            <p><strong>Device:</strong> {{ selectedFeed.deviceId }}</p>
+            <p><strong>Mode:</strong>
+              <span :class="['mode-badge', `mode-${playerMode}`]">{{ playerMode.toUpperCase() }}</span>
+            </p>
+          </div>
+          <div class="preview-container">
+            <!-- Loading overlay for Live SDK -->
+            <div v-if="playerMode === 'live' && livePlayerLoading" class="loading-overlay">
+              <div class="spinner"></div>
+              <p>Loading live stream...</p>
+            </div>
+            <!-- Video Player for Live SDK mode -->
+            <video
+              v-if="playerMode === 'live'"
+              ref="videoRef"
+              class="preview-video"
+              controls
+              autoplay
+              muted
+              playsinline
+              data-testid="preview-video"
+              @error="handleVideoError"
+            />
+            <!-- Multipart Image for preview mode -->
+            <img
+              v-else-if="playerMode === 'preview' && selectedFeed.multipartUrl"
+              :src="selectedFeed.multipartUrl"
+              alt="Live camera preview"
+              class="preview-image"
+              data-testid="preview-image"
+            />
+          </div>
+          <p class="preview-note">
+            <template v-if="playerMode === 'live'">
+              Using Live Video SDK with WebCodecs.
+              <span v-if="livePlayerConnected" class="status-connected">Connected</span>
+              <span v-else-if="!livePlayerLoading" class="status-disconnected">Disconnected</span>
+            </template>
+            <template v-else>
+              Using multipart URL with media session cookie for authentication.
+            </template>
+          </p>
+        </div>
+        <div class="modal-footer">
+          <button @click="closeModal" class="close-modal-button">Close</button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -364,5 +632,226 @@ h2 {
 
 .error {
   color: #dc3545;
+}
+
+/* View button */
+.button-group-cell {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.view-button {
+  padding: 4px 8px;
+  font-size: 11px;
+  background: #27ae60;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.view-button:hover {
+  background: #219a52;
+}
+
+.view-button.live-button {
+  background: #9b59b6;
+}
+
+.view-button.live-button:hover {
+  background: #8e44ad;
+}
+
+.no-preview {
+  color: #999;
+}
+
+/* Mode badge in modal */
+.mode-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.mode-preview {
+  background: #27ae60;
+  color: white;
+}
+
+.mode-live {
+  background: #9b59b6;
+  color: white;
+}
+
+/* Status indicators */
+.status-connected {
+  color: #27ae60;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.status-disconnected {
+  color: #e74c3c;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  z-index: 10;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Modal styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  max-width: 800px;
+  max-height: 90vh;
+  width: 90%;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #ddd;
+  background: #f8f9fa;
+}
+
+.modal-header h3 {
+  margin: 0;
+  color: #2c3e50;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+  padding: 0;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #333;
+}
+
+.modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  max-height: calc(90vh - 150px);
+}
+
+.feed-info {
+  margin-bottom: 15px;
+  padding: 10px;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.feed-info p {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #333;
+}
+
+.preview-container {
+  position: relative;
+  background: #000;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.preview-image,
+.preview-video {
+  max-width: 100%;
+  max-height: 500px;
+  height: auto;
+  display: block;
+}
+
+.preview-video {
+  width: 100%;
+  background: #000;
+}
+
+.preview-note {
+  margin-top: 15px;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  font-style: italic;
+}
+
+.modal-footer {
+  padding: 15px 20px;
+  border-top: 1px solid #ddd;
+  background: #f8f9fa;
+  text-align: right;
+}
+
+.close-modal-button {
+  padding: 8px 20px;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.close-modal-button:hover {
+  background: #5a6268;
 }
 </style>

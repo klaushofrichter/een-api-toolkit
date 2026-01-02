@@ -12,6 +12,7 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
+    "@een/live-video-web-sdk": "^1.10.2",
     "een-api-toolkit": "file:../..",
     "pinia": "^2.1.7",
     "vue": "^3.4.0",

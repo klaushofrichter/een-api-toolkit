@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
-import { listMedia, getLiveImage, getRecordedImage } from '../media/service'
+import { listMedia, getLiveImage, getRecordedImage, getMediaSession, initMediaSession } from '../media/service'
 import { useAuthStore } from '../auth/store'
 
 // Mock fetch globally
@@ -556,6 +556,246 @@ describe('Media service functions', () => {
         deviceId: 'camera-123',
         timestamp__gte: '2024-01-15T10:00:00.000Z'
       })
+
+      expect(result.error?.code).toBe('NETWORK_ERROR')
+      expect(result.error?.message).toContain('Connection refused')
+    })
+  })
+
+  describe('getMediaSession', () => {
+    it('should return AUTH_REQUIRED when not authenticated', async () => {
+      const result = await getMediaSession()
+
+      expect(result.error?.code).toBe('AUTH_REQUIRED')
+      expect(mockFetch).not.toHaveBeenCalled()
+    })
+
+    it('should return AUTH_REQUIRED when baseUrl is not set', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+
+      const result = await getMediaSession()
+
+      expect(result.error?.code).toBe('AUTH_REQUIRED')
+      expect(result.error?.message).toBe('Base URL not configured')
+    })
+
+    it('should fetch media session URL successfully', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      const mockResponse = {
+        url: 'https://media.example.com/session/abc123'
+      }
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve(mockResponse)
+      })
+
+      const result = await getMediaSession()
+
+      expect(result.error).toBeNull()
+      expect(result.data?.url).toBe('https://media.example.com/session/abc123')
+      expect(mockFetch).toHaveBeenCalledWith(
+        'https://api.example.com/api/v3.0/media/session',
+        expect.objectContaining({
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Authorization': 'Bearer test-token'
+          }
+        })
+      )
+    })
+
+    it('should handle 401 error', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        json: () => Promise.resolve({ message: 'Invalid token' })
+      })
+
+      const result = await getMediaSession()
+
+      expect(result.error?.code).toBe('AUTH_REQUIRED')
+      expect(result.error?.status).toBe(401)
+    })
+
+    it('should handle 403 error', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 403,
+        statusText: 'Forbidden',
+        json: () => Promise.resolve({ message: 'Access denied' })
+      })
+
+      const result = await getMediaSession()
+
+      expect(result.error?.code).toBe('FORBIDDEN')
+      expect(result.error?.status).toBe(403)
+    })
+
+    it('should handle network error', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockRejectedValueOnce(new Error('Network error'))
+
+      const result = await getMediaSession()
+
+      expect(result.error?.code).toBe('NETWORK_ERROR')
+      expect(result.error?.message).toContain('Network error')
+    })
+  })
+
+  describe('initMediaSession', () => {
+    it('should return AUTH_REQUIRED when not authenticated', async () => {
+      const result = await initMediaSession()
+
+      expect(result.error?.code).toBe('AUTH_REQUIRED')
+      expect(mockFetch).not.toHaveBeenCalled()
+    })
+
+    it('should complete two-step initialization successfully', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      // First call: get session URL
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+      })
+
+      // Second call: set the cookie
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200
+      })
+
+      const result = await initMediaSession()
+
+      expect(result.error).toBeNull()
+      expect(result.data?.success).toBe(true)
+      expect(result.data?.sessionUrl).toBe('https://media.example.com/session/abc123')
+
+      // Verify both calls were made
+      expect(mockFetch).toHaveBeenCalledTimes(2)
+
+      // First call should be to media/session
+      expect(mockFetch.mock.calls[0]![0]).toBe('https://api.example.com/api/v3.0/media/session')
+
+      // Second call should be to the session URL with credentials
+      expect(mockFetch.mock.calls[1]![0]).toBe('https://media.example.com/session/abc123')
+      expect(mockFetch.mock.calls[1]![1]).toMatchObject({
+        credentials: 'include'
+      })
+    })
+
+    it('should handle 204 No Content response from session URL', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+      })
+
+      // 204 No Content is a valid success response
+      mockFetch.mockResolvedValueOnce({
+        ok: false, // ok is false for 204
+        status: 204
+      })
+
+      const result = await initMediaSession()
+
+      expect(result.error).toBeNull()
+      expect(result.data?.success).toBe(true)
+    })
+
+    it('should propagate error from getMediaSession', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 401,
+        statusText: 'Unauthorized',
+        json: () => Promise.resolve({ message: 'Invalid token' })
+      })
+
+      const result = await initMediaSession()
+
+      expect(result.error?.code).toBe('AUTH_REQUIRED')
+      expect(result.error?.message).toContain('Failed to get media session')
+    })
+
+    it('should handle error when setting cookie', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+      })
+
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+        statusText: 'Internal Server Error',
+        json: () => Promise.resolve({ message: 'Session creation failed' })
+      })
+
+      const result = await initMediaSession()
+
+      expect(result.error?.code).toBe('API_ERROR')
+      expect(result.error?.message).toContain('Failed to set media session cookie')
+    })
+
+    it('should handle missing URL in session response', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({}) // No URL in response
+      })
+
+      const result = await initMediaSession()
+
+      expect(result.error?.code).toBe('API_ERROR')
+      expect(result.error?.message).toContain('No session URL returned')
+    })
+
+    it('should handle network error when setting cookie', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+      })
+
+      mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
+
+      const result = await initMediaSession()
 
       expect(result.error?.code).toBe('NETWORK_ERROR')
       expect(result.error?.message).toContain('Connection refused')

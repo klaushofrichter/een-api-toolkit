@@ -182,6 +182,8 @@ function generateQuickReference(): string {
 | \`listMedia(params)\` | List media intervals for a device | \`Result<PaginatedResult<MediaInterval>>\` |
 | \`getLiveImage(params)\` | Get live preview image from camera | \`Result<LiveImageResult>\` |
 | \`getRecordedImage(params)\` | Get recorded image from history | \`Result<RecordedImageResult>\` |
+| \`getMediaSession()\` | Get media session URL for cookies | \`Result<MediaSessionResponse>\` |
+| \`initMediaSession()\` | Initialize media session (sets cookie) | \`Result<MediaSessionResult>\` |
 
 ---
 
@@ -607,6 +609,16 @@ interface RecordedImageResult {
   prevToken: string | null  // X-Een-PrevToken for previous image
   overlaySvg: string | null // X-Een-OverlaySvg for overlays
 }
+
+// Media Session types - for setting up cookie-based media access
+interface MediaSessionResponse {
+  url: string               // URL to call to set the session cookie
+}
+
+interface MediaSessionResult {
+  success: boolean          // Whether cookie was set successfully
+  sessionUrl: string        // The URL that was called
+}
 \`\`\`
 
 ---
@@ -914,6 +926,310 @@ if (data.nextToken) {
 }
 \`\`\`
 
+### initMediaSession
+
+Initialize media session for cookie-based authentication. Required before using
+multipart URLs directly in HTML elements.
+
+\`\`\`typescript
+import { initMediaSession, listFeeds } from 'een-api-toolkit'
+
+// Initialize the media session (do this once after login)
+const { data, error } = await initMediaSession()
+
+if (error) {
+  console.error('Failed to init media session:', error.message)
+  return
+}
+
+console.log('Media session initialized:', data.sessionUrl)
+
+// Now multipart URLs can be used directly in <img> elements
+const { data: feeds } = await listFeeds({
+  deviceId: 'camera-123',
+  include: ['multipartUrl']
+})
+
+if (feeds?.results[0]?.multipartUrl) {
+  // This works because the session cookie is set
+  const imgElement = document.querySelector('img')
+  imgElement.src = feeds.results[0].multipartUrl
+}
+\`\`\`
+
+### getMediaSession
+
+Get the media session URL without setting the cookie. Use \`initMediaSession()\`
+for most cases.
+
+\`\`\`typescript
+import { getMediaSession } from 'een-api-toolkit'
+
+// Get the session URL (step 1 of 2)
+const { data, error } = await getMediaSession()
+
+if (error) {
+  console.error('Failed to get media session:', error.message)
+  return
+}
+
+console.log('Session URL:', data.url)
+// Manually call data.url with credentials: 'include' to set the cookie
+\`\`\`
+
+---
+
+`
+}
+
+function generateLiveVideoStreaming(): string {
+  return `## Live Video Streaming
+
+The EEN API Toolkit supports two methods for displaying live video from cameras:
+
+### Stream Types Comparison
+
+| Feature | Preview Stream | Main Stream |
+|---------|---------------|-------------|
+| Quality | Lower resolution | Full resolution |
+| Authentication | Session cookie (multipart URL) | JWT token (Live SDK) |
+| Element Type | \`<img>\` element | \`<video>\` element |
+| Technology | MJPEG multipart | WebCodecs via SDK |
+| Use Case | Thumbnails, quick previews | Full video playback |
+| Setup | \`initMediaSession()\` | \`@een/live-video-web-sdk\` |
+
+### Preview Streams (Multipart URL)
+
+Preview streams use cookie-based authentication with multipart URLs. These are ideal
+for thumbnails and quick previews using simple \`<img>\` elements.
+
+**Step 1: Initialize the media session (once after login)**
+
+\`\`\`typescript
+import { initMediaSession } from 'een-api-toolkit'
+
+// Call once after authentication
+const { data, error } = await initMediaSession()
+if (error) {
+  console.error('Failed to init media session:', error.message)
+  return
+}
+// Session cookie is now set
+\`\`\`
+
+**Step 2: Get the feed URL and display it**
+
+\`\`\`typescript
+import { listFeeds } from 'een-api-toolkit'
+
+const { data: feeds } = await listFeeds({
+  deviceId: cameraId,
+  type: 'preview',
+  include: ['multipartUrl']
+})
+
+// Find a feed with multipartUrl
+const previewFeed = feeds?.results.find(f => f.multipartUrl)
+if (previewFeed?.multipartUrl) {
+  // Can be used directly in an <img> element
+  imgElement.src = previewFeed.multipartUrl
+}
+\`\`\`
+
+**Complete Vue Example (Preview Stream):**
+
+\`\`\`vue
+<script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { initMediaSession, listFeeds, type Feed } from 'een-api-toolkit'
+
+const props = defineProps<{ cameraId: string }>()
+const previewUrl = ref<string | null>(null)
+const loading = ref(true)
+
+onMounted(async () => {
+  // Initialize media session for cookie-based auth
+  const { error: sessionError } = await initMediaSession()
+  if (sessionError) {
+    console.error('Failed to init session:', sessionError.message)
+    loading.value = false
+    return
+  }
+
+  // Get preview feed
+  const { data, error } = await listFeeds({
+    deviceId: props.cameraId,
+    type: 'preview',
+    include: ['multipartUrl']
+  })
+
+  if (error) {
+    console.error('Failed to get feeds:', error.message)
+    loading.value = false
+    return
+  }
+
+  const feed = data.results.find(f => f.multipartUrl)
+  previewUrl.value = feed?.multipartUrl ?? null
+  loading.value = false
+})
+</script>
+
+<template>
+  <div class="preview-container">
+    <div v-if="loading">Loading...</div>
+    <img v-else-if="previewUrl" :src="previewUrl" alt="Camera preview" />
+    <div v-else>No preview available</div>
+  </div>
+</template>
+\`\`\`
+
+### Main Streams (Live Video SDK)
+
+Main streams provide full-resolution video using the \`@een/live-video-web-sdk\`.
+This requires JWT authentication and uses WebCodecs for efficient video playback.
+
+**Installation:**
+
+\`\`\`bash
+npm install @een/live-video-web-sdk
+\`\`\`
+
+**Complete Vue Example (Main Stream):**
+
+\`\`\`vue
+<script setup lang="ts">
+import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+import { LivePlayer } from '@een/live-video-web-sdk'
+import { useAuthStore, listFeeds, type Feed } from 'een-api-toolkit'
+
+const props = defineProps<{ cameraId: string }>()
+const authStore = useAuthStore()
+const videoElement = ref<HTMLVideoElement | null>(null)
+const loading = ref(true)
+const statusMessage = ref('')
+
+let livePlayer: LivePlayer | null = null
+
+async function initPlayer() {
+  // Get the main feed to verify it exists
+  const { data, error } = await listFeeds({
+    deviceId: props.cameraId,
+    type: 'main',
+    include: ['multipartUrl']
+  })
+
+  if (error || !data.results.length) {
+    statusMessage.value = 'No main feed available'
+    loading.value = false
+    return
+  }
+
+  // Wait for video element to be mounted
+  await nextTick()
+  if (!videoElement.value) return
+
+  // Ensure auth is valid
+  if (!authStore.baseUrl || !authStore.token) {
+    statusMessage.value = 'Not authenticated'
+    loading.value = false
+    return
+  }
+
+  // Initialize the Live SDK player
+  livePlayer = new LivePlayer({
+    videoElement: videoElement.value,
+    cameraId: props.cameraId,
+    baseUrl: authStore.baseUrl,
+    jwt: authStore.token
+  })
+
+  // Subscribe to status updates
+  livePlayer.onStatusChange((status) => {
+    statusMessage.value = status
+    if (status === 'playing') {
+      loading.value = false
+    }
+  })
+
+  // Start playback
+  livePlayer.start()
+}
+
+function handleVideoError(event: Event) {
+  const video = event.target as HTMLVideoElement
+  console.error('Video error:', video.error?.message)
+  statusMessage.value = 'Playback error'
+  loading.value = false
+}
+
+function cleanup() {
+  if (livePlayer) {
+    livePlayer.stop()
+    livePlayer = null
+  }
+}
+
+onMounted(() => {
+  initPlayer()
+})
+
+onUnmounted(() => {
+  cleanup()
+})
+</script>
+
+<template>
+  <div class="video-container">
+    <div v-if="loading" class="loading-overlay">
+      <span>{{ statusMessage || 'Connecting...' }}</span>
+    </div>
+    <video
+      ref="videoElement"
+      autoplay
+      muted
+      playsinline
+      @error="handleVideoError"
+    />
+    <div v-if="statusMessage && !loading" class="status">{{ statusMessage }}</div>
+  </div>
+</template>
+
+<style scoped>
+.video-container {
+  position: relative;
+  background: #000;
+}
+video {
+  width: 100%;
+  height: auto;
+}
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+}
+</style>
+\`\`\`
+
+### Choosing Between Preview and Main Streams
+
+- **Preview streams** are simpler to implement and work well for:
+  - Camera selection grids
+  - Thumbnail previews
+  - Lower bandwidth scenarios
+  - Simple \`<img>\` element integration
+
+- **Main streams** are better for:
+  - Full-screen video viewing
+  - High-quality playback
+  - Professional monitoring applications
+  - Integration with video controls
+
 ---
 
 `
@@ -1215,6 +1531,7 @@ function main() {
     generateCoreTypes(),
     generateEntityTypes(),
     generateAPIReference(),
+    generateLiveVideoStreaming(),   // Live video streaming guide
     generatePatterns(),
     generateAntiPatterns(),
     generateSetupGuide()
