@@ -28,12 +28,18 @@ const authStore = useAuthStore()
       <h3>About This Example</h3>
       <p>
         This example demonstrates using the EEN Feeds API to list available
-        streaming feeds from cameras. It showcases the following toolkit functions:
+        streaming feeds from cameras and display live video previews. It showcases
+        the following toolkit functions:
       </p>
       <ul>
         <li><code>getCameras()</code> - List available cameras</li>
         <li><code>listFeeds()</code> - List feeds with streaming URLs</li>
+        <li><code>initMediaSession()</code> - Initialize session cookie for media access</li>
       </ul>
+      <p class="feature-note">
+        Click "View" on any feed with a multipart URL to see a live preview.
+        The toolkit handles media session cookie initialization automatically.
+      </p>
     </div>
   </div>
 </template>
@@ -91,5 +97,15 @@ const authStore = useAuthStore()
   padding: 2px 6px;
   border-radius: 3px;
   font-family: monospace;
+}
+
+.feature-note {
+  margin-top: 15px;
+  padding: 10px;
+  background: #e8f4fd;
+  border-left: 3px solid #3498db;
+  border-radius: 0 4px 4px 0;
+  font-size: 14px;
+  color: #2c3e50;
 }
 </style>

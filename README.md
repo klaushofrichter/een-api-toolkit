@@ -131,9 +131,9 @@ if (!cameraError) {
 
 ```
 ┌──────────────────────────────────────────────────────────────────────┐
-│                         Your Vue 3 App                                │
+│                         Your Vue 3 App                               │
 │  ┌────────────────────────────────────────────────────────────────┐  │
-│  │                   import from 'een-api-toolkit'                 │  │
+│  │                   import from 'een-api-toolkit'                │  │
 │  │           ┌────────────────────────────────────┐               │  │
 │  │           │     Plain Async Functions          │               │  │
 │  │           │     getUsers(), getCameras()       │               │  │
@@ -169,9 +169,35 @@ if (!cameraError) {
 | **[User Guide](./docs/USER-GUIDE.md)** | Installation, proxy setup, configuration, building apps |
 | **[Developer Guide](./docs/DEVELOPER-GUIDE.md)** | Architecture, testing, CI/CD, contributing |
 | **[API Reference](./docs/api/)** | Auto-generated TypeDoc documentation |
-| **[Example App](./examples/vue-users/)** | Complete Vue 3 example with OAuth flow |
 | **[AI Context](./docs/AI-CONTEXT.md)** | Single-file reference for AI assistants (also in npm package) |
 | **[AI Prompts](./docs/Prompts.md)** | Example prompts for generating apps with AI |
+
+## Example Applications
+
+The `examples/` directory contains complete Vue 3 applications demonstrating toolkit features:
+
+| Example | Description | APIs Used |
+|---------|-------------|-----------|
+| **[vue-users](./examples/vue-users/)** | User management with pagination | `getUsers()`, `getCurrentUser()` |
+| **[vue-cameras](./examples/vue-cameras/)** | Camera listing with status filters | `getCameras()` |
+| **[vue-bridges](./examples/vue-bridges/)** | Bridge listing with device info | `getBridges()` |
+| **[vue-media](./examples/vue-media/)** | Live and recorded image viewing | `getCameras()`, `getLiveImage()`, `getRecordedImage()` |
+| **[vue-feeds](./examples/vue-feeds/)** | Live video streaming with preview and main streams | `getCameras()`, `listFeeds()`, `initMediaSession()` |
+
+Each example includes:
+- Complete OAuth authentication flow
+- E2E tests with Playwright
+- Proper error handling patterns
+- TypeScript types throughout
+
+To run an example:
+```bash
+cd examples/vue-users
+npm install
+npm run dev  # Runs at http://127.0.0.1:3333
+```
+
+> **Note:** Examples require a running OAuth proxy. See [Quick Start](#2-set-up-oauth-proxy).
 
 ## External Resources
 

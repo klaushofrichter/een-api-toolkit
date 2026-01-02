@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.1.10**
+**EEN API Toolkit v0.1.13**
 
 ***
 
-# EEN API Toolkit v0.1.10
+# EEN API Toolkit v0.1.13
 
 ## Interfaces
 
@@ -62,6 +62,8 @@
 - [LiveImageResult](interfaces/LiveImageResult.md)
 - [GetRecordedImageParams](interfaces/GetRecordedImageParams.md)
 - [RecordedImageResult](interfaces/RecordedImageResult.md)
+- [MediaSessionResponse](interfaces/MediaSessionResponse.md)
+- [MediaSessionResult](interfaces/MediaSessionResult.md)
 
 ## Type Aliases
 
@@ -120,6 +122,8 @@
 - [listMedia](functions/listMedia.md)
 - [getLiveImage](functions/getLiveImage.md)
 - [getRecordedImage](functions/getRecordedImage.md)
+- [getMediaSession](functions/getMediaSession.md)
+- [initMediaSession](functions/initMediaSession.md)
 
 ### Other
 

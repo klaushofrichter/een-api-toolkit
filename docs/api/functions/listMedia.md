@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.10**](../README.md)
+[**EEN API Toolkit v0.1.13**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listMedia**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`MediaInterval`](../interfaces/MediaInterval.md)\>\>\>
 
-Defined in: [src/media/service.ts:91](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L91)
+Defined in: [src/media/service.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L98)
 
 List media intervals (recording periods) for a device.
 

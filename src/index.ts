@@ -38,6 +38,8 @@ export type {
   GetRecordedImageParams,
   LiveImageResult,
   RecordedImageResult,
+  MediaSessionResponse,
+  MediaSessionResult,
   Feed,
   FeedStreamType,
   FeedMediaType,
@@ -85,7 +87,9 @@ export {
 export {
   listMedia,
   getLiveImage,
-  getRecordedImage
+  getRecordedImage,
+  getMediaSession,
+  initMediaSession
 } from './media'
 
 // Feeds - Plain functions

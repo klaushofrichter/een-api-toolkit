@@ -1,1 +1,1 @@
-export { listMedia, getLiveImage, getRecordedImage } from './service'
+export { listMedia, getLiveImage, getRecordedImage, getMediaSession, initMediaSession } from './service'

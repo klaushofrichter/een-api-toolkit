@@ -228,3 +228,38 @@ export interface RecordedImageResult {
   /** SVG overlay data (from X-Een-OverlaySvg header, if requested) */
   overlaySvg: string | null
 }
+
+/**
+ * Response from the media session endpoint.
+ *
+ * @remarks
+ * Contains the URL to call to set the media session cookie.
+ * The session cookie enables media playback in browsers without
+ * passing the Bearer token in every request.
+ *
+ * For more details, see the
+ * [EEN API Documentation](https://developer.eagleeyenetworks.com/docs/watch-live-video).
+ *
+ * @category Media
+ */
+export interface MediaSessionResponse {
+  /** URL to call to set the media session cookie */
+  url: string
+}
+
+/**
+ * Result of initializing a media session.
+ *
+ * @remarks
+ * Indicates whether the media session was successfully initialized.
+ * When successful, the browser will have a session cookie set that
+ * allows media playback without explicit authorization headers.
+ *
+ * @category Media
+ */
+export interface MediaSessionResult {
+  /** Whether the session was successfully initialized */
+  success: boolean
+  /** The session URL that was called (for debugging) */
+  sessionUrl: string
+}
