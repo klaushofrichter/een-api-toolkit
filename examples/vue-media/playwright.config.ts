@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// Load .env files: parent first, then local with override to replace any conflicts
+// Load .env files: parent .env first, then local .env overrides parent values
 dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 dotenv.config({ path: path.resolve(__dirname, '.env'), override: true })
 
@@ -14,6 +14,9 @@ if (!redirectUri.startsWith('http://127.0.0.1:') && !redirectUri.startsWith('htt
   throw new Error('VITE_REDIRECT_URI must use localhost or 127.0.0.1 for security')
 }
 const baseURL = redirectUri
+
+// Export for use in test files
+export { baseURL }
 
 export default defineConfig({
   testDir: './e2e',

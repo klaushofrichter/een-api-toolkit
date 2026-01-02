@@ -27,7 +27,8 @@ export default [
         ...globals.browser,
         ...globals.node,
         ...globals.es2022,
-        // TypeScript DOM types used in code
+        // Web API type used in fetch headers - defined in lib.dom.d.ts but ESLint
+        // no-undef rule doesn't recognize TypeScript lib types
         HeadersInit: 'readonly'
       }
     },

@@ -12,9 +12,15 @@
  * - VITE_EEN_CLIENT_ID: EEN OAuth client ID
  * - TEST_USER: Test user email
  * - TEST_PASSWORD: Test user password
+ *
+ * Note: Helper functions (isProxyAccessible, performLogin, clearAuthState) are
+ * intentionally duplicated in each example's auth.spec.ts to avoid Playwright's
+ * "Requiring @playwright/test second time" error that occurs when importing
+ * from a shared file outside the example directory.
  */
 
 import { test, expect, Page } from '@playwright/test'
+import { baseURL } from '../playwright.config'
 
 const TIMEOUTS = {
   OAUTH_REDIRECT: 30000,
@@ -30,6 +36,10 @@ const TEST_USER = process.env.TEST_USER
 const TEST_PASSWORD = process.env.TEST_PASSWORD
 const PROXY_URL = process.env.VITE_PROXY_URL
 
+/**
+ * Checks if the OAuth proxy server is accessible.
+ * Returns false if proxy is unavailable, allowing tests to be skipped gracefully.
+ */
 async function isProxyAccessible(): Promise<boolean> {
   if (!PROXY_URL) return false
   const controller = new AbortController()
@@ -41,13 +51,20 @@ async function isProxyAccessible(): Promise<boolean> {
       signal: controller.signal
     })
     return response.ok || response.status === 404
-  } catch {
+  } catch (error) {
+    if (!process.env.CI) {
+      console.log('Proxy check failed:', error instanceof Error ? error.message : error)
+    }
     return false
   } finally {
     clearTimeout(timeoutId)
   }
 }
 
+/**
+ * Performs OAuth login flow through the EEN authentication page.
+ * Handles two-step navigation: app login page -> EEN OAuth -> callback
+ */
 async function performLogin(page: Page, username: string, password: string): Promise<void> {
   await page.goto('/')
 
@@ -61,6 +78,8 @@ async function performLogin(page: Page, username: string, password: string): Pro
     page.getByRole('button', { name: 'Login with Eagle Eye Networks' }).click()
   ])
 
+  // EEN OAuth page selectors - these depend on EEN's login UI and may need
+  // updates if EEN changes their authentication page structure
   const emailInput = page.locator('#authentication--input__email')
   await emailInput.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE })
   await emailInput.fill(username)
@@ -71,12 +90,18 @@ async function performLogin(page: Page, username: string, password: string): Pro
   await passwordInput.waitFor({ state: 'visible', timeout: TIMEOUTS.PASSWORD_VISIBLE })
   await passwordInput.fill(password)
 
+  // EEN uses either #next or "Sign in" button depending on login flow
   await page.locator('#next, button:has-text("Sign in")').first().click()
 
-  // Wait for redirect back to the app (could be / or /live depending on app flow)
-  await page.waitForURL(/127\.0\.0\.1:3333/, { timeout: TIMEOUTS.AUTH_COMPLETE })
+  // Wait for redirect back to the app using configured baseURL
+  const baseURLPattern = new RegExp(baseURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  await page.waitForURL(baseURLPattern, { timeout: TIMEOUTS.AUTH_COMPLETE })
 }
 
+/**
+ * Clears authentication state from browser storage.
+ * Used in afterEach to ensure test isolation.
+ */
 async function clearAuthState(page: Page): Promise<void> {
   try {
     const url = page.url()
@@ -86,12 +111,14 @@ async function clearAuthState(page: Page): Promise<void> {
           localStorage.clear()
           sessionStorage.clear()
         } catch {
-          // Ignore errors
+          // Storage access may fail in certain contexts
         }
       })
     }
-  } catch {
-    // Ignore errors
+  } catch (error) {
+    if (!process.env.CI) {
+      console.log('Clear auth state failed:', error instanceof Error ? error.message : error)
+    }
   }
 }
 
@@ -145,6 +172,7 @@ test.describe('Vue Media Example - Auth', () => {
       page.getByRole('button', { name: 'Login with Eagle Eye Networks' }).click()
     ])
 
+    // EEN OAuth page selector
     const emailInput = page.locator('#authentication--input__email')
     await expect(emailInput).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
   })
