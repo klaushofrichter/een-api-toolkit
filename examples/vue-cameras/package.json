@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "stop": "npx kill-port 3333",
+    "stop": "lsof -ti :3333 2>/dev/null | xargs -r kill -9 || echo 'Port 3333 is free'",
     "dev": "npm run stop && vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",

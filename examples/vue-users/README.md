@@ -2,14 +2,25 @@
 
 A complete example showing how to use the een-api-toolkit in a Vue 3 application.
 
+![Users Screenshot](users-screenshot.png)
+
 ## Features Demonstrated
 
 - OAuth authentication flow (login, callback, logout)
 - Protected routes with navigation guards
-- useCurrentUser composable for current user profile
-- useUsers composable with pagination
-- Error handling
+- `getCurrentUser()` function for current user profile
+- `getUsers()` function with pagination
+- Error handling with Result pattern
 - Reactive authentication state
+
+## APIs Used
+
+- `getUsers()` - List users with pagination
+- `getCurrentUser()` - Get current user profile
+- `useAuthStore()` - Authentication state management
+- `getAuthUrl()` - Generate OAuth login URL
+- `handleAuthCallback()` - Process OAuth callback
+- `initEenToolkit()` - Toolkit initialization
 
 ## Setup
 
@@ -56,6 +67,8 @@ All commands below should be run from this example directory (`examples/vue-user
 5. Open http://127.0.0.1:3333 in your browser.
 
 **Important:** The EEN Identity Provider only permits `http://127.0.0.1:3333` as the OAuth redirect URI. Do not use `localhost` or other ports.
+
+**Note:** Development and testing was done on macOS. The `npm run stop` command uses `lsof`, which is not available on Windows. Windows users should manually stop any process on port 3333 or use `npx kill-port 3333` instead.
 
 ## Project Structure
 
@@ -114,21 +127,51 @@ if (error) {
 }
 ```
 
-### Using Composables (Users.vue)
+### Fetching Users with Pagination (Users.vue)
 
-```vue
-<script setup>
-import { useUsers } from 'een-api-toolkit'
+```typescript
+import { ref, computed } from 'vue'
+import { getUsers, type User, type ListUsersParams } from 'een-api-toolkit'
 
-const { users, loading, error, hasNextPage, fetchNextPage } = useUsers({ pageSize: 10 })
-</script>
+const users = ref<User[]>([])
+const nextPageToken = ref<string | undefined>(undefined)
+const hasNextPage = computed(() => !!nextPageToken.value)
 
-<template>
-  <ul v-for="user in users" :key="user.id">
-    <li>{{ user.email }}</li>
-  </ul>
-  <button v-if="hasNextPage" @click="fetchNextPage">Load More</button>
-</template>
+async function fetchUsers(params: ListUsersParams) {
+  const result = await getUsers(params)
+  if (result.error) {
+    // Handle error
+  } else {
+    users.value = result.data.results
+    nextPageToken.value = result.data.nextPageToken
+  }
+}
+
+async function fetchNextPage() {
+  if (!nextPageToken.value) return
+  const result = await getUsers({ pageSize: 10, pageToken: nextPageToken.value })
+  if (!result.error) {
+    users.value = [...users.value, ...result.data.results]
+    nextPageToken.value = result.data.nextPageToken
+  }
+}
+```
+
+### Fetching Current User (Home.vue)
+
+```typescript
+import { getCurrentUser, type UserProfile } from 'een-api-toolkit'
+
+const user = ref<UserProfile | null>(null)
+
+async function fetchUser() {
+  const result = await getCurrentUser()
+  if (result.error) {
+    // Handle error
+  } else {
+    user.value = result.data
+  }
+}
 ```
 
 ### Auth Guard (router/index.ts)
