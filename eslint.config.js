@@ -5,6 +5,19 @@ import vue from 'eslint-plugin-vue'
 import vueParser from 'vue-eslint-parser'
 import globals from 'globals'
 
+// Shared rules for TypeScript and Vue files to reduce duplication
+const commonRules = {
+  ...tseslint.configs.recommended.rules,
+  '@typescript-eslint/explicit-function-return-type': 'off',
+  '@typescript-eslint/explicit-module-boundary-types': 'off',
+  '@typescript-eslint/no-explicit-any': 'warn',
+  '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+  'no-console': ['warn', { allow: ['warn', 'error'] }],
+  'no-debugger': 'warn',
+  'prefer-const': 'error',
+  'no-var': 'error'
+}
+
 export default [
   // Global ignores
   {
@@ -35,17 +48,7 @@ export default [
     plugins: {
       '@typescript-eslint': tseslint
     },
-    rules: {
-      ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-      'no-debugger': 'warn',
-      'prefer-const': 'error',
-      'no-var': 'error'
-    }
+    rules: commonRules
   },
 
   // Vue files
@@ -69,17 +72,9 @@ export default [
     },
     rules: {
       ...vue.configs['flat/recommended'].rules,
-      ...tseslint.configs.recommended.rules,
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      ...commonRules,
       'vue/multi-word-component-names': 'off',
-      'vue/no-v-html': 'off',
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-      'no-debugger': 'warn',
-      'prefer-const': 'error',
-      'no-var': 'error'
+      'vue/no-v-html': 'off'
     }
   },
 

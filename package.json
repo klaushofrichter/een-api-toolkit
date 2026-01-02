@@ -1,6 +1,6 @@
 {
   "name": "een-api-toolkit",
-  "version": "0.1.13",
+  "version": "0.1.14",
   "description": "EEN Video platform API v3.0 library for Vue 3",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -38,7 +38,7 @@
     "prepare": "husky"
   },
   "peerDependencies": {
-    "pinia": "^2.0.0 || ^3.0.0",
+    "pinia": "^3.0.0",
     "vue": "^3.3.0"
   },
   "devDependencies": {

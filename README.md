@@ -199,6 +199,44 @@ npm run dev  # Runs at http://127.0.0.1:3333
 
 > **Note:** Examples require a running OAuth proxy. See [Quick Start](#2-set-up-oauth-proxy).
 
+## Running E2E Tests
+
+Each example includes Playwright E2E tests that test the full OAuth login flow. Tests are designed to skip gracefully when the OAuth proxy or credentials are unavailable.
+
+### Prerequisites
+
+1. **OAuth Proxy**: Start the proxy server:
+   ```bash
+   ./scripts/restart-proxy.sh  # Starts proxy at http://127.0.0.1:8787
+   ```
+
+2. **Environment Variables**: Create a `.env` file in the project root:
+   ```bash
+   VITE_PROXY_URL=http://127.0.0.1:8787
+   VITE_EEN_CLIENT_ID=your_client_id
+   TEST_USER=your_test_email
+   TEST_PASSWORD=your_test_password
+   ```
+
+### Running Tests
+
+```bash
+# Run E2E tests for a specific example
+cd examples/vue-users
+npm run test:e2e
+
+# Run with UI for debugging
+npm run test:e2e:ui
+```
+
+### Test Behavior
+
+- **Proxy unavailable**: OAuth tests are automatically skipped with message "OAuth proxy not accessible"
+- **Credentials missing**: OAuth tests are skipped with message "Test credentials not available"
+- **Basic tests**: Tests that don't require OAuth (e.g., checking login button visibility) always run
+
+> **Note:** All development and testing has been done on macOS. The `lsof` command used in scripts may behave differently on other platforms.
+
 ## External Resources
 
 - [EEN Developer Portal](https://developer.eagleeyenetworks.com/)
