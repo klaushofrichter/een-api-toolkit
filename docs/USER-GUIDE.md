@@ -599,8 +599,9 @@ function stopLiveStream() {
   if (player) {
     try {
       player.stop()
-    } catch {
-      // Ignore cleanup errors
+    } catch (err) {
+      // Log cleanup errors for debugging, but don't throw
+      console.warn('Failed to stop live stream during cleanup:', err)
     }
     player = null
   }
@@ -647,7 +648,7 @@ onUnmounted(() => {
 |---------|---------------------|-----------------|
 | Resolution | Low (preview quality) | High (full resolution) |
 | Latency | ~1-2 seconds | ~500ms (WebCodecs) |
-| Browser support | All browsers | Chromium-based (WebCodecs) |
+| Browser support | All modern browsers | Chrome 94+, Edge 94+, Opera 80+ (WebCodecs required) |
 | Use case | Thumbnails, multi-camera views | Single camera full-screen |
 | Authentication | Session cookie | JWT token |
 | Element | `<img>` | `<video>` |

@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.1.12
+> **Version:** 0.1.13
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -943,6 +943,7 @@ The EEN API Toolkit supports two methods for displaying live video from cameras:
 | Authentication | Session cookie (multipart URL) | JWT token (Live SDK) |
 | Element Type | `<img>` element | `<video>` element |
 | Technology | MJPEG multipart | WebCodecs via SDK |
+| Browser Support | All modern browsers | Chrome 94+, Edge 94+, Opera 80+ (WebCodecs) |
 | Use Case | Thumbnails, quick previews | Full video playback |
 | Setup | `initMediaSession()` | `@een/live-video-web-sdk` |
 
@@ -1085,12 +1086,7 @@ async function initPlayer() {
   }
 
   // Initialize the Live SDK player
-  livePlayer = new LivePlayer({
-    videoElement: videoElement.value,
-    cameraId: props.cameraId,
-    baseUrl: authStore.baseUrl,
-    jwt: authStore.token
-  })
+  livePlayer = new LivePlayer()
 
   // Subscribe to status updates
   livePlayer.onStatusChange((status) => {
@@ -1101,7 +1097,12 @@ async function initPlayer() {
   })
 
   // Start playback
-  livePlayer.start()
+  await livePlayer.start({
+    videoElement: videoElement.value,
+    cameraId: props.cameraId,
+    baseUrl: authStore.baseUrl,
+    jwt: authStore.token
+  })
 }
 
 function handleVideoError(event: Event) {

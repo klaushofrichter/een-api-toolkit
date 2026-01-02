@@ -41,11 +41,16 @@ function createTimeoutController(timeoutMs: number = DEFAULT_TIMEOUT_MS): { cont
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer)
   // Use chunked approach with array join for O(n) complexity instead of O(n²) string concatenation
+  // Iterate byte-by-byte within chunks to avoid call stack issues with String.fromCharCode.apply()
   const chunkSize = 8192
   const chunks: string[] = []
   for (let i = 0; i < bytes.byteLength; i += chunkSize) {
     const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.byteLength))
-    chunks.push(String.fromCharCode.apply(null, chunk as unknown as number[]))
+    let str = ''
+    for (let j = 0; j < chunk.length; j++) {
+      str += String.fromCharCode(chunk[j]!)
+    }
+    chunks.push(str)
   }
   const binary = chunks.join('')
   // Use btoa in browser, Buffer in Node.js

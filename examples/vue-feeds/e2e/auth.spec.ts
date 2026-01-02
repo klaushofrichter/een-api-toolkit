@@ -7,222 +7,21 @@
  * - Running OAuth proxy server (see ../../../scripts/restart-proxy.sh)
  */
 
-import { test, expect, chromium } from '@playwright/test'
-import * as fs from 'fs'
-import * as path from 'path'
-import { fileURLToPath } from 'url'
-import dotenv from 'dotenv'
-
-// Load environment variables from root .env
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const rootDir = path.resolve(__dirname, '../../..')
-dotenv.config({ path: path.join(rootDir, '.env') })
-
-const PROXY_URL = process.env.VITE_PROXY_URL || 'http://localhost:8787'
-const CLIENT_ID = process.env.VITE_EEN_CLIENT_ID
-const REDIRECT_URI = 'http://127.0.0.1:3333'
-const AUTH_CACHE_FILE = path.join(__dirname, '.auth-state.json')
-
-interface AuthState {
-  token: string
-  tokenExpiration: number
-  baseUrl: string
-  sessionId: string
-}
-
-interface TokenResponse {
-  accessToken: string
-  expiresIn: number
-  httpsBaseUrl: string | { hostname: string; port?: number }
-  sessionId: string
-}
-
-/**
- * Load cached auth state if valid
- */
-function loadCachedAuth(): AuthState | null {
-  if (!fs.existsSync(AUTH_CACHE_FILE)) {
-    return null
-  }
-  try {
-    const data = fs.readFileSync(AUTH_CACHE_FILE, 'utf-8')
-    const auth = JSON.parse(data) as AuthState
-    const bufferMs = 5 * 60 * 1000
-    if (Date.now() + bufferMs < auth.tokenExpiration) {
-      return auth
-    }
-    return null
-  } catch {
-    return null
-  }
-}
-
-/**
- * Perform OAuth login and return auth state
- */
-async function performLogin(): Promise<AuthState> {
-  const username = process.env.TEST_USER
-  const password = process.env.TEST_PASSWORD
-
-  if (!username || !password) {
-    throw new Error('TEST_USER and TEST_PASSWORD must be set in .env')
-  }
-
-  if (!CLIENT_ID) {
-    throw new Error('VITE_EEN_CLIENT_ID must be set in .env')
-  }
-
-  const browser = await chromium.launch({ headless: true })
-
-  try {
-    const context = await browser.newContext()
-    const page = await context.newPage()
-
-    const state = crypto.randomUUID()
-    let redirectUrl: string | null = null
-
-    page.on('request', (request) => {
-      const url = request.url()
-      if (url.includes('127.0.0.1:3333') && url.includes('code=')) {
-        redirectUrl = url
-      }
-    })
-
-    const authParams = new URLSearchParams({
-      client_id: CLIENT_ID,
-      response_type: 'code',
-      scope: 'vms.all',
-      redirect_uri: REDIRECT_URI,
-      state
-    })
-
-    await page.goto(`https://auth.eagleeyenetworks.com/oauth2/authorize?${authParams.toString()}`)
-    await page.waitForURL(/.*eagleeyenetworks.com.*/, { timeout: 15000 })
-
-    const emailInput = page.locator('#authentication--input__email')
-    await emailInput.waitFor({ state: 'visible', timeout: 15000 })
-    await emailInput.fill(username)
-
-    await page.getByRole('button', { name: 'Next' }).click()
-
-    const passwordInput = page.locator('#authentication--input__password')
-    await passwordInput.waitFor({ state: 'visible', timeout: 10000 })
-    await passwordInput.fill(password)
-
-    const signInButton = page.locator('#next')
-    try {
-      await signInButton.click()
-    } catch {
-      await page.getByRole('button', { name: 'Sign in' }).click()
-    }
-
-    try {
-      await page.waitForURL(/127\.0\.0\.1:3333.*code=/, { timeout: 30000 })
-    } catch {
-      if (!redirectUrl) {
-        const currentUrl = page.url()
-        if (currentUrl.includes('code=')) {
-          redirectUrl = currentUrl
-        }
-      }
-    }
-
-    if (!redirectUrl) {
-      throw new Error('Failed to capture redirect URL with authorization code')
-    }
-
-    const url = new URL(redirectUrl)
-    const code = url.searchParams.get('code')
-    const returnedState = url.searchParams.get('state')
-
-    if (!code || returnedState !== state) {
-      throw new Error('Invalid authorization response')
-    }
-
-    const tokenParams = new URLSearchParams({
-      code,
-      redirect_uri: REDIRECT_URI
-    })
-
-    const tokenResponse = await page.request.post(
-      `${PROXY_URL}/proxy/getAccessToken?${tokenParams.toString()}`,
-      {
-        headers: {
-          Accept: 'application/json',
-          Origin: 'http://127.0.0.1:3333'
-        }
-      }
-    )
-
-    if (!tokenResponse.ok()) {
-      throw new Error(`Token exchange failed: ${tokenResponse.status()}`)
-    }
-
-    const tokenData = (await tokenResponse.json()) as TokenResponse
-
-    let baseUrl: string
-    if (typeof tokenData.httpsBaseUrl === 'string') {
-      baseUrl = tokenData.httpsBaseUrl
-    } else {
-      const { hostname, port } = tokenData.httpsBaseUrl
-      baseUrl = port ? `https://${hostname}:${port}` : `https://${hostname}`
-    }
-
-    const authState: AuthState = {
-      token: tokenData.accessToken,
-      tokenExpiration: Date.now() + tokenData.expiresIn * 1000,
-      baseUrl,
-      sessionId: tokenData.sessionId
-    }
-
-    fs.writeFileSync(AUTH_CACHE_FILE, JSON.stringify(authState, null, 2), { mode: 0o600 })
-
-    return authState
-  } finally {
-    await browser.close()
-  }
-}
+import { test, expect } from '@playwright/test'
+import { getAuthToken, injectAuthState, AuthState } from '../../../e2e/auth-helper'
 
 test.describe('vue-feeds authenticated tests', () => {
   let authState: AuthState
 
   test.beforeAll(async () => {
     // Get auth token (from cache or fresh login)
-    const cached = loadCachedAuth()
-    if (cached) {
-      console.log('Using cached auth token')
-      authState = cached
-    } else {
-      console.log('Performing OAuth login...')
-      authState = await performLogin()
-      console.log('Login successful')
-    }
+    authState = await getAuthToken()
   })
-
-  /**
-   * Helper function to inject auth state into localStorage
-   */
-  async function injectAuthState(page: import('@playwright/test').Page) {
-    await page.evaluate(
-      ({ token, baseUrl, sessionId, tokenExpiration }) => {
-        localStorage.setItem('een_token', token)
-        localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
-        localStorage.setItem('een_refreshTokenMarker', 'present')
-        localStorage.setItem('een_sessionId', sessionId)
-        const url = new URL(baseUrl)
-        localStorage.setItem('een_hostname', url.hostname)
-        if (url.port) {
-          localStorage.setItem('een_port', url.port)
-        }
-      },
-      authState
-    )
-  }
 
   test.beforeEach(async ({ page }) => {
     // Navigate to home and inject auth state before each test
     await page.goto('/')
-    await injectAuthState(page)
+    await injectAuthState(page, authState)
   })
 
   test('authenticated home page shows view feeds button', async ({ page }) => {
@@ -308,9 +107,6 @@ test.describe('vue-feeds authenticated tests', () => {
       const hasFeeds = await page.getByTestId('feeds-table').isVisible().catch(() => false)
 
       if (hasFeeds) {
-        // Get the first feed row
-        const firstRow = page.getByTestId('feed-row').first()
-
         // Verify feed ID is displayed
         const feedId = await page.getByTestId('feed-id').first().textContent()
         expect(feedId).toBeTruthy()
@@ -664,10 +460,6 @@ test.describe('vue-feeds authenticated tests', () => {
       const hasFeeds = await page.getByTestId('feeds-table').isVisible().catch(() => false)
 
       if (hasFeeds) {
-        // Get the first feed's info from the table
-        const feedId = await page.getByTestId('feed-id').first().textContent()
-        const feedType = await page.getByTestId('feed-type').first().textContent()
-
         // Try View button first, then Live button
         const viewButton = page.getByTestId('view-preview-button').first()
         const liveButton = page.getByTestId('view-live-button').first()

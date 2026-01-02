@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.1.12**](../README.md)
+[**EEN API Toolkit v0.1.13**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **initMediaSession**(): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`MediaSessionResult`](../interfaces/MediaSessionResult.md)\>\>
 
-Defined in: [src/media/service.ts:621](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L621)
+Defined in: [src/media/service.ts:626](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L626)
 
 Initialize the media session by setting the session cookie.
 

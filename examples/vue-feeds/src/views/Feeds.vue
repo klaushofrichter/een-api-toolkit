@@ -18,6 +18,7 @@ const showModal = ref(false)
 const selectedFeed = ref<Feed | null>(null)
 const mediaSessionInitialized = ref(false)
 const mediaSessionError = ref<string | null>(null)
+const modalError = ref<string | null>(null)
 
 // Player mode: 'preview' | 'live'
 type PlayerMode = 'preview' | 'live'
@@ -178,7 +179,13 @@ async function initLivePlayer(feed: Feed) {
 
   // Verify auth is available
   if (!authStore.baseUrl || !authStore.token) {
-    error.value = 'Authentication required for Live SDK'
+    modalError.value = 'Authentication required for Live SDK'
+    return
+  }
+
+  // Validate base URL format
+  if (!authStore.baseUrl.startsWith('https://')) {
+    modalError.value = 'Invalid base URL format - HTTPS required'
     return
   }
 
@@ -203,7 +210,7 @@ async function initLivePlayer(feed: Feed) {
 
     livePlayerConnected.value = true
   } catch (err) {
-    error.value = `Live SDK Error: ${String(err)}`
+    modalError.value = `Live SDK Error: ${String(err)}`
     livePlayerConnected.value = false
   } finally {
     livePlayerLoading.value = false
@@ -216,7 +223,8 @@ function destroyLivePlayer() {
     try {
       livePlayerInstance.stop()
     } catch (err) {
-      // Ignore errors during cleanup
+      // Log cleanup errors for debugging, but don't throw
+      console.warn('Error while stopping live player:', err)
     }
     livePlayerInstance = null
   }
@@ -231,12 +239,15 @@ function destroyAllPlayers() {
 
 // Handle video element errors
 function handleVideoError() {
-  error.value = 'Video playback error occurred'
+  modalError.value = 'Video playback error occurred'
   livePlayerConnected.value = false
 }
 
 // Open the live preview modal for a feed
 async function openFeedPreview(feed: Feed, mode: PlayerMode = 'preview') {
+  // Clear any previous modal error
+  modalError.value = null
+
   // Validate mode is supported for this feed
   if (mode === 'preview' && !isPreviewFeed(feed)) {
     error.value = 'This feed does not support preview mode'
@@ -453,6 +464,9 @@ onUnmounted(() => {
             <p><strong>Mode:</strong>
               <span :class="['mode-badge', `mode-${playerMode}`]">{{ playerMode.toUpperCase() }}</span>
             </p>
+          </div>
+          <div v-if="modalError" class="modal-error">
+            <p class="error">{{ modalError }}</p>
           </div>
           <div class="preview-container">
             <!-- Loading overlay for Live SDK -->
@@ -801,6 +815,19 @@ h2 {
   margin: 5px 0;
   font-size: 14px;
   color: #333;
+}
+
+.modal-error {
+  margin-bottom: 15px;
+  padding: 10px 15px;
+  background: #f8d7da;
+  border: 1px solid #f5c6cb;
+  border-radius: 4px;
+}
+
+.modal-error .error {
+  margin: 0;
+  font-size: 14px;
 }
 
 .preview-container {
