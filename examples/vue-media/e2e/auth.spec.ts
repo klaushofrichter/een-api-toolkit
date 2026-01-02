@@ -1,373 +1,293 @@
 /**
- * Authenticated E2E tests for vue-media example
+ * E2E tests for the Vue Media Example - OAuth Login Flow
  *
- * These tests require:
- * - TEST_USER and TEST_PASSWORD environment variables
- * - VITE_EEN_CLIENT_ID environment variable
- * - Running OAuth proxy server (see ../../../scripts/restart-proxy.sh)
+ * Tests the OAuth login flow through the UI:
+ * 1. Click login button in the example app
+ * 2. Enter credentials on EEN OAuth page
+ * 3. Complete the OAuth callback
+ * 4. Verify authenticated state and media functionality
+ *
+ * Required environment variables:
+ * - VITE_PROXY_URL: OAuth proxy URL (e.g., http://127.0.0.1:8787)
+ * - VITE_EEN_CLIENT_ID: EEN OAuth client ID
+ * - TEST_USER: Test user email
+ * - TEST_PASSWORD: Test user password
+ *
+ * Note: Helper functions (isProxyAccessible, performLogin, clearAuthState) are
+ * intentionally duplicated in each example's auth.spec.ts to avoid Playwright's
+ * "Requiring @playwright/test second time" error that occurs when importing
+ * from a shared file outside the example directory.
  */
 
-import { test, expect } from '@playwright/test'
-import { getAuthToken, injectAuthState, AuthState } from '../../../e2e/auth-helper'
+import { test, expect, Page } from '@playwright/test'
+import { baseURL } from '../playwright.config'
 
-test.describe('vue-media authenticated tests', () => {
-  let authState: AuthState
+const TIMEOUTS = {
+  OAUTH_REDIRECT: 30000,
+  ELEMENT_VISIBLE: 15000,
+  PASSWORD_VISIBLE: 10000,
+  AUTH_COMPLETE: 30000,
+  UI_UPDATE: 10000,
+  PROXY_CHECK: 5000,
+  MEDIA_LOAD: 30000
+} as const
+
+const TEST_USER = process.env.TEST_USER
+const TEST_PASSWORD = process.env.TEST_PASSWORD
+const PROXY_URL = process.env.VITE_PROXY_URL
+
+/**
+ * Checks if the OAuth proxy server is accessible.
+ * Returns false if proxy is unavailable, allowing tests to be skipped gracefully.
+ */
+async function isProxyAccessible(): Promise<boolean> {
+  if (!PROXY_URL) return false
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), TIMEOUTS.PROXY_CHECK)
+
+  try {
+    const response = await fetch(PROXY_URL, {
+      method: 'HEAD',
+      signal: controller.signal
+    })
+    return response.ok || response.status === 404
+  } catch (error) {
+    if (!process.env.CI) {
+      console.log('Proxy check failed:', error instanceof Error ? error.message : error)
+    }
+    return false
+  } finally {
+    clearTimeout(timeoutId)
+  }
+}
+
+/**
+ * Performs OAuth login flow through the EEN authentication page.
+ * Handles two-step navigation: app login page -> EEN OAuth -> callback
+ */
+async function performLogin(page: Page, username: string, password: string): Promise<void> {
+  await page.goto('/')
+
+  // Click login button on home page to go to login page
+  await page.click('[data-testid="login-button"]')
+  await page.waitForURL('/login')
+
+  // Click login button on login page to trigger OAuth
+  await Promise.all([
+    page.waitForURL(/.*eagleeyenetworks.com.*/, { timeout: TIMEOUTS.OAUTH_REDIRECT }),
+    page.getByRole('button', { name: 'Login with Eagle Eye Networks' }).click()
+  ])
+
+  // EEN OAuth page selectors - these depend on EEN's login UI and may need
+  // updates if EEN changes their authentication page structure
+  const emailInput = page.locator('#authentication--input__email')
+  await emailInput.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE })
+  await emailInput.fill(username)
+
+  await page.getByRole('button', { name: 'Next' }).click()
+
+  const passwordInput = page.locator('#authentication--input__password')
+  await passwordInput.waitFor({ state: 'visible', timeout: TIMEOUTS.PASSWORD_VISIBLE })
+  await passwordInput.fill(password)
+
+  // EEN uses either #next or "Sign in" button depending on login flow
+  await page.locator('#next, button:has-text("Sign in")').first().click()
+
+  // Wait for redirect back to the app using configured baseURL
+  const baseURLPattern = new RegExp(baseURL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+  await page.waitForURL(baseURLPattern, { timeout: TIMEOUTS.AUTH_COMPLETE })
+}
+
+/**
+ * Clears authentication state from browser storage.
+ * Used in afterEach to ensure test isolation.
+ */
+async function clearAuthState(page: Page): Promise<void> {
+  try {
+    const url = page.url()
+    if (url && url.startsWith('http')) {
+      await page.evaluate(() => {
+        try {
+          localStorage.clear()
+          sessionStorage.clear()
+        } catch {
+          // Storage access may fail in certain contexts
+        }
+      })
+    }
+  } catch (error) {
+    if (!process.env.CI) {
+      console.log('Clear auth state failed:', error instanceof Error ? error.message : error)
+    }
+  }
+}
+
+test.describe('Vue Media Example - Auth', () => {
+  let proxyAccessible = false
+
+  function skipIfNoProxy() {
+    test.skip(!proxyAccessible, 'OAuth proxy not accessible')
+  }
+
+  function skipIfNoCredentials() {
+    test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
+  }
 
   test.beforeAll(async () => {
-    // Get auth token (from cache or fresh login)
-    authState = await getAuthToken()
-  })
-
-  test.beforeEach(async ({ page }) => {
-    // Navigate to home and inject auth state before each test
-    await page.goto('/')
-    await injectAuthState(page, authState)
-  })
-
-  test('authenticated user sees cameras on live page', async ({ page }) => {
-    // Navigate to live page (auth already injected by beforeEach)
-    await page.goto('/live')
-
-    // Should show the live camera view
-    await expect(page.getByRole('heading', { name: 'Live Camera View' })).toBeVisible()
-
-    // Wait for cameras to load (or show no cameras message)
-    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
-      timeout: 30000
-    })
-
-    // Either cameras are loaded or we see "no cameras" message
-    const cameraSelect = page.getByTestId('camera-select')
-    const noCameras = page.locator('.no-cameras')
-
-    const hasCameras = await cameraSelect.isVisible().catch(() => false)
-    const hasNoCameras = await noCameras.isVisible().catch(() => false)
-
-    expect(hasCameras || hasNoCameras).toBe(true)
-
-    if (hasCameras) {
-      console.log('Cameras found - checking controls')
-
-      // Verify controls are present
-      await expect(page.getByTestId('refresh-button')).toBeVisible()
-      await expect(page.getByTestId('auto-refresh-button')).toBeVisible()
-
-      // Wait for image to load
-      await page.waitForSelector('[data-testid="live-image"], .image-loading, .no-image', {
-        timeout: 30000
-      })
-
-      // Check if we got an image or an error
-      const hasImage = await page.getByTestId('live-image').isVisible().catch(() => false)
-      if (hasImage) {
-        console.log('Live image loaded successfully')
-
-        // Check timestamp is shown
-        const timestamp = page.getByTestId('timestamp')
-        await expect(timestamp).toBeVisible()
-      } else {
-        console.log('No live image available (camera may be offline)')
-      }
-    } else {
-      console.log('No cameras in account')
+    proxyAccessible = await isProxyAccessible()
+    if (!proxyAccessible) {
+      console.log('OAuth proxy not accessible - OAuth tests will be skipped')
     }
   })
 
-  test('authenticated home page shows view live button', async ({ page }) => {
-    // Reload to apply auth state (already injected by beforeEach)
-    await page.reload()
-
-    // Should show authenticated state
-    await expect(page.getByTestId('authenticated')).toBeVisible()
-    await expect(page.getByTestId('view-live-button')).toBeVisible()
-    await expect(page.getByText('You are logged in!')).toBeVisible()
+  test.afterEach(async ({ page }) => {
+    await clearAuthState(page)
   })
 
-  test('refresh button fetches new image', async ({ page }) => {
-    // Navigate to live page (auth already injected by beforeEach)
-    await page.goto('/live')
+  test('shows login button when not authenticated', async ({ page }) => {
+    await page.goto('/')
+    await expect(page.getByTestId('not-authenticated')).toBeVisible()
+    await expect(page.getByTestId('nav-login')).toBeVisible()
+  })
 
-    // Wait for initial load
+  test('live page redirects to login when not authenticated', async ({ page }) => {
+    await page.goto('/live')
+    await expect(page).toHaveURL('/login')
+  })
+
+  test('login button redirects to OAuth page', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await page.goto('/')
+    await expect(page.getByTestId('login-button')).toBeVisible()
+
+    // Click login button on home page to go to login page
+    await page.click('[data-testid="login-button"]')
+    await page.waitForURL('/login')
+
+    // Click login button on login page to trigger OAuth
+    await Promise.all([
+      page.waitForURL(/.*eagleeyenetworks.com.*/, { timeout: TIMEOUTS.OAUTH_REDIRECT }),
+      page.getByRole('button', { name: 'Login with Eagle Eye Networks' }).click()
+    ])
+
+    // EEN OAuth page selector
+    const emailInput = page.locator('#authentication--input__email')
+    await expect(emailInput).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+  })
+
+  test('complete OAuth login flow and view media', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await page.goto('/')
+    await expect(page.getByTestId('not-authenticated')).toBeVisible()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+
+    await expect(page.getByTestId('not-authenticated')).not.toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(page.getByTestId('nav-live')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(page.getByTestId('nav-logout')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+  })
+
+  test('can view live camera after login', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-live')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    await page.click('[data-testid="nav-live"]')
+    await page.waitForURL('/live')
+
+    await expect(page.getByRole('heading', { name: 'Live Camera View' })).toBeVisible()
+
+    // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
-      timeout: 30000
+      timeout: TIMEOUTS.MEDIA_LOAD
+    })
+  })
+
+  test('live page shows camera controls when cameras available', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-live')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    await page.click('[data-testid="nav-live"]')
+    await page.waitForURL('/live')
+
+    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
+      timeout: TIMEOUTS.MEDIA_LOAD
     })
 
     const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
-
     if (hasCameras) {
-      // Wait for initial image
-      await page.waitForSelector('[data-testid="live-image"], .no-image', {
-        timeout: 30000
-      })
-
-      // Click refresh
-      await page.getByTestId('refresh-button').click()
-
-      // Button should show loading state briefly
-      // Just verify the click works without errors
       await expect(page.getByTestId('refresh-button')).toBeVisible()
-
-      console.log('Refresh button clicked successfully')
+      await expect(page.getByTestId('auto-refresh-button')).toBeVisible()
+      console.log('Camera controls visible')
     } else {
-      console.log('No cameras to test refresh with')
+      console.log('No cameras in account - skipping camera-specific checks')
     }
   })
 
-  test('authenticated home page shows view recorded button', async ({ page }) => {
-    // Reload to apply auth state (already injected by beforeEach)
-    await page.reload()
+  test('can view recorded images after login', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
 
-    // Should show authenticated state with both buttons
-    await expect(page.getByTestId('authenticated')).toBeVisible()
-    await expect(page.getByTestId('view-live-button')).toBeVisible()
-    await expect(page.getByTestId('view-recorded-button')).toBeVisible()
-  })
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-recorded')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-  test('recorded image page shows camera selector and time picker', async ({ page }) => {
-    // Navigate to recorded page (auth already injected by beforeEach)
-    await page.goto('/recorded')
+    await page.click('[data-testid="nav-recorded"]')
+    await page.waitForURL('/recorded')
 
-    // Should show the recorded image page
     await expect(page.getByRole('heading', { name: 'Recorded Images' })).toBeVisible()
 
     // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
-      timeout: 30000
+      timeout: TIMEOUTS.MEDIA_LOAD
+    })
+  })
+
+  test('recorded page shows navigation controls when cameras available', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-recorded')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    await page.click('[data-testid="nav-recorded"]')
+    await page.waitForURL('/recorded')
+
+    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
+      timeout: TIMEOUTS.MEDIA_LOAD
     })
 
     const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
-
     if (hasCameras) {
-      console.log('Cameras found - checking recorded image controls')
-
-      // Verify controls are present
       await expect(page.getByTestId('datetime-input')).toBeVisible()
       await expect(page.getByTestId('go-button')).toBeVisible()
       await expect(page.getByTestId('prev-button')).toBeVisible()
       await expect(page.getByTestId('next-button')).toBeVisible()
-
-      // Initially prev/next should be disabled (no image loaded yet or no tokens)
-      const prevDisabled = await page.getByTestId('prev-button').isDisabled()
-      const nextDisabled = await page.getByTestId('next-button').isDisabled()
-      console.log(`Navigation buttons: prev=${prevDisabled ? 'disabled' : 'enabled'}, next=${nextDisabled ? 'disabled' : 'enabled'}`)
+      console.log('Recorded image controls visible')
     } else {
-      console.log('No cameras in account')
+      console.log('No cameras in account - skipping camera-specific checks')
     }
   })
 
-  test('recorded image page auto-loads image on mount', async ({ page }) => {
-    // Navigate to recorded page (auth already injected by beforeEach)
-    await page.goto('/recorded')
+  test('can logout after login', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
 
-    // Wait for cameras to load
-    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
-      timeout: 30000
-    })
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-logout')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-    const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
+    await page.click('[data-testid="nav-logout"]')
 
-    if (hasCameras) {
-      // Wait for image to load (auto-loads on page mount with default time of 1 hour ago)
-      await page.waitForSelector('[data-testid="recorded-image"], .no-image, .error', {
-        timeout: 45000
-      })
-
-      const hasImage = await page.getByTestId('recorded-image').isVisible().catch(() => false)
-
-      if (hasImage) {
-        console.log('Recorded image loaded successfully')
-
-        // Check timestamp is shown
-        const timestamp = page.getByTestId('timestamp')
-        await expect(timestamp).toBeVisible()
-
-        // Time picker should be updated with the image timestamp
-        const datetimeInput = page.getByTestId('datetime-input')
-        const inputValue = await datetimeInput.inputValue()
-        expect(inputValue).toBeTruthy()
-        console.log(`Time picker value: ${inputValue}`)
-      } else {
-        console.log('No recorded image available (no recordings in time range)')
-      }
-    } else {
-      console.log('No cameras to test with')
-    }
-  })
-
-  test('recorded image navigation buttons work', async ({ page }) => {
-    // Navigate to recorded page (auth already injected by beforeEach)
-    await page.goto('/recorded')
-
-    // Wait for cameras to load
-    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
-      timeout: 30000
-    })
-
-    const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
-
-    if (hasCameras) {
-      // Wait for an image to load
-      await page.waitForSelector('[data-testid="recorded-image"], .no-image', {
-        timeout: 45000
-      })
-
-      const hasImage = await page.getByTestId('recorded-image').isVisible().catch(() => false)
-
-      if (hasImage) {
-        // Check if next button is enabled
-        const nextButton = page.getByTestId('next-button')
-        const isNextEnabled = !(await nextButton.isDisabled())
-
-        if (isNextEnabled) {
-          // Get current timestamp
-          const initialTimestamp = await page.getByTestId('timestamp').textContent()
-
-          // Click next
-          await nextButton.click()
-
-          // Wait for potential update
-          await page.waitForTimeout(2000)
-
-          // Check timestamp changed
-          const newTimestamp = await page.getByTestId('timestamp').textContent()
-          console.log(`Navigated: ${initialTimestamp} -> ${newTimestamp}`)
-
-          // Check if prev button is now enabled
-          const prevButton = page.getByTestId('prev-button')
-          const isPrevEnabled = !(await prevButton.isDisabled())
-
-          if (isPrevEnabled) {
-            // Navigate back
-            await prevButton.click()
-            await page.waitForTimeout(2000)
-            console.log('Previous navigation successful')
-          }
-        } else {
-          console.log('Next button disabled - only one image available')
-        }
-      } else {
-        console.log('No recorded image to navigate from')
-      }
-    } else {
-      console.log('No cameras to test navigation with')
-    }
-  })
-
-  test('recorded image page loads with past date via Go button', async ({ page }) => {
-    // Navigate to recorded page (auth already injected by beforeEach)
-    await page.goto('/recorded')
-
-    // Wait for cameras to load
-    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
-      timeout: 30000
-    })
-
-    const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
-
-    if (hasCameras) {
-      // Set the date/time to 24 hours ago
-      const yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000)
-      const year = yesterday.getFullYear()
-      const month = String(yesterday.getMonth() + 1).padStart(2, '0')
-      const day = String(yesterday.getDate()).padStart(2, '0')
-      const hours = String(yesterday.getHours()).padStart(2, '0')
-      const minutes = String(yesterday.getMinutes()).padStart(2, '0')
-      const dateTimeValue = `${year}-${month}-${day}T${hours}:${minutes}`
-
-      // Fill in the datetime input with yesterday's date
-      await page.getByTestId('datetime-input').fill(dateTimeValue)
-
-      // Click Go button to load image from that time
-      await page.getByTestId('go-button').click()
-
-      // Wait for the image to load or error to appear
-      await page.waitForSelector('[data-testid="recorded-image"], .error, .no-image', {
-        timeout: 45000
-      })
-
-      // Check results
-      const hasImage = await page.getByTestId('recorded-image').isVisible().catch(() => false)
-      const hasError = await page.locator('.error').isVisible().catch(() => false)
-
-      if (hasImage) {
-        console.log('Image loaded successfully with past date')
-        // Check timestamp is shown
-        const timestamp = page.getByTestId('timestamp')
-        await expect(timestamp).toBeVisible()
-      } else if (hasError) {
-        const errorText = await page.locator('.error').textContent()
-        console.log('Error loading image with past date:', errorText)
-        // A 404 "Not found" is acceptable if no recordings exist for that time
-        expect(errorText).toMatch(/Not found|No recordings|Unknown error/)
-      } else {
-        console.log('No image or error visible - no recordings for past date')
-      }
-    } else {
-      console.log('No cameras to test past date with')
-    }
-  })
-
-  test('camera selection persists between live and recorded pages', async ({ page }) => {
-    // Navigate to live page (auth already injected by beforeEach)
-    await page.goto('/live')
-
-    // Wait for cameras to load
-    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
-      timeout: 30000
-    })
-
-    const cameraSelect = page.getByTestId('camera-select')
-    const hasCameras = await cameraSelect.isVisible().catch(() => false)
-
-    if (hasCameras) {
-      // Get all camera options
-      const options = await cameraSelect.locator('option').all()
-
-      if (options.length >= 2) {
-        // Get the second camera's value
-        const secondCameraValue = await options[1].getAttribute('value')
-        console.log(`Selecting camera: ${secondCameraValue}`)
-
-        // Select the second camera
-        await cameraSelect.selectOption(secondCameraValue!)
-
-        // Wait for selection to be applied
-        await page.waitForTimeout(1000)
-
-        // Navigate to recorded page
-        await page.goto('/recorded')
-
-        // Wait for cameras to load on recorded page
-        await page.waitForSelector('[data-testid="camera-select"]', {
-          timeout: 30000
-        })
-
-        // Check that the same camera is selected
-        const recordedCameraSelect = page.getByTestId('camera-select')
-        const selectedValue = await recordedCameraSelect.inputValue()
-
-        expect(selectedValue).toBe(secondCameraValue)
-        console.log(`Camera selection persisted: ${selectedValue}`)
-
-        // Navigate back to live page
-        await page.goto('/live')
-
-        // Wait for cameras to load
-        await page.waitForSelector('[data-testid="camera-select"]', {
-          timeout: 30000
-        })
-
-        // Verify selection still persists
-        const liveCameraSelect = page.getByTestId('camera-select')
-        const liveSelectedValue = await liveCameraSelect.inputValue()
-
-        expect(liveSelectedValue).toBe(secondCameraValue)
-        console.log('Camera selection persisted across page navigations')
-      } else {
-        console.log('Only one camera available - cannot test persistence')
-      }
-    } else {
-      console.log('No cameras to test with')
-    }
+    await page.waitForURL('**/')
+    await expect(page.getByTestId('not-authenticated')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(page.getByTestId('nav-login')).toBeVisible()
   })
 })

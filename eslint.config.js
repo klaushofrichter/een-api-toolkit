@@ -1,0 +1,89 @@
+import js from '@eslint/js'
+import tseslint from '@typescript-eslint/eslint-plugin'
+import tsparser from '@typescript-eslint/parser'
+import vue from 'eslint-plugin-vue'
+import vueParser from 'vue-eslint-parser'
+import globals from 'globals'
+
+// Shared rules for TypeScript and Vue files to reduce duplication
+const commonRules = {
+  ...tseslint.configs.recommended.rules,
+  '@typescript-eslint/explicit-function-return-type': 'off',
+  '@typescript-eslint/explicit-module-boundary-types': 'off',
+  '@typescript-eslint/no-explicit-any': 'warn',
+  '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+  'no-console': ['warn', { allow: ['warn', 'error'] }],
+  'no-debugger': 'warn',
+  'prefer-const': 'error',
+  'no-var': 'error'
+}
+
+export default [
+  // Global ignores
+  {
+    ignores: ['dist/**', 'node_modules/**', '*.cjs', 'docs/api/**']
+  },
+
+  // JavaScript base config
+  js.configs.recommended,
+
+  // TypeScript files
+  {
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tsparser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module'
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.es2022,
+        // Web API type used in fetch headers - defined in lib.dom.d.ts but ESLint
+        // no-undef rule doesn't recognize TypeScript lib types
+        HeadersInit: 'readonly'
+      }
+    },
+    plugins: {
+      '@typescript-eslint': tseslint
+    },
+    rules: commonRules
+  },
+
+  // Vue files
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tsparser,
+        ecmaVersion: 'latest',
+        sourceType: 'module'
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.es2022
+      }
+    },
+    plugins: {
+      vue,
+      '@typescript-eslint': tseslint
+    },
+    rules: {
+      ...vue.configs['flat/recommended'].rules,
+      ...commonRules,
+      'vue/multi-word-component-names': 'off',
+      'vue/no-v-html': 'off'
+    }
+  },
+
+  // Test files - allow console.log
+  {
+    files: ['**/__tests__/**', '**/e2e/**', '**/*.test.ts', '**/*.spec.ts'],
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/no-unused-vars': 'off'
+    }
+  }
+]
