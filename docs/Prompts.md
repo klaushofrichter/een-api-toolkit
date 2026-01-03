@@ -20,7 +20,7 @@ This document contains example prompts that developers can use with AI coding as
 **Prompt:**
 
 ```
-We are building a Vue 3 web app that accesses the EEN Video Platform by using the een-api-toolkit (npm install een-api-toolkit@latest). The app allows login to the service and lists all users. This should include pagination for accounts with more than 10 users. When clicking on a user, we want to see details for that user in a modal window.
+We are building a Vue 3 web app that accesses the EEN Video Platform by using the een-api-toolkit (npm install een-api-toolkit@latest). The app allows login to the service and lists all users. This should include pagination for accounts with more than 10 users. When clicking on a user, we want to see details for that user in a modal window. Show a logout button.
 
 Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
 
@@ -52,6 +52,7 @@ We are building a Vue 3 web app that accesses the EEN Video Platform by using th
 3. Pagination for accounts with more than 12 cameras
 4. Click on a camera to see detailed information including device info, location, and tags
 5. A refresh button to reload the camera list
+6. Show a logout button
 
 Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
 
@@ -84,6 +85,7 @@ We are building a Vue 3 web app that accesses the EEN Video Platform by using th
 3. Pagination when there are more than 9 cameras available
 4. When clicking on a camera card, show a modal window with a live main video feed from that camera
 5. Loading states and error handling
+6. Show a logout button
 
 Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
 

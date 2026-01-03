@@ -192,7 +192,41 @@ function login() {
 
 ### Handling the Callback
 
-Create a callback route (e.g., `/callback`) to handle the OAuth redirect:
+> **Important:** The EEN Identity Provider only supports redirects to the **root path** (`/`), not `/callback`. Your router must detect OAuth parameters on the root path and forward them to a callback handler internally.
+
+**Router configuration** (handles OAuth redirect on root path):
+
+```typescript
+// router/index.ts
+const router = createRouter({
+  history: createWebHistory(),
+  routes: [
+    { path: '/login', component: Login },
+    {
+      path: '/callback',
+      name: 'callback',
+      component: Callback  // Internal route - not the OAuth redirect target
+    },
+    {
+      path: '/',
+      name: 'home',
+      component: Dashboard,
+      meta: { requiresAuth: true },
+      // Detect OAuth callback and forward to handler
+      beforeEnter: (to, _from, next) => {
+        if (to.query.code && to.query.state) {
+          // Forward OAuth params to callback handler
+          next({ name: 'callback', query: to.query })
+        } else {
+          next()
+        }
+      }
+    }
+  ]
+})
+```
+
+**Callback component** (processes the forwarded OAuth params):
 
 ```typescript
 // Callback.vue
@@ -224,6 +258,13 @@ onMounted(async () => {
   router.push('/dashboard')
 })
 ```
+
+**How it works:**
+1. User clicks login → redirected to EEN login page
+2. After authentication, EEN redirects to `http://127.0.0.1:3333?code=...&state=...` (root path)
+3. Router's `beforeEnter` guard detects `code` and `state` query params
+4. Router forwards to internal `/callback` route with the params
+5. Callback component exchanges the code for tokens via `handleAuthCallback()`
 
 ### Checking Authentication State
 

@@ -241,6 +241,7 @@ npm run test:e2e:ui
 
 - [EEN Developer Portal](https://developer.eagleeyenetworks.com/)
 - [EEN API v3.0 Documentation](https://developer.eagleeyenetworks.com/reference/using-the-api)
+- [EEN OAuth Application Management](https://developer.eagleeyenetworks.com/page/my-application)
 - [een-oauth-proxy](https://github.com/klaushofrichter/een-oauth-proxy) - OAuth proxy server
 
 ## License
