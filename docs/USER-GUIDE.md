@@ -198,6 +198,9 @@ function login() {
 
 ```typescript
 // router/index.ts
+import { createRouter, createWebHistory } from 'vue-router'
+import { useAuthStore } from 'een-api-toolkit'
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -224,6 +227,24 @@ const router = createRouter({
     }
   ]
 })
+
+// Global navigation guard for authentication
+router.beforeEach((to, _from, next) => {
+  const authStore = useAuthStore()
+
+  // Skip auth check for callback route (it handles its own auth)
+  if (to.name === 'callback') {
+    next()
+  } else if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    next('/login')
+  } else if (to.path === '/login' && authStore.isAuthenticated) {
+    next('/')
+  } else {
+    next()
+  }
+})
+
+export default router
 ```
 
 **Callback component** (processes the forwarded OAuth params):
@@ -265,6 +286,10 @@ onMounted(async () => {
 3. Router's `beforeEnter` guard detects `code` and `state` query params
 4. Router forwards to internal `/callback` route with the params
 5. Callback component exchanges the code for tokens via `handleAuthCallback()`
+
+> **Security Note:** The `state` parameter provides CSRF protection. The toolkit's `handleAuthCallback()` function validates the state parameter internally against the value stored during `getAuthUrl()`. Invalid or tampered state values will result in an authentication error.
+
+> **Error Handling:** The callback component handles all OAuth error scenarios. If the authorization code is invalid, expired, or the state doesn't match, `handleAuthCallback()` returns an error object with details. Invalid parameters (e.g., manually navigating to `/?code=invalid&state=invalid`) are safely handled and will display an error message rather than cause application crashes.
 
 ### Checking Authentication State
 

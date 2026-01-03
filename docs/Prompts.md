@@ -135,6 +135,31 @@ VITE_PROXY_URL=http://127.0.0.1:8787
 - The OAuth proxy must be running before testing the app
 - See [USER-GUIDE.md](./USER-GUIDE.md) for detailed setup instructions
 
+### Logout Implementation
+
+When implementing a logout button, use the `revokeToken()` function from een-api-toolkit:
+
+```typescript
+import { revokeToken } from 'een-api-toolkit'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+async function handleLogout() {
+  const { error } = await revokeToken()
+  if (error) {
+    console.error('Logout failed:', error.message)
+  }
+  // Always redirect to login, even if revoke fails
+  router.push('/login')
+}
+```
+
+The `revokeToken()` function:
+- Revokes the session with the OAuth proxy
+- Clears the local authentication state
+- Returns `{ data, error }` like all toolkit functions
+
 ---
 
 ## Contributing Prompts
