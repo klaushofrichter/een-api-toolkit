@@ -282,10 +282,12 @@ onMounted(async () => {
 
 **How it works:**
 1. User clicks login → redirected to EEN login page
-2. After authentication, EEN redirects to `http://127.0.0.1:3333?code=...&state=...` (root path)
+2. After authentication, EEN redirects to your configured `redirectUri` with OAuth params (e.g., `http://127.0.0.1:3333?code=...&state=...`)
 3. Router's `beforeEnter` guard detects `code` and `state` query params
 4. Router forwards to internal `/callback` route with the params
 5. Callback component exchanges the code for tokens via `handleAuthCallback()`
+
+> **Note:** The redirect URL is determined by the `redirectUri` option in `initEenToolkit()` (or `VITE_REDIRECT_URI` env var). This must match exactly what's registered with your EEN OAuth client.
 
 > **Security Note:** The `state` parameter provides CSRF protection. The toolkit's `handleAuthCallback()` function validates the state parameter internally against the value stored during `getAuthUrl()`. Invalid or tampered state values will result in an authentication error.
 
