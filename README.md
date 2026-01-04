@@ -1,5 +1,7 @@
 # een-api-toolkit
 
+![EEN API Toolkit Overview](./docs/images/een-api-toolkit-infograph.png)
+
 A TypeScript library for the [Eagle Eye Networks](https://een.com/) Video API v3.0, designed for Vue 3 applications.
 
 ## Purpose
