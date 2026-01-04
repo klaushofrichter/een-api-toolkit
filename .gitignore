@@ -155,3 +155,7 @@ examples/vue-feeds/e2e/.auth-state.json
 examples/vue-media/e2e/.auth-state.json
 # macOS
 .DS_Store
+
+# Generated presentation files
+PRESENTATION.md
+PRESENTATION.html

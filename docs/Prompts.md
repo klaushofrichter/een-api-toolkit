@@ -83,7 +83,7 @@ We are building a Vue 3 web app that accesses the EEN Video Platform by using th
 1. Display cameras in a 3x3 grid layout (9 cameras per page)
 2. Each camera card shows a live preview image that auto-refreshes
 3. Pagination when there are more than 9 cameras available
-4. When clicking on a camera card, show a modal window with a live main video feed from that camera
+4. When clicking on a camera card, show a modal window with a live main HD video feed from that camera
 5. Loading states and error handling
 6. Show a logout button
 
