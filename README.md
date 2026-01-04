@@ -8,11 +8,11 @@ This toolkit aims to **simplify and accelerate web application development** for
 
 The project is also designed to **enable AI-assisted software development**. With comprehensive documentation, clear code patterns, and an AI-optimized context file (`docs/AI-CONTEXT.md`), AI coding assistants can effectively help developers build, extend, and maintain applications using this toolkit.
 
-This repository is provided as is without any warranty, functionality guarantee or assurance of availability. This repository uses EENs services, but it is not associated to EEN.
+This repository is provided as-is without any warranty, functionality guarantee, or assurance of availability. This repository uses EEN's services but is not affiliated with Eagle Eye Networks.
 
 > **Note:** Work in progress - do not use in production yet.
 
-![EEN API Toolkit Overview](./docs/images/een-api-toolkit-infograph.png)
+![Architecture diagram showing TypeScript library with Vue 3 and Pinia integration, secure OAuth proxy design, multi-layered testing with Vitest and Playwright, and AI-powered CI/CD pipeline](./docs/images/een-api-toolkit-infograph.png)
 
 ## Key Features
 
@@ -253,5 +253,3 @@ npm run test:e2e:ui
 MIT
 
 ---
-
-This repository is provided as-is without warranty. It uses EEN services but is not affiliated with Eagle Eye Networks.
