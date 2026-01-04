@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-01-04
+
+### Added
+
+- **Marp Presentation Generation**: Added infrastructure to generate HTML presentations from markdown templates using Marp CLI
+  - New `build:presentation` npm script
+  - `scripts/generate-presentation.cjs` for template processing with dynamic repo URL injection
+  - `scripts/PRESENTATION_TEMPLATE.md` with comprehensive toolkit overview slides
+- Generated presentation files (`PRESENTATION.md`, `PRESENTATION.html`) are excluded from version control
+
+### Changed
+
+- Updated build script to use `npx @marp-team/marp-cli` for consistent execution
+
 ## [0.2.0] - 2026-01-02
 
 ### Breaking Changes
