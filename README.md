@@ -14,6 +14,8 @@ This repository is provided as-is without any warranty, functionality guarantee,
 
 ![Architecture diagram showing TypeScript library with Vue 3 and Pinia integration, secure OAuth proxy design, multi-layered testing with Vitest and Playwright, and AI-powered CI/CD pipeline](./docs/images/een-api-toolkit-infograph.png)
 
+![OAuth proxy architecture diagram](./docs/images/een-oauth-proxy-infograph.png)
+
 ## Key Features
 
 - **Plain Async Functions** - Simple API calls with `getCurrentUser()`, `getUsers()`, `getUser()`, `getCameras()`, `getCamera()`
