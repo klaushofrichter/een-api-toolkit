@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.6**](../README.md)
+[**EEN API Toolkit v0.3.7**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getStorageStrategy**(): [`StorageStrategy`](../type-aliases/StorageStrategy.md)
 
-Defined in: [src/utils/storage.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/storage.ts#L108)
+Defined in: [src/utils/storage.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/storage.ts#L96)
 
 Get the current storage strategy.
 

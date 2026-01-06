@@ -206,7 +206,7 @@ describe('Storage Strategy', () => {
   })
 
   describe('Error handling', () => {
-    it('should handle localStorage.getItem throwing', () => {
+    it('should propagate localStorage.getItem errors to caller', () => {
       globalThis.localStorage = {
         getItem: () => {
           throw new Error('Storage quota exceeded')
@@ -220,11 +220,11 @@ describe('Storage Strategy', () => {
       setStorageStrategy('localStorage')
 
       const storage = getStorageAdapter()
-      // Should return null instead of throwing
-      expect(storage.getItem('test_key')).toBeNull()
+      // Errors should propagate to allow auth/store.ts to log them
+      expect(() => storage.getItem('test_key')).toThrow('Storage quota exceeded')
     })
 
-    it('should handle localStorage.setItem throwing silently', () => {
+    it('should propagate localStorage.setItem errors to caller', () => {
       globalThis.localStorage = {
         getItem: () => null,
         setItem: () => {
@@ -238,11 +238,11 @@ describe('Storage Strategy', () => {
       setStorageStrategy('localStorage')
 
       const storage = getStorageAdapter()
-      // Should not throw
-      expect(() => storage.setItem('test_key', 'test_value')).not.toThrow()
+      // Errors should propagate to allow auth/store.ts to log them
+      expect(() => storage.setItem('test_key', 'test_value')).toThrow('Storage quota exceeded')
     })
 
-    it('should handle localStorage.removeItem throwing silently', () => {
+    it('should propagate localStorage.removeItem errors to caller', () => {
       globalThis.localStorage = {
         getItem: () => null,
         setItem: () => {},
@@ -256,8 +256,8 @@ describe('Storage Strategy', () => {
       setStorageStrategy('localStorage')
 
       const storage = getStorageAdapter()
-      // Should not throw
-      expect(() => storage.removeItem('test_key')).not.toThrow()
+      // Errors should propagate to allow auth/store.ts to log them
+      expect(() => storage.removeItem('test_key')).toThrow('Storage error')
     })
   })
 })

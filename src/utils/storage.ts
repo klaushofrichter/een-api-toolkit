@@ -36,35 +36,23 @@ class MemoryStorage implements StorageAdapter {
 }
 
 /**
- * Browser storage wrapper that handles unavailability gracefully.
+ * Browser storage wrapper that delegates to localStorage/sessionStorage.
+ * Errors are propagated to the caller (auth/store.ts) for proper logging.
  * @internal
  */
 class BrowserStorageAdapter implements StorageAdapter {
   constructor(private storage: Storage) {}
 
   getItem(key: string): string | null {
-    try {
-      return this.storage.getItem(key)
-    } catch {
-      // Storage not available (SSR, private browsing, etc.)
-      return null
-    }
+    return this.storage.getItem(key)
   }
 
   setItem(key: string, value: string): void {
-    try {
-      this.storage.setItem(key, value)
-    } catch {
-      // Storage not available or quota exceeded
-    }
+    this.storage.setItem(key, value)
   }
 
   removeItem(key: string): void {
-    try {
-      this.storage.removeItem(key)
-    } catch {
-      // Storage not available
-    }
+    this.storage.removeItem(key)
   }
 }
 
