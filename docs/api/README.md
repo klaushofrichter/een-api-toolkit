@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.4**
+**EEN API Toolkit v0.3.7**
 
 ***
 
-# EEN API Toolkit v0.3.4
+# EEN API Toolkit v0.3.7
 
 ## Interfaces
 
@@ -80,6 +80,10 @@
 
 - [CameraStatus](type-aliases/CameraStatus.md)
 
+### Configuration
+
+- [StorageStrategy](type-aliases/StorageStrategy.md)
+
 ### Feeds
 
 - [FeedStreamType](type-aliases/FeedStreamType.md)
@@ -112,6 +116,10 @@
 
 - [getCameras](functions/getCameras.md)
 - [getCamera](functions/getCamera.md)
+
+### Configuration
+
+- [getStorageStrategy](functions/getStorageStrategy.md)
 
 ### Feeds
 

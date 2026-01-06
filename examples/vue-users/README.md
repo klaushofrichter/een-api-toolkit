@@ -4,6 +4,16 @@ A complete example showing how to use the een-api-toolkit in a Vue 3 application
 
 ![Users Screenshot](users-screenshot.png)
 
+## Storage Strategy: Memory
+
+This example uses the `memory` storage strategy for maximum security. This means:
+
+- **Tokens are never written to disk** - immune to localStorage/sessionStorage XSS attacks
+- **Page refresh requires re-authentication** - tokens exist only in memory
+- **Each tab is independent** - opening a new tab requires separate login
+
+This is the recommended strategy for high-security deployments where protecting against XSS token theft is critical.
+
 ## Features Demonstrated
 
 - OAuth authentication flow (login, callback, logout)
@@ -96,6 +106,7 @@ import { initEenToolkit } from 'een-api-toolkit'
 initEenToolkit({
   proxyUrl: import.meta.env.VITE_PROXY_URL,
   clientId: import.meta.env.VITE_EEN_CLIENT_ID,
+  storageStrategy: 'memory',  // Maximum security - tokens lost on refresh
   debug: true
 })
 ```

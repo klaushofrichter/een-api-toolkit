@@ -1,5 +1,5 @@
 // Configuration
-export { initEenToolkit, getConfig, getProxyUrl, getClientId, getRedirectUri } from './config'
+export { initEenToolkit, getConfig, getProxyUrl, getClientId, getRedirectUri, getStorageStrategy } from './config'
 
 // Types
 export type {
@@ -9,6 +9,7 @@ export type {
   PaginationParams,
   PaginatedResult,
   EenToolkitConfig,
+  StorageStrategy,
   User,
   UserProfile,
   ListUsersParams,

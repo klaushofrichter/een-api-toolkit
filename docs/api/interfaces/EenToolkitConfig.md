@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.4**](../README.md)
+[**EEN API Toolkit v0.3.7**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EenToolkitConfig
 
-Defined in: [src/types/common.ts:156](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L156)
+Defined in: [src/types/common.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L177)
 
 Configuration for initializing the toolkit.
 
@@ -25,6 +25,7 @@ initEenToolkit({
   proxyUrl: 'https://your-proxy.workers.dev',
   clientId: 'your-een-client-id',
   redirectUri: 'http://localhost:5173/callback',
+  storageStrategy: 'sessionStorage', // More secure than default
   debug: true
 })
 ```
@@ -35,7 +36,7 @@ initEenToolkit({
 
 > `optional` **proxyUrl**: `string`
 
-Defined in: [src/types/common.ts:158](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L158)
+Defined in: [src/types/common.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L179)
 
 URL of the OAuth proxy server (required for API calls)
 
@@ -45,7 +46,7 @@ URL of the OAuth proxy server (required for API calls)
 
 > `optional` **clientId**: `string`
 
-Defined in: [src/types/common.ts:160](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L160)
+Defined in: [src/types/common.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L181)
 
 EEN OAuth client ID (required for authentication)
 
@@ -55,9 +56,24 @@ EEN OAuth client ID (required for authentication)
 
 > `optional` **redirectUri**: `string`
 
-Defined in: [src/types/common.ts:162](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L162)
+Defined in: [src/types/common.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L183)
 
 OAuth redirect URI (default: http://127.0.0.1:3333)
+
+***
+
+### storageStrategy?
+
+> `optional` **storageStrategy**: [`StorageStrategy`](../type-aliases/StorageStrategy.md)
+
+Defined in: [src/types/common.ts:192](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L192)
+
+Storage strategy for token persistence (default: 'localStorage').
+
+Security vs convenience tradeoffs:
+- 'localStorage': Persists across sessions, vulnerable to XSS
+- 'sessionStorage': Per-tab isolation, cleared on tab close
+- 'memory': Most secure, lost on page refresh
 
 ***
 
@@ -65,6 +81,6 @@ OAuth redirect URI (default: http://127.0.0.1:3333)
 
 > `optional` **debug**: `boolean`
 
-Defined in: [src/types/common.ts:164](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L164)
+Defined in: [src/types/common.ts:194](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L194)
 
 Enable debug logging to console

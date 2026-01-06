@@ -11,11 +11,13 @@ const pinia = createPinia()
 app.use(pinia)
 app.use(router)
 
-// Initialize the EEN API Toolkit
+// Initialize the EEN API Toolkit with sessionStorage for per-tab isolation
+// Note: Using 'sessionStorage' means each tab has its own session, cleared on tab close
 initEenToolkit({
   proxyUrl: import.meta.env.VITE_PROXY_URL,
   clientId: import.meta.env.VITE_EEN_CLIENT_ID,
   redirectUri: import.meta.env.VITE_REDIRECT_URI || 'http://127.0.0.1:3333',
+  storageStrategy: 'sessionStorage',
   debug: import.meta.env.VITE_DEBUG === 'true'
 })
 

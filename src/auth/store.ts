@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { UserProfile } from '../types'
 import type { Result } from '../types'
 import { debug } from '../utils/debug'
+import { getStorageAdapter } from '../utils/storage'
 
 // Lazy-loaded reference to refreshToken to avoid circular dependency at import time
 // Caches the promise (not the resolved value) to prevent race conditions with concurrent calls
@@ -204,52 +205,55 @@ export const useAuthStore = defineStore('een-auth', () => {
     }
   }
 
-  // Storage helpers
+  // Storage helpers - use configured storage strategy
   function saveToStorage() {
     try {
-      if (token.value) localStorage.setItem('een_token', token.value)
-      if (tokenExpiration.value) localStorage.setItem('een_tokenExpiration', String(tokenExpiration.value))
-      if (refreshTokenMarker.value) localStorage.setItem('een_refreshTokenMarker', refreshTokenMarker.value)
-      if (sessionId.value) localStorage.setItem('een_sessionId', sessionId.value)
-      if (hostname.value) localStorage.setItem('een_hostname', hostname.value)
-      if (port.value !== 443) localStorage.setItem('een_port', String(port.value))
-      if (userProfile.value) localStorage.setItem('een_userProfile', JSON.stringify(userProfile.value))
+      const storage = getStorageAdapter()
+      if (token.value) storage.setItem('een_token', token.value)
+      if (tokenExpiration.value) storage.setItem('een_tokenExpiration', String(tokenExpiration.value))
+      if (refreshTokenMarker.value) storage.setItem('een_refreshTokenMarker', refreshTokenMarker.value)
+      if (sessionId.value) storage.setItem('een_sessionId', sessionId.value)
+      if (hostname.value) storage.setItem('een_hostname', hostname.value)
+      if (port.value !== 443) storage.setItem('een_port', String(port.value))
+      if (userProfile.value) storage.setItem('een_userProfile', JSON.stringify(userProfile.value))
     } catch (err: unknown) {
-      // localStorage might not be available (SSR, private browsing, etc.)
-      debug('Failed to save to localStorage:', err instanceof Error ? err.message : String(err))
+      // Storage might not be available (SSR, private browsing, etc.)
+      debug('Failed to save to storage:', err instanceof Error ? err.message : String(err))
     }
   }
 
   function loadFromStorage() {
     try {
-      token.value = localStorage.getItem('een_token')
-      const expStr = localStorage.getItem('een_tokenExpiration')
+      const storage = getStorageAdapter()
+      token.value = storage.getItem('een_token')
+      const expStr = storage.getItem('een_tokenExpiration')
       tokenExpiration.value = expStr ? parseInt(expStr, 10) : null
-      refreshTokenMarker.value = localStorage.getItem('een_refreshTokenMarker')
-      sessionId.value = localStorage.getItem('een_sessionId')
-      hostname.value = localStorage.getItem('een_hostname')
-      const portStr = localStorage.getItem('een_port')
+      refreshTokenMarker.value = storage.getItem('een_refreshTokenMarker')
+      sessionId.value = storage.getItem('een_sessionId')
+      hostname.value = storage.getItem('een_hostname')
+      const portStr = storage.getItem('een_port')
       port.value = portStr ? parseInt(portStr, 10) : 443
-      const profileStr = localStorage.getItem('een_userProfile')
+      const profileStr = storage.getItem('een_userProfile')
       userProfile.value = profileStr ? JSON.parse(profileStr) : null
     } catch (err: unknown) {
-      // localStorage might not be available (SSR, private browsing, etc.)
-      debug('Failed to load from localStorage:', err instanceof Error ? err.message : String(err))
+      // Storage might not be available (SSR, private browsing, etc.)
+      debug('Failed to load from storage:', err instanceof Error ? err.message : String(err))
     }
   }
 
   function clearStorage() {
     try {
-      localStorage.removeItem('een_token')
-      localStorage.removeItem('een_tokenExpiration')
-      localStorage.removeItem('een_refreshTokenMarker')
-      localStorage.removeItem('een_sessionId')
-      localStorage.removeItem('een_hostname')
-      localStorage.removeItem('een_port')
-      localStorage.removeItem('een_userProfile')
+      const storage = getStorageAdapter()
+      storage.removeItem('een_token')
+      storage.removeItem('een_tokenExpiration')
+      storage.removeItem('een_refreshTokenMarker')
+      storage.removeItem('een_sessionId')
+      storage.removeItem('een_hostname')
+      storage.removeItem('een_port')
+      storage.removeItem('een_userProfile')
     } catch (err: unknown) {
-      // localStorage might not be available (SSR, private browsing, etc.)
-      debug('Failed to clear localStorage:', err instanceof Error ? err.message : String(err))
+      // Storage might not be available (SSR, private browsing, etc.)
+      debug('Failed to clear storage:', err instanceof Error ? err.message : String(err))
     }
   }
 

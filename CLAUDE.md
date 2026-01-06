@@ -175,7 +175,7 @@ async function getResource(params?: ResourceParams): Promise<Result<Resource[]>>
 ## Auth Store Pattern (from ../een-oauth-proxy/demo1)
 
 Key state:
-- `token` - Access token (short-lived, ~1 hour)
+- `token` - Access token (short-lived, validity configurable from 15 min to 7 days)
 - `tokenExpiration` - Timestamp when token expires
 - `refreshTokenMarker` - Indicates refresh token exists (actual token stored server-side)
 - `sessionId` - For header-based auth fallback

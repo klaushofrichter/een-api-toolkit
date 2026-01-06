@@ -132,6 +132,26 @@ export interface PaginatedResult<T> {
 }
 
 /**
+ * Storage strategy options for token persistence.
+ *
+ * @remarks
+ * Different storage strategies offer different security/convenience tradeoffs:
+ *
+ * - **localStorage**: Tokens persist across browser sessions. Most convenient but
+ *   vulnerable to XSS attacks since JavaScript can access localStorage.
+ *
+ * - **sessionStorage**: Tokens persist within a single tab session. Cleared when
+ *   the tab is closed. Each tab has isolated storage, so opening a new tab
+ *   requires re-authentication.
+ *
+ * - **memory**: Tokens are only kept in memory (Pinia store). Most secure as
+ *   tokens are never written to disk, but any page refresh requires re-authentication.
+ *
+ * @category Configuration
+ */
+export type StorageStrategy = 'localStorage' | 'sessionStorage' | 'memory'
+
+/**
  * Configuration for initializing the toolkit.
  *
  * @remarks
@@ -147,6 +167,7 @@ export interface PaginatedResult<T> {
  *   proxyUrl: 'https://your-proxy.workers.dev',
  *   clientId: 'your-een-client-id',
  *   redirectUri: 'http://localhost:5173/callback',
+ *   storageStrategy: 'sessionStorage', // More secure than default
  *   debug: true
  * })
  * ```
@@ -160,6 +181,15 @@ export interface EenToolkitConfig {
   clientId?: string
   /** OAuth redirect URI (default: http://127.0.0.1:3333) */
   redirectUri?: string
+  /**
+   * Storage strategy for token persistence (default: 'localStorage').
+   *
+   * Security vs convenience tradeoffs:
+   * - 'localStorage': Persists across sessions, vulnerable to XSS
+   * - 'sessionStorage': Per-tab isolation, cleared on tab close
+   * - 'memory': Most secure, lost on page refresh
+   */
+  storageStrategy?: StorageStrategy
   /** Enable debug logging to console */
   debug?: boolean
 }

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.4**](../README.md)
+[**EEN API Toolkit v0.3.7**](../README.md)
 
 ***
 
@@ -33,7 +33,7 @@ parameter to control how many results are returned per page, and `pageToken`
 to navigate to subsequent pages.
 
 For more details, see the
-[EEN API Documentation](https://developer.eagleeyenetworks.com/reference/listusers).
+[EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getusers).
 
 ## Example
 

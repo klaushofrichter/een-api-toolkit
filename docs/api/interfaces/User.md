@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.4**](../README.md)
+[**EEN API Toolkit v0.3.7**](../README.md)
 
 ***
 
@@ -16,7 +16,7 @@ Represents a user in the Eagle Eye Networks platform. Users belong to accounts
 and have various permissions that control their access to cameras and features.
 
 For more details on user management, see the
-[EEN API Documentation](https://developer.eagleeyenetworks.com/reference/listusers).
+[EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getusers).
 
 ## Properties
 
