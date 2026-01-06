@@ -1,22 +1,8 @@
-/**
- * Storage strategy options for token persistence.
- *
- * @remarks
- * Different storage strategies offer different security/convenience tradeoffs:
- *
- * - **localStorage**: Tokens persist across browser sessions. Most convenient but
- *   vulnerable to XSS attacks since JavaScript can access localStorage.
- *
- * - **sessionStorage**: Tokens persist within a single tab session. Cleared when
- *   the tab is closed. Each tab has isolated storage, so opening a new tab
- *   requires re-authentication.
- *
- * - **memory**: Tokens are only kept in memory (Pinia store). Most secure as
- *   tokens are never written to disk, but any page refresh requires re-authentication.
- *
- * @category Configuration
- */
-export type StorageStrategy = 'localStorage' | 'sessionStorage' | 'memory'
+// Import StorageStrategy from types to maintain single source of truth
+import type { StorageStrategy } from '../types'
+
+// Re-export for convenience
+export type { StorageStrategy }
 
 /**
  * Storage adapter interface for token persistence.

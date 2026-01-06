@@ -4,6 +4,17 @@ A Vue 3 example demonstrating how to fetch live and recorded images from EEN cam
 
 ![Media Screenshot](media-screenshot.png)
 
+## Storage Strategy: sessionStorage
+
+This example uses the `sessionStorage` storage strategy for balanced security. This means:
+
+- **Per-tab isolation** - each browser tab has its own session
+- **Page refresh preserves session** - tokens survive refresh within the same tab
+- **Tab close clears session** - closing the tab removes tokens
+- **New tabs require login** - opening a new tab requires separate authentication
+
+This is a good balance between security (limiting XSS blast radius) and user experience (page refresh doesn't require re-login).
+
 ## Features Demonstrated
 
 - OAuth authentication flow (login, callback, logout)
