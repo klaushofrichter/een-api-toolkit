@@ -6,7 +6,7 @@
  * and have various permissions that control their access to cameras and features.
  *
  * For more details on user management, see the
- * [EEN API Documentation](https://developer.eagleeyenetworks.com/reference/listusers).
+ * [EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getusers).
  *
  * @category Users
  */

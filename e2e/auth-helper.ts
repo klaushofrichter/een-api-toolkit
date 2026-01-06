@@ -7,7 +7,7 @@
  *
  * SECURITY NOTE: The access token is stored in plaintext in .auth-state.json.
  * This is acceptable for development/testing because:
- * - The token is short-lived (~1 hour)
+ * - The token is short-lived (validity depends on account settings)
  * - The file has restricted permissions (mode 0o600)
  * - The file is in .gitignore
  * - This is for local development and CI testing only

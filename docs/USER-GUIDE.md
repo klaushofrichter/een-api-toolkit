@@ -164,7 +164,59 @@ app.mount('#app')
 | `proxyUrl` | string | Yes | URL of your OAuth proxy server |
 | `clientId` | string | Yes | Your EEN OAuth Client ID |
 | `redirectUri` | string | No | OAuth callback URL (defaults to `window.location.origin`) |
+| `storageStrategy` | string | No | Token storage method: `'localStorage'` (default), `'sessionStorage'`, or `'memory'` |
 | `debug` | boolean | No | Enable console debug logging |
+
+### Token Storage Strategy
+
+The `storageStrategy` option controls how authentication tokens are persisted in the browser. This is a security vs. convenience tradeoff.
+
+```typescript
+initEenToolkit({
+  proxyUrl: import.meta.env.VITE_PROXY_URL,
+  clientId: import.meta.env.VITE_EEN_CLIENT_ID,
+  storageStrategy: 'sessionStorage'  // Choose based on your security requirements
+})
+```
+
+#### Storage Options Comparison
+
+| Strategy | Security | Persistence | XSS Risk |
+|----------|----------|-------------|----------|
+| `localStorage` | Lower | Survives browser restart | Tokens accessible via JavaScript |
+| `sessionStorage` | Medium | Per-tab, cleared on tab close | Limited to single tab |
+| `memory` | Highest | Lost on page refresh | Tokens never written to disk |
+
+#### User Experience Impact
+
+The storage strategy significantly affects user experience:
+
+| Scenario | `localStorage` | `sessionStorage` | `memory` |
+|----------|----------------|------------------|----------|
+| Page refresh | Stays logged in | Stays logged in | **Must re-login** |
+| Close & reopen tab | Stays logged in | **Must re-login** | **Must re-login** |
+| Open new tab | Stays logged in | **Must re-login** | **Must re-login** |
+| Close browser | Stays logged in | **Must re-login** | **Must re-login** |
+
+#### Recommendations
+
+- **`localStorage`** (default): Best user experience. Suitable for most applications where the primary threat model doesn't include XSS attacks from the same origin.
+
+- **`sessionStorage`**: Balanced approach. Each browser tab is isolated, limiting the blast radius of potential XSS attacks. Users opening multiple tabs will need to authenticate in each tab.
+
+- **`memory`**: Maximum security. Tokens are never persisted to disk and cannot be stolen via storage inspection. Recommended for:
+  - High-security deployments (financial, healthcare, critical infrastructure)
+  - Admin panels with elevated privileges
+  - Applications where users expect to re-authenticate frequently
+
+#### Security Context
+
+The toolkit already implements secure practices:
+- **Refresh tokens are never exposed** to the client - they're stored server-side in the OAuth proxy
+- **Access tokens are short-lived** (validity configurable per account, from 15 min to 7 days), limiting the window of exposure
+- The storage strategy affects only the access token and session metadata
+
+For applications where XSS is a significant concern, consider using `sessionStorage` or `memory` in combination with Content Security Policy (CSP) headers.
 
 ## Authentication Flow
 
