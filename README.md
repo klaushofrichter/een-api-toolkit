@@ -241,6 +241,46 @@ npm run test:e2e:ui
 
 > **Note:** All development and testing has been done on macOS. The `lsof` command used in scripts may behave differently on other platforms.
 
+## Scripts
+
+Utility scripts are located in the `scripts/` directory:
+
+| Script | Purpose |
+|--------|---------|
+| `sync-secrets.sh` | Sync secrets to GitHub and example apps |
+| `restart-proxy.sh` | Start/restart the local OAuth proxy |
+| `cleanup-auth.sh` | Revoke test tokens and clear auth cache |
+
+### Syncing Secrets
+
+The `sync-secrets.sh` script manages secrets from a single source (root `.env` file):
+
+```bash
+# Preview what will be synced (no changes made)
+./scripts/sync-secrets.sh --dry-run
+
+# Sync secrets to GitHub and example applications
+./scripts/sync-secrets.sh
+```
+
+**What it does:**
+
+1. **GitHub Repository Secrets** - Syncs these variables for CI/CD:
+   - `ANTHROPIC_API_KEY`, `CLIENT_SECRET`, `NPM_TOKEN`, `SLACK_WEBHOOK`
+   - `TEST_USER`, `TEST_PASSWORD`, `VITE_EEN_CLIENT_ID`, `VITE_PROXY_URL`
+
+2. **Example Applications** - Copies VITE_* variables to `examples/*/.env`:
+   - `VITE_PROXY_URL`, `VITE_EEN_CLIENT_ID`, `VITE_DEBUG`
+   - `VITE_REDIRECT_URI` (hardcoded to `http://127.0.0.1:3333`)
+
+**Setup:**
+
+1. Copy `.env.example` to `.env` in the project root
+2. Fill in your actual values
+3. Run `./scripts/sync-secrets.sh` to distribute secrets
+
+> **Note:** Example `.env` files are gitignored. Run `sync-secrets.sh` after cloning to set up local development.
+
 ## External Resources
 
 - [EEN Developer Portal](https://developer.eagleeyenetworks.com/)

@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.7
+> **Version:** 0.3.8
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -103,9 +103,97 @@ app.mount('#app')        // ✅ Last - mount app
 
 **Solution:**
 - Use `127.0.0.1` not `localhost`
-- Use port `3333`
-- No trailing slash, no path
+- Use port `3333` exactly
+- No trailing slash (not `http://127.0.0.1:3333/`)
+- No path (not `http://127.0.0.1:3333/callback`)
 - Register this exact URI at [EEN Developer Portal](https://developer.eagleeyenetworks.com/page/my-application)
+
+**Vite config:**
+```typescript
+// vite.config.ts
+server: { host: '127.0.0.1', port: 3333, strictPort: true }
+```
+
+**Router pattern:** Handle OAuth callback on root path, then redirect internally:
+```typescript
+// router/index.ts - root path must catch OAuth params
+{
+  path: '/',
+  beforeEnter: (to, _from, next) => {
+    if (to.query.code && to.query.state) {
+      next({ name: 'callback', query: to.query })
+    } else {
+      next()
+    }
+  }
+}
+```
+
+### Common Pitfalls - Preview Images
+
+Displaying live preview images requires careful attention to authentication. Here are common mistakes:
+
+#### DON'T: Construct API URLs directly for `<img>` tags
+
+```typescript
+// WRONG - browsers cannot send Authorization headers with <img src>
+const url = `${authStore.baseUrl}/api/v3.0/media/liveImage.jpeg?deviceId=${cameraId}`
+imgElement.src = url  // Results in 401 Unauthorized
+```
+
+**Why it fails:** The `<img>` element makes a simple GET request without custom headers. The JWT token cannot be sent, so the request is unauthorized.
+
+#### DON'T: Modify multipartUrl by adding query parameters
+
+```typescript
+// WRONG - adding parameters breaks the pre-signed URL
+const feedUrl = feed.multipartUrl
+imgElement.src = `${feedUrl}?timestamp=${Date.now()}`  // Results in 400 Bad Request
+imgElement.src = `${feedUrl}&cache=${Date.now()}`     // Also fails
+```
+
+**Why it fails:** The `multipartUrl` is a complete, pre-authenticated URL. Any modification (including cache-busting parameters) invalidates it.
+
+#### DO: Use `getLiveImage()` for preview thumbnails
+
+```typescript
+// CORRECT - returns base64 data URL that works directly in <img src>
+import { getLiveImage } from 'een-api-toolkit'
+
+const { data, error } = await getLiveImage({ deviceId: cameraId })
+if (data?.imageData) {
+  imgElement.src = data.imageData  // "data:image/jpeg;base64,..."
+}
+```
+
+**Why it works:** The toolkit handles authentication internally and returns a base64-encoded data URL that can be used directly without browser restrictions.
+
+### Choosing the Right Preview Method
+
+| Use Case | Method | Notes |
+|----------|--------|-------|
+| Grid of camera thumbnails | `getLiveImage()` | Best for multiple cameras, handles auth internally |
+| Periodic refresh (e.g., every 3s) | `getLiveImage()` | Call repeatedly in a timer |
+| Single continuous MJPEG stream | `multipartUrl` | Requires `initMediaSession()` first, use URL unmodified |
+| One-time snapshot | `getLiveImage()` | Simple and self-contained |
+| Full-quality live video | Live Video SDK | For modal/fullscreen video playback |
+
+**Quick Reference:**
+
+```typescript
+// For thumbnails and grids - USE THIS
+const { data } = await getLiveImage({ deviceId })
+img.src = data.imageData
+
+// For continuous MJPEG stream (single camera, unmodified URL only)
+await initMediaSession()
+const { data: feeds } = await listFeeds({ deviceId, include: ['multipartUrl'] })
+img.src = feeds.results.find(f => f.type === 'preview')?.multipartUrl
+
+// For HD live video - use @een/live-video-web-sdk
+const player = new LivePlayer()
+player.start({ videoElement, cameraId, baseUrl, jwt })
+```
 
 ---
 
@@ -153,76 +241,11 @@ app.mount('#app')        // ✅ Last - mount app
 | Function | Purpose | Returns |
 |----------|---------|---------|
 | `listMedia(params)` | List media intervals for a device | `Result<PaginatedResult<MediaInterval>>` |
+| `listFeeds(params)` | List available feeds for a device | `Result<ListFeedsResult>` |
 | `getLiveImage(params)` | Get live preview image from camera | `Result<LiveImageResult>` |
 | `getRecordedImage(params)` | Get recorded image from history | `Result<RecordedImageResult>` |
 | `getMediaSession()` | Get media session URL for cookies | `Result<MediaSessionResponse>` |
 | `initMediaSession()` | Initialize media session (sets cookie) | `Result<MediaSessionResult>` |
-
----
-
-## Critical Requirements
-
-### OAuth Redirect URI (IMPORTANT)
-
-The EEN Identity Provider performs an **exact string match** on the redirect URI. Applications MUST follow these rules:
-
-| Requirement | Correct | Incorrect |
-|-------------|---------|-----------|
-| Host | `127.0.0.1` | `localhost` |
-| Path | None (root path only) | `/callback` |
-| Trailing slash | No | `http://127.0.0.1:3333/` |
-
-**The only valid redirect URI is: `http://127.0.0.1:3333`**
-
-**Configure at:** [EEN Developer Portal - My Application](https://developer.eagleeyenetworks.com/page/my-application)
-
-### Application Requirements
-
-1. **Handle OAuth callbacks on the root path (`/`)** - not `/callback`
-2. **Run dev server on `127.0.0.1`** - not `localhost`
-3. **Register exactly `http://127.0.0.1:3333` with EEN at the Developer Portal**
-
-### Router Pattern for OAuth Callbacks
-
-The root path must detect OAuth params and handle the callback:
-
-```typescript
-// router/index.ts
-{
-  path: '/',
-  name: 'home',
-  component: Home,
-  beforeEnter: (to, _from, next) => {
-    // If URL has OAuth params, redirect to callback handler
-    if (to.query.code && to.query.state) {
-      next({ name: 'callback', query: to.query })
-    } else {
-      next()
-    }
-  }
-}
-```
-
-### Vite Dev Server Configuration
-
-```typescript
-// vite.config.ts
-export default defineConfig({
-  server: {
-    host: '127.0.0.1',  // MUST use 127.0.0.1, not localhost
-    port: 3333,
-    strictPort: true
-  }
-})
-```
-
-### Common OAuth Errors
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "Redirect URI mismatch" | URI doesn't match exactly | Use `http://127.0.0.1:3333` (no path, no trailing slash) |
-| Redirected back to login | Router guard blocks callback | Allow OAuth params through on root path |
-| Callback not processed | Wrong path or host | Handle callback on `/`, use `127.0.0.1` |
 
 ---
 
@@ -245,16 +268,17 @@ interface EenError {
 }
 
 type ErrorCode =
-  | 'AUTH_REQUIRED'    // No valid token - redirect to login
-  | 'AUTH_FAILED'      // Authentication failed
-  | 'TOKEN_EXPIRED'    // Token expired - will auto-refresh
-  | 'API_ERROR'        // EEN API returned an error
-  | 'NETWORK_ERROR'    // Network request failed
-  | 'VALIDATION_ERROR' // Invalid parameters
-  | 'NOT_FOUND'        // Resource not found (404)
-  | 'FORBIDDEN'        // Access denied (403)
-  | 'RATE_LIMITED'     // Too many requests (429)
-  | 'UNKNOWN_ERROR'    // Unexpected error
+  | 'AUTH_REQUIRED'       // No valid token - redirect to login
+  | 'AUTH_FAILED'         // Authentication failed
+  | 'TOKEN_EXPIRED'       // Token expired - will auto-refresh
+  | 'API_ERROR'           // EEN API returned an error
+  | 'NETWORK_ERROR'       // Network request failed
+  | 'VALIDATION_ERROR'    // Invalid parameters
+  | 'NOT_FOUND'           // Resource not found (404)
+  | 'FORBIDDEN'           // Access denied (403)
+  | 'RATE_LIMITED'        // Too many requests (429)
+  | 'SERVICE_UNAVAILABLE' // Service unavailable (503)
+  | 'UNKNOWN_ERROR'       // Unexpected error
 ```
 
 ### Pagination Types
@@ -276,11 +300,14 @@ interface PaginatedResult<T> {
 ### Configuration Type
 
 ```typescript
+type StorageStrategy = 'localStorage' | 'sessionStorage' | 'memory'
+
 interface EenToolkitConfig {
-  proxyUrl?: string    // OAuth proxy URL (required for API calls)
-  clientId?: string    // EEN OAuth client ID
-  redirectUri?: string // OAuth redirect URI (default: http://127.0.0.1:3333)
-  debug?: boolean      // Enable debug logging
+  proxyUrl?: string           // OAuth proxy URL (required for API calls)
+  clientId?: string           // EEN OAuth client ID
+  redirectUri?: string        // OAuth redirect URI (default: http://127.0.0.1:3333)
+  storageStrategy?: StorageStrategy  // Token storage: 'localStorage' (default), 'sessionStorage', or 'memory'
+  debug?: boolean             // Enable debug logging
 }
 ```
 
@@ -579,6 +606,44 @@ interface MediaSessionResponse {
 interface MediaSessionResult {
   success: boolean          // Whether cookie was set successfully
   sessionUrl: string        // The URL that was called
+}
+```
+
+### Feed Types
+
+```typescript
+type FeedStreamType = 'main' | 'preview' | 'talkdown'
+type FeedMediaType = 'video' | 'audio' | 'image' | 'halfDuplex' | 'fullDuplex'
+type FeedIncludeOption = 'flvUrl' | 'rtspUrl' | 'rtspsUrl' | 'localRtspUrl' | 'hlsUrl' | 'multipartUrl' | 'webRtcUrl' | 'audioPushHttpsUrl'
+
+interface Feed {
+  id: string                    // Feed identifier (typically deviceId-type)
+  type: FeedStreamType          // Stream type
+  deviceId: string              // Device generating this feed
+  mediaType: FeedMediaType      // Media type
+  flvUrl?: string | null        // Flash Video URL (if requested)
+  rtspUrl?: string | null       // RTSP URL (if requested)
+  rtspsUrl?: string | null      // RTSP over TLS (if requested)
+  localRtspUrl?: string | null  // Local RTSP to bridge (if requested)
+  hlsUrl?: string | null        // HLS URL (if requested)
+  multipartUrl?: string | null  // Multipart URL for raw frames (if requested)
+  webRtcUrl?: string | null     // WebRTC URL (if requested)
+  audioPushHttpsUrl?: string | null  // Audio push for speakers (if requested)
+}
+
+interface ListFeedsParams {
+  deviceId?: string             // Filter by single device ID
+  deviceId__in?: string[]       // Filter by multiple device IDs
+  type?: FeedStreamType         // Filter by stream type
+  include?: FeedIncludeOption[] // URL fields to include in response
+  pageSize?: number
+  pageToken?: string
+}
+
+interface ListFeedsResult {
+  results: Feed[]
+  nextPageToken?: string
+  totalSize?: number
 }
 ```
 
@@ -1350,100 +1415,6 @@ if (error) {
   return
 }
 console.log(data.email) // Safe
-```
-
----
-
-## Additional Setup Details
-
-### OAuth Callback Route
-
-The `beforeEnter` guard shown in the "Critical Requirements" section redirects OAuth responses to a named route called 'callback'. Here is how to set up that route and its component:
-
-```typescript
-// router/index.ts
-{
-  path: '/callback',
-  name: 'callback',
-  component: () => import('./views/Callback.vue')
-}
-```
-
-```vue
-<!-- views/Callback.vue -->
-<script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { handleAuthCallback } from 'een-api-toolkit'
-
-const router = useRouter()
-
-onMounted(async () => {
-  const url = new URL(window.location.href)
-  const code = url.searchParams.get('code')
-  const state = url.searchParams.get('state')
-
-  if (!code || !state) {
-    router.push('/login?error=missing_params')
-    return
-  }
-
-  const { error } = await handleAuthCallback(code, state)
-
-  if (error) {
-    router.push(`/login?error=${error.code}`)
-    return
-  }
-
-  router.push('/dashboard')
-})
-</script>
-
-<template>
-  <div>Authenticating...</div>
-</template>
-```
-
-### Login Component
-
-```vue
-<!-- views/Login.vue -->
-<script setup>
-import { getAuthUrl } from 'een-api-toolkit'
-
-function login() {
-  window.location.href = getAuthUrl()
-}
-</script>
-
-<template>
-  <div>
-    <h1>Login</h1>
-    <button @click="login">Sign in with Eagle Eye Networks</button>
-  </div>
-</template>
-```
-
-### Logout Component
-
-```vue
-<!-- In a component, e.g., App.vue or a NavBar component -->
-<script setup lang="ts">
-import { revokeToken } from 'een-api-toolkit'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-async function logout() {
-  await revokeToken()
-  // Redirect to login page after token is revoked
-  router.push('/login')
-}
-</script>
-
-<template>
-  <button @click="logout">Logout</button>
-</template>
 ```
 
 ---
