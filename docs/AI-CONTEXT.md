@@ -103,9 +103,97 @@ app.mount('#app')        // ✅ Last - mount app
 
 **Solution:**
 - Use `127.0.0.1` not `localhost`
-- Use port `3333`
-- No trailing slash, no path
+- Use port `3333` exactly
+- No trailing slash (not `http://127.0.0.1:3333/`)
+- No path (not `http://127.0.0.1:3333/callback`)
 - Register this exact URI at [EEN Developer Portal](https://developer.eagleeyenetworks.com/page/my-application)
+
+**Vite config:**
+```typescript
+// vite.config.ts
+server: { host: '127.0.0.1', port: 3333, strictPort: true }
+```
+
+**Router pattern:** Handle OAuth callback on root path, then redirect internally:
+```typescript
+// router/index.ts - root path must catch OAuth params
+{
+  path: '/',
+  beforeEnter: (to, _from, next) => {
+    if (to.query.code && to.query.state) {
+      next({ name: 'callback', query: to.query })
+    } else {
+      next()
+    }
+  }
+}
+```
+
+### Common Pitfalls - Preview Images
+
+Displaying live preview images requires careful attention to authentication. Here are common mistakes:
+
+#### DON'T: Construct API URLs directly for `<img>` tags
+
+```typescript
+// WRONG - browsers cannot send Authorization headers with <img src>
+const url = `${authStore.baseUrl}/api/v3.0/media/liveImage.jpeg?deviceId=${cameraId}`
+imgElement.src = url  // Results in 401 Unauthorized
+```
+
+**Why it fails:** The `<img>` element makes a simple GET request without custom headers. The JWT token cannot be sent, so the request is unauthorized.
+
+#### DON'T: Modify multipartUrl by adding query parameters
+
+```typescript
+// WRONG - adding parameters breaks the pre-signed URL
+const feedUrl = feed.multipartUrl
+imgElement.src = `${feedUrl}?timestamp=${Date.now()}`  // Results in 400 Bad Request
+imgElement.src = `${feedUrl}&cache=${Date.now()}`     // Also fails
+```
+
+**Why it fails:** The `multipartUrl` is a complete, pre-authenticated URL. Any modification (including cache-busting parameters) invalidates it.
+
+#### DO: Use `getLiveImage()` for preview thumbnails
+
+```typescript
+// CORRECT - returns base64 data URL that works directly in <img src>
+import { getLiveImage } from 'een-api-toolkit'
+
+const { data, error } = await getLiveImage({ deviceId: cameraId })
+if (data?.imageData) {
+  imgElement.src = data.imageData  // "data:image/jpeg;base64,..."
+}
+```
+
+**Why it works:** The toolkit handles authentication internally and returns a base64-encoded data URL that can be used directly without browser restrictions.
+
+### Choosing the Right Preview Method
+
+| Use Case | Method | Notes |
+|----------|--------|-------|
+| Grid of camera thumbnails | `getLiveImage()` | Best for multiple cameras, handles auth internally |
+| Periodic refresh (e.g., every 3s) | `getLiveImage()` | Call repeatedly in a timer |
+| Single continuous MJPEG stream | `multipartUrl` | Requires `initMediaSession()` first, use URL unmodified |
+| One-time snapshot | `getLiveImage()` | Simple and self-contained |
+| Full-quality live video | Live Video SDK | For modal/fullscreen video playback |
+
+**Quick Reference:**
+
+```typescript
+// For thumbnails and grids - USE THIS
+const { data } = await getLiveImage({ deviceId })
+img.src = data.imageData
+
+// For continuous MJPEG stream (single camera, unmodified URL only)
+await initMediaSession()
+const { data: feeds } = await listFeeds({ deviceId, include: ['multipartUrl'] })
+img.src = feeds.results.find(f => f.type === 'preview')?.multipartUrl
+
+// For HD live video - use @een/live-video-web-sdk
+const player = new LivePlayer()
+player.start({ videoElement, cameraId, baseUrl, jwt })
+```
 
 ---
 
@@ -153,76 +241,11 @@ app.mount('#app')        // ✅ Last - mount app
 | Function | Purpose | Returns |
 |----------|---------|---------|
 | `listMedia(params)` | List media intervals for a device | `Result<PaginatedResult<MediaInterval>>` |
+| `listFeeds(params)` | List available feeds for a device | `Result<ListFeedsResult>` |
 | `getLiveImage(params)` | Get live preview image from camera | `Result<LiveImageResult>` |
 | `getRecordedImage(params)` | Get recorded image from history | `Result<RecordedImageResult>` |
 | `getMediaSession()` | Get media session URL for cookies | `Result<MediaSessionResponse>` |
 | `initMediaSession()` | Initialize media session (sets cookie) | `Result<MediaSessionResult>` |
-
----
-
-## Critical Requirements
-
-### OAuth Redirect URI (IMPORTANT)
-
-The EEN Identity Provider performs an **exact string match** on the redirect URI. Applications MUST follow these rules:
-
-| Requirement | Correct | Incorrect |
-|-------------|---------|-----------|
-| Host | `127.0.0.1` | `localhost` |
-| Path | None (root path only) | `/callback` |
-| Trailing slash | No | `http://127.0.0.1:3333/` |
-
-**The only valid redirect URI is: `http://127.0.0.1:3333`**
-
-**Configure at:** [EEN Developer Portal - My Application](https://developer.eagleeyenetworks.com/page/my-application)
-
-### Application Requirements
-
-1. **Handle OAuth callbacks on the root path (`/`)** - not `/callback`
-2. **Run dev server on `127.0.0.1`** - not `localhost`
-3. **Register exactly `http://127.0.0.1:3333` with EEN at the Developer Portal**
-
-### Router Pattern for OAuth Callbacks
-
-The root path must detect OAuth params and handle the callback:
-
-```typescript
-// router/index.ts
-{
-  path: '/',
-  name: 'home',
-  component: Home,
-  beforeEnter: (to, _from, next) => {
-    // If URL has OAuth params, redirect to callback handler
-    if (to.query.code && to.query.state) {
-      next({ name: 'callback', query: to.query })
-    } else {
-      next()
-    }
-  }
-}
-```
-
-### Vite Dev Server Configuration
-
-```typescript
-// vite.config.ts
-export default defineConfig({
-  server: {
-    host: '127.0.0.1',  // MUST use 127.0.0.1, not localhost
-    port: 3333,
-    strictPort: true
-  }
-})
-```
-
-### Common OAuth Errors
-
-| Error | Cause | Solution |
-|-------|-------|----------|
-| "Redirect URI mismatch" | URI doesn't match exactly | Use `http://127.0.0.1:3333` (no path, no trailing slash) |
-| Redirected back to login | Router guard blocks callback | Allow OAuth params through on root path |
-| Callback not processed | Wrong path or host | Handle callback on `/`, use `127.0.0.1` |
 
 ---
 
@@ -245,16 +268,17 @@ interface EenError {
 }
 
 type ErrorCode =
-  | 'AUTH_REQUIRED'    // No valid token - redirect to login
-  | 'AUTH_FAILED'      // Authentication failed
-  | 'TOKEN_EXPIRED'    // Token expired - will auto-refresh
-  | 'API_ERROR'        // EEN API returned an error
-  | 'NETWORK_ERROR'    // Network request failed
-  | 'VALIDATION_ERROR' // Invalid parameters
-  | 'NOT_FOUND'        // Resource not found (404)
-  | 'FORBIDDEN'        // Access denied (403)
-  | 'RATE_LIMITED'     // Too many requests (429)
-  | 'UNKNOWN_ERROR'    // Unexpected error
+  | 'AUTH_REQUIRED'       // No valid token - redirect to login
+  | 'AUTH_FAILED'         // Authentication failed
+  | 'TOKEN_EXPIRED'       // Token expired - will auto-refresh
+  | 'API_ERROR'           // EEN API returned an error
+  | 'NETWORK_ERROR'       // Network request failed
+  | 'VALIDATION_ERROR'    // Invalid parameters
+  | 'NOT_FOUND'           // Resource not found (404)
+  | 'FORBIDDEN'           // Access denied (403)
+  | 'RATE_LIMITED'        // Too many requests (429)
+  | 'SERVICE_UNAVAILABLE' // Service unavailable (503)
+  | 'UNKNOWN_ERROR'       // Unexpected error
 ```
 
 ### Pagination Types
@@ -276,11 +300,14 @@ interface PaginatedResult<T> {
 ### Configuration Type
 
 ```typescript
+type StorageStrategy = 'localStorage' | 'sessionStorage' | 'memory'
+
 interface EenToolkitConfig {
-  proxyUrl?: string    // OAuth proxy URL (required for API calls)
-  clientId?: string    // EEN OAuth client ID
-  redirectUri?: string // OAuth redirect URI (default: http://127.0.0.1:3333)
-  debug?: boolean      // Enable debug logging
+  proxyUrl?: string           // OAuth proxy URL (required for API calls)
+  clientId?: string           // EEN OAuth client ID
+  redirectUri?: string        // OAuth redirect URI (default: http://127.0.0.1:3333)
+  storageStrategy?: StorageStrategy  // Token storage: 'localStorage' (default), 'sessionStorage', or 'memory'
+  debug?: boolean             // Enable debug logging
 }
 ```
 
@@ -429,9 +456,7 @@ interface GetCameraParams {
 ### Bridge
 
 ```typescript
-type BridgeStatus =
-  | 'online' | 'offline' | 'error' | 'idle'
-  | 'registered' | 'attaching' | 'initializing'
+type BridgeStatus = 'online' | 'offline' | 'error' | 'idle' | 'registered' | 'attaching' | 'initializing'
 
 interface Bridge {
   id: string
@@ -442,66 +467,16 @@ interface Bridge {
   timezone?: string
   status?: BridgeStatus | { connectionStatus?: BridgeStatus }
   tags?: string[]
-  deviceInfo?: BridgeDeviceInfo
-  networkInfo?: BridgeNetworkInfo
-  devicePosition?: BridgeDevicePosition
+  deviceInfo?: { make?: string; model?: string; firmwareVersion?: string; serialNumber?: string; hardwareVersion?: string }
+  networkInfo?: { localIpAddress?: string; publicIpAddress?: string; macAddress?: string; subnetMask?: string; gateway?: string; dnsServers?: string[] }
+  devicePosition?: { latitude?: number; longitude?: number; altitude?: number; floor?: number; azimuth?: number }
   cameraCount?: number
   createdAt?: string
   updatedAt?: string
 }
 
-interface BridgeDeviceInfo {
-  make?: string           // Manufacturer
-  model?: string          // Model name
-  firmwareVersion?: string
-  serialNumber?: string
-  hardwareVersion?: string
-}
-
-interface BridgeNetworkInfo {
-  localIpAddress?: string
-  publicIpAddress?: string
-  macAddress?: string
-  subnetMask?: string
-  gateway?: string
-  dnsServers?: string[]
-}
-
-interface BridgeDevicePosition {
-  latitude?: number
-  longitude?: number
-  altitude?: number
-  floor?: number
-  azimuth?: number
-}
-```
-
-### Bridge Parameter Types
-
-```typescript
-interface ListBridgesParams {
-  pageSize?: number           // Results per page
-  pageToken?: string          // Pagination token
-  include?: string[]          // Additional fields to include
-  sort?: string[]             // Sort order
-  status__in?: BridgeStatus[] // Filter by status
-  status__ne?: BridgeStatus   // Exclude by status
-  tags__contains?: string[]   // Filter by tags (all must match)
-  tags__any?: string[]        // Filter by tags (any match)
-  name?: string               // Exact name match
-  name__contains?: string     // Partial name match
-  name__in?: string[]         // Name in list
-  id__in?: string[]           // ID in list
-  id__notIn?: string[]        // ID not in list
-  locationId__in?: string[]   // Location ID filter
-  q?: string                  // Full-text search
-  qRelevance__gte?: number    // Minimum relevance score
-}
-
-interface GetBridgeParams {
-  include?: string[]  // Valid values: status, deviceInfo, networkInfo,
-                      // devicePosition, tags, effectivePermissions, etc.
-}
+// ListBridgesParams: Same filter pattern as ListCamerasParams (without camera-specific fields like bridgeId__in, shared, directToCloud)
+// GetBridgeParams: { include?: string[] } - values: status, deviceInfo, networkInfo, devicePosition, tags, effectivePermissions
 ```
 
 ### Media Types
@@ -582,607 +557,231 @@ interface MediaSessionResult {
 }
 ```
 
+### Feed Types
+
+```typescript
+type FeedStreamType = 'main' | 'preview' | 'talkdown'
+type FeedMediaType = 'video' | 'audio' | 'image' | 'halfDuplex' | 'fullDuplex'
+type FeedIncludeOption = 'flvUrl' | 'rtspUrl' | 'rtspsUrl' | 'localRtspUrl' | 'hlsUrl' | 'multipartUrl' | 'webRtcUrl' | 'audioPushHttpsUrl'
+
+interface Feed {
+  id: string                    // Feed identifier (typically deviceId-type)
+  type: FeedStreamType          // Stream type
+  deviceId: string              // Device generating this feed
+  mediaType: FeedMediaType      // Media type
+  flvUrl?: string | null        // Flash Video URL (if requested)
+  rtspUrl?: string | null       // RTSP URL (if requested)
+  rtspsUrl?: string | null      // RTSP over TLS (if requested)
+  localRtspUrl?: string | null  // Local RTSP to bridge (if requested)
+  hlsUrl?: string | null        // HLS URL (if requested)
+  multipartUrl?: string | null  // Multipart URL for raw frames (if requested)
+  webRtcUrl?: string | null     // WebRTC URL (if requested)
+  audioPushHttpsUrl?: string | null  // Audio push for speakers (if requested)
+}
+
+interface ListFeedsParams {
+  deviceId?: string             // Filter by single device ID
+  deviceId__in?: string[]       // Filter by multiple device IDs
+  type?: FeedStreamType         // Filter by stream type
+  include?: FeedIncludeOption[] // URL fields to include in response
+  pageSize?: number
+  pageToken?: string
+}
+
+interface ListFeedsResult {
+  results: Feed[]
+  nextPageToken?: string
+  totalSize?: number
+}
+```
+
 ---
 
 ## API Reference
 
-### initEenToolkit
-
-Initialize the toolkit. Call this before using any API functions.
+### Authentication
 
 ```typescript
-import { initEenToolkit } from 'een-api-toolkit'
+import { initEenToolkit, getAuthUrl, handleAuthCallback } from 'een-api-toolkit'
 
-// In main.ts
+// Initialize (call once in main.ts after Pinia is installed)
 initEenToolkit({
   proxyUrl: import.meta.env.VITE_PROXY_URL,
-  clientId: import.meta.env.VITE_EEN_CLIENT_ID,
-  debug: true // optional
+  clientId: import.meta.env.VITE_EEN_CLIENT_ID
 })
-```
 
-### getAuthUrl
+// Start OAuth login
+window.location.href = getAuthUrl()
 
-Generate the OAuth authorization URL. Redirect the user here to start login.
-
-```typescript
-import { getAuthUrl } from 'een-api-toolkit'
-
-function login() {
-  window.location.href = getAuthUrl()
-}
-```
-
-### handleAuthCallback
-
-Handle the OAuth callback after user authorizes. Call this when user returns to your redirect URI.
-
-```typescript
-import { handleAuthCallback } from 'een-api-toolkit'
-
-// In your callback route handler
-const url = new URL(window.location.href)
-const code = url.searchParams.get('code')
-const state = url.searchParams.get('state')
-
+// Handle callback (in your callback route)
+const code = new URL(location.href).searchParams.get('code')
+const state = new URL(location.href).searchParams.get('state')
 if (code && state) {
-  const { data, error } = await handleAuthCallback(code, state)
-
-  if (error) {
-    console.error('Auth failed:', error.message)
-    return
-  }
-
-  // User is now authenticated
-  router.push('/dashboard')
+  const { error } = await handleAuthCallback(code, state)
+  if (!error) router.push('/dashboard')
 }
 ```
 
-### getCurrentUser
-
-Get the current authenticated user's profile.
+### Users
 
 ```typescript
-import { getCurrentUser } from 'een-api-toolkit'
+import { getCurrentUser, getUsers, getUser } from 'een-api-toolkit'
 
-const { data, error } = await getCurrentUser()
+// Current user
+const { data: profile } = await getCurrentUser()
 
-if (error) {
-  if (error.code === 'AUTH_REQUIRED') {
-    router.push('/login')
-  }
-  return
-}
-
-console.log(`Welcome, ${data.firstName} ${data.lastName}`)
-```
-
-### getUsers
-
-List users with optional pagination.
-
-```typescript
-import { getUsers } from 'een-api-toolkit'
-
-// Basic usage
-const { data, error } = await getUsers()
-
-// With pagination
+// List users (with pagination)
 const { data } = await getUsers({ pageSize: 50 })
+// data.results, data.nextPageToken
 
-// Fetch all users
-let allUsers: User[] = []
-let pageToken: string | undefined
-
-do {
-  const { data, error } = await getUsers({ pageSize: 100, pageToken })
-  if (error) break
-  allUsers.push(...data.results)
-  pageToken = data.nextPageToken
-} while (pageToken)
+// Get specific user
+const { data: user } = await getUser('user-id', { include: ['permissions'] })
 ```
 
-### getUser
-
-Get a specific user by ID.
+### Cameras
 
 ```typescript
-import { getUser } from 'een-api-toolkit'
+import { getCameras, getCamera } from 'een-api-toolkit'
 
-const { data, error } = await getUser('user-id-123')
-
-if (error) {
-  if (error.code === 'NOT_FOUND') {
-    console.log('User not found')
-  }
-  return
-}
-
-// With permissions
-const { data: userWithPerms } = await getUser('user-id-123', {
-  include: ['permissions']
-})
-```
-
-### getCameras
-
-List cameras with optional pagination and filtering.
-
-```typescript
-import { getCameras } from 'een-api-toolkit'
-
-// Basic usage
-const { data, error } = await getCameras()
-
-// With pagination
-const { data } = await getCameras({ pageSize: 50 })
-
-// With status filter
+// List with filters
 const { data } = await getCameras({
   pageSize: 20,
-  status__in: ['online', 'streaming']
-})
-
-// With search
-const { data } = await getCameras({
+  status__in: ['online', 'streaming'],
   q: 'front door',
   include: ['deviceInfo', 'status']
 })
-```
 
-### getCamera
-
-Get a specific camera by ID.
-
-```typescript
-import { getCamera } from 'een-api-toolkit'
-
-const { data, error } = await getCamera('camera-id-123')
-
-if (error) {
-  if (error.code === 'NOT_FOUND') {
-    console.log('Camera not found')
-  }
-  return
-}
-
-// With additional fields
-const { data: cameraWithDetails } = await getCamera('camera-id-123', {
+// Get specific camera
+const { data: camera } = await getCamera('camera-id', {
   include: ['deviceInfo', 'status', 'shareDetails']
 })
 ```
 
-### getBridges
-
-List bridges with optional pagination and filtering.
+### Bridges
 
 ```typescript
-import { getBridges } from 'een-api-toolkit'
+import { getBridges, getBridge } from 'een-api-toolkit'
 
-// Basic usage
-const { data, error } = await getBridges()
-
-// With pagination
-const { data } = await getBridges({ pageSize: 50 })
-
-// With status filter
-const { data } = await getBridges({
-  pageSize: 20,
-  status__in: ['online']
-})
-
-// With search
-const { data } = await getBridges({
-  q: 'office',
-  include: ['deviceInfo', 'status', 'networkInfo']
-})
+// Same pattern as cameras
+const { data } = await getBridges({ status__in: ['online'], include: ['networkInfo'] })
+const { data: bridge } = await getBridge('bridge-id', { include: ['deviceInfo'] })
 ```
 
-### getBridge
-
-Get a specific bridge by ID.
+### Media
 
 ```typescript
-import { getBridge } from 'een-api-toolkit'
+import { listMedia, getLiveImage, getRecordedImage } from 'een-api-toolkit'
 
-const { data, error } = await getBridge('bridge-id-123')
-
-if (error) {
-  if (error.code === 'NOT_FOUND') {
-    console.log('Bridge not found')
-  }
-  return
-}
-
-// With additional fields
-const { data: bridgeWithDetails } = await getBridge('bridge-id-123', {
-  include: ['deviceInfo', 'networkInfo', 'status']
-})
-```
-
-### listMedia
-
-List media intervals for a camera. Useful for finding when recordings exist.
-
-```typescript
-import { listMedia } from 'een-api-toolkit'
-
-const { data, error } = await listMedia({
-  deviceId: 'camera-id-123',
+// List recording intervals
+const { data } = await listMedia({
+  deviceId: 'camera-id',
   type: 'preview',
   mediaType: 'video',
   startTimestamp: '2024-01-01T00:00:00.000Z',
   endTimestamp: '2024-01-02T00:00:00.000Z'
 })
 
-if (error) {
-  console.error('Failed to list media:', error.message)
-  return
-}
+// Get live image (returns base64 data URL - use for thumbnails/grids)
+const { data: live } = await getLiveImage({ deviceId: 'camera-id' })
+imgElement.src = live.imageData  // "data:image/jpeg;base64,..."
 
-// Get available recording intervals
-for (const interval of data.results) {
-  console.log(`Recording: ${interval.startTimestamp} - ${interval.endTimestamp}`)
-}
-```
-
-### getLiveImage
-
-Get a live preview image from a camera. Returns base64-encoded image data.
-
-```typescript
-import { getLiveImage } from 'een-api-toolkit'
-
-const { data, error } = await getLiveImage({
-  deviceId: 'camera-id-123'
-})
-
-if (error) {
-  console.error('Failed to get live image:', error.message)
-  return
-}
-
-// Use in an <img> element
-const imgElement = document.querySelector('img')
-imgElement.src = data.imageData  // data:image/jpeg;base64,...
-
-// Timestamp of the image
-console.log('Image timestamp:', data.timestamp)
-```
-
-### getRecordedImage
-
-Get a recorded image from camera history. Supports timestamp-based navigation.
-
-```typescript
-import { getRecordedImage } from 'een-api-toolkit'
-
-// Get image at specific timestamp
-const { data, error } = await getRecordedImage({
-  deviceId: 'camera-id-123',
+// Get recorded image with navigation
+const { data: recorded } = await getRecordedImage({
+  deviceId: 'camera-id',
   timestamp: '2024-01-15T14:30:00.000Z'
 })
-
-if (error) {
-  console.error('Failed to get recorded image:', error.message)
-  return
-}
-
-// Display the image
-const imgElement = document.querySelector('img')
-if (imgElement) {
-  imgElement.src = data.imageData
-}
-
-// Navigate to next/previous image
-if (data.nextToken) {
-  const { data: nextImage } = await getRecordedImage({
-    pageToken: data.nextToken
-  })
-  // Use nextImage...
-}
+imgElement.src = recorded.imageData
+// Use recorded.nextToken/prevToken for navigation
 ```
 
-### initMediaSession
-
-Initialize media session for cookie-based authentication. Required before using
-multipart URLs directly in HTML elements.
+### Media Session (for multipartUrl)
 
 ```typescript
 import { initMediaSession, listFeeds } from 'een-api-toolkit'
 
-// Initialize the media session (do this once after login)
-const { data, error } = await initMediaSession()
+// Initialize session (once after login) - sets auth cookie
+const { error } = await initMediaSession()
 
-if (error) {
-  console.error('Failed to init media session:', error.message)
-  return
-}
-
-console.log('Media session initialized:', data.sessionUrl)
-
-// Now multipart URLs can be used directly in <img> elements
+// Get multipart URL for continuous MJPEG stream
 const { data: feeds } = await listFeeds({
-  deviceId: 'camera-123',
+  deviceId: 'camera-id',
+  type: 'preview',
   include: ['multipartUrl']
 })
-
-if (feeds?.results[0]?.multipartUrl) {
-  // This works because the session cookie is set
-  const imgElement = document.querySelector('img')
-  imgElement.src = feeds.results[0].multipartUrl
-}
-```
-
-### getMediaSession
-
-Get the media session URL without setting the cookie. Use `initMediaSession()`
-for most cases.
-
-```typescript
-import { getMediaSession } from 'een-api-toolkit'
-
-// Get the session URL (step 1 of 2)
-const { data, error } = await getMediaSession()
-
-if (error) {
-  console.error('Failed to get media session:', error.message)
-  return
-}
-
-console.log('Session URL:', data.url)
-// Manually call data.url with credentials: 'include' to set the cookie
+const feed = feeds?.results.find(f => f.multipartUrl)
+if (feed) imgElement.src = feed.multipartUrl  // Use exactly as-is
 ```
 
 ---
 
 ## Live Video Streaming
 
-The EEN API Toolkit supports two methods for displaying live video from cameras:
-
 ### Stream Types Comparison
 
 | Feature | Preview Stream | Main Stream |
 |---------|---------------|-------------|
 | Quality | Lower resolution | Full resolution |
-| Authentication | Session cookie (multipart URL) | JWT token (Live SDK) |
-| Element Type | `<img>` element | `<video>` element |
-| Technology | MJPEG multipart | WebCodecs via SDK |
-| Browser Support | All modern browsers | Chrome 94+, Edge 94+, Opera 80+ (WebCodecs) |
-| Use Case | Thumbnails, quick previews | Full video playback |
+| Authentication | Session cookie | JWT token |
+| Element | `<img>` | `<video>` |
+| Technology | MJPEG multipart | WebCodecs |
+| Browser Support | All modern | Chrome 94+, Edge 94+, Opera 80+ |
 | Setup | `initMediaSession()` | `@een/live-video-web-sdk` |
 
 ### Preview Streams (Multipart URL)
 
-Preview streams use cookie-based authentication with multipart URLs. These are ideal
-for thumbnails and quick previews using simple `<img>` elements.
-
-**Step 1: Initialize the media session (once after login)**
+For thumbnails and grids using `<img>` elements. **Do not modify the multipartUrl** (see READ FIRST).
 
 ```typescript
-import { initMediaSession } from 'een-api-toolkit'
+import { initMediaSession, listFeeds } from 'een-api-toolkit'
 
-// Call once after authentication
-const { data, error } = await initMediaSession()
-if (error) {
-  console.error('Failed to init media session:', error.message)
-  return
-}
-// Session cookie is now set
-```
+// Step 1: Initialize session (once after login)
+await initMediaSession()
 
-**Step 2: Get the feed URL and display it**
-
-```typescript
-import { listFeeds } from 'een-api-toolkit'
-
+// Step 2: Get and use the multipart URL
 const { data: feeds } = await listFeeds({
   deviceId: cameraId,
   type: 'preview',
   include: ['multipartUrl']
 })
-
-// Find a feed with multipartUrl
-const previewFeed = feeds?.results.find(f => f.multipartUrl)
-if (previewFeed?.multipartUrl) {
-  // Can be used directly in an <img> element
-  imgElement.src = previewFeed.multipartUrl
+const feed = feeds?.results.find(f => f.multipartUrl)
+if (feed?.multipartUrl) {
+  imgElement.src = feed.multipartUrl  // Use exactly as-is
 }
-```
-
-**Complete Vue Example (Preview Stream):**
-
-```vue
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { initMediaSession, listFeeds, type Feed } from 'een-api-toolkit'
-
-const props = defineProps<{ cameraId: string }>()
-const previewUrl = ref<string | null>(null)
-const loading = ref(true)
-
-onMounted(async () => {
-  // Initialize media session for cookie-based auth
-  const { error: sessionError } = await initMediaSession()
-  if (sessionError) {
-    console.error('Failed to init session:', sessionError.message)
-    loading.value = false
-    return
-  }
-
-  // Get preview feed
-  const { data, error } = await listFeeds({
-    deviceId: props.cameraId,
-    type: 'preview',
-    include: ['multipartUrl']
-  })
-
-  if (error) {
-    console.error('Failed to get feeds:', error.message)
-    loading.value = false
-    return
-  }
-
-  const feed = data.results.find(f => f.multipartUrl)
-  previewUrl.value = feed?.multipartUrl ?? null
-  loading.value = false
-})
-</script>
-
-<template>
-  <div class="preview-container">
-    <div v-if="loading">Loading...</div>
-    <img v-else-if="previewUrl" :src="previewUrl" alt="Camera preview" />
-    <div v-else>No preview available</div>
-  </div>
-</template>
 ```
 
 ### Main Streams (Live Video SDK)
 
-Main streams provide full-resolution video using the `@een/live-video-web-sdk`.
-This requires JWT authentication and uses WebCodecs for efficient video playback.
-
-**Installation:**
+Full-resolution video requires `@een/live-video-web-sdk` with JWT authentication.
 
 ```bash
 npm install @een/live-video-web-sdk
 ```
 
-**Complete Vue Example (Main Stream):**
-
-```vue
-<script setup lang="ts">
-import { ref, onMounted, onUnmounted, nextTick } from 'vue'
+```typescript
 import { LivePlayer } from '@een/live-video-web-sdk'
-import { useAuthStore, listFeeds, type Feed } from 'een-api-toolkit'
+import { useAuthStore } from 'een-api-toolkit'
 
-const props = defineProps<{ cameraId: string }>()
 const authStore = useAuthStore()
-const videoElement = ref<HTMLVideoElement | null>(null)
-const loading = ref(true)
-const statusMessage = ref('')
+const livePlayer = new LivePlayer()
 
-let livePlayer: LivePlayer | null = null
+// Optional: Subscribe to status updates
+livePlayer.onStatusChange((status) => console.log('Status:', status))
 
-async function initPlayer() {
-  // Get the main feed to verify it exists
-  const { data, error } = await listFeeds({
-    deviceId: props.cameraId,
-    type: 'main',
-    include: ['multipartUrl']
-  })
-
-  if (error || !data.results.length) {
-    statusMessage.value = 'No main feed available'
-    loading.value = false
-    return
-  }
-
-  // Wait for video element to be mounted
-  await nextTick()
-  if (!videoElement.value) return
-
-  // Ensure auth is valid
-  if (!authStore.baseUrl || !authStore.token) {
-    statusMessage.value = 'Not authenticated'
-    loading.value = false
-    return
-  }
-
-  // Initialize the Live SDK player
-  livePlayer = new LivePlayer()
-
-  // Subscribe to status updates
-  livePlayer.onStatusChange((status) => {
-    statusMessage.value = status
-    if (status === 'playing') {
-      loading.value = false
-    }
-  })
-
-  // Start playback
-  await livePlayer.start({
-    videoElement: videoElement.value,
-    cameraId: props.cameraId,
-    baseUrl: authStore.baseUrl,
-    jwt: authStore.token
-  })
-}
-
-function handleVideoError(event: Event) {
-  const video = event.target as HTMLVideoElement
-  console.error('Video error:', video.error?.message)
-  statusMessage.value = 'Playback error'
-  loading.value = false
-}
-
-function cleanup() {
-  if (livePlayer) {
-    livePlayer.stop()
-    livePlayer = null
-  }
-}
-
-onMounted(() => {
-  initPlayer()
+// Start playback
+await livePlayer.start({
+  videoElement: document.querySelector('video'),
+  cameraId: 'camera-id',
+  baseUrl: authStore.baseUrl,
+  jwt: authStore.token
 })
 
-onUnmounted(() => {
-  cleanup()
-})
-</script>
-
-<template>
-  <div class="video-container">
-    <div v-if="loading" class="loading-overlay">
-      <span>{{ statusMessage || 'Connecting...' }}</span>
-    </div>
-    <video
-      ref="videoElement"
-      autoplay
-      muted
-      playsinline
-      @error="handleVideoError"
-    />
-    <div v-if="statusMessage && !loading" class="status">{{ statusMessage }}</div>
-  </div>
-</template>
-
-<style scoped>
-.video-container {
-  position: relative;
-  background: #000;
-}
-video {
-  width: 100%;
-  height: auto;
-}
-.loading-overlay {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-}
-</style>
+// Cleanup when done
+livePlayer.stop()
 ```
 
-### Choosing Between Preview and Main Streams
+**Video element requirements:** `<video autoplay muted playsinline />`
 
-- **Preview streams** are simpler to implement and work well for:
-  - Camera selection grids
-  - Thumbnail previews
-  - Lower bandwidth scenarios
-  - Simple `<img>` element integration
-
-- **Main streams** are better for:
-  - Full-screen video viewing
-  - High-quality playback
-  - Professional monitoring applications
-  - Integration with video controls
+> **Complete examples:** See `examples/vue-feeds/` for full Vue implementations of both stream types.
 
 ---
 
@@ -1250,200 +849,24 @@ router.beforeEach((to, from, next) => {
 })
 ```
 
-### Vue Component Example
-
-```vue
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
-import { getCurrentUser, type UserProfile, type EenError } from 'een-api-toolkit'
-
-const user = ref<UserProfile | null>(null)
-const loading = ref(false)
-const error = ref<EenError | null>(null)
-
-async function fetchUser() {
-  loading.value = true
-  const result = await getCurrentUser()
-  loading.value = false
-
-  if (result.error) {
-    error.value = result.error
-    return
-  }
-
-  user.value = result.data
-}
-
-onMounted(() => {
-  fetchUser()
-})
-</script>
-
-<template>
-  <div v-if="loading">Loading...</div>
-  <div v-else-if="error">{{ error.message }}</div>
-  <div v-else-if="user">Welcome, {{ user.firstName }}!</div>
-  <div v-else>Not authenticated or user data not available.</div>
-</template>
-```
-
 ---
 
-## Anti-Patterns (What NOT to Do)
-
-### DON'T: Use try/catch for API errors
+## Anti-Patterns
 
 ```typescript
-// WRONG - functions don't throw
-try {
-  const users = await getUsers()
-} catch (e) {
-  // This will never catch API errors!
-}
+// DON'T: Use try/catch - functions return Result, never throw
+try { await getUsers() } catch (e) { /* never catches API errors */ }
 
-// CORRECT
-const { data, error } = await getUsers()
-if (error) handleError(error)
-```
-
-### DON'T: Ignore the error check
-
-```typescript
-// WRONG - data might be null
+// DON'T: Access data without checking error first
 const { data } = await getUsers()
-data.results.forEach(...) // TypeError if error occurred!
+data.results.forEach(...)  // TypeError if error!
 
-// CORRECT
+// DO: Always check error before accessing data
 const { data, error } = await getUsers()
-if (error) return
-data.results.forEach(...) // Safe - TypeScript knows data is not null
-```
+if (error) return handleError(error)
+data.results.forEach(...)  // Safe - TypeScript knows data is not null
 
-### DON'T: Call initEenToolkit multiple times
-
-```typescript
-// WRONG - calling in component
-export default {
-  setup() {
-    initEenToolkit({ ... }) // Called every time component mounts!
-  }
-}
-
-// CORRECT - call once in main.ts
-// main.ts
-initEenToolkit({ ... })
-app.mount('#app')
-```
-
-### DON'T: Access data before checking error
-
-```typescript
-// WRONG - unsafe access
-const { data, error } = await getUser(id)
-console.log(data.email) // TypeError if error!
-if (error) { ... }
-
-// CORRECT - check error first
-const { data, error } = await getUser(id)
-if (error) {
-  console.error(error.message)
-  return
-}
-console.log(data.email) // Safe
-```
-
----
-
-## Additional Setup Details
-
-### OAuth Callback Route
-
-The `beforeEnter` guard shown in the "Critical Requirements" section redirects OAuth responses to a named route called 'callback'. Here is how to set up that route and its component:
-
-```typescript
-// router/index.ts
-{
-  path: '/callback',
-  name: 'callback',
-  component: () => import('./views/Callback.vue')
-}
-```
-
-```vue
-<!-- views/Callback.vue -->
-<script setup lang="ts">
-import { onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { handleAuthCallback } from 'een-api-toolkit'
-
-const router = useRouter()
-
-onMounted(async () => {
-  const url = new URL(window.location.href)
-  const code = url.searchParams.get('code')
-  const state = url.searchParams.get('state')
-
-  if (!code || !state) {
-    router.push('/login?error=missing_params')
-    return
-  }
-
-  const { error } = await handleAuthCallback(code, state)
-
-  if (error) {
-    router.push(`/login?error=${error.code}`)
-    return
-  }
-
-  router.push('/dashboard')
-})
-</script>
-
-<template>
-  <div>Authenticating...</div>
-</template>
-```
-
-### Login Component
-
-```vue
-<!-- views/Login.vue -->
-<script setup>
-import { getAuthUrl } from 'een-api-toolkit'
-
-function login() {
-  window.location.href = getAuthUrl()
-}
-</script>
-
-<template>
-  <div>
-    <h1>Login</h1>
-    <button @click="login">Sign in with Eagle Eye Networks</button>
-  </div>
-</template>
-```
-
-### Logout Component
-
-```vue
-<!-- In a component, e.g., App.vue or a NavBar component -->
-<script setup lang="ts">
-import { revokeToken } from 'een-api-toolkit'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-
-async function logout() {
-  await revokeToken()
-  // Redirect to login page after token is revoked
-  router.push('/login')
-}
-</script>
-
-<template>
-  <button @click="logout">Logout</button>
-</template>
+// DON'T: Call initEenToolkit in components (call once in main.ts)
 ```
 
 ---
