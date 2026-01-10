@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.9
+> **Version:** 0.3.10
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -309,6 +309,25 @@ interface EenToolkitConfig {
   storageStrategy?: StorageStrategy  // Token storage: 'localStorage' (default), 'sessionStorage', or 'memory'
   debug?: boolean             // Enable debug logging
 }
+```
+
+### Storage Strategy Descriptions
+
+Human-readable descriptions for each storage strategy, useful for displaying in UI components:
+
+```typescript
+import { getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
+
+// STORAGE_STRATEGY_DESCRIPTIONS is a Record<StorageStrategy, string>:
+// {
+//   localStorage: 'persists across sessions',
+//   sessionStorage: 'per-tab, cleared on tab close',
+//   memory: 'tokens lost on page refresh'
+// }
+
+const strategy = getStorageStrategy()
+const description = STORAGE_STRATEGY_DESCRIPTIONS[strategy]
+console.log(`Using ${strategy}: ${description}`)
 ```
 
 ---

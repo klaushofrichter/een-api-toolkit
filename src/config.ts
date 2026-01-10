@@ -1,5 +1,5 @@
 import type { EenToolkitConfig, StorageStrategy } from './types'
-import { setStorageStrategy, getStorageStrategy } from './utils/storage'
+import { setStorageStrategy, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from './utils/storage'
 
 /**
  * Global toolkit configuration
@@ -47,7 +47,7 @@ export function initEenToolkit(options: EenToolkitConfig = {}): void {
   }
 }
 
-export { getStorageStrategy }
+export { getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS }
 
 /**
  * Get the current configuration

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { getAuthUrl } from 'een-api-toolkit'
+import { getAuthUrl, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
+
+const storageStrategy = getStorageStrategy()
+const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
 
 function login() {
   window.location.href = getAuthUrl()
@@ -11,7 +14,7 @@ function login() {
     <h2>Login</h2>
     <p>Click the button below to authenticate with Eagle Eye Networks.</p>
     <button @click="login">Login with Eagle Eye Networks</button>
-    <p class="storage-note">Storage strategy: <strong>sessionStorage</strong> (per-tab, cleared on tab close)</p>
+    <p class="storage-note" data-testid="storage-strategy">Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})</p>
   </div>
 </template>
 

@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { getAuthUrl } from 'een-api-toolkit'
+import { getAuthUrl, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
+
+const storageStrategy = getStorageStrategy()
+const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
 
 function login() {
   // Redirect to EEN OAuth login
@@ -12,7 +15,7 @@ function login() {
     <h2>Login</h2>
     <p>Click the button below to login with your Eagle Eye Networks account.</p>
     <button @click="login">Login with Eagle Eye Networks</button>
-    <p class="storage-note">Storage strategy: <strong>localStorage</strong> (persists across sessions)</p>
+    <p class="storage-note" data-testid="storage-strategy">Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})</p>
   </div>
 </template>
 

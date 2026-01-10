@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.9**
+**EEN API Toolkit v0.3.10**
 
 ***
 
-# EEN API Toolkit v0.3.9
+# EEN API Toolkit v0.3.10
 
 ## Interfaces
 
@@ -96,6 +96,12 @@
 - [MediaStreamType](type-aliases/MediaStreamType.md)
 
 ## Variables
+
+### Configuration
+
+- [STORAGE\_STRATEGY\_DESCRIPTIONS](variables/STORAGE_STRATEGY_DESCRIPTIONS.md)
+
+### Other
 
 - [useAuthStore](variables/useAuthStore.md)
 

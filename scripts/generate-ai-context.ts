@@ -417,6 +417,25 @@ interface EenToolkitConfig {
 }
 \`\`\`
 
+### Storage Strategy Descriptions
+
+Human-readable descriptions for each storage strategy, useful for displaying in UI components:
+
+\`\`\`typescript
+import { getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
+
+// STORAGE_STRATEGY_DESCRIPTIONS is a Record<StorageStrategy, string>:
+// {
+//   localStorage: 'persists across sessions',
+//   sessionStorage: 'per-tab, cleared on tab close',
+//   memory: 'tokens lost on page refresh'
+// }
+
+const strategy = getStorageStrategy()
+const description = STORAGE_STRATEGY_DESCRIPTIONS[strategy]
+console.log(\`Using \${strategy}: \${description}\`)
+\`\`\`
+
 ---
 
 `

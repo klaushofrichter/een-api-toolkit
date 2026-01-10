@@ -218,6 +218,47 @@ The toolkit already implements secure practices:
 
 For applications where XSS is a significant concern, consider using `sessionStorage` or `memory` in combination with Content Security Policy (CSP) headers.
 
+#### Displaying Storage Strategy in UI
+
+The toolkit exports `STORAGE_STRATEGY_DESCRIPTIONS` - a mapping of storage strategies to human-readable descriptions. This is useful for displaying the current storage strategy to users, especially on login pages.
+
+```typescript
+import { getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
+
+const strategy = getStorageStrategy()
+const description = STORAGE_STRATEGY_DESCRIPTIONS[strategy]
+
+console.log(`Using ${strategy}: ${description}`)
+// Example output: "Using sessionStorage: per-tab, cleared on tab close"
+```
+
+**Available descriptions:**
+
+| Strategy | Description |
+|----------|-------------|
+| `localStorage` | "persists across sessions" |
+| `sessionStorage` | "per-tab, cleared on tab close" |
+| `memory` | "tokens lost on page refresh" |
+
+**Vue 3 Example:**
+
+```vue
+<script setup lang="ts">
+import { getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
+
+const storageStrategy = getStorageStrategy()
+const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
+</script>
+
+<template>
+  <p class="storage-note">
+    Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})
+  </p>
+</template>
+```
+
+This approach ensures the displayed information always stays in sync with the actual configuration, even if the storage strategy is changed in `initEenToolkit()`.
+
 ## Authentication Flow
 
 ### OAuth Flow Overview
