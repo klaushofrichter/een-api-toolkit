@@ -12,6 +12,7 @@ function login() {
     <h2 data-testid="login-title">Login</h2>
     <p>Click the button below to login with your Eagle Eye Networks account.</p>
     <button data-testid="login-button" @click="login">Login with Eagle Eye Networks</button>
+    <p class="storage-note">Storage strategy: <strong>memory</strong> (tokens lost on page refresh)</p>
   </div>
 </template>
 
@@ -29,5 +30,11 @@ h2 {
 p {
   margin-bottom: 20px;
   color: #666;
+}
+
+.storage-note {
+  margin-top: 30px;
+  font-size: 0.85em;
+  color: #888;
 }
 </style>

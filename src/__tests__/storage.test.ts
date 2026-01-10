@@ -284,7 +284,7 @@ describe('Storage Strategy Security Properties', () => {
     ).not.toBe('abc123')
   })
 
-  it('memory storage data should be isolated per getStorageAdapter call', () => {
+  it('memory storage should act as a singleton across getStorageAdapter calls', () => {
     setStorageStrategy('memory')
 
     // All calls to getStorageAdapter should return the same singleton
