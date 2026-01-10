@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { useAuthStore } from 'een-api-toolkit'
+import { useAuthStore, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
 
 const authStore = useAuthStore()
+
+const storageStrategy = getStorageStrategy()
+const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
 </script>
 
 <template>
@@ -39,6 +42,9 @@ const authStore = useAuthStore()
       <p class="feature-note">
         Click "View" on any feed with a multipart URL to see a live preview.
         The toolkit handles media session cookie initialization automatically.
+      </p>
+      <p class="storage-note" data-testid="storage-strategy">
+        Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})
       </p>
     </div>
   </div>
@@ -107,5 +113,13 @@ const authStore = useAuthStore()
   border-radius: 0 4px 4px 0;
   font-size: 14px;
   color: #2c3e50;
+}
+
+.storage-note {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  font-size: 0.85em;
+  color: #888;
 }
 </style>

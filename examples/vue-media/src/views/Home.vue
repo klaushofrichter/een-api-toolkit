@@ -1,7 +1,10 @@
 <script setup lang="ts">
-import { useAuthStore } from 'een-api-toolkit'
+import { useAuthStore, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
 
 const authStore = useAuthStore()
+
+const storageStrategy = getStorageStrategy()
+const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
 </script>
 
 <template>
@@ -38,6 +41,9 @@ const authStore = useAuthStore()
         <li><code>getLiveImage()</code> - Fetch live preview images</li>
         <li><code>getRecordedImage()</code> - Fetch recorded preview images</li>
       </ul>
+      <p class="storage-note" data-testid="storage-strategy">
+        Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})
+      </p>
     </div>
   </div>
 </template>
@@ -95,5 +101,13 @@ const authStore = useAuthStore()
   padding: 2px 6px;
   border-radius: 3px;
   font-family: monospace;
+}
+
+.storage-note {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  font-size: 0.85em;
+  color: #888;
 }
 </style>
