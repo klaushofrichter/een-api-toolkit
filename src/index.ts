@@ -1,5 +1,5 @@
 // Configuration
-export { initEenToolkit, getConfig, getProxyUrl, getClientId, getRedirectUri, getStorageStrategy } from './config'
+export { initEenToolkit, getConfig, getProxyUrl, getClientId, getRedirectUri, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from './config'
 
 // Types
 export type {

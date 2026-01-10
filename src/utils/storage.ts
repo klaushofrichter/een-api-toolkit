@@ -1,8 +1,30 @@
 // Import StorageStrategy from types to maintain single source of truth
 import type { StorageStrategy } from '../types'
+import { debug } from './debug'
 
 // Re-export for convenience
 export type { StorageStrategy }
+
+/**
+ * Human-readable descriptions for each storage strategy.
+ * Useful for displaying storage information in UI components.
+ *
+ * @example
+ * ```typescript
+ * import { getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
+ *
+ * const strategy = getStorageStrategy()
+ * const description = STORAGE_STRATEGY_DESCRIPTIONS[strategy]
+ * console.log(`Using ${strategy}: ${description}`)
+ * ```
+ *
+ * @category Configuration
+ */
+export const STORAGE_STRATEGY_DESCRIPTIONS: Record<StorageStrategy, string> = {
+  localStorage: 'persists across sessions',
+  sessionStorage: 'per-tab, cleared on tab close',
+  memory: 'tokens lost on page refresh'
+}
 
 /**
  * Storage adapter interface for token persistence.
@@ -113,6 +135,7 @@ export function getStorageAdapter(): StorageAdapter {
         return new BrowserStorageAdapter(sessionStorage)
       }
       // Fallback to memory if sessionStorage not available
+      debug('sessionStorage unavailable, falling back to memory storage')
       return getMemoryStorage()
     case 'localStorage':
     default:
@@ -120,6 +143,7 @@ export function getStorageAdapter(): StorageAdapter {
         return new BrowserStorageAdapter(localStorage)
       }
       // Fallback to memory if localStorage not available
+      debug('localStorage unavailable, falling back to memory storage')
       return getMemoryStorage()
   }
 }

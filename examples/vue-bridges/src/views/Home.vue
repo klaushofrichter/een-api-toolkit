@@ -1,9 +1,12 @@
 <script setup lang="ts">
-import { useAuthStore, getCurrentUser, type UserProfile, type EenError } from 'een-api-toolkit'
+import { useAuthStore, getCurrentUser, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS, type UserProfile, type EenError } from 'een-api-toolkit'
 import { computed, ref, onMounted } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+const storageStrategy = getStorageStrategy()
+const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
 
 // Reactive state for current user
 const user = ref<UserProfile | null>(null)
@@ -74,6 +77,9 @@ onMounted(() => {
         <li>View bridge details</li>
         <li>Display device and network information</li>
       </ul>
+      <p class="storage-note" data-testid="storage-strategy">
+        Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})
+      </p>
     </div>
   </div>
 </template>
@@ -146,5 +152,13 @@ h2 {
   padding: 2px 6px;
   border-radius: 3px;
   font-size: 0.9em;
+}
+
+.storage-note {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  font-size: 0.85em;
+  color: #888;
 }
 </style>

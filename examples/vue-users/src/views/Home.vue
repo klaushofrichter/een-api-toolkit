@@ -1,10 +1,13 @@
 <script setup lang="ts">
-import { useAuthStore, getCurrentUser, getAuthUrl, type UserProfile, type EenError } from 'een-api-toolkit'
+import { useAuthStore, getCurrentUser, getAuthUrl, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS, type UserProfile, type EenError } from 'een-api-toolkit'
 import { computed, ref, watch } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
 const loginError = ref<string | null>(null)
+
+const storageStrategy = getStorageStrategy()
+const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
 
 function login() {
   try {
@@ -82,6 +85,26 @@ watch(
         </router-link>
       </div>
     </div>
+
+    <div class="description">
+      <h3>About This Example</h3>
+      <p>
+        This example demonstrates how to use the <code>getUsers</code>,
+        <code>getUser</code>, and <code>getCurrentUser</code> functions from
+        the EEN API Toolkit to display and manage users from the Eagle Eye
+        Networks platform.
+      </p>
+      <h4>Features</h4>
+      <ul>
+        <li>List users with pagination</li>
+        <li>View current user profile</li>
+        <li>View individual user details</li>
+        <li>OAuth authentication flow</li>
+      </ul>
+      <p class="storage-note" data-testid="storage-strategy">
+        Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})
+      </p>
+    </div>
   </div>
 </template>
 
@@ -116,5 +139,48 @@ h2 {
 
 .actions {
   margin-top: 20px;
+}
+
+.description {
+  margin-top: 40px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.description h3 {
+  margin-bottom: 10px;
+}
+
+.description h4 {
+  margin-top: 15px;
+  margin-bottom: 10px;
+}
+
+.description p {
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.description ul {
+  list-style: disc;
+  padding-left: 20px;
+  color: #666;
+}
+
+.description code {
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.storage-note {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  font-size: 0.85em;
+  color: #888;
 }
 </style>
