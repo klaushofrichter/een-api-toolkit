@@ -201,7 +201,7 @@ test.describe('Vue Media Example - Auth', () => {
     await page.click('[data-testid="nav-live"]')
     await page.waitForURL('/live')
 
-    await expect(page.getByRole('heading', { name: 'Live Camera View' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Live Camera View (Preview)' })).toBeVisible()
 
     // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
@@ -243,7 +243,7 @@ test.describe('Vue Media Example - Auth', () => {
     await page.click('[data-testid="nav-recorded"]')
     await page.waitForURL('/recorded')
 
-    await expect(page.getByRole('heading', { name: 'Recorded Images' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Recorded Images (Preview)' })).toBeVisible()
 
     // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {

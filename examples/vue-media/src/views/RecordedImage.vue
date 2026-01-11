@@ -39,7 +39,8 @@ function formatDateTimeLocal(date: Date): string {
   const day = String(date.getDate()).padStart(2, '0')
   const hours = String(date.getHours()).padStart(2, '0')
   const minutes = String(date.getMinutes()).padStart(2, '0')
-  return `${year}-${month}-${day}T${hours}:${minutes}`
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
 }
 
 /**
@@ -68,7 +69,14 @@ function toApiTimestamp(dateTimeLocalValue: string): string {
 function formatTimestamp(timestamp: string | null): string {
   if (!timestamp) return 'N/A'
   try {
-    return new Date(timestamp).toLocaleString()
+    return new Date(timestamp).toLocaleString(undefined, {
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
   } catch {
     return timestamp
   }
@@ -86,6 +94,13 @@ function updateTimePickerFromImage() {
       // Keep current value if parsing fails
     }
   }
+}
+
+/**
+ * Reset the time picker to the current time
+ */
+function resetToNow() {
+  selectedDateTime.value = formatDateTimeLocal(new Date())
 }
 
 async function loadCameras() {
@@ -216,7 +231,7 @@ onUnmounted(() => {
 
 <template>
   <div class="recorded-image">
-    <h2>Recorded Images</h2>
+    <h2>Recorded Images (Preview)</h2>
 
     <div v-if="loading" class="loading">
       <p>Loading cameras...</p>
@@ -252,6 +267,7 @@ onUnmounted(() => {
         <input
           id="datetime-input"
           type="datetime-local"
+          step="1"
           v-model="selectedDateTime"
           data-testid="datetime-input"
           aria-label="Select date and time for recorded image"
@@ -263,6 +279,13 @@ onUnmounted(() => {
           aria-label="Load image from selected time"
         >
           Go
+        </button>
+        <button
+          @click="resetToNow"
+          data-testid="now-button"
+          aria-label="Reset to current time"
+        >
+          Now
         </button>
       </div>
 

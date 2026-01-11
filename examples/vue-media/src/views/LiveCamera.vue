@@ -165,7 +165,7 @@ onUnmounted(() => {
 
 <template>
   <div class="live-camera">
-    <h2>Live Camera View</h2>
+    <h2>Live Camera View (Preview)</h2>
 
     <div v-if="loading" class="loading">
       <p>Loading cameras...</p>
