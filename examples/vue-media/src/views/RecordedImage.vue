@@ -97,10 +97,11 @@ function updateTimePickerFromImage() {
 }
 
 /**
- * Reset the time picker to the current time
+ * Reset the time picker to the current time and fetch the image
  */
-function resetToNow() {
+async function resetToNow() {
   selectedDateTime.value = formatDateTimeLocal(new Date())
+  await fetchImageFromPicker()
 }
 
 async function loadCameras() {
