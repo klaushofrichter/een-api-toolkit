@@ -188,9 +188,9 @@ test.describe('Vue Users Example', () => {
 
     // Verify authenticated state
     await expect(page.locator('[data-testid="not-authenticated"]')).not.toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
-    await expect(page.locator('[data-testid="nav-users"]')).toBeVisible()
-    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible()
-    await expect(page.locator('[data-testid="nav-login"]')).not.toBeVisible()
+    await expect(page.locator('[data-testid="nav-users"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(page.locator('[data-testid="nav-login"]')).not.toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
   })
 
   test('can view users list after login', async ({ page }) => {

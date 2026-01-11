@@ -23,8 +23,10 @@ This is a good balance between security (limiting XSS blast radius) and user exp
 - `getLiveImage()` function for fetching live preview images
 - `getRecordedImage()` function for fetching recorded images with navigation
 - Camera selection with persistence across pages
-- Auto-refresh functionality for live images
+- Auto-refresh functionality for live images (with error recovery)
 - Time-based navigation for recorded images (prev/next)
+- Datetime picker with seconds precision for recorded images
+- "Now" button to reset datetime picker to current time
 - Image timestamp display
 
 ## APIs Used
@@ -65,7 +67,7 @@ All commands below should be run from this example directory (`examples/vue-medi
 3. Edit `.env` with your EEN credentials:
    ```env
    VITE_EEN_CLIENT_ID=your-client-id
-   VITE_PROXY_URL=http://localhost:8787
+   VITE_PROXY_URL=http://127.0.0.1:8787
    # DO NOT change the redirect URI - EEN IDP only permits this URL
    VITE_REDIRECT_URI=http://127.0.0.1:3333
    ```
@@ -104,18 +106,18 @@ src/
 
 ### Fetching Live Images (LiveCamera.vue)
 
+The Live Camera page title shows "Live Camera View (Preview)" to indicate it displays preview-quality images.
+
 ```typescript
-import { getLiveImage, type LiveImageParams } from 'een-api-toolkit'
+import { getLiveImage } from 'een-api-toolkit'
 
 async function fetchLiveImage() {
-  const result = await getLiveImage(selectedCameraId.value, {
-    type: 'preview'
-  })
+  const result = await getLiveImage({ deviceId: selectedCameraId.value })
 
   if (result.error) {
     error.value = result.error.message
   } else {
-    imageData.value = result.data.image
+    imageData.value = result.data.imageData
     timestamp.value = result.data.timestamp
   }
 }
@@ -124,12 +126,13 @@ async function fetchLiveImage() {
 ### Auto-Refresh for Live Images
 
 ```typescript
-let refreshInterval: number | null = null
+const REFRESH_INTERVAL_MS = 5000 // Refresh every 5 seconds
+let refreshInterval: ReturnType<typeof setInterval> | null = null
 
 function startAutoRefresh() {
-  refreshInterval = window.setInterval(() => {
+  refreshInterval = setInterval(() => {
     fetchLiveImage()
-  }, 2000) // Refresh every 2 seconds
+  }, REFRESH_INTERVAL_MS)
 }
 
 function stopAutoRefresh() {
@@ -140,22 +143,28 @@ function stopAutoRefresh() {
 }
 ```
 
+The implementation includes error recovery that automatically stops auto-refresh after 3 consecutive failures to prevent hammering the server when there are persistent errors.
+
 ### Fetching Recorded Images (RecordedImage.vue)
 
-```typescript
-import { getRecordedImage, type RecordedImageParams } from 'een-api-toolkit'
+The Recorded Images page title shows "Recorded Images (Preview)" to indicate it displays preview-quality images. The datetime picker includes seconds precision (`step="1"`) for more accurate time selection.
 
-async function fetchRecordedImage() {
-  const result = await getRecordedImage(selectedCameraId.value, {
-    timestamp__gte: selectedTimestamp.value,
-    type: 'preview'
+```typescript
+import { getRecordedImage, type GetRecordedImageParams } from 'een-api-toolkit'
+
+async function fetchImageFromPicker() {
+  const timestamp = toApiTimestamp(selectedDateTime.value)
+  const result = await getRecordedImage({
+    deviceId: selectedCameraId.value,
+    type: 'preview',
+    timestamp__gte: timestamp
   })
 
   if (result.error) {
     error.value = result.error.message
   } else {
-    imageData.value = result.data.image
-    actualTimestamp.value = result.data.timestamp
+    imageData.value = result.data.imageData
+    imageTimestamp.value = result.data.timestamp
     prevToken.value = result.data.prevToken
     nextToken.value = result.data.nextToken
   }
@@ -168,31 +177,40 @@ async function fetchRecordedImage() {
 async function navigateNext() {
   if (!nextToken.value) return
 
-  const result = await getRecordedImage(selectedCameraId.value, {
-    next: nextToken.value,
-    type: 'preview'
-  })
+  const result = await getRecordedImage({ pageToken: nextToken.value })
 
   if (!result.error) {
-    imageData.value = result.data.image
-    actualTimestamp.value = result.data.timestamp
+    imageData.value = result.data.imageData
+    imageTimestamp.value = result.data.timestamp
     prevToken.value = result.data.prevToken
     nextToken.value = result.data.nextToken
   }
 }
 ```
 
+### Resetting to Current Time
+
+The "Now" button allows users to quickly reset the datetime picker to the current time:
+
+```typescript
+function resetToNow() {
+  selectedDateTime.value = formatDateTimeLocal(new Date())
+}
+```
+
 ### Displaying Images
+
+The toolkit returns `imageData` as a complete data URL (including the `data:image/jpeg;base64,` prefix), so it can be used directly with `:src`:
 
 ```vue
 <template>
   <img
     v-if="imageData"
-    :src="`data:image/jpeg;base64,${imageData}`"
+    :src="imageData"
     alt="Camera image"
   />
-  <p v-if="timestamp">
-    Timestamp: {{ new Date(timestamp).toLocaleString() }}
+  <p v-if="imageTimestamp">
+    Timestamp: {{ new Date(imageTimestamp).toLocaleString() }}
   </p>
 </template>
 ```

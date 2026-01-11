@@ -201,7 +201,7 @@ test.describe('Vue Media Example - Auth', () => {
     await page.click('[data-testid="nav-live"]')
     await page.waitForURL('/live')
 
-    await expect(page.getByRole('heading', { name: 'Live Camera View' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Live Camera View (Preview)' })).toBeVisible()
 
     // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
@@ -243,7 +243,7 @@ test.describe('Vue Media Example - Auth', () => {
     await page.click('[data-testid="nav-recorded"]')
     await page.waitForURL('/recorded')
 
-    await expect(page.getByRole('heading', { name: 'Recorded Images' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Recorded Images (Preview)' })).toBeVisible()
 
     // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
@@ -269,11 +269,58 @@ test.describe('Vue Media Example - Auth', () => {
     if (hasCameras) {
       await expect(page.getByTestId('datetime-input')).toBeVisible()
       await expect(page.getByTestId('go-button')).toBeVisible()
+      await expect(page.getByTestId('now-button')).toBeVisible()
       await expect(page.getByTestId('prev-button')).toBeVisible()
       await expect(page.getByTestId('next-button')).toBeVisible()
       console.log('Recorded image controls visible')
     } else {
       console.log('No cameras in account - skipping camera-specific checks')
+    }
+  })
+
+  test('Now button resets datetime picker to current time', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-recorded')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    await page.click('[data-testid="nav-recorded"]')
+    await page.waitForURL('/recorded')
+
+    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
+      timeout: TIMEOUTS.MEDIA_LOAD
+    })
+
+    const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
+    if (hasCameras) {
+      const datetimeInput = page.getByTestId('datetime-input')
+      await expect(datetimeInput).toBeVisible()
+
+      // Set datetime to a past time (1 hour ago)
+      const pastTime = new Date(Date.now() - 60 * 60 * 1000)
+      const pastTimeStr = pastTime.toISOString().slice(0, 19) // Format: YYYY-MM-DDTHH:mm:ss
+      await datetimeInput.fill(pastTimeStr)
+
+      // Verify the input has the past time
+      const valueBeforeClick = await datetimeInput.inputValue()
+      expect(valueBeforeClick).toContain(pastTimeStr.slice(0, 16)) // Check date and time portion
+
+      // Click the Now button
+      await page.click('[data-testid="now-button"]')
+
+      // Get the new value and verify it's closer to current time
+      const valueAfterClick = await datetimeInput.inputValue()
+      const nowTime = new Date()
+      const selectedTime = new Date(valueAfterClick)
+
+      // The selected time should be within 2 minutes of now
+      const timeDiffMs = Math.abs(nowTime.getTime() - selectedTime.getTime())
+      expect(timeDiffMs).toBeLessThan(2 * 60 * 1000) // 2 minutes tolerance
+
+      console.log('Now button correctly reset datetime to current time')
+    } else {
+      console.log('No cameras in account - skipping Now button test')
     }
   })
 
