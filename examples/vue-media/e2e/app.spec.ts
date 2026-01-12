@@ -52,10 +52,18 @@ test.describe('vue-media example app', () => {
     await expect(page.getByText('getCameras()')).toBeVisible()
     await expect(page.getByText('getLiveImage()')).toBeVisible()
     await expect(page.getByText('getRecordedImage()')).toBeVisible()
+    await expect(page.getByText('listMedia()')).toBeVisible()
   })
 
   test('recorded route redirects to login when not authenticated', async ({ page }) => {
     await page.goto('/recorded')
+
+    // Should redirect to login page (auth guard)
+    await expect(page).toHaveURL('/login')
+  })
+
+  test('hls route redirects to login when not authenticated', async ({ page }) => {
+    await page.goto('/hls')
 
     // Should redirect to login page (auth guard)
     await expect(page).toHaveURL('/login')

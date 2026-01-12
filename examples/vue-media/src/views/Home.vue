@@ -22,10 +22,13 @@ const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
       <p>You are logged in!</p>
       <div class="button-group">
         <router-link to="/live">
-          <button data-testid="view-live-button">View Live Camera</button>
+          <button data-testid="view-live-button">View Live Camera Image</button>
         </router-link>
         <router-link to="/recorded">
-          <button data-testid="view-recorded-button">View Recorded Images</button>
+          <button data-testid="view-recorded-button">View Recorded Image</button>
+        </router-link>
+        <router-link to="/video">
+          <button data-testid="view-video-button">View Recorded Video</button>
         </router-link>
       </div>
     </div>
@@ -40,6 +43,7 @@ const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
         <li><code>getCameras()</code> - List available cameras</li>
         <li><code>getLiveImage()</code> - Fetch live preview images</li>
         <li><code>getRecordedImage()</code> - Fetch recorded preview images</li>
+        <li><code>listMedia()</code> - List media intervals for video playback</li>
       </ul>
       <p class="storage-note" data-testid="storage-strategy">
         Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})

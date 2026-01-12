@@ -146,7 +146,28 @@ function toggleAutoRefresh() {
 function formatTimestamp(timestamp: string | null): string {
   if (!timestamp) return 'N/A'
   try {
-    return new Date(timestamp).toLocaleString()
+    return new Date(timestamp).toLocaleString(undefined, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
+  } catch {
+    return timestamp
+  }
+}
+
+/**
+ * Format timestamp in EEN API format: YYYY-MM-DDTHH:mm:ss.sss+00:00
+ * This is the format used by the EEN API /media/liveImage.jpeg endpoint
+ */
+function formatTimestampUtc(timestamp: string | null): string {
+  if (!timestamp) return 'N/A'
+  try {
+    // Convert to ISO string and replace 'Z' with '+00:00' for EEN API format
+    return new Date(timestamp).toISOString().replace('Z', '+00:00')
   } catch {
     return timestamp
   }
@@ -165,7 +186,7 @@ onUnmounted(() => {
 
 <template>
   <div class="live-camera">
-    <h2>Live Camera View (Preview)</h2>
+    <h2>Live Camera Image (preview)</h2>
 
     <div v-if="loading" class="loading">
       <p>Loading cameras...</p>
@@ -228,20 +249,11 @@ onUnmounted(() => {
 
       <div v-if="imageTimestamp" class="timestamp" data-testid="timestamp">
         <small>Timestamp: {{ formatTimestamp(imageTimestamp) }}</small>
+        <br />
+        <small data-testid="utc-timestamp">Timestamp for API (UTC): <span class="utc-timestamp">{{ formatTimestampUtc(imageTimestamp) }}</span></small>
       </div>
     </div>
 
-    <div class="navigation">
-      <router-link to="/">
-        <button>Back to Home</button>
-      </router-link>
-      <router-link to="/recorded">
-        <button data-testid="view-recorded-button">View Recorded Images</button>
-      </router-link>
-      <router-link to="/logout">
-        <button>Logout</button>
-      </router-link>
-    </div>
   </div>
 </template>
 
@@ -325,11 +337,9 @@ h2 {
   color: #666;
 }
 
-.navigation {
-  margin-top: 30px;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
+.utc-timestamp {
+  font-family: monospace;
+  color: #888;
 }
 
 .error {

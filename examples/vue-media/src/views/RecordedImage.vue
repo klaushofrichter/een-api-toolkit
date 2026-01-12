@@ -3,17 +3,26 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { getCameras, getRecordedImage } from 'een-api-toolkit'
 import type { Camera, GetRecordedImageParams } from 'een-api-toolkit'
 import { useSelectedCamera } from '../composables/useSelectedCamera'
-
-// Constants
-const ONE_HOUR_MS = 60 * 60 * 1000
+import { useSelectedDateTime } from '../composables/useSelectedDateTime'
 
 const cameras = ref<Camera[]>([])
 const { selectedCameraId, setSelectedCamera } = useSelectedCamera()
+const { selectedDateTime, formatDateTimeLocal } = useSelectedDateTime()
+
+// Preview image state
 const imageData = ref<string | null>(null)
 const imageTimestamp = ref<string | null>(null)
+const imageResolution = ref<string | null>(null)
 const loading = ref(true)
 const loadingImage = ref(false)
 const error = ref<string | null>(null)
+
+// Main image state
+const mainImageData = ref<string | null>(null)
+const mainImageTimestamp = ref<string | null>(null)
+const mainImageResolution = ref<string | null>(null)
+const mainImageError = ref<string | null>(null)
+const loadingMainImage = ref(false)
 
 // Navigation tokens
 const nextToken = ref<string | null>(null)
@@ -24,24 +33,6 @@ const isMounted = ref(true)
 
 // Track current request to handle race conditions
 let currentRequestId = 0
-
-// Time picker state - default to 1 hour ago
-const selectedDateTime = ref(getDefaultDateTime())
-
-function getDefaultDateTime(): string {
-  const date = new Date(Date.now() - ONE_HOUR_MS)
-  return formatDateTimeLocal(date)
-}
-
-function formatDateTimeLocal(date: Date): string {
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  const seconds = String(date.getSeconds()).padStart(2, '0')
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
-}
 
 /**
  * Convert a datetime-local input value to ISO 8601 format with timezone offset.
@@ -80,6 +71,36 @@ function formatTimestamp(timestamp: string | null): string {
   } catch {
     return timestamp
   }
+}
+
+/**
+ * Format timestamp in EEN API format: YYYY-MM-DDTHH:mm:ss.sss+00:00
+ * This is the format used by the EEN API /media/recordedImage.jpeg endpoint
+ */
+function formatTimestampUtc(timestamp: string | null): string {
+  if (!timestamp) return 'N/A'
+  try {
+    // Convert to ISO string and replace 'Z' with '+00:00' for EEN API format
+    return new Date(timestamp).toISOString().replace('Z', '+00:00')
+  } catch {
+    return timestamp
+  }
+}
+
+/**
+ * Get image dimensions from a base64 image string
+ */
+function getImageResolution(base64Data: string): Promise<string> {
+  return new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      resolve(`${img.width}x${img.height}`)
+    }
+    img.onerror = () => {
+      resolve('')
+    }
+    img.src = base64Data
+  })
 }
 
 /**
@@ -138,8 +159,58 @@ async function loadCameras() {
 function clearImageState() {
   imageData.value = null
   imageTimestamp.value = null
+  imageResolution.value = null
   nextToken.value = null
   prevToken.value = null
+  clearMainImageState()
+}
+
+/**
+ * Clear main image state
+ */
+function clearMainImageState() {
+  mainImageData.value = null
+  mainImageTimestamp.value = null
+  mainImageResolution.value = null
+  mainImageError.value = null
+}
+
+/**
+ * Fetch main image for the given timestamp
+ */
+async function fetchMainImage(timestamp: string, deviceId: string) {
+  loadingMainImage.value = true
+  mainImageError.value = null
+
+  const result = await getRecordedImage({
+    deviceId,
+    type: 'main',
+    timestamp__gte: timestamp
+  })
+
+  if (!isMounted.value) return
+
+  loadingMainImage.value = false
+
+  if (result.error) {
+    mainImageData.value = null
+    mainImageTimestamp.value = null
+    mainImageResolution.value = null
+    mainImageError.value = result.error.message
+    return
+  }
+
+  if (result.data) {
+    mainImageData.value = result.data.imageData
+    mainImageTimestamp.value = result.data.timestamp
+    // Get image resolution
+    mainImageResolution.value = await getImageResolution(result.data.imageData)
+  } else {
+    mainImageData.value = null
+    mainImageTimestamp.value = null
+    mainImageResolution.value = null
+    mainImageError.value = 'No main image available'
+  }
 }
 
 /**
@@ -171,7 +242,14 @@ async function _fetchImage(params: GetRecordedImageParams) {
     imageTimestamp.value = result.data.timestamp
     nextToken.value = result.data.nextToken
     prevToken.value = result.data.prevToken
+    // Get image resolution
+    imageResolution.value = await getImageResolution(result.data.imageData)
     updateTimePickerFromImage()
+
+    // Also fetch main image using the preview image's timestamp
+    if (result.data.timestamp && selectedCameraId.value) {
+      fetchMainImage(result.data.timestamp, selectedCameraId.value)
+    }
   } else {
     // Handle successful responses that don't contain an image
     clearImageState()
@@ -232,7 +310,7 @@ onUnmounted(() => {
 
 <template>
   <div class="recorded-image">
-    <h2>Recorded Images (Preview)</h2>
+    <h2>Recorded Image (Preview and Main)</h2>
 
     <div v-if="loading" class="loading">
       <p>Loading cameras...</p>
@@ -318,35 +396,56 @@ onUnmounted(() => {
           <p>Loading image...</p>
         </div>
 
-        <img
-          v-else-if="imageData"
-          :src="imageData"
-          alt="Recorded camera image"
-          class="recorded-image-display"
-          data-testid="recorded-image"
-        />
+        <div v-else-if="imageData" class="preview-image-container">
+          <img
+            :src="imageData"
+            alt="Recorded camera image"
+            class="recorded-image-display"
+            data-testid="recorded-image"
+          />
+          <div v-if="imageTimestamp" class="timestamp" data-testid="timestamp">
+            <small>Preview Image Timestamp: {{ formatTimestamp(imageTimestamp) }}<span v-if="imageResolution"> - {{ imageResolution }}</span></small>
+          </div>
+        </div>
 
         <div v-else class="no-image">
           <p>Select a time to view recorded images</p>
         </div>
       </div>
 
-      <div v-if="imageTimestamp" class="timestamp" data-testid="timestamp">
-        <small>Timestamp: {{ formatTimestamp(imageTimestamp) }}</small>
+      <!-- Main Image Section -->
+      <div v-if="imageData" class="main-image-section" data-testid="main-image-section">
+        <div v-if="loadingMainImage" class="main-image-loading">
+          <p>Loading main image...</p>
+        </div>
+
+        <div v-else-if="mainImageError" class="main-image-error" data-testid="main-image-error">
+          <p class="error-note">{{ mainImageError }}</p>
+          <p class="error-explanation">
+            This may be expected - main quality images are not always available for all time periods.
+            The camera may only store preview quality images for older recordings.
+          </p>
+        </div>
+
+        <div v-else-if="mainImageData" class="main-image-container" data-testid="main-image-container">
+          <img
+            :src="mainImageData"
+            alt="Main quality recorded camera image"
+            class="main-image-display"
+            data-testid="main-image"
+          />
+          <div v-if="mainImageTimestamp" class="timestamp">
+            <small>Main Image Timestamp: {{ formatTimestamp(mainImageTimestamp) }}<span v-if="mainImageResolution"> - {{ mainImageResolution }}</span></small>
+          </div>
+        </div>
+      </div>
+
+      <!-- UTC Timestamp at bottom -->
+      <div v-if="imageTimestamp" class="utc-section" data-testid="utc-timestamp">
+        <small>Timestamp for API (UTC): <span class="utc-timestamp">{{ formatTimestampUtc(imageTimestamp) }}</span></small>
       </div>
     </div>
 
-    <div class="navigation">
-      <router-link to="/">
-        <button>Back to Home</button>
-      </router-link>
-      <router-link to="/live">
-        <button>View Live Camera</button>
-      </router-link>
-      <router-link to="/logout">
-        <button>Logout</button>
-      </router-link>
-    </div>
   </div>
 </template>
 
@@ -446,6 +545,13 @@ h2 {
   color: #666;
 }
 
+.preview-image-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
 .recorded-image-display {
   max-width: 100%;
   max-height: 500px;
@@ -458,15 +564,68 @@ h2 {
   color: #666;
 }
 
-.navigation {
-  margin-top: 30px;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  flex-wrap: wrap;
+.utc-timestamp {
+  font-family: monospace;
+  color: #888;
 }
 
 .error {
   color: #dc3545;
+}
+
+.main-image-section {
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #ddd;
+}
+
+.utc-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  color: #666;
+}
+
+.main-image-loading {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.main-image-error {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+}
+
+.main-image-error .error-note {
+  color: #856404;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.main-image-error .error-explanation {
+  color: #856404;
+  font-size: 0.9em;
+  margin: 0;
+}
+
+.main-image-container {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.main-image-display {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
 }
 </style>

@@ -1,6 +1,6 @@
 # EEN API Toolkit - Vue Media Example
 
-A Vue 3 example demonstrating how to fetch live and recorded images from EEN cameras using the een-api-toolkit.
+A Vue 3 example demonstrating how to fetch live images, recorded images, and stream HLS video from EEN cameras using the een-api-toolkit.
 
 ![Media Screenshot](media-screenshot.png)
 
@@ -19,23 +19,78 @@ This is a good balance between security (limiting XSS blast radius) and user exp
 
 - OAuth authentication flow (login, callback, logout)
 - Protected routes with navigation guards
-- `getCameras()` function for listing cameras
-- `getLiveImage()` function for fetching live preview images
-- `getRecordedImage()` function for fetching recorded images with navigation
 - Camera selection with persistence across pages
-- Auto-refresh functionality for live images (with error recovery)
-- Time-based navigation for recorded images (prev/next)
-- Datetime picker with seconds precision for recorded images
-- "Now" button to reset datetime picker to current time
-- Image timestamp display
+- Live image viewing with auto-refresh
+- Recorded image viewing with prev/next navigation
+- HLS video streaming with adaptive bitrate
+- Datetime picker with seconds precision
+- Shared datetime state across pages
 
-## APIs Used
+## Pages Overview
 
-- `getCameras()` - List available cameras
-- `getLiveImage()` - Fetch live preview image as base64
-- `getRecordedImage()` - Fetch recorded image at specific timestamp
-- `useAuthStore()` - Authentication state management
-- `initEenToolkit()` - Toolkit initialization
+### Home Page
+The landing page that displays a welcome message and login prompt when not authenticated. Shows the available toolkit functions and their descriptions.
+
+### Live Camera Image
+Displays live preview images from the selected camera with automatic refresh every 5 seconds.
+
+**APIs Used:**
+- `getCameras()` - Lists available cameras for selection
+- `getLiveImage()` - Fetches the current live preview image as base64
+
+**Features:**
+- Camera selector dropdown
+- Auto-refresh with error recovery (stops after 3 consecutive failures)
+- Displays image timestamp
+
+### Recorded Image
+Displays recorded images at a specific point in time, showing both preview and main quality images side by side.
+
+**APIs Used:**
+- `getCameras()` - Lists available cameras for selection
+- `getRecordedImage()` - Fetches recorded images with pagination tokens
+
+**Features:**
+- Camera selector dropdown
+- Datetime picker with seconds precision
+- Previous/Next navigation using pagination tokens
+- "Now" button to reset to current time
+- Displays both preview and main quality images
+- Shows image resolution (e.g., 640x360 for preview, 1920x1080 for main)
+- Displays UTC timestamp in EEN API format
+
+### HLS Video
+Streams recorded video using HLS (HTTP Live Streaming) protocol with adaptive bitrate support.
+
+**APIs Used:**
+- `getCameras()` - Lists available cameras for selection
+- `initMediaSession()` - Initializes the media session (required for video URLs)
+- `listMedia()` - Retrieves media intervals with HLS URLs
+- `useAuthStore()` - Explicitly used to get the token for HLS.js requests (see note below)
+
+**Features:**
+- Camera selector dropdown
+- Datetime picker with seconds precision
+- "Now" button to reset to current time
+- "Clip Time" button to set picker to the clip's start time
+- Displays segment start/end times with duration
+- Shows whether selected time is before, inside, or after the segment
+- Uses HLS.js library for cross-browser HLS support
+- Adds Authorization header to HLS segment requests
+
+## APIs Used Summary
+
+| API Function | Pages | Purpose |
+|--------------|-------|---------|
+| `getCameras()` | All media pages | List available cameras |
+| `getLiveImage()` | Live Camera Image | Fetch live preview image |
+| `getRecordedImage()` | Recorded Image | Fetch recorded images with navigation |
+| `initMediaSession()` | HLS Video | Initialize media session for video URLs |
+| `listMedia()` | HLS Video | Get media intervals with streaming URLs |
+| `useAuthStore()` | All pages | Authentication state management |
+| `initEenToolkit()` | App initialization | Configure toolkit settings |
+
+**Note on `useAuthStore()`:** All toolkit functions (`getCameras`, `getLiveImage`, `getRecordedImage`, `listMedia`) use `useAuthStore()` internally to get the authentication token. The HLS Video page is the only one that explicitly calls `useAuthStore()` in its code because HLS.js is a third-party library that makes its own HTTP requests - the token must be manually passed to HLS.js via the `xhrSetup` callback.
 
 ## Setup
 
@@ -89,24 +144,26 @@ All commands below should be run from this example directory (`examples/vue-medi
 
 ```
 src/
-├── main.ts          # App entry, toolkit initialization
-├── App.vue          # Root component with navigation
+├── main.ts              # App entry, toolkit initialization
+├── App.vue              # Root component with navigation
 ├── router/
-│   └── index.ts     # Vue Router with auth guards
+│   └── index.ts         # Vue Router with auth guards
+├── composables/
+│   ├── useSelectedCamera.ts    # Shared camera selection state
+│   └── useSelectedDateTime.ts  # Shared datetime state
 └── views/
-    ├── Home.vue     # Home page with login prompt
-    ├── Login.vue    # OAuth login redirect
-    ├── Callback.vue # OAuth callback handler
-    ├── LiveCamera.vue    # Live image viewer with auto-refresh
-    ├── RecordedImage.vue # Recorded image viewer with navigation
-    └── Logout.vue   # Logout handler
+    ├── Home.vue         # Home page with login prompt
+    ├── Login.vue        # OAuth login redirect
+    ├── Callback.vue     # OAuth callback handler
+    ├── LiveCamera.vue   # Live image viewer with auto-refresh
+    ├── RecordedImage.vue # Recorded image viewer (preview + main)
+    ├── HLS.vue          # HLS video streaming
+    └── Logout.vue       # Logout handler
 ```
 
 ## Key Code Examples
 
 ### Fetching Live Images (LiveCamera.vue)
-
-The Live Camera page title shows "Live Camera View (Preview)" to indicate it displays preview-quality images.
 
 ```typescript
 import { getLiveImage } from 'een-api-toolkit'
@@ -123,79 +180,56 @@ async function fetchLiveImage() {
 }
 ```
 
-### Auto-Refresh for Live Images
-
-```typescript
-const REFRESH_INTERVAL_MS = 5000 // Refresh every 5 seconds
-let refreshInterval: ReturnType<typeof setInterval> | null = null
-
-function startAutoRefresh() {
-  refreshInterval = setInterval(() => {
-    fetchLiveImage()
-  }, REFRESH_INTERVAL_MS)
-}
-
-function stopAutoRefresh() {
-  if (refreshInterval) {
-    clearInterval(refreshInterval)
-    refreshInterval = null
-  }
-}
-```
-
-The implementation includes error recovery that automatically stops auto-refresh after 3 consecutive failures to prevent hammering the server when there are persistent errors.
-
 ### Fetching Recorded Images (RecordedImage.vue)
 
-The Recorded Images page title shows "Recorded Images (Preview)" to indicate it displays preview-quality images. The datetime picker includes seconds precision (`step="1"`) for more accurate time selection.
+Fetches both preview and main quality images for comparison:
 
 ```typescript
-import { getRecordedImage, type GetRecordedImageParams } from 'een-api-toolkit'
+import { getRecordedImage } from 'een-api-toolkit'
 
-async function fetchImageFromPicker() {
-  const timestamp = toApiTimestamp(selectedDateTime.value)
-  const result = await getRecordedImage({
-    deviceId: selectedCameraId.value,
-    type: 'preview',
-    timestamp__gte: timestamp
-  })
+// Fetch preview image
+const result = await getRecordedImage({
+  deviceId: selectedCameraId.value,
+  type: 'preview',
+  timestamp__gte: timestamp
+})
 
-  if (result.error) {
-    error.value = result.error.message
-  } else {
-    imageData.value = result.data.imageData
-    imageTimestamp.value = result.data.timestamp
-    prevToken.value = result.data.prevToken
-    nextToken.value = result.data.nextToken
-  }
-}
+// Fetch main image at the same timestamp
+const mainResult = await getRecordedImage({
+  deviceId: selectedCameraId.value,
+  type: 'main',
+  timestamp__gte: result.data.timestamp
+})
 ```
 
-### Navigating Recorded Images
+### Streaming HLS Video (HLS.vue)
 
 ```typescript
-async function navigateNext() {
-  if (!nextToken.value) return
+import { listMedia, initMediaSession, useAuthStore } from 'een-api-toolkit'
+import Hls from 'hls.js'
 
-  const result = await getRecordedImage({ pageToken: nextToken.value })
+// Initialize media session first
+await initMediaSession()
 
-  if (!result.error) {
-    imageData.value = result.data.imageData
-    imageTimestamp.value = result.data.timestamp
-    prevToken.value = result.data.prevToken
-    nextToken.value = result.data.nextToken
+// Get HLS URL from listMedia
+const result = await listMedia({
+  deviceId: selectedCameraId.value,
+  type: 'main',
+  mediaType: 'video',
+  startTimestamp: timestamp,
+  include: ['hlsUrl']
+})
+
+// Configure HLS.js with Authorization header
+const authStore = useAuthStore()
+const hls = new Hls({
+  xhrSetup: (xhr: XMLHttpRequest) => {
+    xhr.setRequestHeader('Authorization', `Bearer ${authStore.token}`)
   }
-}
-```
+})
 
-### Resetting to Current Time
-
-The "Now" button allows users to quickly reset the datetime picker to the current time:
-
-```typescript
-function resetToNow() {
-  selectedDateTime.value = formatDateTimeLocal(new Date())
-}
+hls.loadSource(result.data.results[0].hlsUrl)
+hls.attachMedia(videoElement)
 ```
 
 ### Displaying Images
@@ -209,8 +243,25 @@ The toolkit returns `imageData` as a complete data URL (including the `data:imag
     :src="imageData"
     alt="Camera image"
   />
-  <p v-if="imageTimestamp">
-    Timestamp: {{ new Date(imageTimestamp).toLocaleString() }}
-  </p>
 </template>
 ```
+
+### Shared State with Composables
+
+Camera selection and datetime are shared across pages using Vue composables:
+
+```typescript
+// useSelectedCamera.ts
+import { ref } from 'vue'
+
+const selectedCameraId = ref<string | null>(null)
+
+export function useSelectedCamera() {
+  return {
+    selectedCameraId,
+    setSelectedCamera: (id: string) => { selectedCameraId.value = id }
+  }
+}
+```
+
+This allows users to switch between Live Camera, Recorded Image, and HLS Video pages while maintaining their camera and time selection.
