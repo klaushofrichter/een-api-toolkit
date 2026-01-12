@@ -328,7 +328,7 @@ onUnmounted(() => {
           data-testid="prev-button"
           aria-label="Go to previous recorded image"
         >
-          ← Previous
+          ← Previous Second
         </button>
         <button
           @click="navigateNext"
@@ -336,7 +336,7 @@ onUnmounted(() => {
           data-testid="next-button"
           aria-label="Go to next recorded image"
         >
-          Next →
+          Next Second →
         </button>
       </div>
 
@@ -464,6 +464,7 @@ h2 {
 
 .controls {
   display: flex;
+  justify-content: center;
   gap: 10px;
   margin-bottom: 15px;
 }

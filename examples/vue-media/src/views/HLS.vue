@@ -381,7 +381,7 @@ onUnmounted(() => {
 <template>
   <div class="hls-video">
     <h2>HLS Video Streaming (Main)</h2>
-    <p class="description">Streams video using HLS (HTTP Live Streaming) protocol with adaptive bitrate.</p>
+    <p class="description">Streams video using HLS (HTTP Live Streaming) protocol.</p>
 
     <div v-if="loading" class="loading">
       <p>Loading cameras...</p>
