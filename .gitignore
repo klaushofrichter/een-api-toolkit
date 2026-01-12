@@ -159,3 +159,6 @@ examples/vue-media/e2e/.auth-state.json
 # Generated presentation files
 PRESENTATION.md
 PRESENTATION.html
+presentation.md
+report.md
+*.pptx
