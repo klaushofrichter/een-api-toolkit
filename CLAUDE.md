@@ -17,6 +17,7 @@ This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EE
 - **Testing**: Vitest (unit), Playwright (E2E)
 - **Linting**: ESLint only (no Prettier)
 - **Node.js**: Minimum version 20 LTS
+- **TypeScript**: Pinned to ~5.8.x (required for API Extractor compatibility in vite-plugin-dts)
 - **Dependencies**: Always use latest stable versions of imported packages
 
 ## Architecture
@@ -26,9 +27,9 @@ Organized by resource (mirrors EEN API structure):
 ```
 src/
 ├── auth/           # Authentication: Pinia store + auth service
-├── users/          # User API: service functions + composables
-├── bridges/        # Bridge API: service functions + composables (future)
-├── cameras/        # Camera API: service functions + composables (future)
+├── users/          # User API: service functions
+├── bridges/        # Bridge API: service functions (future)
+├── cameras/        # Camera API: service functions
 ├── types/          # TypeScript types
 ├── utils/          # Utility functions (debug, etc.)
 ├── config.ts       # Toolkit configuration
@@ -36,14 +37,12 @@ src/
 ```
 
 ### Key Patterns
-- **API Style**: Both plain async functions AND Vue 3 composables
-  - Plain functions: `getUsers()`, `getCameras()` - familiar, easy to test, framework-agnostic
-  - Composables: `useUsers()`, `useCameras()` - reactive state for Vue 3 apps
+- **API Style**: Plain async functions - `getUsers()`, `getCameras()`, `getUser()`, `getCamera()` - familiar, easy to test
 - **Authentication**: Pinia store exported for direct use (`useAuthStore()`)
 - **Error Handling**: Return `{data, error}` result objects, never throw exceptions
 - **Type Generation**: Auto-generate from OpenAPI spec using openapi-typescript
 - **Pagination**: Follow EEN API's native pagination approach
-- **Data Fetching**: On demand only, expose `refresh()` method
+- **Data Fetching**: On demand only
 - **Logging**: Debug mode via `VITE_DEBUG=true` environment variable
 - **Caching**: None built-in (consuming apps handle if needed)
 
@@ -52,16 +51,16 @@ src/
 - Uses OAuth via proxy server from `../een-oauth-proxy`
 
 ### Package Export
-Single entry point supporting both patterns:
+Single entry point:
 ```typescript
-// Vue composables (reactive)
-import { useUsers, useCameras, useBridges, useAuthStore } from 'een-api-toolkit'
+// Plain async functions
+import { getUsers, getUser, getCameras, getCamera, getCurrentUser } from 'een-api-toolkit'
 
-// Plain async functions (framework-agnostic)
-import { getUsers, getCameras, getBridges } from 'een-api-toolkit'
+// Auth store and helpers
+import { useAuthStore, initEenToolkit, getAuthUrl, handleAuthCallback } from 'een-api-toolkit'
 
-// Auth helpers
-import { initEenToolkit, getAuthUrl, handleAuthCallback } from 'een-api-toolkit'
+// Types
+import type { User, Camera, EenError, Result } from 'een-api-toolkit'
 ```
 
 ## API Implementation Priority
@@ -75,7 +74,7 @@ Only implement non-destructive GET and POST APIs until explicitly instructed to 
 
 ## API Reference
 
-- EEN API 3.0 spec: https://github.com/EENCloud/api-v3-documentation/tree/development/api/3.0
+- EEN API 3.0 spec: https://github.com/EENCloud/VMS-Developer-Portal
 - Developer portal: https://developer.eagleeyenetworks.com/reference/using-the-api
 
 ## Reference Implementations
@@ -176,7 +175,7 @@ async function getResource(params?: ResourceParams): Promise<Result<Resource[]>>
 ## Auth Store Pattern (from ../een-oauth-proxy/demo1)
 
 Key state:
-- `token` - Access token (short-lived, ~1 hour)
+- `token` - Access token (short-lived, validity configurable from 15 min to 7 days)
 - `tokenExpiration` - Timestamp when token expires
 - `refreshTokenMarker` - Indicates refresh token exists (actual token stored server-side)
 - `sessionId` - For header-based auth fallback
@@ -243,12 +242,13 @@ git rebase origin/develop
 
 ## Husky Setup
 
-Pre-commit hook auto-increments patch version when source files change:
+Pre-commit hook auto-increments patch version when source files or package documentation changes:
 ```bash
 # Install husky (done via npm prepare script)
 npm install
 
 # Hook location: .husky/pre-commit
+# Triggers on: src/**/*, e2e/**/*, README.md, docs/AI-CONTEXT.md
 # Runs: npm version patch --no-git-tag-version
 # Then stages updated package.json and package-lock.json
 ```
@@ -284,12 +284,18 @@ Located in `.github/workflows/`.
 - Automatically merges production into develop
 - Keeps branches in sync after releases
 
-### npm Publish (`npm-publish.yml`)
+### Test Release (`test-release.yml`)
 - Triggers when PR is merged to production, or manually
-- Runs tests and package verification before publish
+- Runs linting, type checking, unit tests
+- Builds and verifies package
+- On success, triggers the publish workflow
+
+### npm Publish (`npm-publish.yml`)
+- Triggers when test-release workflow succeeds, or manually
+- Generates CHANGELOG for the current release from merged PRs and commits
 - Publishes to npm registry
-- Creates GitHub Release with tarball and auto-generated CHANGELOG
-- Sends Slack notifications on success (with links to npm and GitHub Release) or on failure
+- Creates GitHub Release with tarball and RELEASE-NOTES asset
+- Sends Slack notifications on success (with links to npm, GitHub Release, and Release Notes) or on failure
 - Supports dry-run mode for testing
 
 ### Future Workflows (to be added)
@@ -373,13 +379,14 @@ Secrets are configured in `.env` and synced to GitHub using:
 
 | Secret | Source | Purpose |
 |--------|--------|---------|
-| `VITE_EEN_CLIENT_ID` | .env | EEN OAuth client ID |
-| `TEST_USER` | .env | E2E test user email |
-| `TEST_PASSWORD` | .env | E2E test user password |
-| `VITE_PROXY_URL` | .env | OAuth proxy URL |
+| `ANTHROPIC_API_KEY` | .env | Claude code review |
+| `CLIENT_SECRET` | .env | EEN OAuth client secret (for CI proxy) |
 | `NPM_TOKEN` | .env | npm publish token (from npmjs.com) |
 | `SLACK_WEBHOOK` | .env | Slack notifications |
-| `ANTHROPIC_API_KEY` | .env | Claude code review |
+| `TEST_PASSWORD` | .env | E2E test user password |
+| `TEST_USER` | .env | E2E test user email |
+| `VITE_EEN_CLIENT_ID` | .env | EEN OAuth client ID |
+| `VITE_PROXY_URL` | .env | OAuth proxy URL |
 
 ### Release Flow
 ```
@@ -422,7 +429,7 @@ docs/
 ├── guides/              # In-depth guides
 └── getting-started/     # Setup guides
 examples/
-└── vue-basic/           # Complete Vue 3 example application
+└── vue-users/           # Complete Vue 3 example application
 ```
 
 ### Generation
@@ -435,7 +442,7 @@ npm run docs:ai-context   # Generate AI-CONTEXT.md
 ### Key Files
 - **`docs/AI-CONTEXT.md`** - Complete reference for AI assistants, auto-generated from `scripts/generate-ai-context.ts`. Contains all APIs, types, patterns in one file.
 - **`docs/api/`** - Auto-generated from JSDoc comments via TypeDoc
-- **`examples/vue-basic/`** - Working example showing OAuth flow, composables, error handling
+- **`examples/vue-users/`** - Working example showing OAuth flow and error handling
 
 ### Versioning
 Documentation is generated on publish and versioned with releases:
@@ -444,7 +451,7 @@ Documentation is generated on publish and versioned with releases:
 - Docs are included in git for GitHub browsing
 
 ### JSDoc Requirements
-All exported functions, types, and composables must have JSDoc with:
+All exported functions and types must have JSDoc with:
 - Brief description
 - `@remarks` for detailed explanation
 - `@param` for each parameter

@@ -7,7 +7,7 @@
  *
  * SECURITY NOTE: The access token is stored in plaintext in .auth-state.json.
  * This is acceptable for development/testing because:
- * - The token is short-lived (~1 hour)
+ * - The token is short-lived (validity depends on account settings)
  * - The file has restricted permissions (mode 0o600)
  * - The file is in .gitignore
  * - This is for local development and CI testing only
@@ -251,4 +251,28 @@ export function clearAuthCache(): void {
     fs.unlinkSync(AUTH_FILE)
     console.log('Auth cache cleared')
   }
+}
+
+/**
+ * Inject auth state into browser localStorage.
+ * Used by E2E tests to pre-authenticate without going through OAuth flow.
+ */
+export async function injectAuthState(
+  page: import('@playwright/test').Page,
+  authState: AuthState
+): Promise<void> {
+  await page.evaluate(
+    ({ token, baseUrl, sessionId, tokenExpiration }) => {
+      localStorage.setItem('een_token', token)
+      localStorage.setItem('een_tokenExpiration', String(tokenExpiration))
+      localStorage.setItem('een_refreshTokenMarker', 'present')
+      localStorage.setItem('een_sessionId', sessionId)
+      const url = new URL(baseUrl)
+      localStorage.setItem('een_hostname', url.hostname)
+      if (url.port) {
+        localStorage.setItem('een_port', url.port)
+      }
+    },
+    authState
+  )
 }

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.4**](../README.md)
+[**EEN API Toolkit v0.3.11**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getConfig**(): [`EenToolkitConfig`](../interfaces/EenToolkitConfig.md)
 
-Defined in: [src/config.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/config.ts#L23)
+Defined in: [src/config.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L55)
 
 Get the current configuration
 

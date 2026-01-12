@@ -5,18 +5,55 @@ import vue from 'eslint-plugin-vue'
 import vueParser from 'vue-eslint-parser'
 import globals from 'globals'
 
+// Shared rules for TypeScript and Vue files to reduce duplication
+const commonRules = {
+  ...tseslint.configs.recommended.rules,
+  '@typescript-eslint/explicit-function-return-type': 'off',
+  '@typescript-eslint/explicit-module-boundary-types': 'off',
+  '@typescript-eslint/no-explicit-any': 'warn',
+  '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+  'no-console': ['warn', { allow: ['warn', 'error'] }],
+  'no-debugger': 'warn',
+  'prefer-const': 'error',
+  'no-var': 'error'
+}
+
 export default [
   // Global ignores
   {
-    ignores: ['dist/**', 'node_modules/**', '**/*.cjs']
+    ignores: ['dist/**', 'node_modules/**', '*.cjs', 'docs/api/**']
   },
 
-  // Base JavaScript config
+  // JavaScript base config
   js.configs.recommended,
 
   // TypeScript files
   {
-    files: ['**/*.ts', '**/*.tsx', '**/*.vue'],
+    files: ['**/*.ts', '**/*.tsx'],
+    languageOptions: {
+      parser: tsparser,
+      parserOptions: {
+        ecmaVersion: 'latest',
+        sourceType: 'module'
+      },
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.es2022,
+        // Web API type used in fetch headers - defined in lib.dom.d.ts but ESLint
+        // no-undef rule doesn't recognize TypeScript lib types
+        HeadersInit: 'readonly'
+      }
+    },
+    plugins: {
+      '@typescript-eslint': tseslint
+    },
+    rules: commonRules
+  },
+
+  // Vue files
+  {
+    files: ['**/*.vue'],
     languageOptions: {
       parser: vueParser,
       parserOptions: {
@@ -26,42 +63,16 @@ export default [
       },
       globals: {
         ...globals.browser,
-        ...globals.node,
-        ...globals.es2021
+        ...globals.es2022
       }
     },
     plugins: {
-      '@typescript-eslint': tseslint,
-      'vue': vue
+      vue,
+      '@typescript-eslint': tseslint
     },
     rules: {
-      // TypeScript recommended rules
-      ...tseslint.configs.recommended.rules,
-
-      // TypeScript custom rules
-      '@typescript-eslint/explicit-function-return-type': 'off',
-      '@typescript-eslint/explicit-module-boundary-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
-      '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-
-      // Disable no-undef for TypeScript files - TypeScript handles this better
-      'no-undef': 'off',
-
-      // General rules
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-      'no-debugger': 'warn',
-      'prefer-const': 'error',
-      'no-var': 'error'
-    }
-  },
-
-  // Vue files - use Vue 3 recommended config
-  ...vue.configs['flat/recommended'],
-
-  // Vue custom rules override
-  {
-    files: ['**/*.vue'],
-    rules: {
+      ...vue.configs['flat/recommended'].rules,
+      ...commonRules,
       'vue/multi-word-component-names': 'off',
       'vue/no-v-html': 'off'
     }
@@ -71,7 +82,8 @@ export default [
   {
     files: ['**/__tests__/**', '**/e2e/**', '**/*.test.ts', '**/*.spec.ts'],
     rules: {
-      'no-console': 'off'
+      'no-console': 'off',
+      '@typescript-eslint/no-unused-vars': 'off'
     }
   }
 ]

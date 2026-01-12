@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.4**](../README.md)
+[**EEN API Toolkit v0.3.11**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: TokenResponse
 
-Defined in: [src/auth/service.ts:18](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L18)
+Defined in: [src/auth/service.ts:18](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L18)
 
 Token response from the OAuth proxy.
 
@@ -21,7 +21,7 @@ after successfully exchanging an authorization code for an access token.
 
 > **accessToken**: `string`
 
-Defined in: [src/auth/service.ts:19](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L19)
+Defined in: [src/auth/service.ts:19](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L19)
 
 ***
 
@@ -29,7 +29,7 @@ Defined in: [src/auth/service.ts:19](https://github.com/klaushofrichter/een-api-
 
 > **expiresIn**: `number`
 
-Defined in: [src/auth/service.ts:20](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L20)
+Defined in: [src/auth/service.ts:20](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L20)
 
 ***
 
@@ -37,7 +37,7 @@ Defined in: [src/auth/service.ts:20](https://github.com/klaushofrichter/een-api-
 
 > **httpsBaseUrl**: `string` \| \{ `hostname`: `string`; `port?`: `number`; \}
 
-Defined in: [src/auth/service.ts:21](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L21)
+Defined in: [src/auth/service.ts:21](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L21)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: [src/auth/service.ts:21](https://github.com/klaushofrichter/een-api-
 
 > **userEmail**: `string`
 
-Defined in: [src/auth/service.ts:22](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L22)
+Defined in: [src/auth/service.ts:22](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L22)
 
 ***
 
@@ -53,4 +53,4 @@ Defined in: [src/auth/service.ts:22](https://github.com/klaushofrichter/een-api-
 
 > **sessionId**: `string`
 
-Defined in: [src/auth/service.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L23)
+Defined in: [src/auth/service.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L23)

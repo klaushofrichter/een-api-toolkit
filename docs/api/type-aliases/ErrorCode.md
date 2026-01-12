@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.4**](../README.md)
+[**EEN API Toolkit v0.3.11**](../README.md)
 
 ***
 
@@ -6,9 +6,9 @@
 
 # Type Alias: ErrorCode
 
-> **ErrorCode** = `"AUTH_REQUIRED"` \| `"AUTH_FAILED"` \| `"TOKEN_EXPIRED"` \| `"API_ERROR"` \| `"NETWORK_ERROR"` \| `"VALIDATION_ERROR"` \| `"NOT_FOUND"` \| `"FORBIDDEN"` \| `"RATE_LIMITED"` \| `"UNKNOWN_ERROR"`
+> **ErrorCode** = `"AUTH_REQUIRED"` \| `"AUTH_FAILED"` \| `"TOKEN_EXPIRED"` \| `"API_ERROR"` \| `"NETWORK_ERROR"` \| `"VALIDATION_ERROR"` \| `"NOT_FOUND"` \| `"FORBIDDEN"` \| `"RATE_LIMITED"` \| `"SERVICE_UNAVAILABLE"` \| `"UNKNOWN_ERROR"`
 
-Defined in: [src/types/common.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L10)
+Defined in: [src/types/common.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L10)
 
 Error codes returned by the toolkit.
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.4**](../README.md)
+[**EEN API Toolkit v0.3.11**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getUsers**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`User`](../interfaces/User.md)\>\>\>
 
-Defined in: [src/users/service.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/users/service.ts#L118)
+Defined in: [src/users/service.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/service.ts#L118)
 
 List users with optional pagination and filtering.
 
@@ -33,7 +33,7 @@ parameter to control how many results are returned per page, and `pageToken`
 to navigate to subsequent pages.
 
 For more details, see the
-[EEN API Documentation](https://developer.eagleeyenetworks.com/reference/listusers).
+[EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getusers).
 
 ## Example
 

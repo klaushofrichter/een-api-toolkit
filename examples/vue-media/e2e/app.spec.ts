@@ -1,0 +1,71 @@
+import { test, expect } from '@playwright/test'
+
+test.describe('vue-media example app', () => {
+  test('home page shows login button when not authenticated', async ({ page }) => {
+    await page.goto('/')
+
+    // Should show the home page
+    await expect(page.getByRole('heading', { name: 'Welcome to the EEN Media Example' })).toBeVisible()
+
+    // Should show "not authenticated" state with login button
+    await expect(page.getByTestId('not-authenticated')).toBeVisible()
+    await expect(page.getByTestId('login-button')).toBeVisible()
+    await expect(page.getByText('Please log in to view live camera images')).toBeVisible()
+  })
+
+  test('login button navigates to login page', async ({ page }) => {
+    await page.goto('/')
+
+    await page.getByTestId('login-button').click()
+
+    await expect(page).toHaveURL('/login')
+    await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible()
+    await expect(page.getByText('Click the button below to authenticate with Eagle Eye Networks')).toBeVisible()
+  })
+
+  test('live route redirects to login when not authenticated', async ({ page }) => {
+    await page.goto('/live')
+
+    // Should redirect to login page (auth guard)
+    await expect(page).toHaveURL('/login')
+  })
+
+  test('navigation links work correctly', async ({ page }) => {
+    await page.goto('/')
+
+    // Check navigation is present
+    await expect(page.getByRole('navigation')).toBeVisible()
+
+    // Navigate to login via nav link (use testid to be specific)
+    await page.getByTestId('nav-login').click()
+    await expect(page).toHaveURL('/login')
+
+    // Navigate back home
+    await page.getByRole('link', { name: 'Home' }).click()
+    await expect(page).toHaveURL('/')
+  })
+
+  test('about section displays toolkit function list', async ({ page }) => {
+    await page.goto('/')
+
+    // Check for the function descriptions
+    await expect(page.getByText('getCameras()')).toBeVisible()
+    await expect(page.getByText('getLiveImage()')).toBeVisible()
+    await expect(page.getByText('getRecordedImage()')).toBeVisible()
+    await expect(page.getByText('listMedia()')).toBeVisible()
+  })
+
+  test('recorded route redirects to login when not authenticated', async ({ page }) => {
+    await page.goto('/recorded')
+
+    // Should redirect to login page (auth guard)
+    await expect(page).toHaveURL('/login')
+  })
+
+  test('hls route redirects to login when not authenticated', async ({ page }) => {
+    await page.goto('/hls')
+
+    // Should redirect to login page (auth guard)
+    await expect(page).toHaveURL('/login')
+  })
+})

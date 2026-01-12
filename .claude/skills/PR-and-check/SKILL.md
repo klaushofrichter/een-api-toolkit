@@ -1,17 +1,21 @@
 ---
 name: PR-and-check
-description: Use this skill when you are requested to create a PR for a feature branch.
+description: Use this skill when you are requested to create a PR for a feature branch to develop, or from develop to production.
 ---
 
 # Instructions
 
-## 1. Validate branch
-- Verify we're on a feature branch (not `develop` or `production`)
-  - check current branch: `git branch --show-current`
-  - if on `develop` or `production`, report error and stop
+## 1. Validate branch and determine PR target
+- Check current branch: `git branch --show-current`
+- Determine the PR flow:
+  - If on `develop` → create PR to `production`
+  - If on `production` → report error and stop (cannot create PR from production)
+  - If on any other branch (feature branch) → create PR to `develop`
+- Store the target branch for later use
 
 ## 2. Check for existing PR
-- Check if a PR already exists for this branch: `gh pr list --head <branch-name> --json number,url`
+- Check if a PR already exists for this branch to the target:
+  - `gh pr list --head <branch-name> --base <target-branch> --json number,url`
 - If a PR exists, report the existing PR URL and skip to step 5 (code review)
 
 ## 3. Run tests locally
@@ -28,9 +32,11 @@ description: Use this skill when you are requested to create a PR for a feature 
 ## 4. Create PR
 - Get version number for the PR body:
   - `jq -r .version package.json`
-- Create a well-formatted PR from the feature branch to develop:
-  - use `gh pr create --base develop --title "<title>" --body "<body>"` with a HEREDOC for the body
-  - highlight the changes and the purpose of the feature branch
+- Get list of commits to include:
+  - `git log origin/<target-branch>..HEAD --oneline`
+- Create a well-formatted PR:
+  - use `gh pr create --base <target-branch> --title "<title>" --body "<body>"` with a HEREDOC for the body
+  - highlight the changes and the purpose of the branch
   - include test results summary and version number
 - Capture the PR number from the output (needed for code review step)
   - the `gh pr create` command outputs the PR URL, extract the number from it
@@ -42,7 +48,10 @@ description: Use this skill when you are requested to create a PR for a feature 
   - confirm the run is for the correct branch
   - if workflow failed to start, report error and stop
 - Poll for completion (check once per minute, max 10 minutes total):
-  - `gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,conclusion`
+  - Use separate bash commands with `sleep 60 && gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,conclusion`
+  - IMPORTANT: Do NOT use complex shell constructs like `for i in {1..10}` as they cause parse errors
+  - Make sequential individual bash calls, checking the status after each one
+  - If status is "completed", stop polling
 - Check the result:
   - if the workflow did not finish within 10 minutes, report timeout and stop
   - view the review: `gh pr view <pr-number> --comments` or check the PR review file artifact

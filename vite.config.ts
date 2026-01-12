@@ -30,6 +30,21 @@ export default defineConfig({
           vue: 'Vue',
           pinia: 'Pinia'
         }
+      },
+      // Suppress warning about dynamic/static import mixing - not relevant for single-file library bundle
+      // This warning occurs because service.ts is dynamically imported by store.ts (for circular dep)
+      // but statically imported by index.ts. Since we bundle to a single file, chunking doesn't apply.
+      onwarn(warning, warn) {
+        if (warning.code === 'MIXED_EXPORTS') {
+          return
+        }
+        // Specifically suppress the circular dependency chunking warning for auth/service.ts
+        if (warning.message &&
+            warning.message.includes('dynamic import will not move module into another chunk') &&
+            warning.message.includes('auth/service.ts')) {
+          return
+        }
+        warn(warning)
       }
     },
     sourcemap: true
@@ -37,7 +52,6 @@ export default defineConfig({
   test: {
     globals: true,
     environment: 'jsdom',
-    include: ['src/**/__tests__/**/*.test.ts', 'src/**/*.test.ts'],
-    exclude: ['e2e/**', 'node_modules/**', 'examples/**', 'dist/**']
+    exclude: ['**/e2e/**', '**/node_modules/**', '**/examples/**']
   }
 })

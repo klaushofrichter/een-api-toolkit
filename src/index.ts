@@ -1,5 +1,5 @@
 // Configuration
-export { initEenToolkit, getConfig, getProxyUrl, getClientId, getRedirectUri } from './config'
+export { initEenToolkit, getConfig, getProxyUrl, getClientId, getRedirectUri, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from './config'
 
 // Types
 export type {
@@ -9,10 +9,44 @@ export type {
   PaginationParams,
   PaginatedResult,
   EenToolkitConfig,
+  StorageStrategy,
   User,
   UserProfile,
   ListUsersParams,
-  GetUserParams
+  GetUserParams,
+  Camera,
+  CameraStatus,
+  CameraDeviceInfo,
+  CameraShareDetails,
+  CameraStreamUrls,
+  CameraRtspConnectionSettings,
+  CameraDevicePosition,
+  CameraRecordingModes,
+  ListCamerasParams,
+  GetCameraParams,
+  Bridge,
+  BridgeStatus,
+  BridgeDeviceInfo,
+  BridgeNetworkInfo,
+  BridgeDevicePosition,
+  ListBridgesParams,
+  GetBridgeParams,
+  MediaType,
+  MediaStreamType,
+  MediaInterval,
+  ListMediaParams,
+  GetLiveImageParams,
+  GetRecordedImageParams,
+  LiveImageResult,
+  RecordedImageResult,
+  MediaSessionResponse,
+  MediaSessionResult,
+  Feed,
+  FeedStreamType,
+  FeedMediaType,
+  FeedIncludeOption,
+  ListFeedsParams,
+  ListFeedsResult
 } from './types'
 
 // Type helpers
@@ -38,16 +72,28 @@ export {
   getUser
 } from './users'
 
-// Users - Composables
+// Cameras - Plain functions
 export {
-  useCurrentUser,
-  useUsers,
-  useUser
-} from './users'
+  getCameras,
+  getCamera
+} from './cameras'
 
-// Users - Composable option types
-export type {
-  UseCurrentUserOptions,
-  UseUsersOptions,
-  UseUserOptions
-} from './users'
+// Bridges - Plain functions
+export {
+  getBridges,
+  getBridge
+} from './bridges'
+
+// Media - Plain functions
+export {
+  listMedia,
+  getLiveImage,
+  getRecordedImage,
+  getMediaSession,
+  initMediaSession
+} from './media'
+
+// Feeds - Plain functions
+export {
+  listFeeds
+} from './feeds'

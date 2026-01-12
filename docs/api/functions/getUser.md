@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.4**](../README.md)
+[**EEN API Toolkit v0.3.11**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getUser**(`userId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`User`](../interfaces/User.md)\>\>
 
-Defined in: [src/users/service.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/users/service.ts#L205)
+Defined in: [src/users/service.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/service.ts#L205)
 
 Get a specific user by ID.
 

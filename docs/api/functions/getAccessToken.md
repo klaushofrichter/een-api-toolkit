@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.4**](../README.md)
+[**EEN API Toolkit v0.3.11**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getAccessToken**(`code`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`TokenResponse`](../interfaces/TokenResponse.md)\>\>
 
-Defined in: [src/auth/service.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/auth/service.ts#L58)
+Defined in: [src/auth/service.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L58)
 
 Exchange authorization code for access token
 

@@ -2,32 +2,73 @@
 
 > **Current Version:** See [AI-CONTEXT.md](./AI-CONTEXT.md) for version
 
-## Documentation Structure
+## Documentation Overview
 
-### For AI Assistants
+| Document | Audience | Description |
+|----------|----------|-------------|
+| **[User Guide](./USER-GUIDE.md)** | App Developers | Installation, proxy setup, authentication, API usage |
+| **[Developer Guide](./DEVELOPER-GUIDE.md)** | Contributors | Architecture, testing, CI/CD, publishing |
+| **[API Reference](./api/)** | All | Auto-generated TypeDoc documentation |
+| **[AI-CONTEXT.md](./AI-CONTEXT.md)** | AI Assistants | Single-file comprehensive reference |
+| **[Example Apps](../examples/)** | All | Complete Vue 3 example applications |
 
-- **[AI-CONTEXT.md](./AI-CONTEXT.md)** - Single-file comprehensive reference optimized for AI assistants. Contains all API signatures, types, patterns, and examples in one parseable document.
+## For App Developers
 
-### API Reference
+Start with the **[User Guide](./USER-GUIDE.md)** which covers:
 
-- **[api/](./api/)** - Auto-generated API documentation from TypeDoc
-  - Functions, types, and interfaces
-  - Generated from JSDoc comments in source code
+- Prerequisites and installation
+- OAuth proxy setup (using [een-oauth-proxy](https://github.com/klaushofrichter/een-oauth-proxy))
+- Configuration options
+- Authentication flow implementation
+- Using API functions
+- Error handling patterns
+- Building an app from scratch
+- Troubleshooting common issues
 
-### Guides
+## For Contributors
 
-- [Getting Started](./getting-started/) - Installation and setup
-- [Guides](./guides/) - In-depth guides on specific topics
+See the **[Developer Guide](./DEVELOPER-GUIDE.md)** which covers:
 
-## Quick Links
+- Development environment setup
+- Architecture and security model
+- Code structure and patterns
+- Adding new API resources
+- Unit and E2E testing
+- Build system (Vite library mode)
+- CI/CD workflows
+- Publishing to npm
+- Contributing guidelines
 
-| Topic | Description |
-|-------|-------------|
-| [AI-CONTEXT.md](./AI-CONTEXT.md) | Complete reference for AI-assisted development |
-| [API Reference](./api/README.md) | Auto-generated API docs |
-| [Example App](../examples/vue-basic/) | Complete Vue 3 example application |
+## API Reference
 
-## Versioning
+The **[API Reference](./api/)** is auto-generated from JSDoc comments using TypeDoc:
+
+- All exported functions
+- TypeScript types and interfaces
+- Usage examples
+
+Regenerate with:
+
+```bash
+npm run docs:api
+```
+
+## For AI Assistants
+
+**[AI-CONTEXT.md](./AI-CONTEXT.md)** provides a single-file comprehensive reference optimized for AI-assisted development:
+
+- All API signatures and types
+- Code patterns and examples
+- Configuration options
+- Error codes
+
+Regenerate with:
+
+```bash
+npm run docs:ai-context
+```
+
+## Documentation Versioning
 
 Documentation is versioned alongside the package. Each release includes:
 
@@ -35,16 +76,7 @@ Documentation is versioned alongside the package. Each release includes:
 2. Regenerated API reference from TypeDoc
 3. Tagged release in git
 
-### Checking Documentation Version
-
-The version is displayed at the top of `AI-CONTEXT.md`:
-
-```markdown
-> **Version:** 0.0.4
-> **Generated:** 2024-01-15
-```
-
-### Generating Documentation
+### Generating All Documentation
 
 ```bash
 # Generate all documentation
@@ -61,13 +93,14 @@ npm run docs:ai-context
 
 - [Eagle Eye Networks Developer Portal](https://developer.eagleeyenetworks.com)
 - [EEN API v3.0 Reference](https://developer.eagleeyenetworks.com/reference/using-the-api)
+- [een-oauth-proxy](https://github.com/klaushofrichter/een-oauth-proxy) - OAuth proxy server
 - [GitHub Repository](https://github.com/klaushofrichter/een-api-toolkit)
 
 ## Contributing to Documentation
 
-1. **API Documentation**: Update JSDoc comments in source files, then run `npm run docs`
-2. **AI-CONTEXT.md**: Edit `scripts/generate-ai-context.ts` for structure changes
-3. **Guides**: Add markdown files to `docs/guides/`
+1. **User/Developer Guides**: Edit markdown files directly
+2. **API Documentation**: Update JSDoc comments in source files, then run `npm run docs`
+3. **AI-CONTEXT.md**: Edit `scripts/generate-ai-context.ts` for structure changes
 
 ### JSDoc Best Practices
 

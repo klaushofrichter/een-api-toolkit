@@ -149,5 +149,13 @@ examples/**/node_modules
 examples/**/.env
 !examples/**/.env.example
 
-# Generated during publish
-CHANGELOG.md
+# E2E test auth state cache
+examples/vue-users/e2e/.auth-state.json
+examples/vue-feeds/e2e/.auth-state.json
+examples/vue-media/e2e/.auth-state.json
+# macOS
+.DS_Store
+
+# Generated presentation files
+PRESENTATION.md
+PRESENTATION.html

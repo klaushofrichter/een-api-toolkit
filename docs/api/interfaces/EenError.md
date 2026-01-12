@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.0.4**](../README.md)
+[**EEN API Toolkit v0.3.11**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EenError
 
-Defined in: [src/types/common.ts:42](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L42)
+Defined in: [src/types/common.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L43)
 
 Error object returned when an operation fails.
 
@@ -33,7 +33,7 @@ if (error) {
 
 > **code**: [`ErrorCode`](../type-aliases/ErrorCode.md)
 
-Defined in: [src/types/common.ts:44](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L44)
+Defined in: [src/types/common.ts:45](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L45)
 
 Machine-readable error code for programmatic handling
 
@@ -43,7 +43,7 @@ Machine-readable error code for programmatic handling
 
 > **message**: `string`
 
-Defined in: [src/types/common.ts:46](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L46)
+Defined in: [src/types/common.ts:47](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L47)
 
 Human-readable error message
 
@@ -53,7 +53,7 @@ Human-readable error message
 
 > `optional` **status**: `number`
 
-Defined in: [src/types/common.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L48)
+Defined in: [src/types/common.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L49)
 
 HTTP status code if the error came from an API response
 
@@ -63,6 +63,6 @@ HTTP status code if the error came from an API response
 
 > `optional` **details**: `unknown`
 
-Defined in: [src/types/common.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/develop/src/types/common.ts#L50)
+Defined in: [src/types/common.ts:51](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L51)
 
 Additional error details (varies by error type)

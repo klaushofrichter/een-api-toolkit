@@ -78,7 +78,7 @@ export async function getCurrentUser(): Promise<Result<UserProfile>> {
  * to navigate to subsequent pages.
  *
  * For more details, see the
- * [EEN API Documentation](https://developer.eagleeyenetworks.com/reference/listusers).
+ * [EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getusers).
  *
  * @param params - Optional pagination and filtering parameters
  * @returns A Result containing a paginated list of users or an error
