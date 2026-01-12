@@ -31,6 +31,12 @@ const authStore = useAuthStore()
 // Store current HLS URL for Safari retry
 const currentHlsUrl = ref<string | null>(null)
 
+// Loading timeout configuration (in milliseconds)
+const VIDEO_LOADING_TIMEOUT_MS = 60000
+
+// Loading timeout state
+const loadingTimeoutId = ref<ReturnType<typeof setTimeout> | null>(null)
+
 function getSelectedTimePosition(): string {
   if (!mediaInterval.value) return ''
   try {
@@ -116,7 +122,28 @@ function destroyHls() {
   }
 }
 
+function clearLoadingTimeout() {
+  if (loadingTimeoutId.value) {
+    clearTimeout(loadingTimeoutId.value)
+    loadingTimeoutId.value = null
+  }
+}
+
+function startLoadingTimeout() {
+  clearLoadingTimeout()
+  loadingTimeoutId.value = setTimeout(() => {
+    if (!isMounted.value) return
+    error.value = 'Video loading timed out after 60 seconds. The video may be unavailable or your connection may be slow. Try selecting a different time or refreshing the page.'
+    destroyHls()
+    if (videoRef.value) {
+      videoRef.value.src = ''
+      videoRef.value.load()
+    }
+  }, VIDEO_LOADING_TIMEOUT_MS)
+}
+
 function clearVideoState() {
+  clearLoadingTimeout()
   destroyHls()
   // Clear video element src to prevent memory leaks
   if (videoRef.value) {
@@ -144,6 +171,9 @@ async function initHlsPlayback(hlsUrl: string) {
   destroyHls()
   currentHlsUrl.value = hlsUrl
 
+  // Start loading timeout - will be cleared when video starts playing
+  startLoadingTimeout()
+
   if (Hls.isSupported()) {
     const hls = new Hls({
       enableWorker: true,
@@ -167,6 +197,8 @@ async function initHlsPlayback(hlsUrl: string) {
     hls.attachMedia(videoRef.value)
 
     hls.on(Hls.Events.MANIFEST_PARSED, () => {
+      // Video manifest loaded successfully - clear loading timeout
+      clearLoadingTimeout()
       videoRef.value?.play().catch(() => {
         // Autoplay blocked - user needs to click play
       })
@@ -174,6 +206,8 @@ async function initHlsPlayback(hlsUrl: string) {
 
     hls.on(Hls.Events.ERROR, (_event, data) => {
       if (data.fatal) {
+        // Clear loading timeout on fatal errors
+        clearLoadingTimeout()
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
             // Check if this might be an auth error (401/403)
@@ -183,11 +217,15 @@ async function initHlsPlayback(hlsUrl: string) {
             } else {
               error.value = 'Network error loading video. Attempting to recover...'
               hls.startLoad()
+              // Restart timeout for recovery attempt
+              startLoadingTimeout()
             }
             break
           case Hls.ErrorTypes.MEDIA_ERROR:
             error.value = 'Media error encountered. Attempting to recover...'
             hls.recoverMediaError()
+            // Restart timeout for recovery attempt
+            startLoadingTimeout()
             break
           default:
             error.value = 'Fatal error loading video. Try selecting a different time or camera.'
@@ -205,9 +243,17 @@ async function initHlsPlayback(hlsUrl: string) {
     // but if the session expires, we need to handle the error and retry.
     const video = videoRef.value
 
+    // Clear loading timeout when video starts playing
+    video.onloadeddata = () => {
+      clearLoadingTimeout()
+    }
+
     // Handle errors for Safari native HLS (including token expiration)
     const handleSafariError = async () => {
       if (!isMounted.value) return
+
+      // Clear loading timeout on error
+      clearLoadingTimeout()
 
       // Check if this might be an auth-related error
       if (!authStore.isAuthenticated) {
@@ -298,6 +344,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   isMounted.value = false
+  clearLoadingTimeout()
   destroyHls()
 })
 </script>
