@@ -157,8 +157,7 @@ examples/vue-media/e2e/.auth-state.json
 .DS_Store
 
 # Generated presentation files
-PRESENTATION.md
-PRESENTATION.html
-presentation.md
+presentation.*
+PRESENTATION.*
 report.md
 *.pptx
