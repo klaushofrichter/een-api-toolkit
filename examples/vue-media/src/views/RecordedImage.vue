@@ -4,6 +4,7 @@ import { getCameras, getRecordedImage } from 'een-api-toolkit'
 import type { Camera, GetRecordedImageParams } from 'een-api-toolkit'
 import { useSelectedCamera } from '../composables/useSelectedCamera'
 import { useSelectedDateTime } from '../composables/useSelectedDateTime'
+import { toApiTimestamp, formatTimestampLocale, formatTimestampUtc } from '../utils/timestamp'
 
 const cameras = ref<Camera[]>([])
 const { selectedCameraId, setSelectedCamera } = useSelectedCamera()
@@ -33,59 +34,6 @@ const isMounted = ref(true)
 
 // Track current request to handle race conditions
 let currentRequestId = 0
-
-/**
- * Convert a datetime-local input value to ISO 8601 format with timezone offset.
- * The EEN API requires format like: 2025-12-30T07:57:37.000+00:00
- */
-function toApiTimestamp(dateTimeLocalValue: string): string {
-  const date = new Date(dateTimeLocalValue)
-
-  const offsetMinutes = date.getTimezoneOffset()
-  const offsetSign = offsetMinutes <= 0 ? '+' : '-'
-  const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(2, '0')
-  const offsetMins = String(Math.abs(offsetMinutes) % 60).padStart(2, '0')
-  const offset = `${offsetSign}${offsetHours}:${offsetMins}`
-
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  const seconds = String(date.getSeconds()).padStart(2, '0')
-
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000${offset}`
-}
-
-function formatTimestamp(timestamp: string | null): string {
-  if (!timestamp) return 'N/A'
-  try {
-    return new Date(timestamp).toLocaleString(undefined, {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
-  } catch {
-    return timestamp
-  }
-}
-
-/**
- * Format timestamp in EEN API format: YYYY-MM-DDTHH:mm:ss.sss+00:00
- * This is the format used by the EEN API /media/recordedImage.jpeg endpoint
- */
-function formatTimestampUtc(timestamp: string | null): string {
-  if (!timestamp) return 'N/A'
-  try {
-    // Convert to ISO string and replace 'Z' with '+00:00' for EEN API format
-    return new Date(timestamp).toISOString().replace('Z', '+00:00')
-  } catch {
-    return timestamp
-  }
-}
 
 /**
  * Get image dimensions from a base64 image string
@@ -404,7 +352,7 @@ onUnmounted(() => {
             data-testid="recorded-image"
           />
           <div v-if="imageTimestamp" class="timestamp" data-testid="timestamp">
-            <small>Preview Image Timestamp: {{ formatTimestamp(imageTimestamp) }}<span v-if="imageResolution"> - {{ imageResolution }}</span></small>
+            <small>Preview Image Timestamp: {{ formatTimestampLocale(imageTimestamp) }}<span v-if="imageResolution"> - {{ imageResolution }}</span></small>
           </div>
         </div>
 
@@ -435,7 +383,7 @@ onUnmounted(() => {
             data-testid="main-image"
           />
           <div v-if="mainImageTimestamp" class="timestamp">
-            <small>Main Image Timestamp: {{ formatTimestamp(mainImageTimestamp) }}<span v-if="mainImageResolution"> - {{ mainImageResolution }}</span></small>
+            <small>Main Image Timestamp: {{ formatTimestampLocale(mainImageTimestamp) }}<span v-if="mainImageResolution"> - {{ mainImageResolution }}</span></small>
           </div>
         </div>
       </div>

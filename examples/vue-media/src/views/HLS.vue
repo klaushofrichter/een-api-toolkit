@@ -4,6 +4,7 @@ import { getCameras, listMedia, initMediaSession, useAuthStore } from 'een-api-t
 import type { Camera, MediaInterval } from 'een-api-toolkit'
 import { useSelectedCamera } from '../composables/useSelectedCamera'
 import { useSelectedDateTime } from '../composables/useSelectedDateTime'
+import { toApiTimestamp, formatTimestampDisplay, formatDuration, formatTimeDiff } from '../utils/timestamp'
 import Hls from 'hls.js'
 
 const cameras = ref<Camera[]>([])
@@ -24,78 +25,8 @@ const mediaSessionInitialized = ref(false)
 // Track component lifecycle
 const isMounted = ref(true)
 
-/**
- * Convert datetime-local to API timestamp format
- */
-function toApiTimestamp(dateTimeLocalValue: string): string {
-  const date = new Date(dateTimeLocalValue)
-  const offsetMinutes = date.getTimezoneOffset()
-  const offsetSign = offsetMinutes <= 0 ? '+' : '-'
-  const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(2, '0')
-  const offsetMins = String(Math.abs(offsetMinutes) % 60).padStart(2, '0')
-  const offset = `${offsetSign}${offsetHours}:${offsetMins}`
-
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  const seconds = String(date.getSeconds()).padStart(2, '0')
-
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000${offset}`
-}
-
-function formatTimestamp(timestamp: string | null): string {
-  if (!timestamp) return 'N/A'
-  try {
-    const date = new Date(timestamp)
-    const year = date.getFullYear()
-    const month = String(date.getMonth() + 1).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    let hours = date.getHours()
-    const ampm = hours >= 12 ? 'PM' : 'AM'
-    hours = hours % 12
-    if (hours === 0) hours = 12
-    const hoursStr = String(hours).padStart(2, '0')
-    const minutes = String(date.getMinutes()).padStart(2, '0')
-    const seconds = String(date.getSeconds()).padStart(2, '0')
-    return `${year}-${month}-${day} ${hoursStr}:${minutes}:${seconds} ${ampm}`
-  } catch {
-    return timestamp
-  }
-}
-
-function formatDuration(startTimestamp: string | null, endTimestamp: string | null): string {
-  if (!startTimestamp || !endTimestamp) return 'N/A'
-  try {
-    const start = new Date(startTimestamp).getTime()
-    const end = new Date(endTimestamp).getTime()
-    const durationMs = end - start
-    const totalSeconds = Math.floor(durationMs / 1000)
-    const minutes = Math.floor(totalSeconds / 60)
-    const seconds = totalSeconds % 60
-    const minWord = minutes === 1 ? 'minute' : 'minutes'
-    const secWord = seconds === 1 ? 'second' : 'seconds'
-    if (minutes === 0) {
-      return `${seconds} ${secWord}`
-    }
-    return `${minutes} ${minWord} and ${seconds} ${secWord}`
-  } catch {
-    return 'N/A'
-  }
-}
-
-function formatTimeDiff(diffMs: number): string {
-  const totalSeconds = Math.floor(Math.abs(diffMs) / 1000)
-  const minutes = Math.floor(totalSeconds / 60)
-  const seconds = totalSeconds % 60
-  const minWord = minutes === 1 ? 'minute' : 'minutes'
-  const secWord = seconds === 1 ? 'second' : 'seconds'
-  if (minutes === 0) {
-    return `${seconds} ${secWord}`
-  }
-  return `${minutes} ${minWord} and ${seconds} ${secWord}`
-}
+// Get auth store for HLS.js requests
+const authStore = useAuthStore()
 
 function getSelectedTimePosition(): string {
   if (!mediaInterval.value) return ''
@@ -136,9 +67,12 @@ async function loadCameras() {
   // Initialize media session (required for video URLs)
   if (!mediaSessionInitialized.value) {
     const sessionResult = await initMediaSession()
-    if (!sessionResult.error) {
-      mediaSessionInitialized.value = true
+    if (sessionResult.error) {
+      error.value = `Failed to initialize media session: ${sessionResult.error.message}`
+      loading.value = false
+      return
     }
+    mediaSessionInitialized.value = true
   }
 
   const result = await getCameras()
@@ -187,13 +121,13 @@ async function initHlsPlayback(hlsUrl: string) {
   destroyHls()
 
   if (Hls.isSupported()) {
-    const authStore = useAuthStore()
-    const token = authStore.token
-
     const hls = new Hls({
       enableWorker: true,
       lowLatencyMode: false,
       xhrSetup: (xhr: XMLHttpRequest) => {
+        // Access token directly from authStore to get fresh token on each request
+        // This prevents stale token issues if the token is refreshed during playback
+        const token = authStore.token
         if (token) {
           xhr.setRequestHeader('Authorization', `Bearer ${token}`)
         }
@@ -326,6 +260,7 @@ onUnmounted(() => {
           :value="selectedCameraId"
           @change="handleCameraChange"
           data-testid="camera-select"
+          aria-label="Select a camera to view HLS video"
         >
           <option v-for="camera in cameras" :key="camera.id" :value="camera.id">
             {{ camera.name || camera.id }}
@@ -341,10 +276,31 @@ onUnmounted(() => {
           step="1"
           v-model="selectedDateTime"
           data-testid="datetime-input"
+          aria-label="Select date and time for HLS video"
         />
-        <button @click="fetchVideo" :disabled="loadingVideo" data-testid="go-button">Go</button>
-        <button @click="resetToNow" data-testid="now-button">Now</button>
-        <button v-if="mediaInterval" @click="setToClipTime" data-testid="clip-time-button">Clip Time</button>
+        <button
+          @click="fetchVideo"
+          :disabled="loadingVideo"
+          data-testid="go-button"
+          aria-label="Load video from selected time"
+        >
+          Go
+        </button>
+        <button
+          @click="resetToNow"
+          data-testid="now-button"
+          aria-label="Reset to current time"
+        >
+          Now
+        </button>
+        <button
+          v-if="mediaInterval"
+          @click="setToClipTime"
+          data-testid="clip-time-button"
+          aria-label="Set time to clip start"
+        >
+          Clip Time
+        </button>
       </div>
 
       <div v-if="error" class="error-banner">
@@ -363,6 +319,7 @@ onUnmounted(() => {
           playsinline
           class="video-display"
           data-testid="hls-video"
+          aria-label="HLS video player"
         >
           Your browser does not support video playback.
         </video>
@@ -374,7 +331,7 @@ onUnmounted(() => {
 
       <div v-if="mediaInterval" class="timestamp" data-testid="timestamp">
         <small>
-          {{ formatTimestamp(mediaInterval.startTimestamp) }} - {{ formatTimestamp(mediaInterval.endTimestamp) }}
+          {{ formatTimestampDisplay(mediaInterval.startTimestamp) }} - {{ formatTimestampDisplay(mediaInterval.endTimestamp) }}
           ({{ formatDuration(mediaInterval.startTimestamp, mediaInterval.endTimestamp) }})
         </small>
         <br />
@@ -487,11 +444,6 @@ h2 {
 .time-position {
   color: #888;
   font-style: italic;
-}
-
-.utc-timestamp {
-  font-family: monospace;
-  color: #888;
 }
 
 .error {

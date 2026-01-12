@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { getCameras, getLiveImage } from 'een-api-toolkit'
 import type { Camera } from 'een-api-toolkit'
 import { useSelectedCamera } from '../composables/useSelectedCamera'
+import { formatTimestampLocale, formatTimestampUtc } from '../utils/timestamp'
 
 const cameras = ref<Camera[]>([])
 const { selectedCameraId, setSelectedCamera } = useSelectedCamera()
@@ -143,36 +144,6 @@ function toggleAutoRefresh() {
   }
 }
 
-function formatTimestamp(timestamp: string | null): string {
-  if (!timestamp) return 'N/A'
-  try {
-    return new Date(timestamp).toLocaleString(undefined, {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
-    })
-  } catch {
-    return timestamp
-  }
-}
-
-/**
- * Format timestamp in EEN API format: YYYY-MM-DDTHH:mm:ss.sss+00:00
- * This is the format used by the EEN API /media/liveImage.jpeg endpoint
- */
-function formatTimestampUtc(timestamp: string | null): string {
-  if (!timestamp) return 'N/A'
-  try {
-    // Convert to ISO string and replace 'Z' with '+00:00' for EEN API format
-    return new Date(timestamp).toISOString().replace('Z', '+00:00')
-  } catch {
-    return timestamp
-  }
-}
-
 onMounted(() => {
   loadCameras()
   startAutoRefresh()
@@ -248,7 +219,7 @@ onUnmounted(() => {
       </div>
 
       <div v-if="imageTimestamp" class="timestamp" data-testid="timestamp">
-        <small>Timestamp: {{ formatTimestamp(imageTimestamp) }}</small>
+        <small>Timestamp: {{ formatTimestampLocale(imageTimestamp) }}</small>
         <br />
         <small data-testid="utc-timestamp">Timestamp for API (UTC): <span class="utc-timestamp">{{ formatTimestampUtc(imageTimestamp) }}</span></small>
       </div>
