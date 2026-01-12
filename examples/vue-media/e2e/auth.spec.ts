@@ -201,7 +201,7 @@ test.describe('Vue Media Example - Auth', () => {
     await page.click('[data-testid="nav-live"]')
     await page.waitForURL('/live')
 
-    await expect(page.getByRole('heading', { name: 'Live Camera View (Preview)' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Live Camera Image (preview)' })).toBeVisible()
 
     // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
@@ -243,7 +243,7 @@ test.describe('Vue Media Example - Auth', () => {
     await page.click('[data-testid="nav-recorded"]')
     await page.waitForURL('/recorded')
 
-    await expect(page.getByRole('heading', { name: 'Recorded Images (Preview)' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Recorded Image (Preview and Main)' })).toBeVisible()
 
     // Wait for cameras to load
     await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
@@ -318,9 +318,114 @@ test.describe('Vue Media Example - Auth', () => {
       const timeDiffMs = Math.abs(nowTime.getTime() - selectedTime.getTime())
       expect(timeDiffMs).toBeLessThan(2 * 60 * 1000) // 2 minutes tolerance
 
+      // Verify UTC timestamp is visible and in valid EEN API format
+      const utcTimestamp = page.getByTestId('utc-timestamp')
+      await expect(utcTimestamp).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+      const utcText = await utcTimestamp.textContent()
+      expect(utcText).toContain('Timestamp for API (UTC):')
+
+      // Extract the timestamp value and verify EEN API format: YYYY-MM-DDTHH:mm:ss.sss+00:00
+      const apiTimestampMatch = utcText?.match(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}\+00:00/)
+      expect(apiTimestampMatch).not.toBeNull()
+
       console.log('Now button correctly reset datetime to current time')
+      console.log('UTC timestamp visible and valid:', apiTimestampMatch?.[0])
     } else {
       console.log('No cameras in account - skipping Now button test')
+    }
+  })
+
+  test('datetime selection persists between recorded and video pages', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-recorded')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    // Navigate to recorded page
+    await page.click('[data-testid="nav-recorded"]')
+    await page.waitForURL('/recorded')
+
+    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
+      timeout: TIMEOUTS.MEDIA_LOAD
+    })
+
+    const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
+    if (hasCameras) {
+      const datetimeInput = page.getByTestId('datetime-input')
+      await expect(datetimeInput).toBeVisible()
+
+      // Set a specific datetime (2 hours ago to ensure it's different from default)
+      const specificTime = new Date(Date.now() - 2 * 60 * 60 * 1000)
+      const specificTimeStr = specificTime.toISOString().slice(0, 19) // Format: YYYY-MM-DDTHH:mm:ss
+      await datetimeInput.fill(specificTimeStr)
+
+      // Verify the input has the specific time
+      const valueOnRecorded = await datetimeInput.inputValue()
+      expect(valueOnRecorded).toContain(specificTimeStr.slice(0, 16)) // Check date and time portion
+
+      // Navigate to HLS video page
+      await page.click('[data-testid="nav-hls"]')
+      await page.waitForURL('/hls')
+
+      await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
+        timeout: TIMEOUTS.MEDIA_LOAD
+      })
+
+      // Verify the datetime is persisted on HLS page
+      const hlsDatetimeInput = page.getByTestId('datetime-input')
+      await expect(hlsDatetimeInput).toBeVisible()
+
+      const valueOnHls = await hlsDatetimeInput.inputValue()
+      expect(valueOnHls).toContain(specificTimeStr.slice(0, 16)) // Should match the time set on recorded page
+
+      console.log('Datetime persistence verified: recorded →', valueOnRecorded, '| hls →', valueOnHls)
+    } else {
+      console.log('No cameras in account - skipping datetime persistence test')
+    }
+  })
+
+  test('can view HLS video after login', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-hls')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    await page.click('[data-testid="nav-hls"]')
+    await page.waitForURL('/hls')
+
+    await expect(page.getByRole('heading', { name: 'HLS Video Streaming (Main)' })).toBeVisible()
+
+    // Wait for cameras to load
+    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
+      timeout: TIMEOUTS.MEDIA_LOAD
+    })
+  })
+
+  test('HLS page shows controls when cameras available', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.getByTestId('nav-hls')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    await page.click('[data-testid="nav-hls"]')
+    await page.waitForURL('/hls')
+
+    await page.waitForSelector('[data-testid="camera-select"], .no-cameras', {
+      timeout: TIMEOUTS.MEDIA_LOAD
+    })
+
+    const hasCameras = await page.getByTestId('camera-select').isVisible().catch(() => false)
+    if (hasCameras) {
+      await expect(page.getByTestId('datetime-input')).toBeVisible()
+      await expect(page.getByTestId('go-button')).toBeVisible()
+      await expect(page.getByTestId('now-button')).toBeVisible()
+      console.log('HLS video controls visible')
+    } else {
+      console.log('No cameras in account - skipping camera-specific checks')
     }
   })
 

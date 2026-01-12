@@ -5,6 +5,7 @@ import Login from '../views/Login.vue'
 import Callback from '../views/Callback.vue'
 import LiveCamera from '../views/LiveCamera.vue'
 import RecordedImage from '../views/RecordedImage.vue'
+import HLS from '../views/HLS.vue'
 import Logout from '../views/Logout.vue'
 
 const router = createRouter({
@@ -44,6 +45,12 @@ const router = createRouter({
       path: '/recorded',
       name: 'recorded',
       component: RecordedImage,
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/hls',
+      name: 'hls',
+      component: HLS,
       meta: { requiresAuth: true }
     },
     {

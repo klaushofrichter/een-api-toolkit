@@ -17,8 +17,9 @@ onMounted(() => {
       <nav>
         <router-link to="/" data-testid="nav-home">Home</router-link>
         <router-link v-if="!authStore.isAuthenticated" to="/login" data-testid="nav-login">Login</router-link>
-        <router-link v-if="authStore.isAuthenticated" to="/live" data-testid="nav-live">Live Camera</router-link>
-        <router-link v-if="authStore.isAuthenticated" to="/recorded" data-testid="nav-recorded">Recorded</router-link>
+        <router-link v-if="authStore.isAuthenticated" to="/live" data-testid="nav-live">Live Camera Image</router-link>
+        <router-link v-if="authStore.isAuthenticated" to="/recorded" data-testid="nav-recorded">Recorded Image</router-link>
+        <router-link v-if="authStore.isAuthenticated" to="/hls" data-testid="nav-hls">HLS Video</router-link>
         <router-link v-if="authStore.isAuthenticated" to="/logout" data-testid="nav-logout">Logout</router-link>
       </nav>
     </header>

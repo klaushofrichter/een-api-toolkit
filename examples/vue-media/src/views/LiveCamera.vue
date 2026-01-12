@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from 'vue'
 import { getCameras, getLiveImage } from 'een-api-toolkit'
 import type { Camera } from 'een-api-toolkit'
 import { useSelectedCamera } from '../composables/useSelectedCamera'
+import { formatTimestampLocale, formatTimestampUtc } from '../utils/timestamp'
 
 const cameras = ref<Camera[]>([])
 const { selectedCameraId, setSelectedCamera } = useSelectedCamera()
@@ -143,15 +144,6 @@ function toggleAutoRefresh() {
   }
 }
 
-function formatTimestamp(timestamp: string | null): string {
-  if (!timestamp) return 'N/A'
-  try {
-    return new Date(timestamp).toLocaleString()
-  } catch {
-    return timestamp
-  }
-}
-
 onMounted(() => {
   loadCameras()
   startAutoRefresh()
@@ -165,7 +157,7 @@ onUnmounted(() => {
 
 <template>
   <div class="live-camera">
-    <h2>Live Camera View (Preview)</h2>
+    <h2>Live Camera Image (preview)</h2>
 
     <div v-if="loading" class="loading">
       <p>Loading cameras...</p>
@@ -227,21 +219,12 @@ onUnmounted(() => {
       </div>
 
       <div v-if="imageTimestamp" class="timestamp" data-testid="timestamp">
-        <small>Timestamp: {{ formatTimestamp(imageTimestamp) }}</small>
+        <small>Timestamp: {{ formatTimestampLocale(imageTimestamp) }}</small>
+        <br />
+        <small data-testid="utc-timestamp">Timestamp for API (UTC): <span class="utc-timestamp">{{ formatTimestampUtc(imageTimestamp) }}</span></small>
       </div>
     </div>
 
-    <div class="navigation">
-      <router-link to="/">
-        <button>Back to Home</button>
-      </router-link>
-      <router-link to="/recorded">
-        <button data-testid="view-recorded-button">View Recorded Images</button>
-      </router-link>
-      <router-link to="/logout">
-        <button>Logout</button>
-      </router-link>
-    </div>
   </div>
 </template>
 
@@ -325,11 +308,9 @@ h2 {
   color: #666;
 }
 
-.navigation {
-  margin-top: 30px;
-  display: flex;
-  gap: 10px;
-  justify-content: center;
+.utc-timestamp {
+  font-family: monospace;
+  color: #888;
 }
 
 .error {
