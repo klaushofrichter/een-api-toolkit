@@ -28,6 +28,9 @@ const isMounted = ref(true)
 // Get auth store for HLS.js requests
 const authStore = useAuthStore()
 
+// Store current HLS URL for Safari retry
+const currentHlsUrl = ref<string | null>(null)
+
 function getSelectedTimePosition(): string {
   if (!mediaInterval.value) return ''
   try {
@@ -68,7 +71,15 @@ async function loadCameras() {
   if (!mediaSessionInitialized.value) {
     const sessionResult = await initMediaSession()
     if (sessionResult.error) {
-      error.value = `Failed to initialize media session: ${sessionResult.error.message}`
+      // Provide specific guidance based on error type
+      const errorMsg = sessionResult.error.message.toLowerCase()
+      if (errorMsg.includes('unauthorized') || errorMsg.includes('401')) {
+        error.value = 'Session expired. Please log out and log in again to view videos.'
+      } else if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
+        error.value = 'Network error initializing video session. Please check your connection and try again.'
+      } else {
+        error.value = `Failed to initialize video session: ${sessionResult.error.message}. Try refreshing the page.`
+      }
       loading.value = false
       return
     }
@@ -107,24 +118,42 @@ function destroyHls() {
 
 function clearVideoState() {
   destroyHls()
+  // Clear video element src to prevent memory leaks
+  if (videoRef.value) {
+    videoRef.value.src = ''
+    videoRef.value.load()
+  }
   mediaInterval.value = null
+  currentHlsUrl.value = null
 }
 
 async function initHlsPlayback(hlsUrl: string) {
   await nextTick()
 
   if (!videoRef.value) {
-    error.value = 'Video element not found'
+    error.value = 'Video element not found. Please try refreshing the page.'
+    return
+  }
+
+  // Verify authentication before attempting playback
+  if (!authStore.isAuthenticated) {
+    error.value = 'Authentication required. Please log in again to view video.'
     return
   }
 
   destroyHls()
+  currentHlsUrl.value = hlsUrl
 
   if (Hls.isSupported()) {
     const hls = new Hls({
       enableWorker: true,
       lowLatencyMode: false,
       xhrSetup: (xhr: XMLHttpRequest) => {
+        // Verify authentication is still valid before each request
+        if (!authStore.isAuthenticated) {
+          error.value = 'Session expired. Please log in again to continue watching.'
+          return
+        }
         // Access token directly from authStore to get fresh token on each request
         // This prevents stale token issues if the token is refreshed during playback
         const token = authStore.token
@@ -147,14 +176,21 @@ async function initHlsPlayback(hlsUrl: string) {
       if (data.fatal) {
         switch (data.type) {
           case Hls.ErrorTypes.NETWORK_ERROR:
-            error.value = 'Network error loading video'
-            hls.startLoad()
+            // Check if this might be an auth error (401/403)
+            if (data.response?.code === 401 || data.response?.code === 403) {
+              error.value = 'Authentication failed. Please log in again to continue watching.'
+              destroyHls()
+            } else {
+              error.value = 'Network error loading video. Attempting to recover...'
+              hls.startLoad()
+            }
             break
           case Hls.ErrorTypes.MEDIA_ERROR:
+            error.value = 'Media error encountered. Attempting to recover...'
             hls.recoverMediaError()
             break
           default:
-            error.value = 'Fatal error loading video'
+            error.value = 'Fatal error loading video. Try selecting a different time or camera.'
             destroyHls()
             break
         }
@@ -164,10 +200,42 @@ async function initHlsPlayback(hlsUrl: string) {
     hlsInstance.value = hls
   } else if (videoRef.value.canPlayType('application/vnd.apple.mpegurl')) {
     // Native HLS support (Safari)
-    videoRef.value.src = hlsUrl
-    videoRef.value.play().catch(() => {})
+    // Safari's native HLS doesn't support custom headers for segment requests.
+    // The HLS URL from EEN API includes authentication in the URL itself,
+    // but if the session expires, we need to handle the error and retry.
+    const video = videoRef.value
+
+    // Handle errors for Safari native HLS (including token expiration)
+    const handleSafariError = async () => {
+      if (!isMounted.value) return
+
+      // Check if this might be an auth-related error
+      if (!authStore.isAuthenticated) {
+        error.value = 'Session expired. Please log in again to continue watching.'
+        video.src = ''
+        video.load()
+        return
+      }
+
+      // Try to get a fresh HLS URL by re-fetching the video
+      error.value = 'Video playback error. Attempting to reload...'
+      await fetchVideo()
+    }
+
+    video.onerror = handleSafariError
+
+    // Also handle stalled playback which may indicate token issues
+    video.onstalled = () => {
+      // Only show error if stalled for extended period (handled by browser timeout)
+      console.warn('Video playback stalled - may indicate network or auth issues')
+    }
+
+    video.src = hlsUrl
+    video.play().catch(() => {
+      // Autoplay blocked - user needs to click play
+    })
   } else {
-    error.value = 'HLS playback is not supported in this browser'
+    error.value = 'HLS playback is not supported in this browser. Please use Safari, Chrome, Firefox, or Edge.'
   }
 }
 

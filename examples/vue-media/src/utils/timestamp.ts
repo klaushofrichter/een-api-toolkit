@@ -1,10 +1,52 @@
 /**
  * Shared timestamp utilities for vue-media example
+ *
+ * @remarks
+ * These utilities handle timestamp conversion and formatting for the vue-media example app.
+ * All functions that accept timestamp strings expect ISO 8601 format (e.g., "2025-12-30T07:57:37.000+00:00").
+ *
+ * **Timezone Behavior:**
+ * - `toApiTimestamp`: Converts local datetime-local input to ISO 8601 with the browser's local timezone offset.
+ *   The datetime-local HTML input provides values without timezone info, so we use the browser's timezone.
+ * - `formatTimestampLocale`: Displays timestamps in the browser's locale and timezone.
+ * - `formatTimestampDisplay`: Displays timestamps in local timezone with YYYY-MM-DD HH:mm:ss AM/PM format.
+ * - `formatTimestampUtc`: Converts to UTC for API communication.
+ *
+ * @example
+ * ```typescript
+ * import { toApiTimestamp, formatTimestampDisplay } from '../utils/timestamp'
+ *
+ * // Convert datetime-local input to API format
+ * const apiTs = toApiTimestamp('2025-12-30T07:57:37')
+ * // Returns: "2025-12-30T07:57:37.000-08:00" (if browser is in PST)
+ *
+ * // Format for display
+ * const display = formatTimestampDisplay('2025-12-30T15:57:37.000+00:00')
+ * // Returns: "2025-12-30 07:57:37 AM" (if browser is in PST)
+ * ```
  */
 
 /**
  * Convert a datetime-local input value to EEN API timestamp format.
- * The EEN API requires format like: 2025-12-30T07:57:37.000+00:00
+ *
+ * @remarks
+ * The HTML datetime-local input returns values like "2025-12-30T07:57:37" without timezone info.
+ * This function interprets the value as local time and adds the browser's timezone offset.
+ * The EEN API requires format: YYYY-MM-DDTHH:mm:ss.sss±HH:mm
+ *
+ * **Timezone Note:** The input is parsed as local time using `new Date(string)`.
+ * The output includes the browser's current timezone offset, ensuring the API
+ * receives the correct absolute time regardless of the user's timezone.
+ *
+ * @param dateTimeLocalValue - Value from datetime-local input (e.g., "2025-12-30T07:57:37")
+ * @returns ISO 8601 timestamp with timezone offset (e.g., "2025-12-30T07:57:37.000-08:00")
+ *
+ * @example
+ * ```typescript
+ * const timestamp = toApiTimestamp('2025-12-30T07:57:37')
+ * // In PST (-08:00): "2025-12-30T07:57:37.000-08:00"
+ * // In EST (-05:00): "2025-12-30T07:57:37.000-05:00"
+ * ```
  */
 export function toApiTimestamp(dateTimeLocalValue: string): string {
   const date = new Date(dateTimeLocalValue)
@@ -26,7 +68,20 @@ export function toApiTimestamp(dateTimeLocalValue: string): string {
 }
 
 /**
- * Format timestamp using locale string (browser default format)
+ * Format timestamp using locale string (browser default format).
+ *
+ * @remarks
+ * Uses the browser's locale settings to format the timestamp.
+ * The timestamp is converted to the browser's local timezone for display.
+ *
+ * @param timestamp - ISO 8601 timestamp string or null
+ * @returns Locale-formatted string (e.g., "12/30/2025, 07:57:37 AM" in en-US) or "N/A" if null
+ *
+ * @example
+ * ```typescript
+ * formatTimestampLocale('2025-12-30T15:57:37.000+00:00')
+ * // In en-US, PST: "12/30/2025, 07:57:37 AM"
+ * ```
  */
 export function formatTimestampLocale(timestamp: string | null): string {
   if (!timestamp) return 'N/A'
@@ -45,7 +100,20 @@ export function formatTimestampLocale(timestamp: string | null): string {
 }
 
 /**
- * Format timestamp in YYYY-MM-DD HH:mm:ss AM/PM format
+ * Format timestamp in YYYY-MM-DD HH:mm:ss AM/PM format.
+ *
+ * @remarks
+ * Provides a consistent display format across all locales.
+ * The timestamp is converted to the browser's local timezone.
+ *
+ * @param timestamp - ISO 8601 timestamp string or null
+ * @returns Formatted string (e.g., "2025-12-30 07:57:37 AM") or "N/A" if null
+ *
+ * @example
+ * ```typescript
+ * formatTimestampDisplay('2025-12-30T15:57:37.000+00:00')
+ * // In PST: "2025-12-30 07:57:37 AM"
+ * ```
  */
 export function formatTimestampDisplay(timestamp: string | null): string {
   if (!timestamp) return 'N/A'
@@ -68,7 +136,20 @@ export function formatTimestampDisplay(timestamp: string | null): string {
 }
 
 /**
- * Format timestamp in EEN API format: YYYY-MM-DDTHH:mm:ss.sss+00:00
+ * Format timestamp in EEN API format (UTC).
+ *
+ * @remarks
+ * Converts the timestamp to UTC and formats it in the EEN API expected format.
+ * Useful for displaying the exact timestamp that would be used in API calls.
+ *
+ * @param timestamp - ISO 8601 timestamp string or null
+ * @returns UTC timestamp in EEN format (e.g., "2025-12-30T15:57:37.000+00:00") or "N/A" if null
+ *
+ * @example
+ * ```typescript
+ * formatTimestampUtc('2025-12-30T07:57:37.000-08:00')
+ * // Returns: "2025-12-30T15:57:37.000+00:00"
+ * ```
  */
 export function formatTimestampUtc(timestamp: string | null): string {
   if (!timestamp) return 'N/A'
@@ -80,7 +161,24 @@ export function formatTimestampUtc(timestamp: string | null): string {
 }
 
 /**
- * Format duration between two timestamps in human-readable format
+ * Format duration between two timestamps in human-readable format.
+ *
+ * @remarks
+ * Calculates the difference between two timestamps and formats it as
+ * "X minutes and Y seconds" or just "Y seconds" if under a minute.
+ *
+ * @param startTimestamp - Start time as ISO 8601 string or null
+ * @param endTimestamp - End time as ISO 8601 string or null
+ * @returns Human-readable duration (e.g., "5 minutes and 30 seconds") or "N/A" if invalid
+ *
+ * @example
+ * ```typescript
+ * formatDuration('2025-12-30T07:57:00.000+00:00', '2025-12-30T08:02:30.000+00:00')
+ * // Returns: "5 minutes and 30 seconds"
+ *
+ * formatDuration('2025-12-30T07:57:00.000+00:00', '2025-12-30T07:57:45.000+00:00')
+ * // Returns: "45 seconds"
+ * ```
  */
 export function formatDuration(startTimestamp: string | null, endTimestamp: string | null): string {
   if (!startTimestamp || !endTimestamp) return 'N/A'
@@ -103,7 +201,23 @@ export function formatDuration(startTimestamp: string | null, endTimestamp: stri
 }
 
 /**
- * Format time difference in human-readable format
+ * Format time difference in human-readable format.
+ *
+ * @remarks
+ * Converts a millisecond difference to a human-readable format.
+ * Always uses absolute value, so the result is always positive.
+ *
+ * @param diffMs - Time difference in milliseconds (can be positive or negative)
+ * @returns Human-readable duration (e.g., "5 minutes and 30 seconds")
+ *
+ * @example
+ * ```typescript
+ * formatTimeDiff(330000)  // 5.5 minutes
+ * // Returns: "5 minutes and 30 seconds"
+ *
+ * formatTimeDiff(-45000)  // negative 45 seconds
+ * // Returns: "45 seconds"
+ * ```
  */
 export function formatTimeDiff(diffMs: number): string {
   const totalSeconds = Math.floor(Math.abs(diffMs) / 1000)
