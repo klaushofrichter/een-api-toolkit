@@ -34,6 +34,7 @@ const isMounted = ref(true)
 
 // Track current request to handle race conditions
 let currentRequestId = 0
+let currentMainImageRequestId = 0
 
 /**
  * Get image dimensions from a base64 image string
@@ -127,6 +128,7 @@ function clearMainImageState() {
  * Fetch main image for the given timestamp
  */
 async function fetchMainImage(timestamp: string, deviceId: string) {
+  const requestId = ++currentMainImageRequestId
   loadingMainImage.value = true
   mainImageError.value = null
 
@@ -136,7 +138,10 @@ async function fetchMainImage(timestamp: string, deviceId: string) {
     timestamp__gte: timestamp
   })
 
-  if (!isMounted.value) return
+  // Check if component is still mounted and this is still the current request
+  if (!isMounted.value || requestId !== currentMainImageRequestId) {
+    return
+  }
 
   loadingMainImage.value = false
 

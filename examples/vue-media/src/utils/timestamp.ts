@@ -230,3 +230,34 @@ export function formatTimeDiff(diffMs: number): string {
   }
   return `${minutes} ${minWord} and ${seconds} ${secWord}`
 }
+
+/**
+ * Format a Date to datetime-local input format.
+ *
+ * @remarks
+ * Converts a Date object to the format required by HTML datetime-local inputs.
+ * The output format is YYYY-MM-DDTHH:mm:ss (local time, no timezone info).
+ * This is the inverse of what toApiTimestamp expects as input.
+ *
+ * @param date - Date object to format
+ * @returns Formatted string in datetime-local format (e.g., "2025-12-30T07:57:37")
+ *
+ * @example
+ * ```typescript
+ * const now = new Date()
+ * const formatted = formatDateTimeLocal(now)
+ * // Returns: "2025-12-30T07:57:37" (in local timezone)
+ *
+ * // Use with datetime-local input
+ * document.querySelector('input[type="datetime-local"]').value = formatted
+ * ```
+ */
+export function formatDateTimeLocal(date: Date): string {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  const seconds = String(date.getSeconds()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
+}

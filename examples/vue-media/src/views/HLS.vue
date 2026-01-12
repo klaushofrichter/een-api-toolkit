@@ -14,6 +14,10 @@ const loading = ref(true)
 const loadingVideo = ref(false)
 const error = ref<string | null>(null)
 
+// Error type to differentiate loading errors from playback errors
+type ErrorType = 'loading' | 'playback' | 'auth' | null
+const errorType = ref<ErrorType>(null)
+
 // Video state
 const mediaInterval = ref<MediaInterval | null>(null)
 const videoRef = ref<HTMLVideoElement | null>(null)
@@ -36,6 +40,22 @@ const VIDEO_LOADING_TIMEOUT_MS = 60000
 
 // Loading timeout state
 const loadingTimeoutId = ref<ReturnType<typeof setTimeout> | null>(null)
+
+/**
+ * Set error with type for differentiated display
+ */
+function setError(message: string, type: ErrorType) {
+  error.value = message
+  errorType.value = type
+}
+
+/**
+ * Clear error state
+ */
+function clearError() {
+  error.value = null
+  errorType.value = null
+}
 
 function getSelectedTimePosition(): string {
   if (!mediaInterval.value) return ''
@@ -71,7 +91,7 @@ function setToClipTime() {
 
 async function loadCameras() {
   loading.value = true
-  error.value = null
+  clearError()
 
   // Initialize media session (required for video URLs)
   if (!mediaSessionInitialized.value) {
@@ -80,11 +100,11 @@ async function loadCameras() {
       // Provide specific guidance based on error type
       const errorMsg = sessionResult.error.message.toLowerCase()
       if (errorMsg.includes('unauthorized') || errorMsg.includes('401')) {
-        error.value = 'Session expired. Please log out and log in again to view videos.'
+        setError('Session expired. Please log out and log in again to view videos.', 'auth')
       } else if (errorMsg.includes('network') || errorMsg.includes('fetch')) {
-        error.value = 'Network error initializing video session. Please check your connection and try again.'
+        setError('Network error initializing video session. Please check your connection and try again.', 'loading')
       } else {
-        error.value = `Failed to initialize video session: ${sessionResult.error.message}. Try refreshing the page.`
+        setError(`Failed to initialize video session: ${sessionResult.error.message}. Try refreshing the page.`, 'loading')
       }
       loading.value = false
       return
@@ -97,7 +117,7 @@ async function loadCameras() {
   if (!isMounted.value) return
 
   if (result.error) {
-    error.value = result.error.message
+    setError(result.error.message, 'loading')
     loading.value = false
     return
   }
@@ -133,7 +153,7 @@ function startLoadingTimeout() {
   clearLoadingTimeout()
   loadingTimeoutId.value = setTimeout(() => {
     if (!isMounted.value) return
-    error.value = 'Video loading timed out after 60 seconds. The video may be unavailable or your connection may be slow. Try selecting a different time or refreshing the page.'
+    setError('Video loading timed out after 60 seconds. The video may be unavailable or your connection may be slow. Try selecting a different time or refreshing the page.', 'loading')
     destroyHls()
     if (videoRef.value) {
       videoRef.value.src = ''
@@ -158,13 +178,13 @@ async function initHlsPlayback(hlsUrl: string) {
   await nextTick()
 
   if (!videoRef.value) {
-    error.value = 'Video element not found. Please try refreshing the page.'
+    setError('Video element not found. Please try refreshing the page.', 'loading')
     return
   }
 
   // Verify authentication before attempting playback
   if (!authStore.isAuthenticated) {
-    error.value = 'Authentication required. Please log in again to view video.'
+    setError('Authentication required. Please log in again to view video.', 'auth')
     return
   }
 
@@ -181,7 +201,7 @@ async function initHlsPlayback(hlsUrl: string) {
       xhrSetup: (xhr: XMLHttpRequest) => {
         // Verify authentication is still valid before each request
         if (!authStore.isAuthenticated) {
-          error.value = 'Session expired. Please log in again to continue watching.'
+          setError('Session expired. Please log in again to continue watching.', 'auth')
           return
         }
         // Access token directly from authStore to get fresh token on each request
@@ -209,26 +229,32 @@ async function initHlsPlayback(hlsUrl: string) {
         // Clear loading timeout on fatal errors
         clearLoadingTimeout()
         switch (data.type) {
-          case Hls.ErrorTypes.NETWORK_ERROR:
-            // Check if this might be an auth error (401/403)
-            if (data.response?.code === 401 || data.response?.code === 403) {
-              error.value = 'Authentication failed. Please log in again to continue watching.'
+          case Hls.ErrorTypes.NETWORK_ERROR: {
+            // Type-safe check for HTTP response code in error data
+            // HLS.js may include response info for network errors
+            const response = data.response as { code?: number } | undefined
+            const httpCode = response?.code
+            const isAuthError = httpCode === 401 || httpCode === 403
+
+            if (isAuthError) {
+              setError('Authentication failed. Please log in again to continue watching.', 'auth')
               destroyHls()
             } else {
-              error.value = 'Network error loading video. Attempting to recover...'
+              setError('Network error loading video. Attempting to recover...', 'playback')
               hls.startLoad()
               // Restart timeout for recovery attempt
               startLoadingTimeout()
             }
             break
+          }
           case Hls.ErrorTypes.MEDIA_ERROR:
-            error.value = 'Media error encountered. Attempting to recover...'
+            setError('Media error encountered. Attempting to recover...', 'playback')
             hls.recoverMediaError()
             // Restart timeout for recovery attempt
             startLoadingTimeout()
             break
           default:
-            error.value = 'Fatal error loading video. Try selecting a different time or camera.'
+            setError('Fatal error loading video. Try selecting a different time or camera.', 'playback')
             destroyHls()
             break
         }
@@ -257,14 +283,14 @@ async function initHlsPlayback(hlsUrl: string) {
 
       // Check if this might be an auth-related error
       if (!authStore.isAuthenticated) {
-        error.value = 'Session expired. Please log in again to continue watching.'
+        setError('Session expired. Please log in again to continue watching.', 'auth')
         video.src = ''
         video.load()
         return
       }
 
       // Try to get a fresh HLS URL by re-fetching the video
-      error.value = 'Video playback error. Attempting to reload...'
+      setError('Video playback error. Attempting to reload...', 'playback')
       await fetchVideo()
     }
 
@@ -272,8 +298,11 @@ async function initHlsPlayback(hlsUrl: string) {
 
     // Also handle stalled playback which may indicate token issues
     video.onstalled = () => {
-      // Only show error if stalled for extended period (handled by browser timeout)
-      console.warn('Video playback stalled - may indicate network or auth issues')
+      // Only log warning, don't set error - browser handles stall recovery
+      // Using debug logging pattern as suggested by code review
+      if (import.meta.env.DEV) {
+        console.warn('Video playback stalled - may indicate network or auth issues')
+      }
     }
 
     video.src = hlsUrl
@@ -281,7 +310,7 @@ async function initHlsPlayback(hlsUrl: string) {
       // Autoplay blocked - user needs to click play
     })
   } else {
-    error.value = 'HLS playback is not supported in this browser. Please use Safari, Chrome, Firefox, or Edge.'
+    setError('HLS playback is not supported in this browser. Please use Safari, Chrome, Firefox, or Edge.', 'loading')
   }
 }
 
@@ -290,7 +319,7 @@ async function fetchVideo() {
 
   clearVideoState()
   loadingVideo.value = true
-  error.value = null
+  clearError()
 
   const timestamp = toApiTimestamp(selectedDateTime.value)
 
@@ -307,7 +336,7 @@ async function fetchVideo() {
   loadingVideo.value = false
 
   if (result.error) {
-    error.value = result.error.message
+    setError(result.error.message, 'loading')
     return
   }
 
@@ -318,10 +347,10 @@ async function fetchVideo() {
     if (interval.hlsUrl) {
       await initHlsPlayback(interval.hlsUrl)
     } else {
-      error.value = 'HLS URL not available for this recording'
+      setError('HLS URL not available for this recording', 'loading')
     }
   } else {
-    error.value = 'No video recordings found for the selected time'
+    setError('No video recordings found for the selected time', 'loading')
   }
 }
 
@@ -418,8 +447,11 @@ onUnmounted(() => {
         </button>
       </div>
 
-      <div v-if="error" class="error-banner">
+      <div v-if="error" :class="['error-banner', `error-${errorType}`]">
         <p class="error">{{ error }}</p>
+        <button v-if="errorType === 'playback'" @click="fetchVideo" class="retry-button">
+          Retry
+        </button>
       </div>
 
       <div class="video-container" data-testid="video-container">
@@ -525,6 +557,52 @@ h2 {
 
 .error-banner {
   margin-bottom: 15px;
+  padding: 12px;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.error-banner.error-loading {
+  background-color: #fff3cd;
+  border: 1px solid #ffc107;
+}
+
+.error-banner.error-loading .error {
+  color: #856404;
+}
+
+.error-banner.error-playback {
+  background-color: #f8d7da;
+  border: 1px solid #f5c6cb;
+}
+
+.error-banner.error-playback .error {
+  color: #721c24;
+}
+
+.error-banner.error-auth {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+}
+
+.error-banner.error-auth .error {
+  color: #155724;
+}
+
+.retry-button {
+  padding: 6px 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.retry-button:hover {
+  background-color: #0056b3;
 }
 
 .video-container {
