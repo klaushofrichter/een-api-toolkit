@@ -174,8 +174,7 @@ if (data?.imageData) {
 |----------|--------|-------|
 | Grid of camera thumbnails (20+) | `getLiveImage()` | Best for large grids, handles auth internally |
 | Periodic refresh (e.g., every 3s) | `getLiveImage()` | Call repeatedly in a timer |
-| Camera grid (<20 cameras) | `multipartUrl` | Automatic updates, low frequency polling recommended (e.g., every 3s). Requires `initMediaSession()` first |
-| Single continuous MJPEG stream | `multipartUrl` | Requires `initMediaSession()` first, use URL unmodified |
+| Camera grid (<20 cameras) | `multipartUrl` | Automatic updates via continuous MJPEG stream. Requires `initMediaSession()` first |
 | One-time snapshot | `getLiveImage()` | Simple and self-contained |
 | Full-quality live video | Live Video SDK | For modal/fullscreen video playback |
 
@@ -186,7 +185,7 @@ if (data?.imageData) {
 const { data } = await getLiveImage({ deviceId })
 img.src = data.imageData
 
-// For continuous MJPEG stream (grids <20 cameras, auto-updates, poll every 3s recommended)
+// For continuous MJPEG stream (grids <20 cameras, auto-updates)
 await initMediaSession()
 const { data: feeds } = await listFeeds({ deviceId, include: ['multipartUrl'] })
 img.src = feeds.results.find(f => f.type === 'preview')?.multipartUrl
