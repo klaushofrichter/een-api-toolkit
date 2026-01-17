@@ -46,7 +46,16 @@ export type {
   FeedMediaType,
   FeedIncludeOption,
   ListFeedsParams,
-  ListFeedsResult
+  ListFeedsResult,
+  Event,
+  EventData,
+  EventType,
+  EventFieldValues,
+  ActorType,
+  ListEventsParams,
+  GetEventParams,
+  ListEventTypesParams,
+  ListEventFieldValuesParams
 } from './types'
 
 // Type helpers
@@ -97,3 +106,11 @@ export {
 export {
   listFeeds
 } from './feeds'
+
+// Events - Plain functions
+export {
+  listEvents,
+  getEvent,
+  listEventTypes,
+  listEventFieldValues
+} from './events'

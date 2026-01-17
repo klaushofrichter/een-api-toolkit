@@ -34,8 +34,9 @@ function generateHeader(): string {
 
 > **Working Examples:** The installed package includes complete Vue 3 example applications
 > at \`./node_modules/een-api-toolkit/examples/\`. These demonstrate OAuth authentication,
-> user management, camera listing, live/recorded media, and video feeds. For Live Main
-> Video streaming, see \`./node_modules/een-api-toolkit/examples/vue-feeds/src/views/Feeds.vue\`.
+> user management, camera listing, live/recorded media, video feeds, and events.
+> For Live Main Video streaming, see \`vue-feeds/src/views/Feeds.vue\`.
+> For Events API with thumbnails, see \`vue-events/src/components/EventsModal.vue\`.
 
 ---
 
@@ -278,6 +279,15 @@ function generateQuickReference(): string {
 | \`getRecordedImage(params)\` | Get recorded image from history | \`Result<RecordedImageResult>\` |
 | \`getMediaSession()\` | Get media session URL for cookies | \`Result<MediaSessionResponse>\` |
 | \`initMediaSession()\` | Initialize media session (sets cookie) | \`Result<MediaSessionResult>\` |
+
+### Events Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| \`listEvents(params)\` | List events for a device with filters | \`Result<PaginatedResult<Event>>\` |
+| \`getEvent(eventId, params?)\` | Get a specific event by ID | \`Result<Event>\` |
+| \`listEventTypes(params?)\` | List all available event types | \`Result<PaginatedResult<EventType>>\` |
+| \`listEventFieldValues(params)\` | Get available event types for a device | \`Result<EventFieldValues>\` |
 
 ---
 
@@ -773,6 +783,58 @@ interface ListFeedsResult {
   results: Feed[]
   nextPageToken?: string
   totalSize?: number
+}
+\`\`\`
+
+### Event Types
+
+\`\`\`typescript
+type ActorType = 'bridge' | 'camera' | 'speaker' | 'account' | 'user' | 'layout' | 'job' | 'measurement' | 'sensor' | 'gateway'
+
+interface Event {
+  id: string
+  startTimestamp: string       // ISO 8601
+  endTimestamp?: string | null
+  span: boolean
+  accountId: string
+  actorId: string
+  actorAccountId: string
+  actorType: ActorType
+  creatorId: string
+  type: string                 // e.g., 'een.motionDetectionEvent.v1'
+  dataSchemas: string[]
+  data: EventData[]
+}
+
+interface EventData {
+  type: string
+  creatorId: string
+  [key: string]: unknown       // Event data is polymorphic
+}
+
+interface EventType {
+  type: string                 // e.g., 'een.motionDetectionEvent.v1'
+  name: string                 // Human-readable name
+  description: string
+}
+
+interface EventFieldValues {
+  type: string[]               // Available event types for the actor
+}
+
+interface ListEventsParams {
+  actor: string                     // Required: 'camera:{id}' format
+  type__in: string[]                // Required: event types to fetch
+  startTimestamp__gte: string       // Required: ISO 8601 timestamp
+  endTimestamp__lte?: string        // Optional: filter by end time
+  pageSize?: number
+  pageToken?: string
+  sort?: '+startTimestamp' | '-startTimestamp'
+  include?: string[]                // e.g., ['data.een.fullFrameImageUrl.v1']
+}
+
+interface ListEventFieldValuesParams {
+  actor: string                     // Required: 'camera:{id}' format
 }
 \`\`\`
 

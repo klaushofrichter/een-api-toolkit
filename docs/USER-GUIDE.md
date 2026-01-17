@@ -10,6 +10,7 @@ This guide covers everything you need to use een-api-toolkit in your Vue 3 appli
 - [Configuration](#configuration)
 - [Authentication Flow](#authentication-flow)
 - [Using the API](#using-the-api)
+  - [Events API](#events-api)
   - [Live Video Streaming](#live-video-streaming)
 - [Error Handling](#error-handling)
 - [Building an App from Scratch](#building-an-app-from-scratch)
@@ -591,6 +592,134 @@ const timestamp = toApiTimestamp(new Date())
 ```
 
 **Note on milliseconds:** The milliseconds component (`.000`) is included for API format consistency. For `getRecordedImage` queries, the API returns the nearest available image to the requested timestamp, so sub-second precision is typically not critical.
+
+### Events API
+
+The Events API allows you to query events (motion detection, analytics, etc.) from cameras and other devices.
+
+```typescript
+import { listEvents, listEventTypes, listEventFieldValues, getRecordedImage } from 'een-api-toolkit'
+
+// Step 1: Get available event types for a camera
+const { data: fieldValues, error } = await listEventFieldValues({
+  actor: `camera:${cameraId}`
+})
+
+if (fieldValues) {
+  console.log('Available event types:', fieldValues.type)
+  // e.g., ['een.motionDetectionEvent.v1', 'een.personDetectionEvent.v1']
+}
+
+// Step 2: List events with filters
+const { data: eventsResponse } = await listEvents({
+  actor: `camera:${cameraId}`,
+  type__in: fieldValues?.type || [],  // Event types to fetch
+  startTimestamp__gte: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),  // Last 24 hours
+  endTimestamp__lte: new Date().toISOString(),
+  pageSize: 20,
+  sort: '-startTimestamp',  // Newest first
+  include: ['data.een.fullFrameImageUrl.v1']  // Include image URLs in response
+})
+
+if (eventsResponse) {
+  for (const event of eventsResponse.results) {
+    console.log(`Event: ${event.type} at ${event.startTimestamp}`)
+  }
+}
+
+// Step 3: Get event thumbnail using getRecordedImage
+const event = eventsResponse?.results[0]
+if (event) {
+  const { data: image } = await getRecordedImage({
+    deviceId: event.actorId,
+    type: 'preview',
+    timestamp__gte: event.startTimestamp
+  })
+
+  if (image) {
+    imgElement.src = image.imageData  // Base64 data URL
+  }
+}
+```
+
+**Complete Vue Example (Events Modal):**
+
+```vue
+<script setup lang="ts">
+import { ref, watch } from 'vue'
+import { listEvents, listEventFieldValues, getRecordedImage, type Event } from 'een-api-toolkit'
+
+const props = defineProps<{ cameraId: string; isOpen: boolean }>()
+
+const events = ref<Event[]>([])
+const eventImages = ref<Map<string, string>>(new Map())
+const loading = ref(false)
+
+// Fetch events when modal opens, clean up on close
+watch(() => props.isOpen, async (isOpen) => {
+  if (!isOpen) {
+    // Clean up on close to free memory
+    eventImages.value.clear()
+    events.value = []
+    return
+  }
+
+  loading.value = true
+
+  // Get available event types for this camera
+  const { data: fieldValues } = await listEventFieldValues({
+    actor: `camera:${props.cameraId}`
+  })
+
+  if (!fieldValues?.type?.length) {
+    loading.value = false
+    return
+  }
+
+  // Fetch events
+  const { data } = await listEvents({
+    actor: `camera:${props.cameraId}`,
+    type__in: fieldValues.type,
+    startTimestamp__gte: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+    endTimestamp__lte: new Date().toISOString(),
+    pageSize: 20,
+    sort: '-startTimestamp'
+  })
+
+  events.value = data?.results || []
+  loading.value = false
+
+  // Load thumbnails in parallel for better performance
+  await Promise.all(
+    events.value.map(async (event) => {
+      const { data: image } = await getRecordedImage({
+        deviceId: event.actorId,
+        type: 'preview',
+        timestamp__gte: event.startTimestamp
+      })
+      if (image) {
+        eventImages.value.set(event.id, image.imageData)
+      }
+    })
+  )
+}, { immediate: true })
+</script>
+
+<template>
+  <div v-if="isOpen" class="events-modal">
+    <div v-if="loading">Loading events...</div>
+    <div v-else-if="events.length === 0">No events found</div>
+    <div v-else class="events-list">
+      <div v-for="event in events" :key="event.id" class="event-item">
+        <img v-if="eventImages.get(event.id)" :src="eventImages.get(event.id)" />
+        <div>{{ event.type }} - {{ event.startTimestamp }}</div>
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+See the [vue-events example](../examples/vue-events/) for a complete working application with events modal, filtering by event type, and time range selection.
 
 ### Live Video Streaming
 
@@ -1350,6 +1479,12 @@ VITE_DEBUG=true
 
 This logs API requests, token operations, and auth state changes to the console.
 
-## Example Application
+## Example Applications
 
-See the [vue-users example](../examples/vue-users/) for a complete working application demonstrating all features.
+The toolkit includes several example applications demonstrating different features:
+
+- [vue-users](../examples/vue-users/) - User management with pagination and error handling
+- [vue-cameras](../examples/vue-cameras/) - Camera listing with status display
+- [vue-media](../examples/vue-media/) - Live and recorded image playback
+- [vue-feeds](../examples/vue-feeds/) - Live video streaming with preview and main streams
+- [vue-events](../examples/vue-events/) - Events API with filtering, time ranges, and thumbnails

@@ -28,6 +28,15 @@ description: Use this skill when you are requested to create a PR for a feature 
 - Run build to verify compilation:
   - run: `npm run build`
   - if build fails, analyse the failure, report findings, and stop
+- Run E2E tests for all example apps:
+  - find all example app directories with e2e tests: `for dir in examples/*/; do if [ -d "${dir}e2e" ]; then echo "$dir"; fi; done`
+  - for each example app, run: `cd <app-dir> && npx playwright test`
+  - if any E2E tests fail, analyse the failure, report findings, and stop
+  - report total number of E2E tests passed across all example apps
+- Run security review:
+  - invoke the `/security-review` skill to analyze code changes for security vulnerabilities
+  - if any HIGH severity vulnerabilities are found with confidence >= 8, report findings and stop
+  - include security review summary in the PR body
 
 ## 4. Create PR
 - Get version number for the PR body:
@@ -57,3 +66,12 @@ description: Use this skill when you are requested to create a PR for a feature 
   - view the review: `gh pr view <pr-number> --comments` or check the PR review file artifact
   - if the review includes recommendations to address before merging, summarize the recommendations and stop
   - if the review ended without critical recommendations, summarize the overall comments and stop
+
+## 6. Check all PR status checks
+- After code review completes, check all PR status checks (including non-required ones):
+  - run: `gh pr checks <pr-number> --json name,state`
+  - report the status of each check
+  - if any check has state "FAILURE", report which check failed and investigate using:
+    - `gh pr checks <pr-number> --json name,state,link` to get the link to the failed check
+    - review the workflow logs to understand the failure
+  - report any failed checks to the user, even if they are not required for merge

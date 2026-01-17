@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.11**
+**EEN API Toolkit v0.3.13**
 
 ***
 
-# EEN API Toolkit v0.3.11
+# EEN API Toolkit v0.3.13
 
 ## Interfaces
 
@@ -48,6 +48,17 @@
 
 - [EenToolkitConfig](interfaces/EenToolkitConfig.md)
 
+### Events
+
+- [EventData](interfaces/EventData.md)
+- [Event](interfaces/Event.md)
+- [EventType](interfaces/EventType.md)
+- [ListEventsParams](interfaces/ListEventsParams.md)
+- [GetEventParams](interfaces/GetEventParams.md)
+- [ListEventTypesParams](interfaces/ListEventTypesParams.md)
+- [ListEventFieldValuesParams](interfaces/ListEventFieldValuesParams.md)
+- [EventFieldValues](interfaces/EventFieldValues.md)
+
 ### Feeds
 
 - [Feed](interfaces/Feed.md)
@@ -83,6 +94,10 @@
 ### Configuration
 
 - [StorageStrategy](type-aliases/StorageStrategy.md)
+
+### Events
+
+- [ActorType](type-aliases/ActorType.md)
 
 ### Feeds
 
@@ -126,6 +141,13 @@
 ### Configuration
 
 - [getStorageStrategy](functions/getStorageStrategy.md)
+
+### Events
+
+- [listEvents](functions/listEvents.md)
+- [getEvent](functions/getEvent.md)
+- [listEventTypes](functions/listEventTypes.md)
+- [listEventFieldValues](functions/listEventFieldValues.md)
 
 ### Feeds
 
