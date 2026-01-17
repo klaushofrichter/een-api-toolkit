@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import {
   listEvents,
   listEventFieldValues,
@@ -10,6 +10,44 @@ import {
   type EventType,
   type EenError
 } from 'een-api-toolkit'
+
+/**
+ * Bounding box from object detection data.
+ * Coordinates are normalized (0-1) relative to image dimensions.
+ */
+interface BoundingBox {
+  x: number
+  y: number
+  width: number
+  height: number
+  label?: string
+  confidence?: number
+}
+
+/** Constant for converting normalized coordinates (0-1) to SVG viewBox percentage */
+const NORMALIZED_TO_PERCENT = 100
+
+/** Maximum number of images to cache to prevent memory issues */
+const MAX_IMAGE_CACHE_SIZE = 50
+
+/**
+ * Type guard to check if a value is a non-empty string.
+ */
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0
+}
+
+/**
+ * Type guard to validate a bounding box array.
+ * Must be an array of exactly 4 numbers.
+ */
+function isValidBoundingBoxArray(value: unknown): value is [number, number, number, number] {
+  return (
+    Array.isArray(value) &&
+    value.length === 4 &&
+    value.every(v => typeof v === 'number' && !Number.isNaN(v))
+  )
+}
 
 const props = defineProps<{
   camera: Camera
@@ -40,10 +78,25 @@ const selectedEventTypes = ref<string[]>([])
 const timeRange = ref<TimeRange>('1h')
 const eventTypeNames = ref<Map<string, string>>(new Map())
 const eventImages = ref<Map<string, string>>(new Map())
+const imageLoadingIds = ref<Set<string>>(new Set()) // Track which images are currently loading
+const boundingBoxCache = ref<Map<string, BoundingBox[]>>(new Map()) // Cache bounding boxes per event
+const enlargedEventId = ref<string | null>(null)
 
 // Computed
 const hasNextPage = computed(() => !!nextPageToken.value)
 const hasNoEvents = computed(() => !loading.value && events.value.length === 0 && !error.value)
+const enlargedEvent = computed(() => {
+  if (!enlargedEventId.value) return null
+  return events.value.find(e => e.id === enlargedEventId.value) || null
+})
+const enlargedImage = computed(() => {
+  if (!enlargedEventId.value) return null
+  return eventImages.value.get(enlargedEventId.value) || null
+})
+const enlargedBoundingBoxes = computed(() => {
+  if (!enlargedEvent.value) return []
+  return getBoundingBoxes(enlargedEvent.value)
+})
 
 // Get start timestamp based on time range
 function getStartTimestamp(range: TimeRange): string {
@@ -54,6 +107,82 @@ function getStartTimestamp(range: TimeRange): string {
     '24h': 24
   }
   return new Date(now - hoursMap[range] * 60 * 60 * 1000).toISOString()
+}
+
+/**
+ * Get fallback label for detected object based on event type.
+ */
+function getFallbackLabel(eventType: string): string {
+  if (eventType.includes('person')) return 'Person'
+  if (eventType.includes('vehicle')) return 'Vehicle'
+  if (eventType.includes('licensePlate') || eventType.includes('lpr')) return 'License Plate'
+  return 'Object'
+}
+
+/**
+ * Extract bounding boxes from event data.
+ * Looks for object detection data schemas and extracts bounding box info.
+ * The EEN API returns boundingBox as [x1, y1, x2, y2] normalized coordinates (0-1).
+ * Labels are obtained from een.objectClassification.v1 data when available.
+ * Results are cached per event ID to avoid redundant calculations.
+ */
+function getBoundingBoxes(event: Event): BoundingBox[] {
+  // Check cache first
+  const cached = boundingBoxCache.value.get(event.id)
+  if (cached) {
+    return cached
+  }
+
+  const boxes: BoundingBox[] = []
+  const fallbackLabel = getFallbackLabel(event.type)
+
+  // Build a map of objectId -> classification label from objectClassification data
+  const classificationMap = new Map<string, string>()
+  for (const dataItem of event.data) {
+    if (dataItem.type === 'een.objectClassification.v1') {
+      // Use type guards for proper runtime validation
+      const objectId = dataItem.objectId
+      const label = dataItem.label
+      if (isNonEmptyString(objectId) && isNonEmptyString(label)) {
+        // Capitalize first letter of label
+        const formattedLabel = label.charAt(0).toUpperCase() + label.slice(1).toLowerCase()
+        classificationMap.set(objectId, formattedLabel)
+      }
+    }
+  }
+
+  // Extract bounding boxes from objectDetection data
+  for (const dataItem of event.data) {
+    if (dataItem.type === 'een.objectDetection.v1') {
+      const boundingBox = dataItem.boundingBox
+      const objectId = dataItem.objectId
+
+      // Use type guard for proper runtime validation of bounding box array
+      if (isValidBoundingBoxArray(boundingBox)) {
+        const [x1, y1, x2, y2] = boundingBox
+        // Use classification label if available, otherwise use fallback
+        const label = (isNonEmptyString(objectId) && classificationMap.get(objectId)) || fallbackLabel
+        boxes.push({
+          x: x1,
+          y: y1,
+          width: x2 - x1,
+          height: y2 - y1,
+          label
+        })
+      }
+    }
+  }
+
+  // Cache the result
+  boundingBoxCache.value.set(event.id, boxes)
+  return boxes
+}
+
+/**
+ * Get the count of bounding boxes for an event.
+ */
+function getBoundingBoxCount(event: Event): number {
+  return getBoundingBoxes(event).length
 }
 
 // Fetch available event types for this camera
@@ -128,7 +257,7 @@ async function fetchEvents(append = false) {
     pageSize: 20,
     pageToken: append ? nextPageToken.value : undefined,
     sort: '-startTimestamp',
-    include: ['data.een.fullFrameImageUrl.v1', 'data.een.croppedFrameImageUrl.v1']
+    include: ['data.een.fullFrameImageUrl.v1', 'data.een.croppedFrameImageUrl.v1', 'data.een.objectDetection.v1', 'data.een.objectClassification.v1']
   })
 
   if (result.error) {
@@ -160,23 +289,60 @@ async function loadMore() {
   await fetchEvents(true)
 }
 
+/**
+ * Evict oldest images from cache if it exceeds the maximum size.
+ * Removes images that are not currently being displayed.
+ */
+function evictOldestImages() {
+  if (eventImages.value.size <= MAX_IMAGE_CACHE_SIZE) return
+
+  // Get IDs of images to keep (currently visible events)
+  const visibleEventIds = new Set(events.value.map(e => e.id))
+
+  // Find images to evict (not currently visible)
+  const idsToEvict: string[] = []
+  for (const id of eventImages.value.keys()) {
+    if (!visibleEventIds.has(id)) {
+      idsToEvict.push(id)
+    }
+  }
+
+  // Evict oldest first (Map maintains insertion order)
+  const numToEvict = eventImages.value.size - MAX_IMAGE_CACHE_SIZE
+  for (let i = 0; i < Math.min(numToEvict, idsToEvict.length); i++) {
+    eventImages.value.delete(idsToEvict[i])
+  }
+}
+
 // Load images for events using getRecordedImage API
 async function loadEventImages(eventsToLoad: Event[]) {
   // Load images in parallel for all camera events
   const loadPromises = eventsToLoad
     .filter(event => event.actorType === 'camera')
     .map(async (event) => {
-      // Skip if already loaded
-      if (eventImages.value.has(event.id)) return
+      // Skip if already loaded or currently loading (prevents race condition)
+      if (eventImages.value.has(event.id) || imageLoadingIds.value.has(event.id)) {
+        return
+      }
 
-      const result = await getRecordedImage({
-        deviceId: event.actorId,
-        type: 'preview',
-        timestamp__gte: event.startTimestamp
-      })
+      // Mark as loading to prevent duplicate requests
+      imageLoadingIds.value.add(event.id)
 
-      if (!result.error && result.data) {
-        eventImages.value.set(event.id, result.data.imageData)
+      try {
+        const result = await getRecordedImage({
+          deviceId: event.actorId,
+          type: 'preview',
+          timestamp__gte: event.startTimestamp
+        })
+
+        if (!result.error && result.data) {
+          eventImages.value.set(event.id, result.data.imageData)
+          // Evict old images if cache is too large
+          evictOldestImages()
+        }
+      } finally {
+        // Remove from loading set regardless of success/failure
+        imageLoadingIds.value.delete(event.id)
       }
     })
 
@@ -213,6 +379,32 @@ function toggleAllEventTypes() {
   }
 }
 
+// Open enlarged image view
+function openEnlargedImage(eventId: string) {
+  enlargedEventId.value = eventId
+}
+
+// Close enlarged image view
+function closeEnlargedImage() {
+  enlargedEventId.value = null
+}
+
+// Handle keyboard events for accessibility
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && enlargedEventId.value) {
+    closeEnlargedImage()
+  }
+}
+
+// Set up keyboard event listener for ESC key
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
+
 // Watch for modal open/close
 watch(() => props.isOpen, async (isOpen) => {
   if (isOpen) {
@@ -220,6 +412,8 @@ watch(() => props.isOpen, async (isOpen) => {
     nextPageToken.value = undefined
     error.value = null
     eventImages.value.clear()
+    imageLoadingIds.value.clear()
+    boundingBoxCache.value.clear()
 
     await fetchEventTypeNames()
     await fetchAvailableEventTypes()
@@ -230,7 +424,10 @@ watch(() => props.isOpen, async (isOpen) => {
   } else {
     // Clean up on modal close to free memory (base64 images can be large)
     eventImages.value.clear()
+    imageLoadingIds.value.clear()
+    boundingBoxCache.value.clear()
     events.value = []
+    enlargedEventId.value = null
   }
 }, { immediate: true })
 
@@ -246,7 +443,10 @@ watch([timeRange, selectedEventTypes], () => {
   <div v-if="isOpen" class="modal-overlay" @click.self="emit('close')">
     <div class="modal">
       <div class="modal-header">
-        <h2>Events: {{ camera.name }}</h2>
+        <div class="header-info">
+          <h2>Events: {{ camera.name }}</h2>
+          <div class="camera-id">Camera ID: {{ camera.id }}</div>
+        </div>
         <button class="close-button" @click="emit('close')">&times;</button>
       </div>
 
@@ -312,7 +512,11 @@ watch([timeRange, selectedEventTypes], () => {
 
         <div v-else class="events-list" data-testid="events-list">
           <div v-for="event in events" :key="event.id" class="event-item" data-testid="event-item">
-            <div class="event-thumbnail">
+            <div
+              class="event-thumbnail"
+              :class="{ clickable: getEventImage(event) }"
+              @click="getEventImage(event) && openEnlargedImage(event.id)"
+            >
               <img
                 v-if="getEventImage(event)"
                 :src="getEventImage(event) || ''"
@@ -325,6 +529,9 @@ watch([timeRange, selectedEventTypes], () => {
             <div class="event-info">
               <div class="event-type">{{ getEventTypeName(event.type) }}</div>
               <div class="event-time">{{ formatTimestamp(event.startTimestamp) }}</div>
+              <div v-if="getBoundingBoxCount(event) > 0" class="event-detections" data-testid="event-detections">
+                {{ getBoundingBoxCount(event) }} detection{{ getBoundingBoxCount(event) !== 1 ? 's' : '' }}
+              </div>
               <div class="event-id">ID: {{ event.id }}</div>
             </div>
           </div>
@@ -334,6 +541,72 @@ watch([timeRange, selectedEventTypes], () => {
           <button @click="loadMore" :disabled="loading">
             {{ loading ? 'Loading...' : 'Load More' }}
           </button>
+        </div>
+      </div>
+
+      <!-- Enlarged image lightbox -->
+      <div
+        v-if="enlargedEventId && enlargedImage"
+        class="lightbox-overlay"
+        @click.self="closeEnlargedImage"
+        data-testid="lightbox-overlay"
+      >
+        <div class="lightbox-content">
+          <button
+            class="lightbox-close"
+            @click="closeEnlargedImage"
+            aria-label="Close enlarged image"
+            data-testid="lightbox-close"
+          >&times;</button>
+          <div class="lightbox-image-container">
+            <img :src="enlargedImage" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
+            <!-- Bounding box overlay -->
+            <svg
+              v-if="enlargedBoundingBoxes.length > 0"
+              class="bounding-box-overlay"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              data-testid="bounding-box-overlay"
+            >
+              <rect
+                v-for="(box, index) in enlargedBoundingBoxes"
+                :key="index"
+                :x="box.x * NORMALIZED_TO_PERCENT"
+                :y="box.y * NORMALIZED_TO_PERCENT"
+                :width="box.width * NORMALIZED_TO_PERCENT"
+                :height="box.height * NORMALIZED_TO_PERCENT"
+                class="bounding-box"
+                data-testid="bounding-box"
+              />
+            </svg>
+            <!-- Bounding box labels -->
+            <div
+              v-for="(box, index) in enlargedBoundingBoxes"
+              :key="'label-' + index"
+              class="bounding-box-label"
+              :style="{
+                left: (box.x * NORMALIZED_TO_PERCENT) + '%',
+                top: (box.y * NORMALIZED_TO_PERCENT) + '%'
+              }"
+              data-testid="bounding-box-label"
+            >
+              {{ box.label || 'Object' }}
+              <span v-if="box.confidence" class="confidence">
+                {{ Math.round(box.confidence * 100) }}%
+              </span>
+            </div>
+          </div>
+          <div v-if="enlargedEvent" class="lightbox-info">
+            <div class="lightbox-event-line">
+              <span class="lightbox-camera-info">{{ camera.name }} ({{ camera.id }})</span>
+              <span class="lightbox-separator">|</span>
+              <span class="lightbox-event-type">{{ getEventTypeName(enlargedEvent.type) }}</span>
+            </div>
+            <div class="lightbox-event-time">{{ formatTimestamp(enlargedEvent.startTimestamp) }}</div>
+            <div v-if="enlargedBoundingBoxes.length > 0" class="lightbox-detections" data-testid="lightbox-detections">
+              {{ enlargedBoundingBoxes.length }} detection{{ enlargedBoundingBoxes.length !== 1 ? 's' : '' }}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -376,6 +649,18 @@ watch([timeRange, selectedEventTypes], () => {
 .modal-header h2 {
   margin: 0;
   font-size: 1.25rem;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.camera-id {
+  font-size: 0.8rem;
+  color: #666;
+  font-family: monospace;
 }
 
 .close-button {
@@ -566,5 +851,158 @@ watch([timeRange, selectedEventTypes], () => {
 
 .load-more button {
   min-width: 150px;
+}
+
+/* Clickable thumbnail */
+.event-thumbnail.clickable {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event-thumbnail.clickable:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Lightbox styles */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: -10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  line-height: 1;
+  z-index: 2001;
+}
+
+.lightbox-close:hover {
+  color: #ccc;
+}
+
+.lightbox-info {
+  margin-top: 15px;
+  text-align: center;
+  color: white;
+}
+
+.lightbox-event-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.lightbox-camera-info {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.lightbox-separator {
+  color: #666;
+}
+
+.lightbox-event-type {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.lightbox-event-time {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.lightbox-detections {
+  color: #4CAF50;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+/* Detection count in event list */
+.event-detections {
+  color: #4CAF50;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+/* Lightbox image container for bounding box overlay */
+.lightbox-image-container {
+  position: relative;
+  display: inline-block;
+  max-width: 90vw;
+  max-height: 80vh;
+}
+
+.lightbox-image-container .lightbox-image {
+  display: block;
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* SVG overlay for bounding boxes */
+.bounding-box-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.bounding-box {
+  fill: none;
+  stroke: #00FF00;
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Bounding box labels */
+.bounding-box-label {
+  position: absolute;
+  background: rgba(0, 255, 0, 0.85);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.bounding-box-label .confidence {
+  font-weight: normal;
+  opacity: 0.8;
+  margin-left: 4px;
 }
 </style>

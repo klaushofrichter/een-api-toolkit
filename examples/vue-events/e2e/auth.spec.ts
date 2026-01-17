@@ -329,4 +329,109 @@ test.describe('Vue Events Example - Auth', () => {
     await page.locator('.close-button').click()
     await expect(page.locator('.modal')).not.toBeVisible()
   })
+
+  test('can click thumbnail to open enlarged image lightbox', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+
+    // Wait for cameras to load
+    await expect(page.locator('.camera-grid, .no-cameras')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+
+    // Find an online camera (has 'status-online' class)
+    const onlineCameras = page.locator('.camera-card:has(.status-online)')
+    const onlineCount = await onlineCameras.count()
+
+    if (onlineCount === 0) {
+      // Fall back to any camera if no online cameras
+      const allCameras = page.locator('.camera-card')
+      const anyCount = await allCameras.count()
+      if (anyCount === 0) {
+        console.log('No cameras available to test lightbox')
+        return
+      }
+      await allCameras.first().click()
+    } else {
+      await onlineCameras.first().click()
+    }
+
+    // Wait for modal to appear
+    await expect(page.locator('.modal')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+
+    // Select 24h time range to ensure we have events
+    const timeRangeSelect = page.locator('[data-testid="time-range-select"]')
+    await expect(timeRangeSelect).toBeVisible()
+    await timeRangeSelect.selectOption('24h')
+
+    // Wait for events to load
+    await page.waitForTimeout(3000)
+
+    // Check if we have events with images
+    const eventsList = page.locator('[data-testid="events-list"]')
+    const eventsVisible = await eventsList.isVisible()
+
+    if (!eventsVisible) {
+      console.log('No events found, skipping lightbox test')
+      await page.locator('.close-button').click()
+      return
+    }
+
+    // Wait for images to load
+    await page.waitForTimeout(3000)
+
+    // Find clickable thumbnails (those with loaded images)
+    const clickableThumbnails = page.locator('.event-thumbnail.clickable')
+    const thumbnailCount = await clickableThumbnails.count()
+
+    if (thumbnailCount === 0) {
+      console.log('No thumbnails with images loaded, skipping lightbox test')
+      await page.locator('.close-button').click()
+      return
+    }
+
+    console.log(`Found ${thumbnailCount} clickable thumbnails`)
+
+    // Click on the first thumbnail to open lightbox
+    await clickableThumbnails.first().click()
+
+    // Verify lightbox overlay appears
+    await expect(page.locator('[data-testid="lightbox-overlay"]')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+
+    // Verify lightbox image is displayed
+    await expect(page.locator('.lightbox-image')).toBeVisible()
+
+    // Verify lightbox shows event info
+    await expect(page.locator('.lightbox-event-type')).toBeVisible()
+    await expect(page.locator('.lightbox-event-time')).toBeVisible()
+
+    // Verify close button is visible
+    await expect(page.locator('[data-testid="lightbox-close"]')).toBeVisible()
+
+    // Close lightbox by clicking the close button
+    await page.locator('[data-testid="lightbox-close"]').click()
+
+    // Verify lightbox is closed
+    await expect(page.locator('[data-testid="lightbox-overlay"]')).not.toBeVisible()
+
+    // Modal should still be open
+    await expect(page.locator('.modal')).toBeVisible()
+
+    // Click another thumbnail to test clicking outside to close
+    if (thumbnailCount > 0) {
+      await clickableThumbnails.first().click()
+      await expect(page.locator('[data-testid="lightbox-overlay"]')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+
+      // Click outside the image (on the overlay) to close
+      // Get the overlay and click at a corner away from the content
+      await page.locator('[data-testid="lightbox-overlay"]').click({ position: { x: 10, y: 10 } })
+
+      // Verify lightbox is closed
+      await expect(page.locator('[data-testid="lightbox-overlay"]')).not.toBeVisible()
+    }
+
+    // Close the events modal
+    await page.locator('.close-button').click()
+    await expect(page.locator('.modal')).not.toBeVisible()
+  })
 })
