@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue'
 import {
   listEvents,
   listEventFieldValues,
@@ -22,6 +22,31 @@ interface BoundingBox {
   height: number
   label?: string
   confidence?: number
+}
+
+/** Constant for converting normalized coordinates (0-1) to SVG viewBox percentage */
+const NORMALIZED_TO_PERCENT = 100
+
+/** Maximum number of images to cache to prevent memory issues */
+const MAX_IMAGE_CACHE_SIZE = 50
+
+/**
+ * Type guard to check if a value is a non-empty string.
+ */
+function isNonEmptyString(value: unknown): value is string {
+  return typeof value === 'string' && value.length > 0
+}
+
+/**
+ * Type guard to validate a bounding box array.
+ * Must be an array of exactly 4 numbers.
+ */
+function isValidBoundingBoxArray(value: unknown): value is [number, number, number, number] {
+  return (
+    Array.isArray(value) &&
+    value.length === 4 &&
+    value.every(v => typeof v === 'number' && !Number.isNaN(v))
+  )
 }
 
 const props = defineProps<{
@@ -53,6 +78,8 @@ const selectedEventTypes = ref<string[]>([])
 const timeRange = ref<TimeRange>('1h')
 const eventTypeNames = ref<Map<string, string>>(new Map())
 const eventImages = ref<Map<string, string>>(new Map())
+const imageLoadingIds = ref<Set<string>>(new Set()) // Track which images are currently loading
+const boundingBoxCache = ref<Map<string, BoundingBox[]>>(new Map()) // Cache bounding boxes per event
 const enlargedEventId = ref<string | null>(null)
 
 // Computed
@@ -97,8 +124,15 @@ function getFallbackLabel(eventType: string): string {
  * Looks for object detection data schemas and extracts bounding box info.
  * The EEN API returns boundingBox as [x1, y1, x2, y2] normalized coordinates (0-1).
  * Labels are obtained from een.objectClassification.v1 data when available.
+ * Results are cached per event ID to avoid redundant calculations.
  */
 function getBoundingBoxes(event: Event): BoundingBox[] {
+  // Check cache first
+  const cached = boundingBoxCache.value.get(event.id)
+  if (cached) {
+    return cached
+  }
+
   const boxes: BoundingBox[] = []
   const fallbackLabel = getFallbackLabel(event.type)
 
@@ -106,9 +140,10 @@ function getBoundingBoxes(event: Event): BoundingBox[] {
   const classificationMap = new Map<string, string>()
   for (const dataItem of event.data) {
     if (dataItem.type === 'een.objectClassification.v1') {
-      const objectId = dataItem.objectId as string | undefined
-      const label = dataItem.label as string | undefined
-      if (objectId && label) {
+      // Use type guards for proper runtime validation
+      const objectId = dataItem.objectId
+      const label = dataItem.label
+      if (isNonEmptyString(objectId) && isNonEmptyString(label)) {
         // Capitalize first letter of label
         const formattedLabel = label.charAt(0).toUpperCase() + label.slice(1).toLowerCase()
         classificationMap.set(objectId, formattedLabel)
@@ -119,13 +154,14 @@ function getBoundingBoxes(event: Event): BoundingBox[] {
   // Extract bounding boxes from objectDetection data
   for (const dataItem of event.data) {
     if (dataItem.type === 'een.objectDetection.v1') {
-      const boundingBox = dataItem.boundingBox as number[] | undefined
-      const objectId = dataItem.objectId as string | undefined
+      const boundingBox = dataItem.boundingBox
+      const objectId = dataItem.objectId
 
-      if (Array.isArray(boundingBox) && boundingBox.length === 4) {
+      // Use type guard for proper runtime validation of bounding box array
+      if (isValidBoundingBoxArray(boundingBox)) {
         const [x1, y1, x2, y2] = boundingBox
         // Use classification label if available, otherwise use fallback
-        const label = (objectId && classificationMap.get(objectId)) || fallbackLabel
+        const label = (isNonEmptyString(objectId) && classificationMap.get(objectId)) || fallbackLabel
         boxes.push({
           x: x1,
           y: y1,
@@ -137,6 +173,8 @@ function getBoundingBoxes(event: Event): BoundingBox[] {
     }
   }
 
+  // Cache the result
+  boundingBoxCache.value.set(event.id, boxes)
   return boxes
 }
 
@@ -251,23 +289,60 @@ async function loadMore() {
   await fetchEvents(true)
 }
 
+/**
+ * Evict oldest images from cache if it exceeds the maximum size.
+ * Removes images that are not currently being displayed.
+ */
+function evictOldestImages() {
+  if (eventImages.value.size <= MAX_IMAGE_CACHE_SIZE) return
+
+  // Get IDs of images to keep (currently visible events)
+  const visibleEventIds = new Set(events.value.map(e => e.id))
+
+  // Find images to evict (not currently visible)
+  const idsToEvict: string[] = []
+  for (const id of eventImages.value.keys()) {
+    if (!visibleEventIds.has(id)) {
+      idsToEvict.push(id)
+    }
+  }
+
+  // Evict oldest first (Map maintains insertion order)
+  const numToEvict = eventImages.value.size - MAX_IMAGE_CACHE_SIZE
+  for (let i = 0; i < Math.min(numToEvict, idsToEvict.length); i++) {
+    eventImages.value.delete(idsToEvict[i])
+  }
+}
+
 // Load images for events using getRecordedImage API
 async function loadEventImages(eventsToLoad: Event[]) {
   // Load images in parallel for all camera events
   const loadPromises = eventsToLoad
     .filter(event => event.actorType === 'camera')
     .map(async (event) => {
-      // Skip if already loaded
-      if (eventImages.value.has(event.id)) return
+      // Skip if already loaded or currently loading (prevents race condition)
+      if (eventImages.value.has(event.id) || imageLoadingIds.value.has(event.id)) {
+        return
+      }
 
-      const result = await getRecordedImage({
-        deviceId: event.actorId,
-        type: 'preview',
-        timestamp__gte: event.startTimestamp
-      })
+      // Mark as loading to prevent duplicate requests
+      imageLoadingIds.value.add(event.id)
 
-      if (!result.error && result.data) {
-        eventImages.value.set(event.id, result.data.imageData)
+      try {
+        const result = await getRecordedImage({
+          deviceId: event.actorId,
+          type: 'preview',
+          timestamp__gte: event.startTimestamp
+        })
+
+        if (!result.error && result.data) {
+          eventImages.value.set(event.id, result.data.imageData)
+          // Evict old images if cache is too large
+          evictOldestImages()
+        }
+      } finally {
+        // Remove from loading set regardless of success/failure
+        imageLoadingIds.value.delete(event.id)
       }
     })
 
@@ -314,6 +389,22 @@ function closeEnlargedImage() {
   enlargedEventId.value = null
 }
 
+// Handle keyboard events for accessibility
+function handleKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && enlargedEventId.value) {
+    closeEnlargedImage()
+  }
+}
+
+// Set up keyboard event listener for ESC key
+onMounted(() => {
+  window.addEventListener('keydown', handleKeydown)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', handleKeydown)
+})
+
 // Watch for modal open/close
 watch(() => props.isOpen, async (isOpen) => {
   if (isOpen) {
@@ -321,6 +412,8 @@ watch(() => props.isOpen, async (isOpen) => {
     nextPageToken.value = undefined
     error.value = null
     eventImages.value.clear()
+    imageLoadingIds.value.clear()
+    boundingBoxCache.value.clear()
 
     await fetchEventTypeNames()
     await fetchAvailableEventTypes()
@@ -331,6 +424,8 @@ watch(() => props.isOpen, async (isOpen) => {
   } else {
     // Clean up on modal close to free memory (base64 images can be large)
     eventImages.value.clear()
+    imageLoadingIds.value.clear()
+    boundingBoxCache.value.clear()
     events.value = []
     enlargedEventId.value = null
   }
@@ -457,7 +552,12 @@ watch([timeRange, selectedEventTypes], () => {
         data-testid="lightbox-overlay"
       >
         <div class="lightbox-content">
-          <button class="lightbox-close" @click="closeEnlargedImage" data-testid="lightbox-close">&times;</button>
+          <button
+            class="lightbox-close"
+            @click="closeEnlargedImage"
+            aria-label="Close enlarged image"
+            data-testid="lightbox-close"
+          >&times;</button>
           <div class="lightbox-image-container">
             <img :src="enlargedImage" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
             <!-- Bounding box overlay -->
@@ -471,10 +571,10 @@ watch([timeRange, selectedEventTypes], () => {
               <rect
                 v-for="(box, index) in enlargedBoundingBoxes"
                 :key="index"
-                :x="box.x * 100"
-                :y="box.y * 100"
-                :width="box.width * 100"
-                :height="box.height * 100"
+                :x="box.x * NORMALIZED_TO_PERCENT"
+                :y="box.y * NORMALIZED_TO_PERCENT"
+                :width="box.width * NORMALIZED_TO_PERCENT"
+                :height="box.height * NORMALIZED_TO_PERCENT"
                 class="bounding-box"
                 data-testid="bounding-box"
               />
@@ -485,8 +585,8 @@ watch([timeRange, selectedEventTypes], () => {
               :key="'label-' + index"
               class="bounding-box-label"
               :style="{
-                left: (box.x * 100) + '%',
-                top: (box.y * 100) + '%'
+                left: (box.x * NORMALIZED_TO_PERCENT) + '%',
+                top: (box.y * NORMALIZED_TO_PERCENT) + '%'
               }"
               data-testid="bounding-box-label"
             >
