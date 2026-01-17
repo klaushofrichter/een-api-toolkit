@@ -28,6 +28,11 @@ description: Use this skill when you are requested to create a PR for a feature 
 - Run build to verify compilation:
   - run: `npm run build`
   - if build fails, analyse the failure, report findings, and stop
+- Run E2E tests for all example apps:
+  - find all example app directories with e2e tests: `for dir in examples/*/; do if [ -d "${dir}e2e" ]; then echo "$dir"; fi; done`
+  - for each example app, run: `cd <app-dir> && npx playwright test`
+  - if any E2E tests fail, analyse the failure, report findings, and stop
+  - report total number of E2E tests passed across all example apps
 
 ## 4. Create PR
 - Get version number for the PR body:
