@@ -1,0 +1,1 @@
+export { getEventMetrics } from './service'

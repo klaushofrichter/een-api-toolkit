@@ -55,7 +55,27 @@ export type {
   ListEventsParams,
   GetEventParams,
   ListEventTypesParams,
-  ListEventFieldValuesParams
+  ListEventFieldValuesParams,
+  // Event Metrics types
+  EventMetric,
+  MetricActorType,
+  MetricDataPoint,
+  GetEventMetricsParams,
+  // Alert types
+  Alert,
+  AlertAction,
+  AlertType,
+  AlertInclude,
+  AlertSort,
+  AlertActionStatus,
+  ListAlertsParams,
+  GetAlertParams,
+  ListAlertTypesParams,
+  // Notification types
+  Notification,
+  NotificationCategory,
+  NotificationStatus,
+  ListNotificationsParams
 } from './types'
 
 // Type helpers
@@ -114,3 +134,21 @@ export {
   listEventTypes,
   listEventFieldValues
 } from './events'
+
+// Event Metrics - Plain functions
+export {
+  getEventMetrics
+} from './eventMetrics'
+
+// Alerts - Plain functions
+export {
+  listAlerts,
+  getAlert,
+  listAlertTypes
+} from './alerts'
+
+// Notifications - Plain functions
+export {
+  listNotifications,
+  getNotification
+} from './notifications'

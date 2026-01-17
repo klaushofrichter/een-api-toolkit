@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.14
+> **Version:** 0.3.15
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -10,9 +10,10 @@
 
 > **Working Examples:** The installed package includes complete Vue 3 example applications
 > at `./node_modules/een-api-toolkit/examples/`. These demonstrate OAuth authentication,
-> user management, camera listing, live/recorded media, video feeds, and events.
+> user management, camera listing, live/recorded media, video feeds, events, and metrics.
 > For Live Main Video streaming, see `vue-feeds/src/views/Feeds.vue`.
 > For Events API with thumbnails, see `vue-events/src/components/EventsModal.vue`.
+> For Event Metrics with Chart.js visualization, see `vue-alerts-metrics/src/components/MetricsChart.vue`.
 
 ---
 
@@ -212,6 +213,7 @@ Complete Vue 3 applications demonstrating toolkit features:
 | [vue-media](../examples/vue-media/) | Live and recorded image viewing | `src/views/LiveCamera.vue`, `RecordedImage.vue`, `HLS.vue` |
 | [vue-feeds](../examples/vue-feeds/) | Live video streaming (preview and main) | `src/views/Feeds.vue` |
 | [vue-events](../examples/vue-events/) | Events with bounding box overlays | `src/components/EventsModal.vue` |
+| [vue-alerts-metrics](../examples/vue-alerts-metrics/) | Event metrics, alerts, and notifications | `src/components/MetricsChart.vue`, `AlertsList.vue` |
 
 ### Configuration
 
@@ -269,6 +271,27 @@ Complete Vue 3 applications demonstrating toolkit features:
 | `getEvent(eventId, params?)` | Get a specific event by ID | `Result<Event>` |
 | `listEventTypes(params?)` | List all available event types | `Result<PaginatedResult<EventType>>` |
 | `listEventFieldValues(params)` | Get available event types for a device | `Result<EventFieldValues>` |
+
+### Event Metrics Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `getEventMetrics(params)` | Get event count metrics over time | `Result<EventMetric[]>` |
+
+### Alerts Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `listAlerts(params?)` | List alerts with filters | `Result<PaginatedResult<Alert>>` |
+| `getAlert(id, params?)` | Get a specific alert by ID | `Result<Alert>` |
+| `listAlertTypes(params?)` | List all available alert types | `Result<PaginatedResult<AlertType>>` |
+
+### Notifications Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `listNotifications(params?)` | List notifications with filters | `Result<PaginatedResult<Notification>>` |
+| `getNotification(id)` | Get a specific notification by ID | `Result<Notification>` |
 
 ---
 
@@ -738,6 +761,163 @@ interface ListEventsParams {
 
 interface ListEventFieldValuesParams {
   actor: string                     // Required: 'camera:{id}' format
+}
+```
+
+### Event Metrics Types
+
+```typescript
+type MetricActorType = 'bridge' | 'camera' | 'speaker' | 'account' | 'user' | 'layout' | 'job'
+
+// Data point: [timestamp_ms, value]
+type MetricDataPoint = [number, number]
+
+interface EventMetric {
+  eventType: string
+  actorId: string
+  actorType: MetricActorType
+  target: string                 // e.g., 'count'
+  dataPoints: MetricDataPoint[]
+  [key: string]: unknown         // Additional properties
+}
+
+interface GetEventMetricsParams {
+  actor: string                  // Required: 'camera:{id}' format
+  eventType: string              // Required: e.g., 'een.motionDetectionEvent.v1'
+  timestamp__gte?: string        // Optional: defaults to 7 days ago
+  timestamp__lte?: string        // Optional: defaults to now
+  aggregateByMinutes?: number    // Optional: default 60, minimum 60
+}
+```
+
+### Alert Types
+
+```typescript
+interface AlertAction {
+  name: string
+  type: string
+  success: boolean
+  timestamp: string
+  status?: 'fired' | 'success' | 'partialSuccess' | 'silenced' | 'failed' | 'internalError'
+}
+
+interface Alert {
+  id: string
+  timestamp: string
+  createTimestamp: string
+  creatorId: string
+  alertType: string
+  alertName?: string
+  category?: string
+  serviceRuleId?: string
+  eventType?: string
+  actorId: string
+  actorType: string
+  actorAccountId: string
+  actorName?: string
+  ruleId?: string
+  eventId?: string
+  locationId?: string
+  locationName?: string
+  priority?: number              // 0-20
+  dataSchemas?: string[]
+  data?: Record<string, unknown>
+  actions?: Record<string, AlertAction>
+  description?: string
+}
+
+interface AlertType {
+  type: string
+  description: string
+}
+
+type AlertInclude = 'data' | 'actions' | 'dataSchemas' | 'description'
+type AlertSort = '+timestamp' | '-timestamp'
+type AlertActionStatus = 'fired' | 'success' | 'partialSuccess' | 'silenced' | 'failed' | 'internalError'
+
+interface ListAlertsParams {
+  pageSize?: number
+  pageToken?: string
+  timestamp__lte?: string
+  timestamp__gte?: string
+  creatorId?: string
+  alertType__in?: string[]
+  actorId__in?: string[]
+  actorType__in?: string[]
+  actorAccountId?: string
+  ruleId?: string
+  ruleId__in?: string[]
+  eventId?: string
+  locationId__in?: string[]
+  priority__gte?: number
+  priority__lte?: number
+  showInvalidAlerts?: boolean
+  alertActionId__in?: string[]
+  alertActionStatus__in?: AlertActionStatus[]
+  include?: AlertInclude[]
+  sort?: AlertSort[]
+  language?: string
+}
+
+interface GetAlertParams {
+  include?: AlertInclude[]
+}
+
+interface ListAlertTypesParams {
+  pageSize?: number
+  pageToken?: string
+}
+```
+
+### Notification Types
+
+```typescript
+type NotificationCategory = 'health' | 'video' | 'operational' | 'audit' | 'job' | 'security' | 'sharing'
+
+type NotificationStatus =
+  | 'pending' | 'bounced' | 'dropped' | 'deferred' | 'delivered' | 'sent'
+  | 'outsideUsersSchedule' | 'notificationsDisabled' | 'noNotificationActions'
+  | 'sendingFailed' | 'throttled' | 'unableToGetSettings'
+
+interface Notification {
+  id: string
+  timestamp: string
+  createTimestamp: string
+  sentTimestamp?: string
+  alertId?: string | null
+  alertType?: string
+  actorId: string
+  actorName?: string
+  actorType: string
+  actorAccountId: string
+  userId: string
+  accountId: string
+  read: boolean
+  status: NotificationStatus
+  category: NotificationCategory
+  description?: string
+  notificationActions: string[]
+  dataSchemas: string[]
+  data: Record<string, unknown>
+}
+
+interface ListNotificationsParams {
+  pageSize?: number
+  pageToken?: string
+  timestamp__lte?: string
+  timestamp__gte?: string
+  alertId?: string
+  alertType?: string
+  actorId?: string
+  actorType?: string
+  actorAccountId?: string
+  category?: NotificationCategory
+  userId?: string
+  read?: boolean
+  status?: NotificationStatus
+  includeV1Notifications?: boolean
+  sort?: ('+timestamp' | '-timestamp')[]
+  language?: string
 }
 ```
 
