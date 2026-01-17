@@ -40,10 +40,19 @@ const selectedEventTypes = ref<string[]>([])
 const timeRange = ref<TimeRange>('1h')
 const eventTypeNames = ref<Map<string, string>>(new Map())
 const eventImages = ref<Map<string, string>>(new Map())
+const enlargedEventId = ref<string | null>(null)
 
 // Computed
 const hasNextPage = computed(() => !!nextPageToken.value)
 const hasNoEvents = computed(() => !loading.value && events.value.length === 0 && !error.value)
+const enlargedEvent = computed(() => {
+  if (!enlargedEventId.value) return null
+  return events.value.find(e => e.id === enlargedEventId.value) || null
+})
+const enlargedImage = computed(() => {
+  if (!enlargedEventId.value) return null
+  return eventImages.value.get(enlargedEventId.value) || null
+})
 
 // Get start timestamp based on time range
 function getStartTimestamp(range: TimeRange): string {
@@ -213,6 +222,16 @@ function toggleAllEventTypes() {
   }
 }
 
+// Open enlarged image view
+function openEnlargedImage(eventId: string) {
+  enlargedEventId.value = eventId
+}
+
+// Close enlarged image view
+function closeEnlargedImage() {
+  enlargedEventId.value = null
+}
+
 // Watch for modal open/close
 watch(() => props.isOpen, async (isOpen) => {
   if (isOpen) {
@@ -231,6 +250,7 @@ watch(() => props.isOpen, async (isOpen) => {
     // Clean up on modal close to free memory (base64 images can be large)
     eventImages.value.clear()
     events.value = []
+    enlargedEventId.value = null
   }
 }, { immediate: true })
 
@@ -312,7 +332,11 @@ watch([timeRange, selectedEventTypes], () => {
 
         <div v-else class="events-list" data-testid="events-list">
           <div v-for="event in events" :key="event.id" class="event-item" data-testid="event-item">
-            <div class="event-thumbnail">
+            <div
+              class="event-thumbnail"
+              :class="{ clickable: getEventImage(event) }"
+              @click="getEventImage(event) && openEnlargedImage(event.id)"
+            >
               <img
                 v-if="getEventImage(event)"
                 :src="getEventImage(event) || ''"
@@ -334,6 +358,23 @@ watch([timeRange, selectedEventTypes], () => {
           <button @click="loadMore" :disabled="loading">
             {{ loading ? 'Loading...' : 'Load More' }}
           </button>
+        </div>
+      </div>
+
+      <!-- Enlarged image lightbox -->
+      <div
+        v-if="enlargedEventId && enlargedImage"
+        class="lightbox-overlay"
+        @click.self="closeEnlargedImage"
+        data-testid="lightbox-overlay"
+      >
+        <div class="lightbox-content">
+          <button class="lightbox-close" @click="closeEnlargedImage" data-testid="lightbox-close">&times;</button>
+          <img :src="enlargedImage" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
+          <div v-if="enlargedEvent" class="lightbox-info">
+            <div class="lightbox-event-type">{{ getEventTypeName(enlargedEvent.type) }}</div>
+            <div class="lightbox-event-time">{{ formatTimestamp(enlargedEvent.startTimestamp) }}</div>
+          </div>
         </div>
       </div>
     </div>
@@ -566,5 +607,82 @@ watch([timeRange, selectedEventTypes], () => {
 
 .load-more button {
   min-width: 150px;
+}
+
+/* Clickable thumbnail */
+.event-thumbnail.clickable {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.event-thumbnail.clickable:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Lightbox styles */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: -10px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  line-height: 1;
+  z-index: 2001;
+}
+
+.lightbox-close:hover {
+  color: #ccc;
+}
+
+.lightbox-image {
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.lightbox-info {
+  margin-top: 15px;
+  text-align: center;
+  color: white;
+}
+
+.lightbox-event-type {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 5px;
+}
+
+.lightbox-event-time {
+  color: #ccc;
+  font-size: 0.9rem;
 }
 </style>
