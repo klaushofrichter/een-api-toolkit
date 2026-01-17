@@ -33,6 +33,10 @@ description: Use this skill when you are requested to create a PR for a feature 
   - for each example app, run: `cd <app-dir> && npx playwright test`
   - if any E2E tests fail, analyse the failure, report findings, and stop
   - report total number of E2E tests passed across all example apps
+- Run security review:
+  - invoke the `/security-review` skill to analyze code changes for security vulnerabilities
+  - if any HIGH severity vulnerabilities are found with confidence >= 8, report findings and stop
+  - include security review summary in the PR body
 
 ## 4. Create PR
 - Get version number for the PR body:
