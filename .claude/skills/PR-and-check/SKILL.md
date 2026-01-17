@@ -66,3 +66,12 @@ description: Use this skill when you are requested to create a PR for a feature 
   - view the review: `gh pr view <pr-number> --comments` or check the PR review file artifact
   - if the review includes recommendations to address before merging, summarize the recommendations and stop
   - if the review ended without critical recommendations, summarize the overall comments and stop
+
+## 6. Check all PR status checks
+- After code review completes, check all PR status checks (including non-required ones):
+  - run: `gh pr checks <pr-number> --json name,state`
+  - report the status of each check
+  - if any check has state "FAILURE", report which check failed and investigate using:
+    - `gh pr checks <pr-number> --json name,state,link` to get the link to the failed check
+    - review the workflow logs to understand the failure
+  - report any failed checks to the user, even if they are not required for merge
