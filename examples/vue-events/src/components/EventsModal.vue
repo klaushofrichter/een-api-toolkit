@@ -348,7 +348,10 @@ watch([timeRange, selectedEventTypes], () => {
   <div v-if="isOpen" class="modal-overlay" @click.self="emit('close')">
     <div class="modal">
       <div class="modal-header">
-        <h2>Events: {{ camera.name }}</h2>
+        <div class="header-info">
+          <h2>Events: {{ camera.name }}</h2>
+          <div class="camera-id">Camera ID: {{ camera.id }}</div>
+        </div>
         <button class="close-button" @click="emit('close')">&times;</button>
       </div>
 
@@ -494,7 +497,11 @@ watch([timeRange, selectedEventTypes], () => {
             </div>
           </div>
           <div v-if="enlargedEvent" class="lightbox-info">
-            <div class="lightbox-event-type">{{ getEventTypeName(enlargedEvent.type) }}</div>
+            <div class="lightbox-event-line">
+              <span class="lightbox-camera-info">{{ camera.name }} ({{ camera.id }})</span>
+              <span class="lightbox-separator">|</span>
+              <span class="lightbox-event-type">{{ getEventTypeName(enlargedEvent.type) }}</span>
+            </div>
             <div class="lightbox-event-time">{{ formatTimestamp(enlargedEvent.startTimestamp) }}</div>
             <div v-if="enlargedBoundingBoxes.length > 0" class="lightbox-detections" data-testid="lightbox-detections">
               {{ enlargedBoundingBoxes.length }} detection{{ enlargedBoundingBoxes.length !== 1 ? 's' : '' }}
@@ -542,6 +549,18 @@ watch([timeRange, selectedEventTypes], () => {
 .modal-header h2 {
   margin: 0;
   font-size: 1.25rem;
+}
+
+.header-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.camera-id {
+  font-size: 0.8rem;
+  color: #666;
+  font-family: monospace;
 }
 
 .close-button {
@@ -792,10 +811,26 @@ watch([timeRange, selectedEventTypes], () => {
   color: white;
 }
 
+.lightbox-event-line {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.lightbox-camera-info {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.lightbox-separator {
+  color: #666;
+}
+
 .lightbox-event-type {
   font-weight: 600;
   font-size: 1.1rem;
-  margin-bottom: 5px;
 }
 
 .lightbox-event-time {
