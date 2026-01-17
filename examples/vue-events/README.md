@@ -16,6 +16,9 @@ A Vue 3 example demonstrating how to query and display events from EEN cameras u
 - Event type filtering with checkboxes
 - Pagination with "Load More" button
 - Camera grid with click-to-open events modal
+- Image lightbox with enlarged view on thumbnail click
+- Bounding box overlay for object detection events (Person, Vehicle, etc.)
+- Detection count display per event
 
 ## APIs Used
 
@@ -171,5 +174,70 @@ if (!result.error && result.data) {
 // Display name for event type
 function getEventTypeName(type: string): string {
   return eventTypeNames.get(type) || formatEventType(type)
+}
+```
+
+### Extracting Bounding Boxes from Events
+
+Events with object detection data include bounding box coordinates for detected objects. The coordinates are normalized (0-1) relative to image dimensions.
+
+```typescript
+import { listEvents, type Event } from 'een-api-toolkit'
+
+interface BoundingBox {
+  x: number
+  y: number
+  width: number
+  height: number
+  label?: string
+}
+
+// Request object detection and classification data in listEvents
+const result = await listEvents({
+  actor: `camera:${cameraId}`,
+  type__in: ['een.personDetectionEvent.v1', 'een.vehicleDetectionEvent.v1'],
+  startTimestamp__gte: startTime,
+  include: [
+    'data.een.objectDetection.v1',
+    'data.een.objectClassification.v1'
+  ]
+})
+
+// Extract bounding boxes from event data
+function getBoundingBoxes(event: Event): BoundingBox[] {
+  const boxes: BoundingBox[] = []
+
+  // Build label map from classification data
+  const labelMap = new Map<string, string>()
+  for (const item of event.data) {
+    if (item.type === 'een.objectClassification.v1') {
+      const objectId = item.objectId as string
+      const label = item.label as string
+      if (objectId && label) {
+        labelMap.set(objectId, label)
+      }
+    }
+  }
+
+  // Extract bounding boxes from detection data
+  for (const item of event.data) {
+    if (item.type === 'een.objectDetection.v1') {
+      const bbox = item.boundingBox as number[]
+      const objectId = item.objectId as string
+
+      if (Array.isArray(bbox) && bbox.length === 4) {
+        const [x1, y1, x2, y2] = bbox
+        boxes.push({
+          x: x1,
+          y: y1,
+          width: x2 - x1,
+          height: y2 - y1,
+          label: labelMap.get(objectId) || 'Object'
+        })
+      }
+    }
+  }
+
+  return boxes
 }
 ```
