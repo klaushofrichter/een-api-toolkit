@@ -213,7 +213,7 @@ function toggleAllEventTypes() {
   }
 }
 
-// Watch for modal open
+// Watch for modal open/close
 watch(() => props.isOpen, async (isOpen) => {
   if (isOpen) {
     events.value = []
@@ -227,6 +227,10 @@ watch(() => props.isOpen, async (isOpen) => {
     if (availableEventTypes.value.length > 0) {
       await fetchEvents()
     }
+  } else {
+    // Clean up on modal close to free memory (base64 images can be large)
+    eventImages.value.clear()
+    events.value = []
   }
 }, { immediate: true })
 

@@ -655,9 +655,14 @@ const events = ref<Event[]>([])
 const eventImages = ref<Map<string, string>>(new Map())
 const loading = ref(false)
 
-// Fetch events when modal opens
+// Fetch events when modal opens, clean up on close
 watch(() => props.isOpen, async (isOpen) => {
-  if (!isOpen) return
+  if (!isOpen) {
+    // Clean up on close to free memory
+    eventImages.value.clear()
+    events.value = []
+    return
+  }
 
   loading.value = true
 
@@ -684,17 +689,19 @@ watch(() => props.isOpen, async (isOpen) => {
   events.value = data?.results || []
   loading.value = false
 
-  // Load thumbnails for each event
-  for (const event of events.value) {
-    const { data: image } = await getRecordedImage({
-      deviceId: event.actorId,
-      type: 'preview',
-      timestamp__gte: event.startTimestamp
+  // Load thumbnails in parallel for better performance
+  await Promise.all(
+    events.value.map(async (event) => {
+      const { data: image } = await getRecordedImage({
+        deviceId: event.actorId,
+        type: 'preview',
+        timestamp__gte: event.startTimestamp
+      })
+      if (image) {
+        eventImages.value.set(event.id, image.imageData)
+      }
     })
-    if (image) {
-      eventImages.value.set(event.id, image.imageData)
-    }
-  }
+  )
 }, { immediate: true })
 </script>
 
