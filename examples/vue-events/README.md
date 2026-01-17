@@ -162,8 +162,10 @@ function getStartTimestamp(range: TimeRange): string {
 // Fetch human-readable event type names
 const result = await listEventTypes({ pageSize: 100 })
 const eventTypeNames = new Map<string, string>()
-for (const et of result.data.results) {
-  eventTypeNames.set(et.type, et.name)
+if (!result.error && result.data) {
+  for (const et of result.data.results) {
+    eventTypeNames.set(et.type, et.name)
+  }
 }
 
 // Display name for event type
