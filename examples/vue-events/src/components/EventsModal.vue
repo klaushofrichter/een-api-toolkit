@@ -11,6 +11,19 @@ import {
   type EenError
 } from 'een-api-toolkit'
 
+/**
+ * Bounding box from object detection data.
+ * Coordinates are normalized (0-1) relative to image dimensions.
+ */
+interface BoundingBox {
+  x: number
+  y: number
+  width: number
+  height: number
+  label?: string
+  confidence?: number
+}
+
 const props = defineProps<{
   camera: Camera
   isOpen: boolean
@@ -53,6 +66,10 @@ const enlargedImage = computed(() => {
   if (!enlargedEventId.value) return null
   return eventImages.value.get(enlargedEventId.value) || null
 })
+const enlargedBoundingBoxes = computed(() => {
+  if (!enlargedEvent.value) return []
+  return getBoundingBoxes(enlargedEvent.value)
+})
 
 // Get start timestamp based on time range
 function getStartTimestamp(range: TimeRange): string {
@@ -63,6 +80,71 @@ function getStartTimestamp(range: TimeRange): string {
     '24h': 24
   }
   return new Date(now - hoursMap[range] * 60 * 60 * 1000).toISOString()
+}
+
+/**
+ * Get fallback label for detected object based on event type.
+ */
+function getFallbackLabel(eventType: string): string {
+  if (eventType.includes('person')) return 'Person'
+  if (eventType.includes('vehicle')) return 'Vehicle'
+  if (eventType.includes('licensePlate') || eventType.includes('lpr')) return 'License Plate'
+  return 'Object'
+}
+
+/**
+ * Extract bounding boxes from event data.
+ * Looks for object detection data schemas and extracts bounding box info.
+ * The EEN API returns boundingBox as [x1, y1, x2, y2] normalized coordinates (0-1).
+ * Labels are obtained from een.objectClassification.v1 data when available.
+ */
+function getBoundingBoxes(event: Event): BoundingBox[] {
+  const boxes: BoundingBox[] = []
+  const fallbackLabel = getFallbackLabel(event.type)
+
+  // Build a map of objectId -> classification label from objectClassification data
+  const classificationMap = new Map<string, string>()
+  for (const dataItem of event.data) {
+    if (dataItem.type === 'een.objectClassification.v1') {
+      const objectId = dataItem.objectId as string | undefined
+      const label = dataItem.label as string | undefined
+      if (objectId && label) {
+        // Capitalize first letter of label
+        const formattedLabel = label.charAt(0).toUpperCase() + label.slice(1).toLowerCase()
+        classificationMap.set(objectId, formattedLabel)
+      }
+    }
+  }
+
+  // Extract bounding boxes from objectDetection data
+  for (const dataItem of event.data) {
+    if (dataItem.type === 'een.objectDetection.v1') {
+      const boundingBox = dataItem.boundingBox as number[] | undefined
+      const objectId = dataItem.objectId as string | undefined
+
+      if (Array.isArray(boundingBox) && boundingBox.length === 4) {
+        const [x1, y1, x2, y2] = boundingBox
+        // Use classification label if available, otherwise use fallback
+        const label = (objectId && classificationMap.get(objectId)) || fallbackLabel
+        boxes.push({
+          x: x1,
+          y: y1,
+          width: x2 - x1,
+          height: y2 - y1,
+          label
+        })
+      }
+    }
+  }
+
+  return boxes
+}
+
+/**
+ * Get the count of bounding boxes for an event.
+ */
+function getBoundingBoxCount(event: Event): number {
+  return getBoundingBoxes(event).length
 }
 
 // Fetch available event types for this camera
@@ -137,7 +219,7 @@ async function fetchEvents(append = false) {
     pageSize: 20,
     pageToken: append ? nextPageToken.value : undefined,
     sort: '-startTimestamp',
-    include: ['data.een.fullFrameImageUrl.v1', 'data.een.croppedFrameImageUrl.v1']
+    include: ['data.een.fullFrameImageUrl.v1', 'data.een.croppedFrameImageUrl.v1', 'data.een.objectDetection.v1', 'data.een.objectClassification.v1']
   })
 
   if (result.error) {
@@ -349,6 +431,9 @@ watch([timeRange, selectedEventTypes], () => {
             <div class="event-info">
               <div class="event-type">{{ getEventTypeName(event.type) }}</div>
               <div class="event-time">{{ formatTimestamp(event.startTimestamp) }}</div>
+              <div v-if="getBoundingBoxCount(event) > 0" class="event-detections" data-testid="event-detections">
+                {{ getBoundingBoxCount(event) }} detection{{ getBoundingBoxCount(event) !== 1 ? 's' : '' }}
+              </div>
               <div class="event-id">ID: {{ event.id }}</div>
             </div>
           </div>
@@ -370,10 +455,50 @@ watch([timeRange, selectedEventTypes], () => {
       >
         <div class="lightbox-content">
           <button class="lightbox-close" @click="closeEnlargedImage" data-testid="lightbox-close">&times;</button>
-          <img :src="enlargedImage" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
+          <div class="lightbox-image-container">
+            <img :src="enlargedImage" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
+            <!-- Bounding box overlay -->
+            <svg
+              v-if="enlargedBoundingBoxes.length > 0"
+              class="bounding-box-overlay"
+              viewBox="0 0 100 100"
+              preserveAspectRatio="none"
+              data-testid="bounding-box-overlay"
+            >
+              <rect
+                v-for="(box, index) in enlargedBoundingBoxes"
+                :key="index"
+                :x="box.x * 100"
+                :y="box.y * 100"
+                :width="box.width * 100"
+                :height="box.height * 100"
+                class="bounding-box"
+                data-testid="bounding-box"
+              />
+            </svg>
+            <!-- Bounding box labels -->
+            <div
+              v-for="(box, index) in enlargedBoundingBoxes"
+              :key="'label-' + index"
+              class="bounding-box-label"
+              :style="{
+                left: (box.x * 100) + '%',
+                top: (box.y * 100) + '%'
+              }"
+              data-testid="bounding-box-label"
+            >
+              {{ box.label || 'Object' }}
+              <span v-if="box.confidence" class="confidence">
+                {{ Math.round(box.confidence * 100) }}%
+              </span>
+            </div>
+          </div>
           <div v-if="enlargedEvent" class="lightbox-info">
             <div class="lightbox-event-type">{{ getEventTypeName(enlargedEvent.type) }}</div>
             <div class="lightbox-event-time">{{ formatTimestamp(enlargedEvent.startTimestamp) }}</div>
+            <div v-if="enlargedBoundingBoxes.length > 0" class="lightbox-detections" data-testid="lightbox-detections">
+              {{ enlargedBoundingBoxes.length }} detection{{ enlargedBoundingBoxes.length !== 1 ? 's' : '' }}
+            </div>
           </div>
         </div>
       </div>
@@ -661,14 +786,6 @@ watch([timeRange, selectedEventTypes], () => {
   color: #ccc;
 }
 
-.lightbox-image {
-  max-width: 90vw;
-  max-height: 80vh;
-  object-fit: contain;
-  border-radius: 4px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-}
-
 .lightbox-info {
   margin-top: 15px;
   text-align: center;
@@ -684,5 +801,73 @@ watch([timeRange, selectedEventTypes], () => {
 .lightbox-event-time {
   color: #ccc;
   font-size: 0.9rem;
+}
+
+.lightbox-detections {
+  color: #4CAF50;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+
+/* Detection count in event list */
+.event-detections {
+  color: #4CAF50;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin-bottom: 3px;
+}
+
+/* Lightbox image container for bounding box overlay */
+.lightbox-image-container {
+  position: relative;
+  display: inline-block;
+  max-width: 90vw;
+  max-height: 80vh;
+}
+
+.lightbox-image-container .lightbox-image {
+  display: block;
+  max-width: 90vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 4px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+/* SVG overlay for bounding boxes */
+.bounding-box-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.bounding-box {
+  fill: none;
+  stroke: #00FF00;
+  stroke-width: 0.5;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Bounding box labels */
+.bounding-box-label {
+  position: absolute;
+  background: rgba(0, 255, 0, 0.85);
+  color: #000;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 2px;
+  white-space: nowrap;
+  transform: translateY(-100%);
+  pointer-events: none;
+}
+
+.bounding-box-label .confidence {
+  font-weight: normal;
+  opacity: 0.8;
+  margin-left: 4px;
 }
 </style>

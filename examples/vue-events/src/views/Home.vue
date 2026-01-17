@@ -77,6 +77,7 @@ onMounted(() => {
         <li>Filter events by type using checkboxes</li>
         <li>Filter events by time range (1h, 6h, 24h)</li>
         <li>Display event thumbnails when available</li>
+        <li>Click thumbnails to view enlarged images with bounding box overlays</li>
         <li>Pagination with "Load More" button</li>
       </ul>
       <p class="storage-note" data-testid="storage-strategy">
