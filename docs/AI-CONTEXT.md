@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.13
+> **Version:** 0.3.14
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -199,6 +199,19 @@ player.start({ videoElement, cameraId, baseUrl, jwt })
 ---
 
 ## Quick Reference
+
+### Example Applications
+
+Complete Vue 3 applications demonstrating toolkit features:
+
+| Example | Description | Key Files |
+|---------|-------------|-----------|
+| [vue-users](../examples/vue-users/) | User management with pagination | `src/views/Users.vue` |
+| [vue-cameras](../examples/vue-cameras/) | Camera listing with status filters | `src/views/Cameras.vue` |
+| [vue-bridges](../examples/vue-bridges/) | Bridge listing with device info | `src/views/Bridges.vue` |
+| [vue-media](../examples/vue-media/) | Live and recorded image viewing | `src/views/LiveCamera.vue`, `RecordedImage.vue`, `HLS.vue` |
+| [vue-feeds](../examples/vue-feeds/) | Live video streaming (preview and main) | `src/views/Feeds.vue` |
+| [vue-events](../examples/vue-events/) | Events with bounding box overlays | `src/components/EventsModal.vue` |
 
 ### Configuration
 
