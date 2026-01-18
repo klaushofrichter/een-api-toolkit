@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { ref, watch, computed, onUnmounted, nextTick } from 'vue'
-import { listAlerts, listAlertTypes, getAlert, getRecordedImage, listMedia, initMediaSession, formatTimestamp, useAuthStore, type Camera, type Alert, type AlertType, type EenError } from 'een-api-toolkit'
-import Hls from 'hls.js'
+import { ref, watch, computed } from 'vue'
+import { listAlerts, listAlertTypes, getAlert, getRecordedImage, type Camera, type Alert, type AlertType, type EenError } from 'een-api-toolkit'
+import { useHlsPlayer } from '../composables/useHlsPlayer'
 
-const authStore = useAuthStore()
+// Initialize HLS player composable
+const hlsPlayer = useHlsPlayer()
+const { videoUrl, videoError, loadingVideo, loadVideo, resetVideo, videoRef } = hlsPlayer
+// Mark videoRef as used (it's bound to template via ref="videoRef")
+void videoRef
 
 const props = defineProps<{
   camera: Camera | null
@@ -31,13 +35,8 @@ const lightboxImageUrl = ref<string | null>(null)
 const loadingImage = ref(false)
 const imageError = ref<string | null>(null)
 
-// Video state
+// Video state (showVideo controls lightbox mode, rest from composable)
 const showVideo = ref(false)
-const videoUrl = ref<string | null>(null)
-const loadingVideo = ref(false)
-const videoError = ref<string | null>(null)
-const videoRef = ref<HTMLVideoElement | null>(null)
-let hlsInstance: Hls | null = null
 
 // Check if alert has an httpsUrl in its data
 // The data is an array, look for type "een.fullFrameImageUrl.v1"
@@ -259,136 +258,25 @@ function closeLightbox() {
   lightboxImageUrl.value = null
   imageError.value = null
   // Also cleanup video if it was playing
-  destroyHls()
+  resetVideo()
   showVideo.value = false
-  videoUrl.value = null
-  videoError.value = null
-}
-
-function destroyHls() {
-  if (hlsInstance) {
-    hlsInstance.destroy()
-    hlsInstance = null
-  }
 }
 
 async function handleVideoClick() {
   if (!alertImageUrl.value) return
 
-  loadingVideo.value = true
-  videoError.value = null
-  videoUrl.value = null
-  showVideo.value = true
-  showLightbox.value = true
-
   // Parse the URL to extract parameters
   const params = parseImageUrlParams(alertImageUrl.value)
   if (!params) {
-    videoError.value = 'Invalid image URL format'
-    loadingVideo.value = false
     return
   }
 
-  // Initialize media session for cookie-based auth
-  const sessionResult = await initMediaSession()
-  if (sessionResult.error) {
-    videoError.value = `Media session error: ${sessionResult.error.message}`
-    loadingVideo.value = false
-    return
-  }
+  showVideo.value = true
+  showLightbox.value = true
 
-  // Get media intervals with HLS URL
-  // Search for recordings starting 1 hour before the alert time to find intervals that contain the alert
-  const alertTime = new Date(params.timestamp)
-  const searchStartTime = new Date(alertTime.getTime() - 60 * 60 * 1000) // 1 hour before
-  const searchEndTime = new Date(alertTime.getTime() + 60 * 60 * 1000) // 1 hour after
-
-  // Use 'main' type for video - HLS is typically only available for main feeds
-  const result = await listMedia({
-    deviceId: params.deviceId,
-    type: 'main',
-    mediaType: 'video',
-    startTimestamp: formatTimestamp(searchStartTime.toISOString()),
-    endTimestamp: formatTimestamp(searchEndTime.toISOString()),
-    include: ['hlsUrl']
-  })
-
-  if (result.error) {
-    videoError.value = result.error.message
-    loadingVideo.value = false
-    return
-  }
-
-  const intervals = result.data?.results ?? []
-
-  // Find an interval that contains the alert timestamp and has an HLS URL
-  const alertTimeMs = alertTime.getTime()
-  const interval = intervals.find(i => {
-    if (!i.hlsUrl) return false
-    const intervalStart = new Date(i.startTimestamp).getTime()
-    const intervalEnd = new Date(i.endTimestamp).getTime()
-    return alertTimeMs >= intervalStart && alertTimeMs <= intervalEnd
-  })
-
-  if (!interval?.hlsUrl) {
-    // Provide more detailed error message
-    if (intervals.length === 0) {
-      videoError.value = 'No recordings found for this time range'
-    } else if (!intervals.some(i => i.hlsUrl)) {
-      videoError.value = 'Recordings found but HLS not available'
-    } else {
-      videoError.value = `No recording contains timestamp ${params.timestamp}`
-    }
-    loadingVideo.value = false
-    return
-  }
-
-  // Use the HLS URL directly (it's already configured for the interval)
-  videoUrl.value = interval.hlsUrl
-
-  loadingVideo.value = false
-
-  // Initialize HLS.js after the DOM has been updated
-  await nextTick()
-  initHls()
+  // Use the composable to load and play video
+  await loadVideo(params.deviceId, params.timestamp)
 }
-
-function initHls() {
-  if (!videoUrl.value || !videoRef.value) return
-
-  destroyHls()
-
-  // Always use hls.js even on Safari - native HLS cannot send Authorization headers
-  if (!Hls.isSupported()) {
-    videoError.value = 'HLS is not supported in this browser. Please use a modern browser like Chrome, Firefox, or Edge.'
-    return
-  }
-
-  // Configure hls.js to send Authorization header for authentication
-  hlsInstance = new Hls({
-    xhrSetup: function(xhr) {
-      xhr.setRequestHeader('Authorization', `Bearer ${authStore.token}`)
-    }
-  })
-  hlsInstance.loadSource(videoUrl.value)
-  hlsInstance.attachMedia(videoRef.value)
-  hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-    videoRef.value?.play().catch(() => {
-      // Autoplay may be blocked, user can manually play
-    })
-  })
-  hlsInstance.on(Hls.Events.ERROR, (_, data) => {
-    console.error('HLS error:', data)
-    if (data.fatal) {
-      videoError.value = `HLS error: ${data.type} - ${data.details}`
-    }
-  })
-}
-
-// Cleanup HLS on unmount
-onUnmounted(() => {
-  destroyHls()
-})
 
 // Fetch alert types once on mount
 fetchAlertTypes()
