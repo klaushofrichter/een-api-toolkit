@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.14**
+**EEN API Toolkit v0.3.15**
 
 ***
 
-# EEN API Toolkit v0.3.14
+# EEN API Toolkit v0.3.15
 
 ## Interfaces
 
@@ -22,6 +22,15 @@
 - [EenError](interfaces/EenError.md)
 - [PaginationParams](interfaces/PaginationParams.md)
 - [PaginatedResult](interfaces/PaginatedResult.md)
+
+### Alerts
+
+- [AlertAction](interfaces/AlertAction.md)
+- [Alert](interfaces/Alert.md)
+- [AlertType](interfaces/AlertType.md)
+- [ListAlertsParams](interfaces/ListAlertsParams.md)
+- [GetAlertParams](interfaces/GetAlertParams.md)
+- [ListAlertTypesParams](interfaces/ListAlertTypesParams.md)
 
 ### Bridges
 
@@ -47,6 +56,11 @@
 ### Configuration
 
 - [EenToolkitConfig](interfaces/EenToolkitConfig.md)
+
+### Event Metrics
+
+- [EventMetric](interfaces/EventMetric.md)
+- [GetEventMetricsParams](interfaces/GetEventMetricsParams.md)
 
 ### Events
 
@@ -76,12 +90,23 @@
 - [MediaSessionResponse](interfaces/MediaSessionResponse.md)
 - [MediaSessionResult](interfaces/MediaSessionResult.md)
 
+### Notifications
+
+- [Notification](interfaces/Notification.md)
+- [ListNotificationsParams](interfaces/ListNotificationsParams.md)
+
 ## Type Aliases
 
 ### Types
 
 - [ErrorCode](type-aliases/ErrorCode.md)
 - [Result](type-aliases/Result.md)
+
+### Alerts
+
+- [AlertInclude](type-aliases/AlertInclude.md)
+- [AlertSort](type-aliases/AlertSort.md)
+- [AlertActionStatus](type-aliases/AlertActionStatus.md)
 
 ### Bridges
 
@@ -94,6 +119,11 @@
 ### Configuration
 
 - [StorageStrategy](type-aliases/StorageStrategy.md)
+
+### Event Metrics
+
+- [MetricActorType](type-aliases/MetricActorType.md)
+- [MetricDataPoint](type-aliases/MetricDataPoint.md)
 
 ### Events
 
@@ -109,6 +139,11 @@
 
 - [MediaType](type-aliases/MediaType.md)
 - [MediaStreamType](type-aliases/MediaStreamType.md)
+
+### Notifications
+
+- [NotificationCategory](type-aliases/NotificationCategory.md)
+- [NotificationStatus](type-aliases/NotificationStatus.md)
 
 ## Variables
 
@@ -128,6 +163,12 @@
 - [getUsers](functions/getUsers.md)
 - [getUser](functions/getUser.md)
 
+### Alerts
+
+- [listAlerts](functions/listAlerts.md)
+- [getAlert](functions/getAlert.md)
+- [listAlertTypes](functions/listAlertTypes.md)
+
 ### Bridges
 
 - [getBridges](functions/getBridges.md)
@@ -141,6 +182,10 @@
 ### Configuration
 
 - [getStorageStrategy](functions/getStorageStrategy.md)
+
+### Event Metrics
+
+- [getEventMetrics](functions/getEventMetrics.md)
 
 ### Events
 
@@ -160,6 +205,11 @@
 - [getRecordedImage](functions/getRecordedImage.md)
 - [getMediaSession](functions/getMediaSession.md)
 - [initMediaSession](functions/initMediaSession.md)
+
+### Notifications
+
+- [listNotifications](functions/listNotifications.md)
+- [getNotification](functions/getNotification.md)
 
 ### Other
 
