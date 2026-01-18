@@ -94,6 +94,71 @@ async function clearAuthState(page: Page): Promise<void> {
   }
 }
 
+/**
+ * Wait for cameras to finish loading (either cameras appear or error/empty state)
+ */
+async function waitForCamerasLoaded(page: Page): Promise<void> {
+  // Wait until either camera options appear, an error shows, or the select is enabled (empty case)
+  await Promise.race([
+    page.locator('[data-testid="camera-option"]').first().waitFor({ state: 'attached', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="camera-selector-error"]').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="camera-select"]:not([disabled])').waitFor({ state: 'attached', timeout: TIMEOUTS.UI_UPDATE })
+  ]).catch(() => {
+    // At least one should resolve - if all fail, that's ok, we'll handle in the test
+  })
+}
+
+/**
+ * Wait for event types to finish loading
+ */
+async function waitForEventTypesLoaded(page: Page): Promise<void> {
+  await Promise.race([
+    page.locator('[data-testid="event-type-option"]').first().waitFor({ state: 'attached', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="event-type-select"]:not([disabled])').waitFor({ state: 'attached', timeout: TIMEOUTS.UI_UPDATE })
+  ]).catch(() => {
+    // Handle gracefully
+  })
+}
+
+/**
+ * Wait for metrics to finish loading (data, error, or no-data state)
+ */
+async function waitForMetricsLoaded(page: Page): Promise<void> {
+  await Promise.race([
+    page.locator('.chart-container canvas').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="metrics-error"]').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="metrics-no-data"]').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE })
+  ]).catch(() => {
+    // Handle gracefully
+  })
+}
+
+/**
+ * Wait for alerts to finish loading
+ */
+async function waitForAlertsLoaded(page: Page): Promise<void> {
+  await Promise.race([
+    page.locator('[data-testid="alert-item"]').first().waitFor({ state: 'attached', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="alerts-error"]').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="alerts-no-data"]').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE })
+  ]).catch(() => {
+    // Handle gracefully
+  })
+}
+
+/**
+ * Wait for notifications to finish loading
+ */
+async function waitForNotificationsLoaded(page: Page): Promise<void> {
+  await Promise.race([
+    page.locator('[data-testid="notification-item"]').first().waitFor({ state: 'attached', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="notifications-error"]').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE }),
+    page.locator('[data-testid="notifications-no-data"]').waitFor({ state: 'visible', timeout: TIMEOUTS.UI_UPDATE })
+  ]).catch(() => {
+    // Handle gracefully
+  })
+}
+
 test.describe('Vue Alerts & Metrics Example - Auth', () => {
   let proxyAccessible = false
 
@@ -195,8 +260,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
     const cameraSelect = page.locator('[data-testid="camera-select"]')
     await expect(cameraSelect).toBeVisible()
 
-    // Wait for cameras to load (select should not be disabled)
-    await page.waitForTimeout(2000) // Give API time to respond
+    // Wait for cameras to load using condition-based wait
+    await waitForCamerasLoaded(page)
 
     // Check if cameras loaded (should have options)
     const options = page.locator('[data-testid="camera-option"]')
@@ -240,8 +305,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.locator('[data-testid="dashboard-container"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-    // Wait for cameras to load
-    await page.waitForTimeout(2000)
+    // Wait for cameras to load using condition-based wait
+    await waitForCamerasLoaded(page)
 
     // Select first camera if available
     const cameraSelect = page.locator('[data-testid="camera-select"]')
@@ -254,8 +319,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
       if (firstCameraValue) {
         await cameraSelect.selectOption(firstCameraValue)
 
-        // Wait for event types to load
-        await page.waitForTimeout(2000)
+        // Wait for event types to load using condition-based wait
+        await waitForEventTypesLoaded(page)
 
         // Check metrics chart container is displayed
         const metricsChart = page.locator('[data-testid="metrics-chart"]')
@@ -274,8 +339,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
           if (firstEventType) {
             await eventTypeSelect.selectOption(firstEventType)
 
-            // Wait for metrics to load
-            await page.waitForTimeout(3000)
+            // Wait for metrics to load using condition-based wait
+            await waitForMetricsLoaded(page)
 
             // Should show either data, loading, error, or no-data
             const hasData = await page.locator('.chart-container canvas').isVisible()
@@ -304,8 +369,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.locator('[data-testid="dashboard-container"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-    // Wait for cameras to load
-    await page.waitForTimeout(2000)
+    // Wait for cameras to load using condition-based wait
+    await waitForCamerasLoaded(page)
 
     // Select first camera if available
     const cameraSelect = page.locator('[data-testid="camera-select"]')
@@ -317,8 +382,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
       if (firstCameraValue) {
         await cameraSelect.selectOption(firstCameraValue)
 
-        // Wait for alerts to load
-        await page.waitForTimeout(3000)
+        // Wait for alerts to load using condition-based wait
+        await waitForAlertsLoaded(page)
 
         // Check alerts list is displayed
         const alertsList = page.locator('[data-testid="alerts-list"]')
@@ -344,8 +409,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.locator('[data-testid="dashboard-container"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-    // Wait for cameras to load
-    await page.waitForTimeout(2000)
+    // Wait for cameras to load using condition-based wait
+    await waitForCamerasLoaded(page)
 
     // Select first camera if available
     const cameraSelect = page.locator('[data-testid="camera-select"]')
@@ -357,8 +422,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
       if (firstCameraValue) {
         await cameraSelect.selectOption(firstCameraValue)
 
-        // Wait for notifications to load
-        await page.waitForTimeout(3000)
+        // Wait for notifications to load using condition-based wait
+        await waitForNotificationsLoaded(page)
 
         // Check notifications list is displayed
         const notificationsList = page.locator('[data-testid="notifications-list"]')
@@ -398,8 +463,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.locator('[data-testid="dashboard-container"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-    // Wait for cameras to load and select one
-    await page.waitForTimeout(2000)
+    // Wait for cameras to load using condition-based wait
+    await waitForCamerasLoaded(page)
     const cameraSelect = page.locator('[data-testid="camera-select"]')
     const options = page.locator('[data-testid="camera-option"]')
     const optionCount = await options.count()
@@ -412,8 +477,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
         // Use 7 day range for more alerts
         await page.locator('[data-testid="time-range-7d"]').click()
 
-        // Wait for alerts to load
-        await page.waitForTimeout(3000)
+        // Wait for alerts to load using condition-based wait
+        await waitForAlertsLoaded(page)
 
         // Check if load more button exists
         const loadMoreButton = page.locator('[data-testid="alerts-load-more"]')
@@ -423,9 +488,9 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
           // Get current alert count
           const alertsBefore = await page.locator('[data-testid="alert-item"]').count()
 
-          // Click load more
+          // Click load more and wait for more items to appear
           await loadMoreButton.click()
-          await page.waitForTimeout(2000)
+          await waitForAlertsLoaded(page)
 
           // Verify more alerts loaded
           const alertsAfter = await page.locator('[data-testid="alert-item"]').count()
@@ -446,8 +511,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.locator('[data-testid="dashboard-container"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
-    // Wait for cameras to load and select one
-    await page.waitForTimeout(2000)
+    // Wait for cameras to load using condition-based wait
+    await waitForCamerasLoaded(page)
     const cameraSelect = page.locator('[data-testid="camera-select"]')
     const options = page.locator('[data-testid="camera-option"]')
     const optionCount = await options.count()
@@ -460,8 +525,8 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
         // Use 7 day range for more notifications
         await page.locator('[data-testid="time-range-7d"]').click()
 
-        // Wait for notifications to load
-        await page.waitForTimeout(3000)
+        // Wait for notifications to load using condition-based wait
+        await waitForNotificationsLoaded(page)
 
         // Check if load more button exists
         const loadMoreButton = page.locator('[data-testid="notifications-load-more"]')
@@ -471,9 +536,9 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
           // Get current notification count
           const notificationsBefore = await page.locator('[data-testid="notification-item"]').count()
 
-          // Click load more
+          // Click load more and wait for more items to appear
           await loadMoreButton.click()
-          await page.waitForTimeout(2000)
+          await waitForNotificationsLoaded(page)
 
           // Verify more notifications loaded
           const notificationsAfter = await page.locator('[data-testid="notification-item"]').count()

@@ -130,10 +130,13 @@ async function fetchMetrics() {
   if (metrics.length > 0) {
     // Use the first metric's data points (for count target)
     const metric = metrics.find((m: EventMetric) => m.target === 'count') ?? metrics[0]
-    dataPoints.value = metric.dataPoints.map(([timestamp, count]) => ({
-      timestamp,
-      count
-    }))
+    // Defensive check for dataPoints array
+    if (metric.dataPoints && Array.isArray(metric.dataPoints)) {
+      dataPoints.value = metric.dataPoints.map(([timestamp, count]) => ({
+        timestamp,
+        count
+      }))
+    }
   }
 
   loadingMetrics.value = false
