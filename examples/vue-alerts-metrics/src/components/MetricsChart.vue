@@ -28,6 +28,7 @@ ChartJS.register(
 const props = defineProps<{
   camera: Camera
   timeRange: string
+  aggregateMinutes?: number
 }>()
 
 interface DataPoint {
@@ -48,7 +49,8 @@ function getTimeRangeMs(range: string): number {
     case '6h': return 6 * 60 * 60 * 1000
     case '24h': return 24 * 60 * 60 * 1000
     case '7d': return 7 * 24 * 60 * 60 * 1000
-    default: return 24 * 60 * 60 * 1000
+    case 'none': return 7 * 24 * 60 * 60 * 1000  // Default to 7 days when "none"
+    default: return 7 * 24 * 60 * 60 * 1000
   }
 }
 
@@ -59,7 +61,8 @@ function getAggregationMinutes(range: string): number {
     case '6h': return 60      // 1 hour buckets (6 data points)
     case '24h': return 60     // 1 hour buckets (24 data points)
     case '7d': return 360     // 6 hour buckets (28 data points)
-    default: return 60
+    case 'none': return 360   // 6 hour buckets for 7 days default
+    default: return 360
   }
 }
 
@@ -96,6 +99,11 @@ async function fetchEventTypes() {
   }
 
   eventTypes.value = result.data?.type ?? []
+  // Auto-select first event type if available
+  if (eventTypes.value.length > 0) {
+    selectedEventType.value = eventTypes.value[0]
+    fetchMetrics()
+  }
   loadingEventTypes.value = false
 }
 
@@ -109,7 +117,8 @@ async function fetchMetrics() {
   const now = new Date()
   const rangeMs = getTimeRangeMs(props.timeRange)
   const startTime = new Date(now.getTime() - rangeMs)
-  const aggregateByMinutes = getAggregationMinutes(props.timeRange)
+  // Use provided aggregateMinutes prop, or fall back to auto-calculated value
+  const aggregateByMinutes = props.aggregateMinutes ?? getAggregationMinutes(props.timeRange)
 
   const result = await getEventMetrics({
     actor: `camera:${props.camera.id}`,
@@ -127,15 +136,19 @@ async function fetchMetrics() {
 
   // Transform API data to chart data points
   const metrics = result.data ?? []
+  const nowMs = now.getTime()
   if (metrics.length > 0) {
     // Use the first metric's data points (for count target)
     const metric = metrics.find((m: EventMetric) => m.target === 'count') ?? metrics[0]
     // Defensive check for dataPoints array
     if (metric.dataPoints && Array.isArray(metric.dataPoints)) {
-      dataPoints.value = metric.dataPoints.map(([timestamp, count]) => ({
-        timestamp,
-        count
-      }))
+      // Filter out future data points
+      dataPoints.value = metric.dataPoints
+        .filter(([timestamp]) => timestamp <= nowMs)
+        .map(([timestamp, count]) => ({
+          timestamp,
+          count
+        }))
     }
   }
 
@@ -159,6 +172,7 @@ const chartData = computed(() => {
   return {
     labels: dataPoints.value.map(({ timestamp }) => {
       const date = new Date(timestamp)
+      // Use time-only format for short ranges, date+time for longer ranges (including 'none' which defaults to 7 days)
       if (props.timeRange === '1h' || props.timeRange === '6h') {
         return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
@@ -216,9 +230,9 @@ watch(
   { immediate: true }
 )
 
-// Fetch metrics when time range changes (if event type is selected)
+// Fetch metrics when time range or aggregate changes (if event type is selected)
 watch(
-  () => props.timeRange,
+  () => [props.timeRange, props.aggregateMinutes],
   () => {
     if (selectedEventType.value) {
       fetchMetrics()

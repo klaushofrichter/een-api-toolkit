@@ -2,14 +2,16 @@
 import { ref, onMounted } from 'vue'
 import { getCameras, type Camera, type EenError } from 'een-api-toolkit'
 
+const ALL_CAMERAS_VALUE = '__all__'
+
 const emit = defineEmits<{
-  select: [camera: Camera]
+  select: [camera: Camera | null]
 }>()
 
 const cameras = ref<Camera[]>([])
 const loading = ref(false)
 const error = ref<EenError | null>(null)
-const selectedCameraId = ref<string>('')
+const selectedCameraId = ref<string>(ALL_CAMERAS_VALUE)
 
 async function fetchCameras() {
   loading.value = true
@@ -22,15 +24,22 @@ async function fetchCameras() {
     cameras.value = []
   } else {
     cameras.value = result.data?.results ?? []
+    // Default to "All Cameras" and emit null
+    selectedCameraId.value = ALL_CAMERAS_VALUE
+    emit('select', null)
   }
 
   loading.value = false
 }
 
 function handleChange() {
-  const camera = cameras.value.find(c => c.id === selectedCameraId.value)
-  if (camera) {
-    emit('select', camera)
+  if (selectedCameraId.value === ALL_CAMERAS_VALUE) {
+    emit('select', null)
+  } else {
+    const camera = cameras.value.find(c => c.id === selectedCameraId.value)
+    if (camera) {
+      emit('select', camera)
+    }
   }
 }
 
@@ -49,7 +58,8 @@ onMounted(() => {
       :disabled="loading"
       data-testid="camera-select"
     >
-      <option value="" disabled>{{ loading ? 'Loading cameras...' : 'Select a camera' }}</option>
+      <option v-if="loading" value="" disabled>Loading cameras...</option>
+      <option :value="ALL_CAMERAS_VALUE" data-testid="camera-option-all">All Cameras</option>
       <option
         v-for="camera in cameras"
         :key="camera.id"

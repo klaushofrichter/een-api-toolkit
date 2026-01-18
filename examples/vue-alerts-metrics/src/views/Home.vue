@@ -13,6 +13,10 @@ const user = ref<UserProfile | null>(null)
 const loading = ref(false)
 const error = ref<EenError | null>(null)
 
+// Copy feedback state
+const tokenCopied = ref(false)
+const baseUrlCopied = ref(false)
+
 async function fetchUser() {
   if (!isAuthenticated.value) return
 
@@ -28,6 +32,28 @@ async function fetchUser() {
   }
 
   loading.value = false
+}
+
+async function copyAccessToken() {
+  const token = authStore.token
+  if (!token) return
+
+  await navigator.clipboard.writeText(token)
+  tokenCopied.value = true
+  setTimeout(() => {
+    tokenCopied.value = false
+  }, 2000)
+}
+
+async function copyBaseUrl() {
+  const baseUrl = authStore.baseUrl
+  if (!baseUrl) return
+
+  await navigator.clipboard.writeText(baseUrl)
+  baseUrlCopied.value = true
+  setTimeout(() => {
+    baseUrlCopied.value = false
+  }, 2000)
 }
 
 onMounted(() => {
@@ -47,13 +73,16 @@ onMounted(() => {
       <div v-else-if="user" class="user-info" data-testid="user-info">
         <p>Logged in as: <strong>{{ user.firstName }} {{ user.lastName }}</strong></p>
         <p>Email: {{ user.email }}</p>
+        <div class="copy-buttons">
+          <button @click="copyAccessToken" class="copy-button" data-testid="copy-token-button">
+            {{ tokenCopied ? 'Copied!' : 'Copy Access Token' }}
+          </button>
+          <button @click="copyBaseUrl" class="copy-button" data-testid="copy-baseurl-button">
+            {{ baseUrlCopied ? 'Copied!' : 'Copy Base URL' }}
+          </button>
+        </div>
       </div>
 
-      <div class="actions">
-        <router-link to="/dashboard">
-          <button data-testid="view-dashboard-button">View Dashboard</button>
-        </router-link>
-      </div>
     </div>
 
     <div v-else class="login-prompt" data-testid="not-authenticated">
@@ -79,6 +108,7 @@ onMounted(() => {
         <li>Alerts list with filtering by camera</li>
         <li>Notifications list with read status</li>
         <li>Pagination with "Load More" buttons</li>
+        <li>Copy buttons to easily grab the access token and base URL for direct API testing</li>
       </ul>
       <p class="storage-note" data-testid="storage-strategy">
         Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})
@@ -108,8 +138,27 @@ h2 {
   margin: 5px 0;
 }
 
-.actions {
-  margin: 20px 0;
+.copy-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.copy-button {
+  padding: 8px 12px;
+  font-size: 0.85em;
+  background: #fff;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.copy-button:hover {
+  background: #e8e8e8;
+  border-color: #999;
+  color: #000;
 }
 
 .login-prompt {

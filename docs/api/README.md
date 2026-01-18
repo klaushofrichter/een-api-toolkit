@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.15**
+**EEN API Toolkit v0.3.16**
 
 ***
 
-# EEN API Toolkit v0.3.15
+# EEN API Toolkit v0.3.16
 
 ## Interfaces
 
@@ -223,3 +223,7 @@
 - [getProxyUrl](functions/getProxyUrl.md)
 - [getClientId](functions/getClientId.md)
 - [getRedirectUri](functions/getRedirectUri.md)
+
+### Utilities
+
+- [formatTimestamp](functions/formatTimestamp.md)

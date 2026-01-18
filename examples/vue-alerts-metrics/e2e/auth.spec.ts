@@ -283,14 +283,21 @@ test.describe('Vue Alerts & Metrics Example - Auth', () => {
     await expect(page.locator('[data-testid="dashboard-container"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
     // Test time range buttons
+    const buttonNone = page.locator('[data-testid="time-range-none"]')
     const button1h = page.locator('[data-testid="time-range-1h"]')
     const button24h = page.locator('[data-testid="time-range-24h"]')
 
+    await expect(buttonNone).toBeVisible()
     await expect(button1h).toBeVisible()
     await expect(button24h).toBeVisible()
 
-    // 24h should be active by default
+    // 'None' should be active by default
+    await expect(buttonNone).toHaveClass(/active/)
+
+    // Click 24h and verify it becomes active
+    await button24h.click()
     await expect(button24h).toHaveClass(/active/)
+    await expect(buttonNone).not.toHaveClass(/active/)
 
     // Click 1h and verify it becomes active
     await button1h.click()
