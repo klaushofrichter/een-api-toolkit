@@ -12,6 +12,7 @@ This guide covers everything you need to use een-api-toolkit in your Vue 3 appli
 - [Using the API](#using-the-api)
   - [Events API](#events-api)
   - [Live Video Streaming](#live-video-streaming)
+- [Utilities](#utilities)
 - [Error Handling](#error-handling)
 - [Building an App from Scratch](#building-an-app-from-scratch)
 - [Troubleshooting](#troubleshooting)
@@ -544,54 +545,47 @@ const { data: mediaList } = await listMedia({
 
 #### EEN Timestamp Format (Critical)
 
-The EEN API requires timestamps in **ISO 8601 format with explicit timezone offset**. The `Z` suffix (UTC) is **not accepted** for recorded image queries.
+The EEN API requires timestamps in **ISO 8601 format with `+00:00` suffix**. The `Z` suffix (UTC) is **not accepted**.
 
 | Format | Example | Valid |
 |--------|---------|-------|
-| With offset | `2025-01-15T14:30:00.000-08:00` | ✅ Yes |
-| With offset | `2025-01-15T22:30:00.000+00:00` | ✅ Yes |
+| With +00:00 | `2025-01-15T22:30:00.000+00:00` | ✅ Yes |
 | With Z suffix | `2025-01-15T22:30:00.000Z` | ❌ No |
 
-**Correct timestamp formatting function:**
+**Using the `formatTimestamp` utility (recommended):**
+
+The toolkit exports a `formatTimestamp` utility function that converts standard ISO timestamps (with `Z` suffix) to the EEN API format (with `+00:00` suffix):
 
 ```typescript
-function toApiTimestamp(date: Date): string {
-  // Get timezone offset in minutes
-  const offsetMinutes = date.getTimezoneOffset()
-  const offsetSign = offsetMinutes <= 0 ? '+' : '-'
-  const offsetHours = String(Math.floor(Math.abs(offsetMinutes) / 60)).padStart(2, '0')
-  const offsetMins = String(Math.abs(offsetMinutes) % 60).padStart(2, '0')
-  const offset = `${offsetSign}${offsetHours}:${offsetMins}`
+import { formatTimestamp } from 'een-api-toolkit'
 
-  // Format date components
-  const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
-  const hours = String(date.getHours()).padStart(2, '0')
-  const minutes = String(date.getMinutes()).padStart(2, '0')
-  const seconds = String(date.getSeconds()).padStart(2, '0')
+// Convert JavaScript's toISOString() output to EEN API format
+const timestamp = formatTimestamp(new Date().toISOString())
+// Input:  "2025-01-15T22:30:00.000Z"
+// Output: "2025-01-15T22:30:00.000+00:00"
 
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.000${offset}`
-}
-
-// Usage
-const timestamp = toApiTimestamp(new Date())
-// Result: "2025-01-15T14:30:00.000-08:00"
+// Use in API calls
+const { data } = await getRecordedImage({
+  deviceId: 'camera-123',
+  type: 'preview',
+  timestamp__gte: formatTimestamp(new Date().toISOString())
+})
 ```
+
+**Note:** The toolkit's API functions (like `listAlerts`, `getEventMetrics`, `listNotifications`) automatically apply `formatTimestamp` internally, so you can pass timestamps in either format. However, when displaying timestamps for debugging or when making direct API calls, use `formatTimestamp` to ensure the correct format.
 
 **Common mistake:**
 
 ```typescript
-// WRONG - toISOString() returns Z suffix which is not accepted
+// WRONG - toISOString() returns Z suffix which is not accepted by EEN API
 const timestamp = new Date().toISOString()
 // Returns: "2025-01-15T22:30:00.000Z" ❌
 
-// CORRECT - use explicit timezone offset
-const timestamp = toApiTimestamp(new Date())
-// Returns: "2025-01-15T14:30:00.000-08:00" ✅
+// CORRECT - use formatTimestamp to convert to +00:00 format
+import { formatTimestamp } from 'een-api-toolkit'
+const timestamp = formatTimestamp(new Date().toISOString())
+// Returns: "2025-01-15T22:30:00.000+00:00" ✅
 ```
-
-**Note on milliseconds:** The milliseconds component (`.000`) is included for API format consistency. For `getRecordedImage` queries, the API returns the nearest available image to the requested timestamp, so sub-second precision is typically not critical.
 
 ### Events API
 
@@ -980,6 +974,37 @@ async function fetchAllUsers() {
 }
 ```
 
+## Utilities
+
+The toolkit exports utility functions to help with common tasks.
+
+### formatTimestamp
+
+Converts ISO 8601 timestamps from `Z` format to `+00:00` format, as required by the EEN API.
+
+```typescript
+import { formatTimestamp } from 'een-api-toolkit'
+
+// Convert Z format to +00:00 format
+formatTimestamp('2025-01-15T22:30:00.000Z')
+// Returns: '2025-01-15T22:30:00.000+00:00'
+
+// Already in +00:00 format - returns unchanged
+formatTimestamp('2025-01-15T22:30:00.000+00:00')
+// Returns: '2025-01-15T22:30:00.000+00:00'
+
+// Common usage pattern
+const now = new Date()
+const apiTimestamp = formatTimestamp(now.toISOString())
+```
+
+**When to use:**
+- When displaying timestamps that match the exact API format (e.g., for debugging)
+- When making direct API calls outside of the toolkit
+- When building custom timestamp display components
+
+**Note:** The toolkit's API functions automatically apply this conversion internally, so you don't need to pre-format timestamps when using functions like `listAlerts()`, `getEventMetrics()`, or `listNotifications()`.
+
 ## Error Handling
 
 All toolkit functions return `{data, error}` objects - they never throw exceptions:
@@ -1326,6 +1351,16 @@ Open http://127.0.0.1:5173 (or the port Vite assigns).
 > **Important:** The EEN OAuth redirect URI must be registered with your Client ID. Common redirect URIs are `http://127.0.0.1:3333` or `http://127.0.0.1:5173`.
 
 ## Troubleshooting
+
+### HLS Video Playback
+
+For detailed troubleshooting of HLS (HTTP Live Streaming) video playback issues, see the dedicated [HLS Video Troubleshooting Guide](./guides/HLS-VIDEO-TROUBLESHOOTING.md).
+
+Common HLS issues include:
+- **401 Unauthorized**: HLS.js needs Bearer token authentication, not cookies
+- **No video available**: Recording intervals must contain the target timestamp
+- **Timestamp format errors**: Use `formatTimestamp()` to convert `Z` to `+00:00` format
+- **HLS not available**: Only `main` feeds support HLS, not `preview`
 
 ### OAuth Redirect URI Requirements (Critical)
 

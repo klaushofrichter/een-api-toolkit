@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { ref, watch, computed } from 'vue'
 import type { Camera } from 'een-api-toolkit'
 import CameraSelector from '../components/CameraSelector.vue'
 import TimeRangeSelector from '../components/TimeRangeSelector.vue'
@@ -8,14 +8,24 @@ import AlertsList from '../components/AlertsList.vue'
 import NotificationsList from '../components/NotificationsList.vue'
 
 const selectedCamera = ref<Camera | null>(null)
-const selectedTimeRange = ref('24h')
+const selectedTimeRange = ref('none')
+const selectedAggregateMinutes = ref<number | undefined>(undefined)
+const cameraListLoaded = ref(false)
 
-function handleCameraSelect(camera: Camera) {
+// Track if a specific camera is selected (not "All Cameras")
+const hasSpecificCamera = computed(() => selectedCamera.value !== null)
+
+function handleCameraSelect(camera: Camera | null) {
   selectedCamera.value = camera
+  cameraListLoaded.value = true
 }
 
 function handleTimeRangeChange(range: string) {
   selectedTimeRange.value = range
+}
+
+function handleAggregateChange(minutes: number | undefined) {
+  selectedAggregateMinutes.value = minutes
 }
 
 // Reset lists when camera changes
@@ -36,20 +46,26 @@ watch(selectedCamera, () => {
       <TimeRangeSelector
         :selected="selectedTimeRange"
         @change="handleTimeRangeChange"
+        @update:aggregate-minutes="handleAggregateChange"
         data-testid="time-range-selector"
       />
     </div>
 
-    <div v-if="!selectedCamera" class="no-camera-selected">
-      <p>Select a camera to view its metrics, alerts, and notifications.</p>
+    <div v-if="!cameraListLoaded" class="no-camera-selected">
+      <p>Loading cameras...</p>
     </div>
 
     <div v-else class="dashboard-content">
       <section class="metrics-section">
         <h3>Event Metrics</h3>
+        <div v-if="!hasSpecificCamera" class="select-camera-message">
+          <p>Select a specific camera to view event metrics.</p>
+        </div>
         <MetricsChart
-          :camera="selectedCamera"
+          v-else
+          :camera="selectedCamera!"
           :time-range="selectedTimeRange"
+          :aggregate-minutes="selectedAggregateMinutes"
         />
       </section>
 
@@ -86,10 +102,9 @@ h2 {
 
 .controls {
   display: flex;
-  gap: 20px;
+  flex-direction: column;
+  gap: 15px;
   margin-bottom: 20px;
-  align-items: flex-start;
-  flex-wrap: wrap;
 }
 
 .no-camera-selected {
@@ -116,6 +131,13 @@ h2 {
 .metrics-section h3 {
   margin-bottom: 15px;
   color: #333;
+}
+
+.select-camera-message {
+  text-align: center;
+  padding: 40px;
+  color: #666;
+  font-style: italic;
 }
 
 .lists-container {

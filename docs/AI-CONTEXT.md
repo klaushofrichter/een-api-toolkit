@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.15
+> **Version:** 0.3.16
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -292,6 +292,12 @@ Complete Vue 3 applications demonstrating toolkit features:
 |----------|---------|---------|
 | `listNotifications(params?)` | List notifications with filters | `Result<PaginatedResult<Notification>>` |
 | `getNotification(id)` | Get a specific notification by ID | `Result<Notification>` |
+
+### Utility Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `formatTimestamp(timestamp)` | Convert ISO timestamp from Z to +00:00 format (required by EEN API) | `string` |
 
 ---
 
@@ -1275,6 +1281,40 @@ console.log('Session URL:', data.url)
 
 ---
 
+## Utilities
+
+### formatTimestamp
+
+Converts ISO 8601 timestamps from `Z` (Zulu/UTC) format to `+00:00` format, as required by the EEN API.
+
+**Why this is needed:** JavaScript's `Date.toISOString()` returns timestamps with a `Z` suffix (e.g., `2025-01-15T22:30:00.000Z`), but the EEN API requires the `+00:00` format (e.g., `2025-01-15T22:30:00.000+00:00`).
+
+```typescript
+import { formatTimestamp } from 'een-api-toolkit'
+
+// Convert Z format to +00:00 format
+formatTimestamp('2025-01-15T22:30:00.000Z')
+// Returns: '2025-01-15T22:30:00.000+00:00'
+
+// Already in +00:00 format - returns unchanged
+formatTimestamp('2025-01-15T22:30:00.000+00:00')
+// Returns: '2025-01-15T22:30:00.000+00:00'
+
+// Common usage with Date objects
+const now = new Date()
+const apiTimestamp = formatTimestamp(now.toISOString())
+// Returns timestamp in EEN API format
+```
+
+**When to use:**
+- When displaying timestamps that match the exact format used in API calls (e.g., for debugging)
+- When making direct API calls outside of the toolkit
+- When building custom timestamp display components
+
+**Note:** The toolkit's API functions (`listAlerts`, `getEventMetrics`, `listNotifications`, `listEvents`, etc.) automatically apply `formatTimestamp` internally, so you don't need to pre-format timestamps when using these functions.
+
+---
+
 ## Live Video Streaming
 
 The EEN API Toolkit supports two methods for displaying live video from cameras:
@@ -1522,6 +1562,98 @@ video {
   - High-quality playback
   - Professional monitoring applications
   - Integration with video controls
+
+---
+
+## HLS Video Playback Troubleshooting
+
+For detailed troubleshooting, see the [HLS Video Troubleshooting Guide](./guides/HLS-VIDEO-TROUBLESHOOTING.md).
+
+### Overview
+
+HLS video playback from the EEN API requires:
+
+1. **Initialize media session** - `initMediaSession()`
+2. **Find recording intervals** - `listMedia()` with `include: ['hlsUrl']`
+3. **Extract HLS URL** - From interval containing target timestamp
+4. **Configure HLS.js with auth** - Bearer token in Authorization header
+
+### Key Requirements
+
+| Requirement | Details |
+|-------------|---------|
+| Feed Type | HLS only available for `main` feeds, not `preview` |
+| Timestamp Format | Use `formatTimestamp()` to convert `Z` to `+00:00` |
+| Authentication | HLS.js requires `xhr.setRequestHeader('Authorization', `Bearer ${token}`)` |
+| Recording Coverage | Target timestamp must fall within a recording interval |
+
+### Common Issues
+
+#### 401 Unauthorized
+
+**Cause:** Using `withCredentials: true` instead of Authorization header.
+
+```typescript
+// WRONG
+const hls = new Hls({
+  xhrSetup: (xhr) => { xhr.withCredentials = true }
+})
+
+// CORRECT
+import { useAuthStore } from 'een-api-toolkit'
+const authStore = useAuthStore()
+
+const hls = new Hls({
+  xhrSetup: (xhr) => {
+    xhr.setRequestHeader('Authorization', `Bearer ${authStore.token}`)
+  }
+})
+```
+
+#### No Video Available for Timestamp
+
+**Cause:** Search range too narrow or using wrong feed type.
+
+```typescript
+import { listMedia, formatTimestamp } from 'een-api-toolkit'
+
+const targetTime = new Date(alertTimestamp)
+const searchStart = new Date(targetTime.getTime() - 60 * 60 * 1000) // 1 hour before
+const searchEnd = new Date(targetTime.getTime() + 60 * 60 * 1000)   // 1 hour after
+
+const result = await listMedia({
+  deviceId: cameraId,
+  type: 'main',              // MUST be 'main' for HLS
+  mediaType: 'video',
+  startTimestamp: formatTimestamp(searchStart.toISOString()),
+  endTimestamp: formatTimestamp(searchEnd.toISOString()),
+  include: ['hlsUrl']        // MUST include 'hlsUrl'
+})
+
+// Find interval containing target timestamp
+const intervals = result.data?.results ?? []
+const targetTimeMs = targetTime.getTime()
+
+const matchingInterval = intervals.find(i => {
+  if (!i.hlsUrl) return false
+  const start = new Date(i.startTimestamp).getTime()
+  const end = new Date(i.endTimestamp).getTime()
+  return targetTimeMs >= start && targetTimeMs <= end
+})
+```
+
+#### Timestamp Format Error
+
+**Cause:** Using `Z` suffix instead of `+00:00`.
+
+```typescript
+// WRONG
+const timestamp = new Date().toISOString()  // "2025-01-15T22:30:00.000Z"
+
+// CORRECT
+import { formatTimestamp } from 'een-api-toolkit'
+const timestamp = formatTimestamp(new Date().toISOString())  // "2025-01-15T22:30:00.000+00:00"
+```
 
 ---
 

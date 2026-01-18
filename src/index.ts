@@ -81,6 +81,9 @@ export type {
 // Type helpers
 export { success, failure } from './types'
 
+// Utilities
+export { formatTimestamp } from './utils'
+
 // Auth
 export {
   useAuthStore,
