@@ -5,6 +5,7 @@ import Hls from 'hls.js'
 // Constants
 const SEARCH_WINDOW_MS = 60 * 60 * 1000 // 1 hour before/after target timestamp
 const MAX_MEDIA_PAGE_SIZE = 100 // Limit results for performance
+const MAX_NETWORK_RETRIES = 3 // Maximum retry attempts for network errors
 
 // Debug utility - logs only when VITE_DEBUG=true
 const isDebug = import.meta.env?.VITE_DEBUG === 'true'
@@ -43,6 +44,7 @@ export function useHlsPlayer(): HlsPlayerReturn {
   const videoRef = ref<HTMLVideoElement | null>(null)
 
   let hlsInstance: Hls | null = null
+  let networkRetryCount = 0
 
   /**
    * Initialize media session with caching.
@@ -114,6 +116,9 @@ export function useHlsPlayer(): HlsPlayerReturn {
       })
     })
 
+    // Reset retry counter on successful load
+    networkRetryCount = 0
+
     // Enhanced error handling for different error types
     hlsInstance.on(Hls.Events.ERROR, (_, data) => {
       debugError('HLS error:', data)
@@ -131,9 +136,15 @@ export function useHlsPlayer(): HlsPlayerReturn {
               // Don't retry on permission errors
               destroyHls()
             } else {
-              videoError.value = `Network error loading video: ${data.details}`
-              // Try to recover from other network errors
-              hlsInstance?.startLoad()
+              // Retry other network errors with limit
+              networkRetryCount++
+              if (networkRetryCount <= MAX_NETWORK_RETRIES) {
+                videoError.value = `Network error loading video: ${data.details}. Retry ${networkRetryCount}/${MAX_NETWORK_RETRIES}...`
+                hlsInstance?.startLoad()
+              } else {
+                videoError.value = `Network error loading video: ${data.details}. Max retries (${MAX_NETWORK_RETRIES}) exceeded.`
+                destroyHls()
+              }
             }
             break
 
@@ -195,12 +206,21 @@ export function useHlsPlayer(): HlsPlayerReturn {
 
     const intervals = result.data?.results ?? []
 
-    // Find an interval that contains the target timestamp and has an HLS URL
+    // Validate target timestamp
     const targetTimeMs = targetTime.getTime()
+    if (isNaN(targetTimeMs)) {
+      videoError.value = `Invalid timestamp format: ${timestamp}`
+      loadingVideo.value = false
+      return
+    }
+
+    // Find an interval that contains the target timestamp and has an HLS URL
     const interval = intervals.find(i => {
       if (!i.hlsUrl) return false
       const intervalStart = new Date(i.startTimestamp).getTime()
       const intervalEnd = new Date(i.endTimestamp).getTime()
+      // Skip intervals with invalid timestamps
+      if (isNaN(intervalStart) || isNaN(intervalEnd)) return false
       return targetTimeMs >= intervalStart && targetTimeMs <= intervalEnd
     })
 

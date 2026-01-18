@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed } from 'vue'
+import { ref, watch, computed, onUnmounted } from 'vue'
 import { listNotifications, getNotification, getRecordedImage, type Camera, type Notification, type EenError } from 'een-api-toolkit'
 import { useHlsPlayer } from '../composables/useHlsPlayer'
 
@@ -243,17 +243,17 @@ async function handleVideoClick() {
 // Debounce delay for filter changes (ms)
 const DEBOUNCE_DELAY = 300
 
-// Debounce timer reference
-let debounceTimer: ReturnType<typeof setTimeout> | null = null
+// Debounce timer reference - component-scoped to avoid race conditions
+const debounceTimer = ref<ReturnType<typeof setTimeout> | null>(null)
 
 // Debounced fetch to avoid rapid API calls on quick filter changes
 function debouncedFetchNotifications() {
-  if (debounceTimer) {
-    clearTimeout(debounceTimer)
+  if (debounceTimer.value) {
+    clearTimeout(debounceTimer.value)
   }
-  debounceTimer = setTimeout(() => {
+  debounceTimer.value = setTimeout(() => {
     fetchNotifications()
-    debounceTimer = null
+    debounceTimer.value = null
   }, DEBOUNCE_DELAY)
 }
 
@@ -270,6 +270,14 @@ watch(
   },
   { immediate: true }
 )
+
+// Cleanup debounce timer on unmount to prevent memory leaks
+onUnmounted(() => {
+  if (debounceTimer.value) {
+    clearTimeout(debounceTimer.value)
+    debounceTimer.value = null
+  }
+})
 </script>
 
 <template>
