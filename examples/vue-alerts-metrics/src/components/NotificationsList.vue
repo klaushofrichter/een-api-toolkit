@@ -4,10 +4,9 @@ import { listNotifications, getNotification, getRecordedImage, type Camera, type
 import { useHlsPlayer } from '../composables/useHlsPlayer'
 
 // Initialize HLS player composable
+// Note: videoRef is not destructured - accessed as hlsPlayer.videoRef in template
 const hlsPlayer = useHlsPlayer()
-const { videoUrl, videoError, loadingVideo, loadVideo, resetVideo, videoRef } = hlsPlayer
-// Mark videoRef as used (it's bound to template via ref="videoRef")
-void videoRef
+const { videoUrl, videoError, loadingVideo, loadVideo, resetVideo } = hlsPlayer
 
 const props = defineProps<{
   camera: Camera | null
@@ -38,8 +37,12 @@ const showVideo = ref(false)
 // Check if notification has an httpsUrl in its data
 // The httpsUrl is in the list_data array, in an object with type "een.fullFrameImageUrl.v1"
 const notificationImageUrl = computed(() => {
-  if (!selectedNotification.value?.data) return null
-  const data = selectedNotification.value.data as Record<string, unknown>
+  const rawData = selectedNotification.value?.data
+  if (!rawData) return null
+
+  // Validate data is an object before casting
+  if (typeof rawData !== 'object' || rawData === null) return null
+  const data = rawData as Record<string, unknown>
 
   // Look for list_data array
   const listData = data.list_data
@@ -237,10 +240,33 @@ async function handleVideoClick() {
   await loadVideo(params.deviceId, params.timestamp)
 }
 
+// Debounce delay for filter changes (ms)
+const DEBOUNCE_DELAY = 300
+
+// Debounce timer reference
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+// Debounced fetch to avoid rapid API calls on quick filter changes
+function debouncedFetchNotifications() {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer)
+  }
+  debounceTimer = setTimeout(() => {
+    fetchNotifications()
+    debounceTimer = null
+  }, DEBOUNCE_DELAY)
+}
+
+// Fetch notifications when camera or time range changes (debounced)
 watch(
   () => [props.camera?.id, props.timeRange],
-  () => {
-    fetchNotifications()
+  (_newVal, oldVal) => {
+    // Immediate fetch on first load (when oldVal is undefined)
+    if (oldVal === undefined) {
+      fetchNotifications()
+    } else {
+      debouncedFetchNotifications()
+    }
   },
   { immediate: true }
 )
@@ -419,7 +445,7 @@ watch(
           <div v-else-if="videoError" class="lightbox-error">{{ videoError }}</div>
           <video
             v-else-if="videoUrl"
-            ref="videoRef"
+            :ref="(el) => hlsPlayer.videoRef.value = el as HTMLVideoElement | null"
             class="lightbox-video"
             controls
             autoplay

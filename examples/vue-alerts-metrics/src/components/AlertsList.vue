@@ -4,10 +4,9 @@ import { listAlerts, listAlertTypes, getAlert, getRecordedImage, type Camera, ty
 import { useHlsPlayer } from '../composables/useHlsPlayer'
 
 // Initialize HLS player composable
+// Note: videoRef is not destructured - accessed as hlsPlayer.videoRef in template
 const hlsPlayer = useHlsPlayer()
-const { videoUrl, videoError, loadingVideo, loadVideo, resetVideo, videoRef } = hlsPlayer
-// Mark videoRef as used (it's bound to template via ref="videoRef")
-void videoRef
+const { videoUrl, videoError, loadingVideo, loadVideo, resetVideo } = hlsPlayer
 
 const props = defineProps<{
   camera: Camera | null
@@ -278,14 +277,36 @@ async function handleVideoClick() {
   await loadVideo(params.deviceId, params.timestamp)
 }
 
+// Debounce delay for filter changes (ms)
+const DEBOUNCE_DELAY = 300
+
+// Debounce timer reference
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+// Debounced fetch to avoid rapid API calls on quick filter changes
+function debouncedFetchAlerts() {
+  if (debounceTimer) {
+    clearTimeout(debounceTimer)
+  }
+  debounceTimer = setTimeout(() => {
+    fetchAlerts()
+    debounceTimer = null
+  }, DEBOUNCE_DELAY)
+}
+
 // Fetch alert types once on mount
 fetchAlertTypes()
 
-// Fetch alerts when camera or time range changes
+// Fetch alerts when camera or time range changes (debounced)
 watch(
   () => [props.camera?.id, props.timeRange],
-  () => {
-    fetchAlerts()
+  (_newVal, oldVal) => {
+    // Immediate fetch on first load (when oldVal is undefined)
+    if (oldVal === undefined) {
+      fetchAlerts()
+    } else {
+      debouncedFetchAlerts()
+    }
   },
   { immediate: true }
 )
@@ -484,7 +505,7 @@ watch(
           <div v-else-if="videoError" class="lightbox-error">{{ videoError }}</div>
           <video
             v-else-if="videoUrl"
-            ref="videoRef"
+            :ref="(el) => hlsPlayer.videoRef.value = el as HTMLVideoElement | null"
             class="lightbox-video"
             controls
             autoplay

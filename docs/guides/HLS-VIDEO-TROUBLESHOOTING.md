@@ -30,6 +30,7 @@ HLS video playback from the EEN API requires several steps:
 | Timestamp Format | EEN API requires `+00:00` format, not `Z` suffix |
 | Authentication | HLS.js requires Authorization header with Bearer token |
 | Recording Coverage | The target timestamp must fall within a recording interval |
+| Browser Support | HLS.js required (Chrome, Firefox, Edge). Safari's native HLS cannot send auth headers. |
 
 ## API Call Sequence
 
@@ -296,35 +297,36 @@ function initHls() {
 
   destroyHls()
 
-  if (Hls.isSupported()) {
-    // Configure HLS.js with Authorization header
-    hlsInstance = new Hls({
-      xhrSetup: function(xhr) {
-        xhr.setRequestHeader('Authorization', `Bearer ${authStore.token}`)
-      }
-    })
-
-    hlsInstance.loadSource(videoUrl.value)
-    hlsInstance.attachMedia(videoRef.value)
-
-    hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-      videoRef.value?.play().catch(() => {
-        // Autoplay may be blocked by browser
-      })
-    })
-
-    hlsInstance.on(Hls.Events.ERROR, (_, data) => {
-      if (data.fatal) {
-        videoError.value = `HLS error: ${data.type} - ${data.details}`
-      }
-    })
-  } else if (videoRef.value.canPlayType('application/vnd.apple.mpegurl')) {
-    // Native HLS support (Safari)
-    videoRef.value.src = videoUrl.value
-    videoRef.value.play().catch(() => {})
-  } else {
-    videoError.value = 'HLS is not supported in this browser'
+  // IMPORTANT: Always use HLS.js, even on Safari
+  // Native HLS (Safari's built-in player) cannot send Authorization headers,
+  // which means it will get 401 errors when trying to access EEN streams.
+  // HLS.js uses XHR requests which allow us to add custom headers.
+  if (!Hls.isSupported()) {
+    videoError.value = 'HLS is not supported in this browser. Please use Chrome, Firefox, or Edge.'
+    return
   }
+
+  // Configure HLS.js with Authorization header
+  hlsInstance = new Hls({
+    xhrSetup: function(xhr) {
+      xhr.setRequestHeader('Authorization', `Bearer ${authStore.token}`)
+    }
+  })
+
+  hlsInstance.loadSource(videoUrl.value)
+  hlsInstance.attachMedia(videoRef.value)
+
+  hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+    videoRef.value?.play().catch(() => {
+      // Autoplay may be blocked by browser
+    })
+  })
+
+  hlsInstance.on(Hls.Events.ERROR, (_, data) => {
+    if (data.fatal) {
+      videoError.value = `HLS error: ${data.type} - ${data.details}`
+    }
+  })
 }
 
 // Cleanup on unmount

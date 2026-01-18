@@ -1,16 +1,39 @@
-import { ref, nextTick, onUnmounted } from 'vue'
+import { ref, nextTick, onUnmounted, type Ref } from 'vue'
 import { listMedia, initMediaSession, formatTimestamp, useAuthStore } from 'een-api-toolkit'
 import Hls from 'hls.js'
+
+// Constants
+const SEARCH_WINDOW_MS = 60 * 60 * 1000 // 1 hour before/after target timestamp
+const MAX_MEDIA_PAGE_SIZE = 100 // Limit results for performance
+
+// Debug utility - logs only when VITE_DEBUG=true
+const isDebug = import.meta.env?.VITE_DEBUG === 'true'
+function debugError(...args: unknown[]): void {
+  if (isDebug) {
+    console.error('[useHlsPlayer]', ...args)
+  }
+}
 
 // Cache media session to avoid redundant initialization calls
 let mediaSessionInitialized = false
 let mediaSessionPromise: Promise<boolean> | null = null
 
+/** Return type for the useHlsPlayer composable */
+export interface HlsPlayerReturn {
+  videoUrl: Ref<string | null>
+  videoError: Ref<string | null>
+  loadingVideo: Ref<boolean>
+  videoRef: Ref<HTMLVideoElement | null>
+  loadVideo: (deviceId: string, timestamp: string) => Promise<void>
+  resetVideo: () => void
+  destroyHls: () => void
+}
+
 /**
  * Composable for HLS video playback from EEN recordings.
  * Handles media session initialization, interval search, and HLS.js setup.
  */
-export function useHlsPlayer() {
+export function useHlsPlayer(): HlsPlayerReturn {
   const authStore = useAuthStore()
 
   // State
@@ -93,7 +116,7 @@ export function useHlsPlayer() {
 
     // Enhanced error handling for different error types
     hlsInstance.on(Hls.Events.ERROR, (_, data) => {
-      console.error('HLS error:', data)
+      debugError('HLS error:', data)
 
       if (data.fatal) {
         switch (data.type) {
@@ -101,13 +124,17 @@ export function useHlsPlayer() {
             // Network error - could be auth issue or connectivity
             if (data.response?.code === 401) {
               videoError.value = 'Authentication expired. Please refresh the page and try again.'
+              // Don't retry on auth errors - requires user action
+              destroyHls()
             } else if (data.response?.code === 403) {
               videoError.value = 'Access denied to video stream.'
+              // Don't retry on permission errors
+              destroyHls()
             } else {
               videoError.value = `Network error loading video: ${data.details}`
+              // Try to recover from other network errors
+              hlsInstance?.startLoad()
             }
-            // Try to recover from network errors
-            hlsInstance?.startLoad()
             break
 
           case Hls.ErrorTypes.MEDIA_ERROR:
@@ -145,10 +172,9 @@ export function useHlsPlayer() {
     }
 
     // Search for recordings around the target timestamp
-    // Use 1 hour before and after to find intervals containing the timestamp
     const targetTime = new Date(timestamp)
-    const searchStartTime = new Date(targetTime.getTime() - 60 * 60 * 1000)
-    const searchEndTime = new Date(targetTime.getTime() + 60 * 60 * 1000)
+    const searchStartTime = new Date(targetTime.getTime() - SEARCH_WINDOW_MS)
+    const searchEndTime = new Date(targetTime.getTime() + SEARCH_WINDOW_MS)
 
     // Use 'main' type for video - HLS is typically only available for main feeds
     const result = await listMedia({
@@ -158,7 +184,7 @@ export function useHlsPlayer() {
       startTimestamp: formatTimestamp(searchStartTime.toISOString()),
       endTimestamp: formatTimestamp(searchEndTime.toISOString()),
       include: ['hlsUrl'],
-      pageSize: 100 // Limit results for performance
+      pageSize: MAX_MEDIA_PAGE_SIZE
     })
 
     if (result.error) {
