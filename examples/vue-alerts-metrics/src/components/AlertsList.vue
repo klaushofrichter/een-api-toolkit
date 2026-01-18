@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, computed, onUnmounted } from 'vue'
+import { ref, watch, computed, onUnmounted, nextTick } from 'vue'
 import { listAlerts, listAlertTypes, getAlert, getRecordedImage, listMedia, initMediaSession, formatTimestamp, useAuthStore, type Camera, type Alert, type AlertType, type EenError } from 'een-api-toolkit'
 import Hls from 'hls.js'
 
@@ -130,17 +130,20 @@ async function fetchAlerts(append = false) {
   }
   error.value = null
 
-  const now = new Date()
-  const rangeMs = getTimeRangeMs(props.timeRange)
-  const startTime = new Date(now.getTime() - rangeMs)
-
   const params: Parameters<typeof listAlerts>[0] = {
-    timestamp__gte: startTime.toISOString(),
-    timestamp__lte: now.toISOString(),
     pageSize: 20,
     pageToken: append ? nextPageToken.value : undefined,
     include: ['description'],
     sort: ['-timestamp']
+  }
+
+  // Only apply time filter if a specific time range is selected (not 'none')
+  if (props.timeRange !== 'none') {
+    const now = new Date()
+    const rangeMs = getTimeRangeMs(props.timeRange)
+    const startTime = new Date(now.getTime() - rangeMs)
+    params.timestamp__gte = startTime.toISOString()
+    params.timestamp__lte = now.toISOString()
   }
 
   // Only filter by camera if a specific camera is selected
@@ -345,10 +348,9 @@ async function handleVideoClick() {
 
   loadingVideo.value = false
 
-  // Initialize HLS.js after the video element is rendered
-  setTimeout(() => {
-    initHls()
-  }, 100)
+  // Initialize HLS.js after the DOM has been updated
+  await nextTick()
+  initHls()
 }
 
 function initHls() {
@@ -356,35 +358,31 @@ function initHls() {
 
   destroyHls()
 
-  if (Hls.isSupported()) {
-    // Configure hls.js to send Authorization header for authentication
-    hlsInstance = new Hls({
-      xhrSetup: function(xhr) {
-        xhr.setRequestHeader('Authorization', `Bearer ${authStore.token}`)
-      }
-    })
-    hlsInstance.loadSource(videoUrl.value)
-    hlsInstance.attachMedia(videoRef.value)
-    hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-      videoRef.value?.play().catch(() => {
-        // Autoplay may be blocked, user can manually play
-      })
-    })
-    hlsInstance.on(Hls.Events.ERROR, (_, data) => {
-      console.error('HLS error:', data)
-      if (data.fatal) {
-        videoError.value = `HLS error: ${data.type} - ${data.details}`
-      }
-    })
-  } else if (videoRef.value.canPlayType('application/vnd.apple.mpegurl')) {
-    // Native HLS support (Safari)
-    videoRef.value.src = videoUrl.value
-    videoRef.value.play().catch(() => {
-      // Autoplay may be blocked
-    })
-  } else {
-    videoError.value = 'HLS is not supported in this browser'
+  // Always use hls.js even on Safari - native HLS cannot send Authorization headers
+  if (!Hls.isSupported()) {
+    videoError.value = 'HLS is not supported in this browser. Please use a modern browser like Chrome, Firefox, or Edge.'
+    return
   }
+
+  // Configure hls.js to send Authorization header for authentication
+  hlsInstance = new Hls({
+    xhrSetup: function(xhr) {
+      xhr.setRequestHeader('Authorization', `Bearer ${authStore.token}`)
+    }
+  })
+  hlsInstance.loadSource(videoUrl.value)
+  hlsInstance.attachMedia(videoRef.value)
+  hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+    videoRef.value?.play().catch(() => {
+      // Autoplay may be blocked, user can manually play
+    })
+  })
+  hlsInstance.on(Hls.Events.ERROR, (_, data) => {
+    console.error('HLS error:', data)
+    if (data.fatal) {
+      videoError.value = `HLS error: ${data.type} - ${data.details}`
+    }
+  })
 }
 
 // Cleanup HLS on unmount
