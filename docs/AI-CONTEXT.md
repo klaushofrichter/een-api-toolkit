@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.16
+> **Version:** 0.3.20
 >
 > This file is optimized for AI assistants. It contains all API signatures,
 > types, and usage patterns in a single, parseable document.
@@ -214,6 +214,7 @@ Complete Vue 3 applications demonstrating toolkit features:
 | [vue-feeds](../examples/vue-feeds/) | Live video streaming (preview and main) | `src/views/Feeds.vue` |
 | [vue-events](../examples/vue-events/) | Events with bounding box overlays | `src/components/EventsModal.vue` |
 | [vue-alerts-metrics](../examples/vue-alerts-metrics/) | Event metrics, alerts, and notifications | `src/components/MetricsChart.vue`, `AlertsList.vue` |
+| [vue-event-subscriptions](../examples/vue-event-subscriptions/) | Real-time event streaming with SSE | `src/views/Subscriptions.vue`, `LiveEvents.vue` |
 
 ### Configuration
 
@@ -292,6 +293,16 @@ Complete Vue 3 applications demonstrating toolkit features:
 |----------|---------|---------|
 | `listNotifications(params?)` | List notifications with filters | `Result<PaginatedResult<Notification>>` |
 | `getNotification(id)` | Get a specific notification by ID | `Result<Notification>` |
+
+### EventSubscriptions Functions
+
+| Function | Purpose | Returns |
+|----------|---------|---------|
+| `listEventSubscriptions(params?)` | List all event subscriptions | `Result<PaginatedResult<EventSubscription>>` |
+| `getEventSubscription(id)` | Get a specific subscription by ID | `Result<EventSubscription>` |
+| `createEventSubscription(params)` | Create a new event subscription | `Result<EventSubscription>` |
+| `deleteEventSubscription(id)` | Delete an event subscription | `Result<void>` |
+| `connectToEventSubscription(sseUrl, options)` | Connect to SSE stream for real-time events | `Result<SSEConnection>` |
 
 ### Utility Functions
 

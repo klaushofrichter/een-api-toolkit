@@ -189,6 +189,7 @@ The `examples/` directory contains complete Vue 3 applications demonstrating too
 | **[vue-feeds](./examples/vue-feeds/)** | Live video streaming with preview and main streams | `getCameras()`, `listFeeds()`, `initMediaSession()` |
 | **[vue-events](./examples/vue-events/)** | Event listing with bounding box overlays | `listEvents()`, `listEventTypes()`, `listEventFieldValues()`, `getRecordedImage()` |
 | **[vue-alerts-metrics](./examples/vue-alerts-metrics/)** | Event metrics, alerts, and notifications dashboard | `getEventMetrics()`, `listAlerts()`, `listAlertTypes()`, `listNotifications()` |
+| **[vue-event-subscriptions](./examples/vue-event-subscriptions/)** | Real-time event streaming with SSE | `listEventSubscriptions()`, `createEventSubscription()`, `deleteEventSubscription()`, `connectToEventSubscription()` |
 
 Each example includes:
 - Complete OAuth authentication flow
