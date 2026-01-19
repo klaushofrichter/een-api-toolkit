@@ -77,18 +77,18 @@ async function connect() {
   // Find the subscription in the refreshed list
   const freshSubscription = subscriptions.value.find(s => s.id === subscriptionId)
   if (!freshSubscription) {
-    connectionStore.connectionError = { code: 'NOT_FOUND', message: 'Subscription no longer exists' }
+    connectionStore.setConnectionError({ code: 'NOT_FOUND', message: 'Subscription no longer exists' })
     return
   }
 
   if (freshSubscription.deliveryConfig.type !== 'serverSentEvents.v1') {
-    connectionStore.connectionError = { code: 'VALIDATION_ERROR', message: 'Subscription is not an SSE type' }
+    connectionStore.setConnectionError({ code: 'VALIDATION_ERROR', message: 'Subscription is not an SSE type' })
     return
   }
 
   const sseUrl = freshSubscription.deliveryConfig.sseUrl
   if (!sseUrl) {
-    connectionStore.connectionError = { code: 'VALIDATION_ERROR', message: 'No SSE URL available' }
+    connectionStore.setConnectionError({ code: 'VALIDATION_ERROR', message: 'No SSE URL available' })
     return
   }
 

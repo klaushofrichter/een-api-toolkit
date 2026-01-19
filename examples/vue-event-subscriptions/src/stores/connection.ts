@@ -14,7 +14,6 @@ export const useConnectionStore = defineStore('connection', () => {
   const connectionStatus = ref<SSEConnectionStatus>('disconnected')
   const connectionError = ref<EenError | null>(null)
   const connectedSubscriptionId = ref<string | null>(null)
-  const connectedSseUrl = ref<string | null>(null)
 
   // Events state
   const events = ref<SSEEvent[]>([])
@@ -36,7 +35,6 @@ export const useConnectionStore = defineStore('connection', () => {
     connectionError.value = null
     events.value = []
     connectedSubscriptionId.value = subscriptionId
-    connectedSseUrl.value = sseUrl
 
     const result = connectToEventSubscription(sseUrl, {
       onEvent: (event) => {
@@ -57,10 +55,17 @@ export const useConnectionStore = defineStore('connection', () => {
     if (result.error) {
       connectionError.value = result.error
       connectedSubscriptionId.value = null
-      connectedSseUrl.value = null
     } else {
       connection.value = result.data
     }
+  }
+
+  /**
+   * Set a connection error.
+   * Use this action instead of directly mutating connectionError.
+   */
+  function setConnectionError(error: EenError) {
+    connectionError.value = error
   }
 
   function disconnect() {
@@ -70,7 +75,6 @@ export const useConnectionStore = defineStore('connection', () => {
     }
     connectionStatus.value = 'disconnected'
     connectedSubscriptionId.value = null
-    connectedSseUrl.value = null
   }
 
   function clearEvents() {
@@ -83,7 +87,6 @@ export const useConnectionStore = defineStore('connection', () => {
     connectionStatus,
     connectionError,
     connectedSubscriptionId,
-    connectedSseUrl,
     events,
     maxEvents,
     // Computed
@@ -92,6 +95,7 @@ export const useConnectionStore = defineStore('connection', () => {
     // Actions
     connect,
     disconnect,
-    clearEvents
+    clearEvents,
+    setConnectionError
   }
 })

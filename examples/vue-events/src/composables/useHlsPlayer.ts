@@ -15,9 +15,11 @@ function debugError(...args: unknown[]): void {
   }
 }
 
-// Cache media session to avoid redundant initialization calls
+// Cache media session state to avoid redundant initialization calls
+// Module-level state is shared across all component instances intentionally
 let mediaSessionInitialized = false
 let mediaSessionPromise: Promise<boolean> | null = null
+let mediaSessionError: string | null = null
 
 /** Return type for the useHlsPlayer composable */
 export interface HlsPlayerReturn {
@@ -49,6 +51,7 @@ export function useHlsPlayer(): HlsPlayerReturn {
   /**
    * Initialize media session with caching.
    * Only calls the API once per session, subsequent calls return cached result.
+   * Uses module-level state so all component instances share the same session status.
    */
   async function ensureMediaSession(): Promise<boolean> {
     // Return cached result if already initialized
@@ -56,16 +59,28 @@ export function useHlsPlayer(): HlsPlayerReturn {
       return true
     }
 
+    // If previous initialization failed, return cached error
+    if (mediaSessionError) {
+      videoError.value = mediaSessionError
+      return false
+    }
+
     // If initialization is in progress, wait for it
     if (mediaSessionPromise) {
-      return mediaSessionPromise
+      const result = await mediaSessionPromise
+      // Copy any cached error to this component's state
+      if (!result && mediaSessionError) {
+        videoError.value = mediaSessionError
+      }
+      return result
     }
 
     // Start new initialization
     mediaSessionPromise = (async () => {
       const result = await initMediaSession()
       if (result.error) {
-        videoError.value = `Media session error: ${result.error.message}`
+        mediaSessionError = `Media session error: ${result.error.message}`
+        videoError.value = mediaSessionError
         mediaSessionPromise = null
         return false
       }
@@ -111,13 +126,12 @@ export function useHlsPlayer(): HlsPlayerReturn {
     hlsInstance.attachMedia(videoRef.value)
 
     hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+      // Reset retry counter on successful manifest parse
+      networkRetryCount = 0
       videoRef.value?.play().catch(() => {
         // Autoplay may be blocked, user can manually play
       })
     })
-
-    // Reset retry counter on successful load
-    networkRetryCount = 0
 
     // Enhanced error handling for different error types
     hlsInstance.on(Hls.Events.ERROR, (_, data) => {
@@ -174,6 +188,7 @@ export function useHlsPlayer(): HlsPlayerReturn {
     loadingVideo.value = true
     videoError.value = null
     videoUrl.value = null
+    networkRetryCount = 0 // Reset retry counter for new video load
 
     // Initialize media session (cached after first call)
     const sessionOk = await ensureMediaSession()
@@ -189,7 +204,7 @@ export function useHlsPlayer(): HlsPlayerReturn {
 
     // Use 'main' type for video - HLS is typically only available for main feeds
     const result = await listMedia({
-      deviceId: deviceId,
+      deviceId,
       type: 'main',
       mediaType: 'video',
       startTimestamp: formatTimestamp(searchStartTime.toISOString()),
@@ -277,9 +292,15 @@ export function useHlsPlayer(): HlsPlayerReturn {
 
 /**
  * Reset the media session cache.
- * Call this when the user logs out or the session expires.
+ * Call this when the user logs out or the session expires to ensure
+ * a fresh media session is initialized on next use.
+ *
+ * @remarks
+ * This clears the module-level cached state shared by all component instances.
+ * Should be called during logout to prevent stale session data.
  */
-export function resetMediaSessionCache() {
+export function resetMediaSessionCache(): void {
   mediaSessionInitialized = false
   mediaSessionPromise = null
+  mediaSessionError = null
 }
