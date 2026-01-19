@@ -1,6 +1,7 @@
 import { ref, nextTick, onUnmounted, type Ref } from 'vue'
-import { listMedia, initMediaSession, formatTimestamp, useAuthStore } from 'een-api-toolkit'
+import { listMedia, formatTimestamp, useAuthStore } from 'een-api-toolkit'
 import Hls from 'hls.js'
+import { useMediaSessionStore } from '../stores/mediaSession'
 
 // Constants
 const SEARCH_WINDOW_MS = 60 * 60 * 1000 // 1 hour before/after target timestamp
@@ -14,12 +15,6 @@ function debugError(...args: unknown[]): void {
     console.error('[useHlsPlayer]', ...args)
   }
 }
-
-// Cache media session state to avoid redundant initialization calls
-// Module-level state is shared across all component instances intentionally
-let mediaSessionInitialized = false
-let mediaSessionPromise: Promise<boolean> | null = null
-let mediaSessionError: string | null = null
 
 /** Return type for the useHlsPlayer composable */
 export interface HlsPlayerReturn {
@@ -35,9 +30,12 @@ export interface HlsPlayerReturn {
 /**
  * Composable for HLS video playback from EEN recordings.
  * Handles media session initialization, interval search, and HLS.js setup.
+ * Uses Pinia store for media session state to ensure consistent behavior
+ * across all component instances.
  */
 export function useHlsPlayer(): HlsPlayerReturn {
   const authStore = useAuthStore()
+  const mediaSessionStore = useMediaSessionStore()
 
   // State
   const videoUrl = ref<string | null>(null)
@@ -49,46 +47,15 @@ export function useHlsPlayer(): HlsPlayerReturn {
   let networkRetryCount = 0
 
   /**
-   * Initialize media session with caching.
+   * Initialize media session with caching via Pinia store.
    * Only calls the API once per session, subsequent calls return cached result.
-   * Uses module-level state so all component instances share the same session status.
    */
   async function ensureMediaSession(): Promise<boolean> {
-    // Return cached result if already initialized
-    if (mediaSessionInitialized) {
-      return true
+    const success = await mediaSessionStore.ensureInitialized()
+    if (!success && mediaSessionStore.error) {
+      videoError.value = mediaSessionStore.error
     }
-
-    // If previous initialization failed, return cached error
-    if (mediaSessionError) {
-      videoError.value = mediaSessionError
-      return false
-    }
-
-    // If initialization is in progress, wait for it
-    if (mediaSessionPromise) {
-      const result = await mediaSessionPromise
-      // Copy any cached error to this component's state
-      if (!result && mediaSessionError) {
-        videoError.value = mediaSessionError
-      }
-      return result
-    }
-
-    // Start new initialization
-    mediaSessionPromise = (async () => {
-      const result = await initMediaSession()
-      if (result.error) {
-        mediaSessionError = `Media session error: ${result.error.message}`
-        videoError.value = mediaSessionError
-        mediaSessionPromise = null
-        return false
-      }
-      mediaSessionInitialized = true
-      return true
-    })()
-
-    return mediaSessionPromise
+    return success
   }
 
   /**
@@ -296,11 +263,10 @@ export function useHlsPlayer(): HlsPlayerReturn {
  * a fresh media session is initialized on next use.
  *
  * @remarks
- * This clears the module-level cached state shared by all component instances.
- * Should be called during logout to prevent stale session data.
+ * This delegates to the Pinia media session store's reset method.
+ * Must be called from within a Vue component context or after Pinia is installed.
  */
 export function resetMediaSessionCache(): void {
-  mediaSessionInitialized = false
-  mediaSessionPromise = null
-  mediaSessionError = null
+  const mediaSessionStore = useMediaSessionStore()
+  mediaSessionStore.reset()
 }
