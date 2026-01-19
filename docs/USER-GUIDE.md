@@ -42,6 +42,8 @@ The toolkit requires Vue 3 and Pinia as peer dependencies:
 npm install vue@^3.3.0 pinia@^3.0.0
 ```
 
+> **Note:** Starting from v0.3.19, this toolkit requires Pinia 3.x. If you're upgrading from an earlier version and using Pinia 2.x, you'll need to upgrade to Pinia 3. The upgrade is straightforward as Pinia 3 maintains API compatibility with Pinia 2. See the [Pinia migration guide](https://pinia.vuejs.org/cookbook/migration-v2-v3.html) for details.
+
 ### From Source (for development)
 
 ```bash

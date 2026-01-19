@@ -398,7 +398,10 @@ export function connectToEventSubscription(
   try {
     const sseUrlObj = new URL(sseUrl)
     const allowedDomains = ['.eagleeyenetworks.com', '.een.cloud']
-    const isAllowedDomain = allowedDomains.some(domain => sseUrlObj.hostname.endsWith(domain))
+    // Allow both exact domain match (e.g., eagleeyenetworks.com) and subdomain match (e.g., api.eagleeyenetworks.com)
+    const isAllowedDomain = allowedDomains.some(domain =>
+      sseUrlObj.hostname === domain.substring(1) || sseUrlObj.hostname.endsWith(domain)
+    )
     if (!isAllowedDomain) {
       return failure('VALIDATION_ERROR', `SSE URL domain not allowed: ${sseUrlObj.hostname}`)
     }
@@ -544,14 +547,14 @@ async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
 
   switch (status) {
     case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
+      return failure('AUTH_REQUIRED', message, status)
     case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
+      return failure('FORBIDDEN', message, status)
     case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
+      return failure('NOT_FOUND', message, status)
     case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
+      return failure('RATE_LIMITED', message, status)
     default:
-      return failure('API_ERROR', `API error: ${message}`, status)
+      return failure('API_ERROR', message, status)
   }
 }

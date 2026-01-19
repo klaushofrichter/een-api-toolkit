@@ -619,6 +619,48 @@ describe('EventSubscriptions service functions', () => {
       expect(result.error?.message).toContain('SSE URL domain not allowed')
     })
 
+    it('should accept exact domain match (no subdomain)', () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      // Mock successful fetch that never resolves (simulating SSE connection)
+      mockFetch.mockReturnValueOnce(new Promise(() => {}))
+
+      // Test exact domain match (eagleeyenetworks.com without subdomain)
+      const result = connectToEventSubscription(
+        'https://eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
+        { onEvent: vi.fn() }
+      )
+
+      expect(result.error).toBeNull()
+      expect(result.data).toBeDefined()
+      expect(result.data?.status).toBe('connecting')
+
+      // Clean up
+      result.data?.close()
+    })
+
+    it('should accept een.cloud domain', () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      // Mock successful fetch that never resolves (simulating SSE connection)
+      mockFetch.mockReturnValueOnce(new Promise(() => {}))
+
+      const result = connectToEventSubscription(
+        'https://api.een.cloud/sse/eventSubscriptions/sub-123',
+        { onEvent: vi.fn() }
+      )
+
+      expect(result.error).toBeNull()
+      expect(result.data).toBeDefined()
+
+      // Clean up
+      result.data?.close()
+    })
+
     it('should return SSE connection object on success', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
