@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.16**
+**EEN API Toolkit v0.3.18**
 
 ***
 
-# EEN API Toolkit v0.3.16
+# EEN API Toolkit v0.3.18
 
 ## Interfaces
 
@@ -61,6 +61,23 @@
 
 - [EventMetric](interfaces/EventMetric.md)
 - [GetEventMetricsParams](interfaces/GetEventMetricsParams.md)
+
+### EventSubscriptions
+
+- [EventSubscriptionConfig](interfaces/EventSubscriptionConfig.md)
+- [SSEDeliveryConfig](interfaces/SSEDeliveryConfig.md)
+- [WebhookDeliveryConfig](interfaces/WebhookDeliveryConfig.md)
+- [EventTypeFilter](interfaces/EventTypeFilter.md)
+- [EventSubscriptionFilter](interfaces/EventSubscriptionFilter.md)
+- [FilterCreate](interfaces/FilterCreate.md)
+- [EventSubscription](interfaces/EventSubscription.md)
+- [SSEDeliveryConfigCreate](interfaces/SSEDeliveryConfigCreate.md)
+- [WebhookDeliveryConfigCreate](interfaces/WebhookDeliveryConfigCreate.md)
+- [CreateEventSubscriptionParams](interfaces/CreateEventSubscriptionParams.md)
+- [ListEventSubscriptionsParams](interfaces/ListEventSubscriptionsParams.md)
+- [SSEConnection](interfaces/SSEConnection.md)
+- [SSEConnectionOptions](interfaces/SSEConnectionOptions.md)
+- [SSEEvent](interfaces/SSEEvent.md)
 
 ### Events
 
@@ -125,6 +142,14 @@
 - [MetricActorType](type-aliases/MetricActorType.md)
 - [MetricDataPoint](type-aliases/MetricDataPoint.md)
 
+### EventSubscriptions
+
+- [EventSubscriptionLifecycle](type-aliases/EventSubscriptionLifecycle.md)
+- [EventSubscriptionDeliveryType](type-aliases/EventSubscriptionDeliveryType.md)
+- [DeliveryConfig](type-aliases/DeliveryConfig.md)
+- [DeliveryConfigCreate](type-aliases/DeliveryConfigCreate.md)
+- [SSEConnectionStatus](type-aliases/SSEConnectionStatus.md)
+
 ### Events
 
 - [ActorType](type-aliases/ActorType.md)
@@ -186,6 +211,14 @@
 ### Event Metrics
 
 - [getEventMetrics](functions/getEventMetrics.md)
+
+### EventSubscriptions
+
+- [listEventSubscriptions](functions/listEventSubscriptions.md)
+- [getEventSubscription](functions/getEventSubscription.md)
+- [createEventSubscription](functions/createEventSubscription.md)
+- [deleteEventSubscription](functions/deleteEventSubscription.md)
+- [connectToEventSubscription](functions/connectToEventSubscription.md)
 
 ### Events
 
