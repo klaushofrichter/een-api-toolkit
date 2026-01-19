@@ -330,7 +330,7 @@ Required fields in `package.json`:
   },
   "files": ["dist"],
   "peerDependencies": {
-    "pinia": "^2.0.0 || ^3.0.0",
+    "pinia": "^3.0.0",
     "vue": "^3.3.0"
   },
   "publishConfig": {

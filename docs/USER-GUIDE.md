@@ -39,7 +39,7 @@ npm install een-api-toolkit
 The toolkit requires Vue 3 and Pinia as peer dependencies:
 
 ```bash
-npm install vue@^3.3.0 pinia@^2.0.0
+npm install vue@^3.3.0 pinia@^3.0.0
 ```
 
 ### From Source (for development)
