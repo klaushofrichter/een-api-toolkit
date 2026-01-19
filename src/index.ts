@@ -75,7 +75,27 @@ export type {
   Notification,
   NotificationCategory,
   NotificationStatus,
-  ListNotificationsParams
+  ListNotificationsParams,
+  // EventSubscription types
+  EventSubscription,
+  EventSubscriptionConfig,
+  EventSubscriptionLifecycle,
+  EventSubscriptionDeliveryType,
+  EventSubscriptionFilter,
+  SSEDeliveryConfig,
+  WebhookDeliveryConfig,
+  DeliveryConfig,
+  SSEDeliveryConfigCreate,
+  WebhookDeliveryConfigCreate,
+  DeliveryConfigCreate,
+  EventTypeFilter,
+  FilterCreate,
+  CreateEventSubscriptionParams,
+  ListEventSubscriptionsParams,
+  SSEConnection,
+  SSEConnectionOptions,
+  SSEConnectionStatus,
+  SSEEvent
 } from './types'
 
 // Type helpers
@@ -155,3 +175,12 @@ export {
   listNotifications,
   getNotification
 } from './notifications'
+
+// EventSubscriptions - Plain functions
+export {
+  listEventSubscriptions,
+  getEventSubscription,
+  createEventSubscription,
+  deleteEventSubscription,
+  connectToEventSubscription
+} from './eventSubscriptions'
