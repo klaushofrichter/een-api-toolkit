@@ -562,7 +562,7 @@ describe('EventSubscriptions service functions', () => {
   describe('connectToEventSubscription', () => {
     it('should return AUTH_REQUIRED when not authenticated', () => {
       const result = connectToEventSubscription(
-        'https://api.example.com/sse/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
         { onEvent: vi.fn() }
       )
 
@@ -576,7 +576,7 @@ describe('EventSubscriptions service functions', () => {
       // token not set
 
       const result = connectToEventSubscription(
-        'https://api.example.com/sse/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
         { onEvent: vi.fn() }
       )
 
@@ -594,6 +594,31 @@ describe('EventSubscriptions service functions', () => {
       expect(result.error?.message).toBe('SSE URL is required')
     })
 
+    it('should return VALIDATION_ERROR for invalid URL format', () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      const result = connectToEventSubscription('not-a-valid-url', { onEvent: vi.fn() })
+
+      expect(result.error?.code).toBe('VALIDATION_ERROR')
+      expect(result.error?.message).toBe('Invalid SSE URL format')
+    })
+
+    it('should return VALIDATION_ERROR for untrusted SSE URL domain', () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      const result = connectToEventSubscription(
+        'https://malicious-site.com/sse/events',
+        { onEvent: vi.fn() }
+      )
+
+      expect(result.error?.code).toBe('VALIDATION_ERROR')
+      expect(result.error?.message).toContain('SSE URL domain not allowed')
+    })
+
     it('should return SSE connection object on success', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
@@ -603,7 +628,7 @@ describe('EventSubscriptions service functions', () => {
       mockFetch.mockReturnValueOnce(new Promise(() => {}))
 
       const result = connectToEventSubscription(
-        'https://api.example.com/sse/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
         { onEvent: vi.fn() }
       )
 
@@ -627,7 +652,7 @@ describe('EventSubscriptions service functions', () => {
       mockFetch.mockReturnValueOnce(new Promise(() => {}))
 
       const result = connectToEventSubscription(
-        'https://api.example.com/sse/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
         { onEvent: vi.fn(), onStatusChange }
       )
 
@@ -650,18 +675,17 @@ describe('EventSubscriptions service functions', () => {
       mockFetch.mockReturnValueOnce(new Promise(() => {}))
 
       const result = connectToEventSubscription(
-        'https://api.example.com/sse/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
         { onEvent: vi.fn() }
       )
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/sse/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
             'Accept': 'text/event-stream',
-            'Authorization': 'Bearer test-token',
-            'Cache-Control': 'no-cache'
+            'Authorization': 'Bearer test-token'
           }
         })
       )
@@ -682,7 +706,7 @@ describe('EventSubscriptions service functions', () => {
       mockFetch.mockRejectedValueOnce(new Error('Connection failed'))
 
       const result = connectToEventSubscription(
-        'https://api.example.com/sse/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/sse/eventSubscriptions/sub-123',
         { onEvent: vi.fn(), onError, onStatusChange }
       )
 

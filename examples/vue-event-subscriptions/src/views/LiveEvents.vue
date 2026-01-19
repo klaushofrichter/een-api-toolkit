@@ -72,8 +72,12 @@ function connect() {
 
   const result = connectToEventSubscription(sseUrl, {
     onEvent: (event) => {
-      // Add new event at the beginning
-      events.value = [event, ...events.value.slice(0, maxEvents - 1)]
+      // Add new event at the beginning, limit to maxEvents
+      // Using unshift + pop is more efficient than spread operator for large arrays
+      events.value.unshift(event)
+      if (events.value.length > maxEvents) {
+        events.value.pop()
+      }
     },
     onError: (error) => {
       connectionError.value = { code: 'NETWORK_ERROR', message: error.message }
@@ -122,11 +126,21 @@ function formatEventType(type: string): string {
 function openEventModal(event: SSEEvent) {
   selectedEvent.value = event
   showModal.value = true
+  // Add keyboard listener for Escape key
+  document.addEventListener('keydown', handleKeyDown)
 }
 
 function closeModal() {
   showModal.value = false
   selectedEvent.value = null
+  // Remove keyboard listener
+  document.removeEventListener('keydown', handleKeyDown)
+}
+
+function handleKeyDown(e: KeyboardEvent) {
+  if (e.key === 'Escape' && showModal.value) {
+    closeModal()
+  }
 }
 
 function handleModalBackdropClick(e: MouseEvent) {
@@ -275,12 +289,15 @@ watch(selectedSubscriptionId, () => {
     <div
       v-if="showModal && selectedEvent"
       class="modal-backdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
       @click="handleModalBackdropClick"
     >
-      <div class="modal-content">
+      <div class="modal-content" role="document">
         <div class="modal-header">
-          <h3>{{ formatEventType(selectedEvent.type) }}</h3>
-          <button class="modal-close" @click="closeModal">&times;</button>
+          <h3 id="modal-title">{{ formatEventType(selectedEvent.type) }}</h3>
+          <button class="modal-close" @click="closeModal" aria-label="Close modal">&times;</button>
         </div>
         <div class="modal-body">
           <div class="modal-section">

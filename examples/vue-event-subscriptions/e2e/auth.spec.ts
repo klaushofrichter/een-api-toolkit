@@ -253,12 +253,22 @@ test.describe('Event Subscriptions Example', () => {
     const deleteButton = page.locator('button.danger.small').first()
     await expect(deleteButton).toBeVisible()
 
+    // Count subscriptions before deletion
+    const initialRowCount = await page.locator('[data-testid="subscriptions-table"] tbody tr').count()
+
     // Accept the confirmation dialog
     page.on('dialog', dialog => dialog.accept())
     await deleteButton.click()
 
-    // Wait for deletion to complete
-    await page.waitForTimeout(1000)
+    // Wait for deletion to complete by checking the row count decreases or delete button is no longer visible
+    // This is more reliable than a fixed timeout
+    if (initialRowCount > 1) {
+      // Wait for row count to decrease
+      await expect(page.locator('[data-testid="subscriptions-table"] tbody tr')).toHaveCount(initialRowCount - 1, { timeout: TIMEOUTS.DATA_LOAD })
+    } else {
+      // If only one subscription, wait for the table or empty state to appear
+      await expect(deleteButton).not.toBeVisible({ timeout: TIMEOUTS.DATA_LOAD })
+    }
   })
 
   test('can logout after login', async ({ page }) => {

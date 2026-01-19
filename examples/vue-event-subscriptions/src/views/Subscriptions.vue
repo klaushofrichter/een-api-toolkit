@@ -69,6 +69,26 @@ async function fetchNextPage() {
   return fetchSubscriptions({ ...params.value, pageToken: nextPageToken.value }, true)
 }
 
+/**
+ * Validates and formats an actor ID for event subscriptions.
+ * Actor IDs must follow the format "type:id" (e.g., "camera:abc123").
+ * @param type - The actor type (e.g., "camera", "bridge")
+ * @param id - The actor ID (alphanumeric, hyphens, underscores allowed)
+ * @returns The formatted actor ID or null if invalid
+ */
+function formatActorId(type: string, id: string): string | null {
+  // Validate actor type (only allow known types)
+  const validTypes = ['camera', 'bridge', 'account', 'user']
+  if (!validTypes.includes(type)) {
+    return null
+  }
+  // Validate ID format (alphanumeric with hyphens and underscores)
+  if (!/^[a-zA-Z0-9_-]+$/.test(id)) {
+    return null
+  }
+  return `${type}:${id}`
+}
+
 async function loadFormData() {
   // Load cameras
   const camerasResult = await getCameras({ pageSize: 100 })
@@ -93,10 +113,22 @@ async function handleCreate() {
   createError.value = null
   createSuccess.value = false
 
+  // Validate and format actor IDs
+  const actors: string[] = []
+  for (const id of selectedCameras.value) {
+    const actorId = formatActorId('camera', id)
+    if (!actorId) {
+      createError.value = { code: 'VALIDATION_ERROR', message: `Invalid camera ID format: ${id}` }
+      creating.value = false
+      return
+    }
+    actors.push(actorId)
+  }
+
   const result = await createEventSubscription({
     deliveryConfig: { type: 'serverSentEvents.v1' },
     filters: [{
-      actors: selectedCameras.value.map(id => `camera:${id}`),
+      actors,
       types: selectedEventTypes.value.map(type => ({ id: type }))
     }]
   })

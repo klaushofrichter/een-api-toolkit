@@ -393,6 +393,22 @@ export function connectToEventSubscription(
     return failure('VALIDATION_ERROR', 'SSE URL is required')
   }
 
+  // Validate SSE URL domain to prevent SSRF attacks
+  // SSE URLs should only come from trusted EEN domains
+  try {
+    const sseUrlObj = new URL(sseUrl)
+    const allowedDomains = ['.eagleeyenetworks.com', '.een.cloud']
+    const isAllowedDomain = allowedDomains.some(domain => sseUrlObj.hostname.endsWith(domain))
+    if (!isAllowedDomain) {
+      return failure('VALIDATION_ERROR', `SSE URL domain not allowed: ${sseUrlObj.hostname}`)
+    }
+  } catch {
+    return failure('VALIDATION_ERROR', 'Invalid SSE URL format')
+  }
+
+  // Maximum buffer size to prevent memory exhaustion (1MB)
+  const MAX_BUFFER_SIZE = 1024 * 1024
+
   let status: SSEConnectionStatus = 'connecting'
   let abortController: AbortController | null = new AbortController()
   let isClosing = false
@@ -418,6 +434,10 @@ export function connectToEventSubscription(
     debug('Connecting to SSE:', sseUrl)
 
     try {
+      // Note: We intentionally omit Cache-Control header here.
+      // While 'Cache-Control: no-cache' is common for SSE, it triggers CORS preflight
+      // requests that fail because the EEN API doesn't include it in Access-Control-Allow-Headers.
+      // The SSE endpoint handles caching appropriately server-side.
       const response = await fetch(sseUrl, {
         method: 'GET',
         headers: {
@@ -451,13 +471,23 @@ export function connectToEventSubscription(
         }
 
         buffer += decoder.decode(value, { stream: true })
+
+        // Prevent buffer from growing unbounded (protects against memory exhaustion)
+        if (buffer.length > MAX_BUFFER_SIZE) {
+          debug('SSE buffer exceeded maximum size, resetting')
+          buffer = ''
+          continue
+        }
+
         const lines = buffer.split('\n')
         buffer = lines.pop() || ''
 
         let eventData = ''
         for (const line of lines) {
           if (line.startsWith('data:')) {
-            eventData += line.slice(5).trim()
+            // Per SSE spec, multi-line data fields are concatenated with newlines
+            const dataValue = line.substring(5).trimStart()
+            eventData = eventData ? `${eventData}\n${dataValue}` : dataValue
           } else if (line === '' && eventData) {
             // End of event
             try {
