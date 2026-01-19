@@ -2,12 +2,18 @@
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { revokeToken } from 'een-api-toolkit'
+import { useConnectionStore } from '../stores/connection'
 
 const router = useRouter()
+const connectionStore = useConnectionStore()
 const processing = ref(true)
 const error = ref<string | null>(null)
 
 onMounted(async () => {
+  // Close any active SSE connection and clear events
+  connectionStore.disconnect()
+  connectionStore.clearEvents()
+
   const result = await revokeToken()
 
   if (result.error) {

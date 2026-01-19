@@ -10,6 +10,11 @@ import {
   type EventType,
   type EenError
 } from 'een-api-toolkit'
+import { useHlsPlayer } from '../composables/useHlsPlayer'
+
+// Initialize HLS player composable
+const hlsPlayer = useHlsPlayer()
+const { videoUrl, videoError, loadingVideo, loadVideo, resetVideo } = hlsPlayer
 
 /**
  * Bounding box from object detection data.
@@ -81,6 +86,13 @@ const eventImages = ref<Map<string, string>>(new Map())
 const imageLoadingIds = ref<Set<string>>(new Set()) // Track which images are currently loading
 const boundingBoxCache = ref<Map<string, BoundingBox[]>>(new Map()) // Cache bounding boxes per event
 const enlargedEventId = ref<string | null>(null)
+
+// Lightbox media state
+const showVideo = ref(false)
+const hdImageUrl = ref<string | null>(null)
+const loadingHdImage = ref(false)
+const hdImageError = ref<string | null>(null)
+const currentMediaType = ref<'preview' | 'hd' | 'video'>('preview')
 
 // Computed
 const hasNextPage = computed(() => !!nextPageToken.value)
@@ -382,11 +394,68 @@ function toggleAllEventTypes() {
 // Open enlarged image view
 function openEnlargedImage(eventId: string) {
   enlargedEventId.value = eventId
+  currentMediaType.value = 'preview'
+  showVideo.value = false
+  hdImageUrl.value = null
+  hdImageError.value = null
+  resetVideo()
 }
 
 // Close enlarged image view
 function closeEnlargedImage() {
   enlargedEventId.value = null
+  showVideo.value = false
+  hdImageUrl.value = null
+  hdImageError.value = null
+  currentMediaType.value = 'preview'
+  resetVideo()
+}
+
+// Switch to preview mode
+function showPreview() {
+  currentMediaType.value = 'preview'
+  showVideo.value = false
+  resetVideo()
+}
+
+// Load and show HD image
+async function showHdImage() {
+  if (!enlargedEvent.value) return
+
+  currentMediaType.value = 'hd'
+  showVideo.value = false
+  loadingHdImage.value = true
+  hdImageError.value = null
+  hdImageUrl.value = null
+  resetVideo()
+
+  const result = await getRecordedImage({
+    deviceId: enlargedEvent.value.actorId,
+    type: 'main',
+    timestamp__gte: enlargedEvent.value.startTimestamp
+  })
+
+  if (result.error) {
+    hdImageError.value = result.error.message
+  } else if (result.data?.imageData) {
+    hdImageUrl.value = result.data.imageData
+  } else {
+    hdImageError.value = 'No image data returned'
+  }
+
+  loadingHdImage.value = false
+}
+
+// Load and show video
+async function showVideoPlayer() {
+  if (!enlargedEvent.value) return
+
+  currentMediaType.value = 'video'
+  showVideo.value = true
+  hdImageUrl.value = null
+  hdImageError.value = null
+
+  await loadVideo(enlargedEvent.value.actorId, enlargedEvent.value.startTimestamp)
 }
 
 // Handle keyboard events for accessibility
@@ -546,56 +615,147 @@ watch([timeRange, selectedEventTypes], () => {
 
       <!-- Enlarged image lightbox -->
       <div
-        v-if="enlargedEventId && enlargedImage"
+        v-if="enlargedEventId && (enlargedImage || showVideo)"
         class="lightbox-overlay"
         @click.self="closeEnlargedImage"
         data-testid="lightbox-overlay"
       >
         <div class="lightbox-content">
-          <button
-            class="lightbox-close"
-            @click="closeEnlargedImage"
-            aria-label="Close enlarged image"
-            data-testid="lightbox-close"
-          >&times;</button>
-          <div class="lightbox-image-container">
-            <img :src="enlargedImage" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
-            <!-- Bounding box overlay -->
-            <svg
-              v-if="enlargedBoundingBoxes.length > 0"
-              class="bounding-box-overlay"
-              viewBox="0 0 100 100"
-              preserveAspectRatio="none"
-              data-testid="bounding-box-overlay"
-            >
-              <rect
-                v-for="(box, index) in enlargedBoundingBoxes"
-                :key="index"
-                :x="box.x * NORMALIZED_TO_PERCENT"
-                :y="box.y * NORMALIZED_TO_PERCENT"
-                :width="box.width * NORMALIZED_TO_PERCENT"
-                :height="box.height * NORMALIZED_TO_PERCENT"
-                class="bounding-box"
-                data-testid="bounding-box"
-              />
-            </svg>
-            <!-- Bounding box labels -->
-            <div
-              v-for="(box, index) in enlargedBoundingBoxes"
-              :key="'label-' + index"
-              class="bounding-box-label"
-              :style="{
-                left: (box.x * NORMALIZED_TO_PERCENT) + '%',
-                top: (box.y * NORMALIZED_TO_PERCENT) + '%'
-              }"
-              data-testid="bounding-box-label"
-            >
-              {{ box.label || 'Object' }}
-              <span v-if="box.confidence" class="confidence">
-                {{ Math.round(box.confidence * 100) }}%
-              </span>
+          <!-- Header with buttons -->
+          <div class="lightbox-header">
+            <div class="lightbox-buttons">
+              <button
+                class="media-button"
+                :class="{ active: currentMediaType === 'preview' }"
+                @click="showPreview"
+              >
+                Preview
+              </button>
+              <button
+                class="media-button media-button-hd"
+                :class="{ active: currentMediaType === 'hd' }"
+                @click="showHdImage"
+              >
+                HD Image
+              </button>
+              <button
+                class="media-button media-button-video"
+                :class="{ active: currentMediaType === 'video' }"
+                @click="showVideoPlayer"
+              >
+                Video
+              </button>
             </div>
+            <button
+              class="lightbox-close"
+              @click="closeEnlargedImage"
+              aria-label="Close enlarged image"
+              data-testid="lightbox-close"
+            >&times;</button>
           </div>
+
+          <!-- Video mode -->
+          <template v-if="showVideo">
+            <div v-if="loadingVideo" class="lightbox-loading">Loading video...</div>
+            <div v-else-if="videoError" class="lightbox-error">{{ videoError }}</div>
+            <video
+              v-else-if="videoUrl"
+              :ref="(el) => hlsPlayer.videoRef.value = el as HTMLVideoElement | null"
+              class="lightbox-video"
+              controls
+              autoplay
+              muted
+              playsinline
+            />
+          </template>
+
+          <!-- HD Image mode -->
+          <template v-else-if="currentMediaType === 'hd'">
+            <div v-if="loadingHdImage" class="lightbox-loading">Loading HD image...</div>
+            <div v-else-if="hdImageError" class="lightbox-error">{{ hdImageError }}</div>
+            <div v-else-if="hdImageUrl" class="lightbox-image-container">
+              <img :src="hdImageUrl" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
+              <!-- Bounding box overlay for HD -->
+              <svg
+                v-if="enlargedBoundingBoxes.length > 0"
+                class="bounding-box-overlay"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                data-testid="bounding-box-overlay"
+              >
+                <rect
+                  v-for="(box, index) in enlargedBoundingBoxes"
+                  :key="index"
+                  :x="box.x * NORMALIZED_TO_PERCENT"
+                  :y="box.y * NORMALIZED_TO_PERCENT"
+                  :width="box.width * NORMALIZED_TO_PERCENT"
+                  :height="box.height * NORMALIZED_TO_PERCENT"
+                  class="bounding-box"
+                  data-testid="bounding-box"
+                />
+              </svg>
+              <!-- Bounding box labels for HD -->
+              <div
+                v-for="(box, index) in enlargedBoundingBoxes"
+                :key="'label-' + index"
+                class="bounding-box-label"
+                :style="{
+                  left: (box.x * NORMALIZED_TO_PERCENT) + '%',
+                  top: (box.y * NORMALIZED_TO_PERCENT) + '%'
+                }"
+                data-testid="bounding-box-label"
+              >
+                {{ box.label || 'Object' }}
+                <span v-if="box.confidence" class="confidence">
+                  {{ Math.round(box.confidence * 100) }}%
+                </span>
+              </div>
+            </div>
+          </template>
+
+          <!-- Preview mode (default) -->
+          <template v-else>
+            <div v-if="!enlargedImage" class="lightbox-loading">Loading preview...</div>
+            <div v-else class="lightbox-image-container">
+              <img :src="enlargedImage" :alt="enlargedEvent?.type || 'Event image'" class="lightbox-image" />
+              <!-- Bounding box overlay -->
+              <svg
+                v-if="enlargedBoundingBoxes.length > 0"
+                class="bounding-box-overlay"
+                viewBox="0 0 100 100"
+                preserveAspectRatio="none"
+                data-testid="bounding-box-overlay"
+              >
+                <rect
+                  v-for="(box, index) in enlargedBoundingBoxes"
+                  :key="index"
+                  :x="box.x * NORMALIZED_TO_PERCENT"
+                  :y="box.y * NORMALIZED_TO_PERCENT"
+                  :width="box.width * NORMALIZED_TO_PERCENT"
+                  :height="box.height * NORMALIZED_TO_PERCENT"
+                  class="bounding-box"
+                  data-testid="bounding-box"
+                />
+              </svg>
+              <!-- Bounding box labels -->
+              <div
+                v-for="(box, index) in enlargedBoundingBoxes"
+                :key="'label-' + index"
+                class="bounding-box-label"
+                :style="{
+                  left: (box.x * NORMALIZED_TO_PERCENT) + '%',
+                  top: (box.y * NORMALIZED_TO_PERCENT) + '%'
+                }"
+                data-testid="bounding-box-label"
+              >
+                {{ box.label || 'Object' }}
+                <span v-if="box.confidence" class="confidence">
+                  {{ Math.round(box.confidence * 100) }}%
+                </span>
+              </div>
+            </div>
+          </template>
+
           <div v-if="enlargedEvent" class="lightbox-info">
             <div class="lightbox-event-line">
               <span class="lightbox-camera-info">{{ camera.name }} ({{ camera.id }})</span>
@@ -887,10 +1047,50 @@ watch([timeRange, selectedEventTypes], () => {
   align-items: center;
 }
 
+.lightbox-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.lightbox-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.media-button {
+  padding: 8px 16px;
+  background: #42b883;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.7;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+.media-button:hover {
+  opacity: 1;
+}
+
+.media-button.active {
+  opacity: 1;
+  box-shadow: 0 0 0 2px white;
+}
+
+.media-button-hd {
+  background: #3b82f6;
+}
+
+.media-button-video {
+  background: #9b59b6;
+}
+
 .lightbox-close {
-  position: absolute;
-  top: -40px;
-  right: -10px;
   background: none;
   border: none;
   color: white;
@@ -898,11 +1098,33 @@ watch([timeRange, selectedEventTypes], () => {
   cursor: pointer;
   padding: 5px 10px;
   line-height: 1;
-  z-index: 2001;
 }
 
 .lightbox-close:hover {
   color: #ccc;
+}
+
+.lightbox-loading,
+.lightbox-error {
+  color: white;
+  font-size: 1.1rem;
+  padding: 40px;
+  min-height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-error {
+  color: #ff6b6b;
+}
+
+.lightbox-video {
+  max-width: 90vw;
+  max-height: 70vh;
+  width: 100%;
+  background: #000;
+  border-radius: 4px;
 }
 
 .lightbox-info {

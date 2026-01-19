@@ -1,35 +1,37 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   listEventSubscriptions,
-  connectToEventSubscription,
+  getRecordedImage,
   type EventSubscription,
-  type SSEConnection,
-  type SSEConnectionStatus,
-  type SSEEvent,
-  type EenError
+  type SSEEvent
 } from 'een-api-toolkit'
+import { useConnectionStore } from '../stores/connection'
+import { useHlsPlayer } from '../composables/useHlsPlayer'
 
 const route = useRoute()
+const connectionStore = useConnectionStore()
+
+// Initialize HLS player composable
+const hlsPlayer = useHlsPlayer()
+const { videoUrl, videoError, loadingVideo, loadVideo, resetVideo } = hlsPlayer
 
 // Subscriptions state
 const subscriptions = ref<EventSubscription[]>([])
 const selectedSubscriptionId = ref<string | null>(null)
 const loadingSubscriptions = ref(false)
 
-// Connection state
-const connection = ref<SSEConnection | null>(null)
-const connectionStatus = ref<SSEConnectionStatus>('disconnected')
-const connectionError = ref<EenError | null>(null)
-
-// Events state
-const events = ref<SSEEvent[]>([])
-const maxEvents = 100
-
 // Modal state
 const selectedEvent = ref<SSEEvent | null>(null)
 const showModal = ref(false)
+
+// Lightbox state
+const showLightbox = ref(false)
+const lightboxImageUrl = ref<string | null>(null)
+const loadingImage = ref(false)
+const imageError = ref<string | null>(null)
+const showVideo = ref(false)
 
 const selectedSubscription = computed(() => {
   return subscriptions.value.find(s => s.id === selectedSubscriptionId.value)
@@ -41,8 +43,13 @@ const canConnect = computed(() => {
   return !!selectedSubscription.value.deliveryConfig.sseUrl
 })
 
-const isConnected = computed(() => connectionStatus.value === 'connected')
-const isConnecting = computed(() => connectionStatus.value === 'connecting')
+// Use store computed values
+const isConnected = computed(() => connectionStore.isConnected)
+const isConnecting = computed(() => connectionStore.isConnecting)
+const connectionStatus = computed(() => connectionStore.connectionStatus)
+const connectionError = computed(() => connectionStore.connectionError)
+const events = computed(() => connectionStore.events)
+const maxEvents = connectionStore.maxEvents
 
 async function loadSubscriptions() {
   loadingSubscriptions.value = true
@@ -58,51 +65,52 @@ async function loadSubscriptions() {
   loadingSubscriptions.value = false
 }
 
-function connect() {
+async function connect() {
   if (!canConnect.value || !selectedSubscription.value) return
 
-  const sseUrl = selectedSubscription.value.deliveryConfig.type === 'serverSentEvents.v1'
-    ? selectedSubscription.value.deliveryConfig.sseUrl
-    : undefined
+  const subscriptionId = selectedSubscription.value.id
 
-  if (!sseUrl) return
+  // Reload all subscriptions to get fresh SSE URLs
+  // SSE URLs become invalid after disconnecting
+  await loadSubscriptions()
 
-  connectionError.value = null
-  events.value = []
-
-  const result = connectToEventSubscription(sseUrl, {
-    onEvent: (event) => {
-      // Add new event at the beginning, limit to maxEvents
-      // Using unshift + pop is more efficient than spread operator for large arrays
-      events.value.unshift(event)
-      if (events.value.length > maxEvents) {
-        events.value.pop()
-      }
-    },
-    onError: (error) => {
-      connectionError.value = { code: 'NETWORK_ERROR', message: error.message }
-    },
-    onStatusChange: (status) => {
-      connectionStatus.value = status
-    }
-  })
-
-  if (result.error) {
-    connectionError.value = result.error
-  } else {
-    connection.value = result.data
+  // Find the subscription in the refreshed list
+  const freshSubscription = subscriptions.value.find(s => s.id === subscriptionId)
+  if (!freshSubscription) {
+    connectionStore.connectionError = { code: 'NOT_FOUND', message: 'Subscription no longer exists' }
+    return
   }
+
+  if (freshSubscription.deliveryConfig.type !== 'serverSentEvents.v1') {
+    connectionStore.connectionError = { code: 'VALIDATION_ERROR', message: 'Subscription is not an SSE type' }
+    return
+  }
+
+  const sseUrl = freshSubscription.deliveryConfig.sseUrl
+  if (!sseUrl) {
+    connectionStore.connectionError = { code: 'VALIDATION_ERROR', message: 'No SSE URL available' }
+    return
+  }
+
+  connectionStore.connect(subscriptionId, sseUrl)
 }
 
 function disconnect() {
-  if (connection.value) {
-    connection.value.close()
-    connection.value = null
+  // Get the subscription ID before disconnecting
+  const disconnectedId = connectionStore.connectedSubscriptionId
+
+  connectionStore.disconnect()
+
+  // Remove the subscription from the list since SSE URLs are single-use
+  // and cannot be reconnected
+  if (disconnectedId) {
+    subscriptions.value = subscriptions.value.filter(s => s.id !== disconnectedId)
+    selectedSubscriptionId.value = null
   }
 }
 
 function clearEvents() {
-  events.value = []
+  connectionStore.clearEvents()
 }
 
 function formatTimestamp(timestamp: string): string {
@@ -138,8 +146,12 @@ function closeModal() {
 }
 
 function handleKeyDown(e: KeyboardEvent) {
-  if (e.key === 'Escape' && showModal.value) {
-    closeModal()
+  if (e.key === 'Escape') {
+    if (showLightbox.value) {
+      closeLightbox()
+    } else if (showModal.value) {
+      closeModal()
+    }
   }
 }
 
@@ -149,28 +161,128 @@ function handleModalBackdropClick(e: MouseEvent) {
   }
 }
 
+// Extract the image URL from event data
+function getEventImageUrl(event: SSEEvent): string | null {
+  if (!event.data) return null
+  const fullFrameData = event.data.find(d => d.type === 'een.fullFrameImageUrl.v1')
+  if (fullFrameData && typeof fullFrameData.httpsUrl === 'string') {
+    return fullFrameData.httpsUrl
+  }
+  return null
+}
+
+// Check if event has media URLs
+function hasMediaUrls(event: SSEEvent): boolean {
+  return getEventImageUrl(event) !== null
+}
+
+// Parse the image URL to extract parameters for getRecordedImage
+function parseImageUrlParams(url: string): { deviceId: string; type: 'preview' | 'main'; timestamp: string } | null {
+  try {
+    const urlObj = new URL(url)
+    const deviceId = urlObj.searchParams.get('deviceId')
+    const type = urlObj.searchParams.get('type') as 'preview' | 'main'
+    const timestamp = urlObj.searchParams.get('timestamp__gte')
+
+    if (deviceId && type && timestamp) {
+      return { deviceId, type, timestamp }
+    }
+    return null
+  } catch {
+    return null
+  }
+}
+
+// Handle image click (preview or HD)
+async function handleImageClick(quality: 'preview' | 'main' = 'preview') {
+  if (!selectedEvent.value) return
+
+  const imageUrl = getEventImageUrl(selectedEvent.value)
+  if (!imageUrl) return
+
+  loadingImage.value = true
+  imageError.value = null
+  lightboxImageUrl.value = null
+  showLightbox.value = true
+  showVideo.value = false
+
+  // Parse the URL to extract parameters
+  const params = parseImageUrlParams(imageUrl)
+  if (!params) {
+    imageError.value = 'Invalid image URL format'
+    loadingImage.value = false
+    return
+  }
+
+  // Use the toolkit's getRecordedImage function
+  const result = await getRecordedImage({
+    deviceId: params.deviceId,
+    type: quality,
+    timestamp__gte: params.timestamp
+  })
+
+  if (result.error) {
+    imageError.value = result.error.message
+  } else if (result.data?.imageData) {
+    lightboxImageUrl.value = result.data.imageData
+  } else {
+    imageError.value = 'No image data returned'
+  }
+
+  loadingImage.value = false
+}
+
+// Handle video click
+async function handleVideoClick() {
+  if (!selectedEvent.value) return
+
+  const imageUrl = getEventImageUrl(selectedEvent.value)
+  if (!imageUrl) return
+
+  // Parse the URL to extract parameters
+  const params = parseImageUrlParams(imageUrl)
+  if (!params) {
+    return
+  }
+
+  showVideo.value = true
+  showLightbox.value = true
+
+  // Use the composable to load and play video
+  await loadVideo(params.deviceId, params.timestamp)
+}
+
+// Close lightbox
+function closeLightbox() {
+  showLightbox.value = false
+  lightboxImageUrl.value = null
+  imageError.value = null
+  // Cleanup video if it was playing
+  resetVideo()
+  showVideo.value = false
+}
+
 // Load subscriptions on mount
 onMounted(async () => {
   await loadSubscriptions()
 
-  // Check for subscriptionId in query params
-  const queryId = route.query.subscriptionId as string | undefined
-  if (queryId) {
-    selectedSubscriptionId.value = queryId
+  // If already connected, set the selected subscription to match
+  if (connectionStore.connectedSubscriptionId) {
+    selectedSubscriptionId.value = connectionStore.connectedSubscriptionId
+  } else {
+    // Check for subscriptionId in query params
+    const queryId = route.query.subscriptionId as string | undefined
+    if (queryId) {
+      selectedSubscriptionId.value = queryId
+    }
   }
 })
 
-// Clean up connection on unmount
-onUnmounted(() => {
-  disconnect()
-})
-
-// Auto-disconnect when changing subscription
-watch(selectedSubscriptionId, () => {
-  if (connection.value) {
+// Auto-disconnect when changing subscription (but not if selecting the already connected one)
+watch(selectedSubscriptionId, (newId) => {
+  if (newId && newId !== connectionStore.connectedSubscriptionId && connectionStore.isConnected) {
     disconnect()
   }
-  events.value = []
 })
 </script>
 
@@ -283,6 +395,12 @@ watch(selectedSubscriptionId, () => {
         <li>Maximum {{ maxEvents }} events are displayed (oldest removed first)</li>
         <li>Click on an event card to view detailed information</li>
       </ul>
+      <h4>Important</h4>
+      <ul class="warning-list">
+        <li>SSE URLs are single-use. Once disconnected, the subscription cannot be reconnected.</li>
+        <li>To receive events again after disconnecting, create a new subscription.</li>
+        <li>Subscriptions have a 15-minute TTL and expire if not connected.</li>
+      </ul>
     </div>
 
     <!-- Event Details Modal -->
@@ -297,7 +415,30 @@ watch(selectedSubscriptionId, () => {
       <div class="modal-content" role="document">
         <div class="modal-header">
           <h3 id="modal-title">{{ formatEventType(selectedEvent.type) }}</h3>
-          <button class="modal-close" @click="closeModal" aria-label="Close modal">&times;</button>
+          <div class="modal-header-buttons">
+            <button
+              v-if="hasMediaUrls(selectedEvent)"
+              class="image-button"
+              @click="handleImageClick('preview')"
+            >
+              Preview
+            </button>
+            <button
+              v-if="hasMediaUrls(selectedEvent)"
+              class="image-button image-button-hd"
+              @click="handleImageClick('main')"
+            >
+              HD Image
+            </button>
+            <button
+              v-if="hasMediaUrls(selectedEvent)"
+              class="image-button image-button-video"
+              @click="handleVideoClick"
+            >
+              Video
+            </button>
+            <button class="close-button" @click="closeModal" aria-label="Close modal">&times;</button>
+          </div>
         </div>
         <div class="modal-body">
           <div class="modal-section">
@@ -338,6 +479,39 @@ watch(selectedSubscriptionId, () => {
             <p class="no-data-text">No additional data available for this event.</p>
           </div>
         </div>
+      </div>
+
+    </div>
+
+    <!-- Image/Video Lightbox -->
+    <div v-if="showLightbox" class="lightbox-overlay" @click.self="closeLightbox">
+      <div class="lightbox-content">
+        <button class="lightbox-close" @click="closeLightbox">&times;</button>
+        <!-- Video mode -->
+        <template v-if="showVideo">
+          <div v-if="loadingVideo" class="lightbox-loading">Loading video...</div>
+          <div v-else-if="videoError" class="lightbox-error">{{ videoError }}</div>
+          <video
+            v-else-if="videoUrl"
+            :ref="(el) => hlsPlayer.videoRef.value = el as HTMLVideoElement | null"
+            class="lightbox-video"
+            controls
+            autoplay
+            muted
+            playsinline
+          />
+        </template>
+        <!-- Image mode -->
+        <template v-else>
+          <div v-if="loadingImage" class="lightbox-loading">Loading image...</div>
+          <div v-else-if="imageError" class="lightbox-error">{{ imageError }}</div>
+          <img
+            v-else-if="lightboxImageUrl"
+            :src="lightboxImageUrl"
+            alt="Event image"
+            class="lightbox-image"
+          />
+        </template>
       </div>
     </div>
   </div>
@@ -498,8 +672,8 @@ h2 {
   position: fixed;
   top: 0;
   left: 0;
-  width: 100%;
-  height: 100%;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
@@ -509,49 +683,77 @@ h2 {
 
 .modal-content {
   background: white;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 600px;
+  border-radius: 8px;
+  width: 80%;
   max-height: 80vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e2e3e5;
-  background: #f8f9fa;
+  padding: 16px 20px;
+  border-bottom: 1px solid #eee;
 }
 
 .modal-header h3 {
   margin: 0;
-  color: #42b883;
+  font-size: 1.1rem;
+  color: #333;
 }
 
-.modal-close {
+.modal-header-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.image-button {
+  padding: 6px 14px;
+  background: #42b883;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.image-button:hover {
+  background: #3aa876;
+}
+
+.image-button-hd {
+  background: #3b82f6;
+}
+
+.image-button-hd:hover {
+  background: #2563eb;
+}
+
+.image-button-video {
+  background: #9b59b6;
+}
+
+.image-button-video:hover {
+  background: #8e44ad;
+}
+
+.close-button {
   background: none;
   border: none;
-  font-size: 28px;
+  font-size: 1.5rem;
   cursor: pointer;
   color: #666;
   padding: 0;
   line-height: 1;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  transition: background-color 0.15s ease;
 }
 
-.modal-close:hover {
-  background: #e2e3e5;
+.close-button:hover {
   color: #333;
 }
 
@@ -636,5 +838,83 @@ h2 {
 
 .help-section li {
   margin-bottom: 5px;
+}
+
+.help-section .warning-list {
+  color: #856404;
+  background: #fff3cd;
+  padding: 10px 10px 10px 30px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.help-section .warning-list li {
+  margin-bottom: 4px;
+}
+
+/* Lightbox styles */
+.lightbox-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 2rem;
+  cursor: pointer;
+  padding: 5px 10px;
+  line-height: 1;
+}
+
+.lightbox-close:hover {
+  color: #ccc;
+}
+
+.lightbox-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.lightbox-video {
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 100%;
+  background: #000;
+  border-radius: 4px;
+}
+
+.lightbox-loading,
+.lightbox-error {
+  color: white;
+  font-size: 1.1rem;
+  padding: 40px;
+}
+
+.lightbox-error {
+  color: #ff6b6b;
 }
 </style>

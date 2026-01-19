@@ -172,13 +172,6 @@ function getDeliveryType(sub: EventSubscription): string {
   return sub.deliveryConfig.type
 }
 
-function getSseUrl(sub: EventSubscription): string | undefined {
-  if (sub.deliveryConfig.type === 'serverSentEvents.v1') {
-    return sub.deliveryConfig.sseUrl
-  }
-  return undefined
-}
-
 onMounted(async () => {
   await Promise.all([
     fetchSubscriptions(),
@@ -267,12 +260,6 @@ onMounted(async () => {
               <td>{{ sub.subscriptionConfig?.lifeCycle || '-' }}</td>
               <td>{{ sub.subscriptionConfig?.timeToLiveSeconds ? `${sub.subscriptionConfig.timeToLiveSeconds}s` : '-' }}</td>
               <td class="actions">
-                <router-link
-                  v-if="getSseUrl(sub)"
-                  :to="{ path: '/live', query: { subscriptionId: sub.id } }"
-                >
-                  <button class="secondary small">Listen</button>
-                </router-link>
                 <button
                   class="danger small"
                   @click="handleDelete(sub.id)"

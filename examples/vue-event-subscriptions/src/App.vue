@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useAuthStore } from 'een-api-toolkit'
-import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
@@ -10,33 +10,6 @@ const isAuthenticated = computed(() => authStore.isAuthenticated)
 const refreshFailed = computed(() => authStore.refreshFailed)
 const refreshFailedMessage = computed(() => authStore.refreshFailedMessage)
 const isRefreshing = computed(() => authStore.isRefreshing)
-
-// Reactive tick to force re-computation of tokenExpiresIn
-const tick = ref(0)
-let tickInterval: ReturnType<typeof setInterval> | null = null
-
-const tokenExpiresIn = computed(() => {
-  // Reference tick to trigger reactivity
-  void tick.value
-  const ms = authStore.tokenExpiresIn
-  if (!ms) return null
-  const minutes = Math.floor(ms / 60000)
-  const seconds = Math.floor((ms % 60000) / 1000)
-  return `${minutes}m ${seconds}s`
-})
-
-onMounted(() => {
-  // Update every 10 seconds
-  tickInterval = setInterval(() => {
-    tick.value++
-  }, 10000)
-})
-
-onUnmounted(() => {
-  if (tickInterval) {
-    clearInterval(tickInterval)
-  }
-})
 
 function dismissRefreshError() {
   authStore.clearRefreshFailed()
@@ -70,9 +43,6 @@ function handleRelogin() {
         <router-link data-testid="nav-live" v-if="isAuthenticated" to="/live">Live Events</router-link>
         <router-link data-testid="nav-login" v-if="!isAuthenticated" to="/login">Login</router-link>
         <router-link data-testid="nav-logout" v-if="isAuthenticated" to="/logout">Logout</router-link>
-        <span v-if="isAuthenticated && tokenExpiresIn" class="token-info" title="Token expires in">
-          {{ tokenExpiresIn }}
-        </span>
       </nav>
     </header>
     <main>
@@ -219,15 +189,5 @@ button.secondary:hover {
 button.small {
   padding: 6px 12px;
   font-size: 12px;
-}
-
-/* Token expiry indicator */
-.token-info {
-  font-size: 12px;
-  color: #888;
-  padding: 4px 8px;
-  background: #f5f5f5;
-  border-radius: 4px;
-  font-family: monospace;
 }
 </style>
