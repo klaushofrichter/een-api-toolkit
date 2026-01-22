@@ -20,6 +20,43 @@ This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EE
 - **TypeScript**: Pinned to ~5.8.x (required for API Extractor compatibility in vite-plugin-dts)
 - **Dependencies**: Always use latest stable versions of imported packages
 
+## AI Documentation & Agents
+
+### AI Reference Documentation
+The `docs/AI-CONTEXT.md` file is the entry point for AI assistants. It links to domain-specific documents in `docs/ai-reference/` for context-efficient assistance:
+- `AI-SETUP.md` - Vue 3 app scaffolding, Pinia, Vite
+- `AI-AUTH.md` - OAuth flow, tokens, route guards
+- `AI-USERS.md` - User management API
+- `AI-DEVICES.md` - Cameras & Bridges API
+- `AI-MEDIA.md` - Media, Feeds, Live Video, HLS
+- `AI-EVENTS.md` - Events, Alerts, Metrics, SSE
+
+### Specialized Agents
+Domain-specific agents are available in `.claude/agents/`:
+| Agent | Use Case |
+|-------|----------|
+| `een-setup-agent` | New Vue 3 projects, Pinia errors, redirect URI issues |
+| `een-auth-agent` | OAuth login/logout, callbacks, route guards |
+| `een-users-agent` | User listing, profiles, permissions |
+| `een-devices-agent` | Cameras, bridges, status filtering |
+| `een-media-agent` | Live video, previews, HLS, recorded images |
+| `een-events-agent` | Events, alerts, metrics, SSE subscriptions |
+
+**Using Agents in Your Project:**
+
+After installing `een-api-toolkit`, run:
+```bash
+npx een-setup-agents
+```
+
+This copies agents to `.claude/agents/` where Claude Code discovers them automatically. Each agent specifies which documentation files to load and its capabilities.
+
+### Generation Scripts
+```bash
+npm run docs:ai-context          # Generate split files (default)
+npm run docs:ai-context:single   # Generate legacy single file
+```
+
 ## Architecture
 
 ### Source Structure (`./src/`)
