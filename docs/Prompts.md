@@ -75,10 +75,30 @@ VITE_PROXY_URL=http://127.0.0.1:8787
 
 **Description:** A Vue 3 application that displays cameras in a 3x3 grid with live preview images and a modal for live main video streaming.
 
-**Prompt:**
+**Prompt (Claude Code specific):**
+
+> **Note:** This prompt includes Claude Code-specific instructions for installing specialized agents. For other AI assistants, omit the "Setup" section and proceed directly with the features.
 
 ```
-We are building a Vue 3 web app that accesses the EEN Video Platform by using the een-api-toolkit (npm install een-api-toolkit@latest). The app allows login to the service and lists up to 9 cameras for that user in a 3x3 grid with a live preview image on each camera card. Include the following features:
+We are building a Vue 3 web app that accesses the EEN Video Platform by using the een-api-toolkit.
+
+## Setup (Claude Code only)
+
+First, install the toolkit and set up the Claude Code agents:
+
+1. Install the een-api-toolkit package:
+   npm install een-api-toolkit@latest
+
+2. Install the Claude Code agents from the package:
+   npx een-setup-agents
+
+IMPORTANT: STOP HERE. The user must restart Claude Code to load the newly installed agents.
+After restarting, continue with the app implementation using the een-auth-agent, een-devices-agent,
+and een-media-agent for specialized assistance with OAuth, cameras, and video streaming.
+
+## Features
+
+The app allows login to the service and lists up to 9 cameras for that user in a 3x3 grid with a live preview image on each camera card. Include the following features:
 
 1. Display cameras in a 3x3 grid layout (9 cameras per page)
 2. Each camera card shows a live preview image that auto-refreshes
@@ -87,11 +107,16 @@ We are building a Vue 3 web app that accesses the EEN Video Platform by using th
 5. Loading states and error handling
 6. Show a logout button
 
-Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more information about the een-api-toolkit.
+## References
 
-The node_modules for een-api-toolkit includes examples, including the main video player implementation here: ./node_modules/een-api-toolkit/examples/vue-feeds/src/views/Feeds.vue
+Refer to https://github.com/klaushofrichter/een-api-toolkit/blob/production/docs/AI-CONTEXT.md for more
+information about the een-api-toolkit. Use the latest stable packages when installing dependencies.
 
-Here are configuration details:
+The node_modules for een-api-toolkit includes examples, including the main video player implementation here:
+./node_modules/een-api-toolkit/examples/vue-feeds/src/views/Feeds.vue
+
+## Configuration
+
 VITE_EEN_CLIENT_ID="YOUR-CLIENT_ID"
 VITE_PROXY_URL=http://127.0.0.1:8787
 ```
