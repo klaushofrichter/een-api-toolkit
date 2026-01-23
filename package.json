@@ -17,6 +17,9 @@
     "dist",
     "examples",
     "docs/AI-CONTEXT.md",
+    "docs/ai-reference",
+    ".claude/agents",
+    "scripts/setup-agents.ts",
     "CHANGELOG.md"
   ],
   "scripts": {
@@ -33,10 +36,15 @@
     "docs": "npm run docs:api && npm run docs:ai-context",
     "docs:api": "typedoc",
     "docs:ai-context": "npx tsx scripts/generate-ai-context.ts",
+    "docs:ai-context:single": "npx tsx scripts/generate-ai-context.ts --single",
     "verify-package": "./scripts/verify-package.sh",
     "prepublishOnly": "npm run build && npm run docs",
     "build:presentation": "node scripts/generate-presentation.cjs && npx @marp-team/marp-cli PRESENTATION.md -o PRESENTATION.html",
-    "prepare": "husky"
+    "prepare": "husky",
+    "setup-agents": "npx tsx scripts/setup-agents.ts"
+  },
+  "bin": {
+    "een-setup-agents": "./scripts/setup-agents.ts"
   },
   "peerDependencies": {
     "pinia": "^3.0.0",
