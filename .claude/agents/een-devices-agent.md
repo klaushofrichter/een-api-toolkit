@@ -244,7 +244,7 @@ async function fetchBridge(bridgeId: string) {
 
 ```vue
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { getCameras, type Camera, type CameraStatus, type ListCamerasParams } from 'een-api-toolkit'
 
 const cameras = ref<Camera[]>([])
@@ -257,6 +257,14 @@ function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStat
   if (typeof status === 'string') return status
   return status.connectionStatus
 }
+
+// Computed property to pre-process cameras with status string (avoids calling helper multiple times in template)
+const camerasWithStatus = computed(() =>
+  cameras.value.map(camera => ({
+    ...camera,
+    statusString: getStatusString(camera.status),
+  }))
+)
 
 async function fetchCameras() {
   loading.value = true
@@ -296,12 +304,12 @@ onMounted(fetchCameras)
 
     <div v-if="loading">Loading cameras...</div>
 
-    <!-- Use helper function since status can be string or object -->
+    <!-- Use computed property for better performance (status string computed once per camera) -->
     <div class="camera-grid" v-else>
-      <div v-for="camera in cameras" :key="camera.id" class="camera-card">
+      <div v-for="camera in camerasWithStatus" :key="camera.id" class="camera-card">
         <h3>{{ camera.name }}</h3>
-        <span :class="getStatusString(camera.status)">
-          {{ getStatusString(camera.status) || 'unknown' }}
+        <span :class="camera.statusString">
+          {{ camera.statusString || 'unknown' }}
         </span>
       </div>
     </div>
