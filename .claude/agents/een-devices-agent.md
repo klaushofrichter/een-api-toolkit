@@ -71,8 +71,15 @@ type CameraStatus =
   | 'offline'
   | 'streaming'
   | 'recording'
+  | 'registered'
+  | 'deviceOffline'
+  | 'bridgeOffline'
+  | 'invalidCredentials'
   | 'error'
   | 'unknown'
+
+// Status can also be nested in an object:
+// camera.status?.connectionStatus
 ```
 
 ### Bridge Interface
@@ -287,8 +294,38 @@ onMounted(fetchCameras)
 | FORBIDDEN | No permission | Show access denied message |
 | API_ERROR | Server error | Show error, allow retry |
 
+## Camera ID Usage
+
+The `camera.id` property is used consistently across all toolkit functions:
+- `getCameras()` returns cameras with `id` property
+- `listFeeds({ deviceId: camera.id })` for feeds
+- `getLiveImage({ cameraId: camera.id })` for images
+- LivePlayer SDK: `{ cameraId: camera.id }` for live video
+
+**Note:** Some external documentation may refer to "ESN" (Electronic Serial Number). In the toolkit, always use `camera.id`.
+
+## Checking Camera Status for Previews
+
+Before loading previews or video, check if the camera is in a viewable state:
+
+```typescript
+function isCameraOnline(status?: CameraStatus | { connectionStatus?: CameraStatus }): boolean {
+  // Handle both string status and nested object status
+  const statusStr = typeof status === 'string' ? status : status?.connectionStatus
+  return statusStr === 'online' || statusStr === 'streaming' || statusStr === 'registered'
+}
+
+// Usage
+if (isCameraOnline(camera.status)) {
+  // Safe to load preview or video
+} else {
+  // Show "Camera offline" message
+}
+```
+
 ## Constraints
 - Always check authentication before API calls
 - Use appropriate status filters to reduce payload
 - Handle pagination for accounts with many devices
 - Use include[] to request only needed fields
+- Check camera status before loading previews (offline cameras won't have streams)
