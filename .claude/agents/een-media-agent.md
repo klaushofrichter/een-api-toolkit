@@ -58,7 +58,7 @@ assistant: "I'll use the een-media-agent to diagnose the HLS configuration and a
 - Modify multipartUrl with query parameters
 - Use multipartUrl without initMediaSession() first
 - Assume timestamps are ISO 8601 (they use +00:00 format)
-- Pass config to LivePlayer constructor (use `new LivePlayer()` without args)
+- Pass ANY arguments to LivePlayer constructor - it MUST be called as `new LivePlayer()` with no arguments
 
 **ALWAYS:**
 - Use getLiveImage() for simple thumbnails
@@ -309,8 +309,7 @@ The video element MUST be rendered in the DOM before calling `player.start()`.
 | Image not loading | Auth not in cookies | Call initMediaSession() first |
 | Timestamp errors | Wrong format | Use formatTimestamp() |
 | CORS errors | Direct API access | Use toolkit functions, not direct fetch |
-| Black video | HLS auth missing | Configure xhrSetup with token |
-| "Video Stream is done" immediately | LivePlayer config in constructor | Pass config to start(), not constructor |
-| LivePlayer not playing | Wrong usage pattern | Use `new LivePlayer()` then `player.start(config)` |
+| Black video (HLS) | HLS auth missing | Configure xhrSetup with token |
+| "Video Stream is done" immediately | Config passed to LivePlayer constructor | MUST use `new LivePlayer()` with no args, then `player.start(config)` |
 | "Video element not found" | Video element not in DOM | Ensure video element is rendered (not hidden by v-if) before SDK init |
-| Black video, no errors | Video element hidden | Use CSS visibility/opacity instead of v-if for conditional video display |
+| Black video, no errors (LivePlayer) | Video element hidden by v-if | Use CSS visibility/opacity instead of v-if for conditional video display |

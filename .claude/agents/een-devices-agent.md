@@ -302,7 +302,7 @@ The `camera.id` property is used consistently across all toolkit functions:
 - `getLiveImage({ cameraId: camera.id })` for images
 - LivePlayer SDK: `{ cameraId: camera.id }` for live video
 
-**Note:** Some external documentation may refer to "ESN" (Electronic Serial Number). In the toolkit, always use `camera.id`.
+**Note:** Some legacy EEN documentation may refer to "ESN" (Electronic Serial Number). This is outdated terminology - the current API uses `id`. In the toolkit, always use `camera.id`.
 
 ## Checking Camera Status for Previews
 

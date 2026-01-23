@@ -87,6 +87,8 @@ This copies the agent definition files to `.claude/agents/` in your project dire
 
 > **Important:** After running the setup script, you must **restart Claude Code** for the agents to become available. Claude Code only loads agents from `.claude/agents/` at startup.
 
+> **Note:** Installing agents is optional. The toolkit works fully without agents - you can use all API functions and follow the documentation. Agents simply provide specialized AI assistance for common tasks like OAuth setup, video streaming, and troubleshooting.
+
 ### Using Agents
 
 Once installed and Claude Code is restarted, the agents are automatically available. Claude Code will invoke the appropriate agent based on your questions:
