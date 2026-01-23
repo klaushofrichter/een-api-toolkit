@@ -13,6 +13,7 @@ const isDebugEnabled = (): boolean => {
 
 export function debug(...args: unknown[]): void {
   if (isDebugEnabled()) {
+    // eslint-disable-next-line no-console -- intentional debug logging
     console.log('[een-api-toolkit]', ...args)
   }
 }

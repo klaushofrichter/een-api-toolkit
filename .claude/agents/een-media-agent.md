@@ -58,12 +58,14 @@ assistant: "I'll use the een-media-agent to diagnose the HLS configuration and a
 - Modify multipartUrl with query parameters
 - Use multipartUrl without initMediaSession() first
 - Assume timestamps are ISO 8601 (they use +00:00 format)
+- Pass ANY arguments to LivePlayer constructor - it MUST be called as `new LivePlayer()` with no arguments
 
 **ALWAYS:**
 - Use getLiveImage() for simple thumbnails
 - Use initMediaSession() before multipartUrl
 - Use formatTimestamp() for EEN API timestamps
 - Check authentication before media operations
+- Pass config to LivePlayer's `start()` method, NOT the constructor
 
 ## Choosing the Right Preview Method
 
@@ -213,28 +215,82 @@ function setupHlsPlayer(videoElement: HTMLVideoElement, hlsUrl: string) {
 
 ## Live Video SDK Integration
 
-For full-quality live video, use the EEN Live Video SDK:
+For full-quality live video, use the EEN Live Video Web SDK:
 
 ```typescript
-// Install: npm install @eencloud/live-video-sdk
+// Install: npm install @een/live-video-web-sdk
 
-import { EENLiveVideo } from '@eencloud/live-video-sdk'
+import LivePlayer from '@een/live-video-web-sdk'
 import { useAuthStore } from 'een-api-toolkit'
 
-function setupLiveVideo(container: HTMLElement, cameraId: string) {
+// Store player instance for cleanup
+let livePlayer: LivePlayer | null = null
+
+async function setupLiveVideo(videoElement: HTMLVideoElement, cameraId: string) {
   const authStore = useAuthStore()
 
-  const player = new EENLiveVideo({
-    container,
-    cameraId,
-    accessToken: authStore.token,
-    baseUrl: authStore.baseUrl
+  // CRITICAL: Create LivePlayer WITHOUT arguments
+  livePlayer = new LivePlayer()
+
+  // CRITICAL: Pass config to start(), NOT to constructor
+  await livePlayer.start({
+    videoElement,      // HTML video element (required)
+    cameraId,          // Camera device ID (required)
+    baseUrl: authStore.baseUrl,  // EEN API base URL (required)
+    jwt: authStore.token         // Auth token (required)
   })
 
-  player.play()
-
-  return player
+  return livePlayer
 }
+
+// Clean up when done
+function stopLiveVideo() {
+  if (livePlayer) {
+    livePlayer.stop()
+    livePlayer = null
+  }
+}
+```
+
+### IMPORTANT: LivePlayer Usage Pattern
+
+**CORRECT pattern:**
+```typescript
+const player = new LivePlayer()        // No arguments to constructor
+await player.start(config)             // Config passed to start()
+```
+
+**WRONG pattern (will cause "Video Stream is done" errors):**
+```typescript
+const player = new LivePlayer(config)  // DON'T pass config here
+await player.start()                   // This won't work correctly
+```
+
+### IMPORTANT: Video Element Must Be in DOM
+
+The video element MUST be rendered in the DOM before calling `player.start()`.
+
+**Problem:** Using `v-if` to conditionally show the video element means it doesn't exist during loading:
+```vue
+<!-- WRONG: Video element doesn't exist when loading=true -->
+<div v-if="loading">Loading...</div>
+<video v-else ref="videoRef" />  <!-- Not in DOM during loading! -->
+```
+
+**Solution:** Always render the video element, use CSS to hide it:
+```vue
+<!-- CORRECT: Video element always exists in DOM -->
+<div v-if="loading" class="loading-overlay">Loading...</div>
+<div class="video-container" :class="{ hidden: loading }">
+  <video ref="videoRef" />  <!-- Always in DOM -->
+</div>
+
+<style>
+.video-container.hidden {
+  visibility: hidden;
+  position: absolute;
+}
+</style>
 ```
 
 ## Error Handling
@@ -253,4 +309,7 @@ function setupLiveVideo(container: HTMLElement, cameraId: string) {
 | Image not loading | Auth not in cookies | Call initMediaSession() first |
 | Timestamp errors | Wrong format | Use formatTimestamp() |
 | CORS errors | Direct API access | Use toolkit functions, not direct fetch |
-| Black video | HLS auth missing | Configure xhrSetup with token |
+| Black video (HLS) | HLS auth missing | Configure xhrSetup with token |
+| "Video Stream is done" immediately | Config passed to LivePlayer constructor | MUST use `new LivePlayer()` with no args, then `player.start(config)` |
+| "Video element not found" | Video element not in DOM | Ensure video element is rendered (not hidden by v-if) before SDK init |
+| Black video, no errors (LivePlayer) | Video element hidden by v-if | Use CSS visibility/opacity instead of v-if for conditional video display |

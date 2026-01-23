@@ -6,6 +6,7 @@ This guide covers everything you need to use een-api-toolkit in your Vue 3 appli
 
 - [Prerequisites](#prerequisites)
 - [Installation](#installation)
+- [Claude Code Agents](#claude-code-agents)
 - [OAuth Proxy Setup](#oauth-proxy-setup)
 - [Configuration](#configuration)
 - [Authentication Flow](#authentication-flow)
@@ -56,6 +57,86 @@ npm link
 # In your project:
 npm link een-api-toolkit
 ```
+
+## Claude Code Agents
+
+The toolkit includes specialized Claude Code agents that provide domain-specific assistance when building EEN applications. These agents have deep knowledge of the toolkit's APIs and best practices.
+
+> **Note:** These agents are designed specifically for [Claude Code](https://docs.anthropic.com/en/docs/claude-code). The agent definition format (YAML frontmatter in `.claude/agents/*.md`) is Claude Code specific. To use these agents with other AI coding assistants (such as Gemini CLI, GitHub Copilot, or Cursor), the agent specifications would need to be converted to their respective formats.
+
+### Available Agents
+
+| Agent | Purpose |
+|-------|---------|
+| `een-setup-agent` | Vue 3 project scaffolding, Pinia initialization, Vite configuration, redirect URI setup |
+| `een-auth-agent` | OAuth login/logout flows, auth callbacks, route guards, token refresh |
+| `een-users-agent` | User listing, profiles, permissions, getCurrentUser() |
+| `een-devices-agent` | Cameras and bridges listing, status filtering, device details |
+| `een-media-agent` | Live video, camera previews, HLS playback, recorded images, LivePlayer SDK |
+| `een-events-agent` | Events, alerts, metrics, SSE subscriptions, Chart.js integration |
+
+### Installing Agents
+
+After installing the toolkit, run the agent setup script to copy the agents to your project:
+
+```bash
+npx een-setup-agents
+```
+
+This copies the agent definition files to `.claude/agents/` in your project directory, where Claude Code automatically discovers them.
+
+> **Important:** After running the setup script, you must **restart Claude Code** for the agents to become available. Claude Code only loads agents from `.claude/agents/` at startup.
+
+> **Note:** Installing agents is optional. The toolkit works fully without agents - you can use all API functions and follow the documentation. Agents simply provide specialized AI assistance for common tasks like OAuth setup, video streaming, and troubleshooting.
+
+### Using Agents
+
+Once installed and Claude Code is restarted, the agents are automatically available. Claude Code will invoke the appropriate agent based on your questions:
+
+**Examples of questions that trigger agents:**
+
+```
+# Triggers een-setup-agent
+"I want to create a new Vue 3 app that uses een-api-toolkit"
+"I'm getting 'Pinia not active' errors"
+
+# Triggers een-auth-agent
+"How do I add OAuth login to my EEN app?"
+"My OAuth callback is failing with an error"
+
+# Triggers een-devices-agent
+"How do I show all cameras in a grid?"
+"How do I filter cameras by online status?"
+
+# Triggers een-media-agent
+"How do I show live preview images from my cameras?"
+"My HLS video player isn't working"
+
+# Triggers een-events-agent
+"How do I show motion events from a camera?"
+"How do I create a chart showing event counts over time?"
+```
+
+### Agent Capabilities
+
+Each agent has access to:
+- Detailed API documentation and type definitions
+- Code examples and patterns from the toolkit
+- Common error solutions and troubleshooting guides
+- Best practices for security and performance
+
+The agents can read your project files, suggest code changes, and help debug issues specific to EEN API integration.
+
+### Updating Agents
+
+When you update the toolkit to a newer version, re-run the setup script to get the latest agent definitions:
+
+```bash
+npm update een-api-toolkit
+npx een-setup-agents
+```
+
+Remember to restart Claude Code after updating the agents.
 
 ## OAuth Proxy Setup
 
