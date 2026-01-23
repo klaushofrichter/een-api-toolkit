@@ -119,15 +119,28 @@ interface ListCamerasParams {
 ## Key Functions
 
 ### getCameras()
-List cameras with optional filters:
+List cameras with optional filters.
+
+**IMPORTANT:** The `status` field is NOT included by default. You must use `include: ['status']` to receive it:
+
 ```typescript
 import { getCameras, type Camera, type ListCamerasParams } from 'een-api-toolkit'
 
 const cameras = ref<Camera[]>([])
 
-// Get all online cameras
+// Get all cameras WITH status - include: ['status'] is required!
+async function fetchCameras() {
+  const result = await getCameras({
+    include: ['status'],  // Required to get camera.status
+    pageSize: 100
+  })
+  // Now camera.status will be populated
+}
+
+// Get all online cameras (still need include for display)
 async function fetchOnlineCameras() {
   const result = await getCameras({
+    include: ['status'],  // Required to display status in UI
     status__in: ['online', 'streaming', 'recording'],
     pageSize: 100
   })
@@ -232,16 +245,24 @@ async function fetchBridge(bridgeId: string) {
 ```vue
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getCameras, type Camera, type ListCamerasParams } from 'een-api-toolkit'
+import { getCameras, type Camera, type CameraStatus, type ListCamerasParams } from 'een-api-toolkit'
 
 const cameras = ref<Camera[]>([])
 const loading = ref(false)
 const statusFilter = ref<string[]>(['online', 'streaming', 'recording'])
 
+// Helper: status can be a string OR an object with connectionStatus
+function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStatus }): string | undefined {
+  if (!status) return undefined
+  if (typeof status === 'string') return status
+  return status.connectionStatus
+}
+
 async function fetchCameras() {
   loading.value = true
 
   const params: ListCamerasParams = {
+    include: ['status'],  // Required to receive status field
     pageSize: 100
   }
 
@@ -275,10 +296,13 @@ onMounted(fetchCameras)
 
     <div v-if="loading">Loading cameras...</div>
 
+    <!-- Use helper function since status can be string or object -->
     <div class="camera-grid" v-else>
       <div v-for="camera in cameras" :key="camera.id" class="camera-card">
         <h3>{{ camera.name }}</h3>
-        <span :class="camera.status">{{ camera.status }}</span>
+        <span :class="getStatusString(camera.status)">
+          {{ getStatusString(camera.status) || 'unknown' }}
+        </span>
       </div>
     </div>
   </div>
