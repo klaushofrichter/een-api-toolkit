@@ -239,7 +239,7 @@ async function fetchCameras() {
   }
 
   if (statusFilter.value.length > 0) {
-    params.status__in = statusFilter.value as any
+    params.status__in = statusFilter.value as CameraStatus[]
   }
 
   const result = await getCameras(params)

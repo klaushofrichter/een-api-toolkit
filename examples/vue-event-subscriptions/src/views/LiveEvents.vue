@@ -176,29 +176,18 @@ function hasMediaUrls(event: SSEEvent): boolean {
   return getEventImageUrl(event) !== null
 }
 
-// Parse the image URL to extract parameters for getRecordedImage
-function parseImageUrlParams(url: string): { deviceId: string; type: 'preview' | 'main'; timestamp: string } | null {
-  try {
-    const urlObj = new URL(url)
-    const deviceId = urlObj.searchParams.get('deviceId')
-    const type = urlObj.searchParams.get('type') as 'preview' | 'main'
-    const timestamp = urlObj.searchParams.get('timestamp__gte')
-
-    if (deviceId && type && timestamp) {
-      return { deviceId, type, timestamp }
-    }
-    return null
-  } catch {
-    return null
-  }
-}
-
 // Handle image click (preview or HD)
+// Uses event.actorId and event.startTimestamp directly instead of parsing URL
 async function handleImageClick(quality: 'preview' | 'main' = 'preview') {
   if (!selectedEvent.value) return
 
-  const imageUrl = getEventImageUrl(selectedEvent.value)
-  if (!imageUrl) return
+  // Use event properties directly for reliability
+  const deviceId = selectedEvent.value.actorId
+  const timestamp = selectedEvent.value.startTimestamp
+
+  if (!deviceId || !timestamp) {
+    return
+  }
 
   loadingImage.value = true
   imageError.value = null
@@ -206,19 +195,11 @@ async function handleImageClick(quality: 'preview' | 'main' = 'preview') {
   showLightbox.value = true
   showVideo.value = false
 
-  // Parse the URL to extract parameters
-  const params = parseImageUrlParams(imageUrl)
-  if (!params) {
-    imageError.value = 'Invalid image URL format'
-    loadingImage.value = false
-    return
-  }
-
   // Use the toolkit's getRecordedImage function
   const result = await getRecordedImage({
-    deviceId: params.deviceId,
+    deviceId,
     type: quality,
-    timestamp__gte: params.timestamp
+    timestamp__gte: timestamp
   })
 
   if (result.error) {
@@ -233,15 +214,15 @@ async function handleImageClick(quality: 'preview' | 'main' = 'preview') {
 }
 
 // Handle video click
+// Uses event.actorId and event.startTimestamp directly instead of parsing URL
 async function handleVideoClick() {
   if (!selectedEvent.value) return
 
-  const imageUrl = getEventImageUrl(selectedEvent.value)
-  if (!imageUrl) return
+  // Use event properties directly for reliability
+  const deviceId = selectedEvent.value.actorId
+  const timestamp = selectedEvent.value.startTimestamp
 
-  // Parse the URL to extract parameters
-  const params = parseImageUrlParams(imageUrl)
-  if (!params) {
+  if (!deviceId || !timestamp) {
     return
   }
 
@@ -249,7 +230,7 @@ async function handleVideoClick() {
   showLightbox.value = true
 
   // Use the composable to load and play video
-  await loadVideo(params.deviceId, params.timestamp)
+  await loadVideo(deviceId, timestamp)
 }
 
 // Close lightbox
