@@ -176,6 +176,29 @@ if (!cameraError) {
 | **[AI Context](./docs/AI-CONTEXT.md)** | Single-file reference for AI assistants (also in npm package) |
 | **[AI Prompts](./docs/Prompts.md)** | Example prompts for generating apps with AI |
 
+## Claude Code Agents
+
+The toolkit includes specialized [Claude Code](https://docs.anthropic.com/en/docs/claude-code) agents for AI-assisted development. These agents have deep knowledge of the EEN API and toolkit patterns.
+
+> **Note:** These agents use Claude Code's specific format. To use with other AI assistants (Gemini CLI, Copilot, etc.), the agent specs would need conversion.
+
+**Available agents:**
+- `een-setup-agent` - Project scaffolding, Pinia setup, Vite configuration
+- `een-auth-agent` - OAuth flows, route guards, token management
+- `een-users-agent` - User listing and profile APIs
+- `een-devices-agent` - Camera and bridge management
+- `een-media-agent` - Live video, previews, HLS playback
+- `een-events-agent` - Events, alerts, metrics, SSE subscriptions
+
+**Installation:**
+```bash
+npx een-setup-agents
+```
+
+> **Important:** After running the setup script, **restart Claude Code** for the agents to become available.
+
+See the [User Guide](./docs/USER-GUIDE.md#claude-code-agents) for detailed agent documentation.
+
 ## Example Applications
 
 The `examples/` directory contains complete Vue 3 applications demonstrating toolkit features:
