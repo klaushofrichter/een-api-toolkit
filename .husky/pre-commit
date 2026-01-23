@@ -7,10 +7,10 @@
 # Note: examples/vue-basic/e2e/ does NOT match ^e2e/ - patterns are mutually exclusive
 # Triggers version bump for:
 #   - src/**/* and e2e/**/* (source and test files)
+#   - .claude/agents/**/* and .claude/skills/**/* (AI agents and skills)
+#   - docs/**/* (documentation included in npm package)
 #   - README.md (documentation included in npm package)
-# Note: docs/AI-CONTEXT.md is excluded because it's a generated file that
-# reflects the version - it should not cause a new version bump
-if git diff --cached --name-only | grep -qE "^(src|e2e)/|^README\.md$"; then
+if git diff --cached --name-only | grep -qE "^(src|e2e|\.claude/agents|\.claude/skills|docs)/|^README\.md$"; then
     echo "Incrementing main package version..."
 
     # Increment patch version
