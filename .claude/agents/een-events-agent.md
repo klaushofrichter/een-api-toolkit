@@ -264,17 +264,38 @@ onUnmounted(async () => {
 
 ## Displaying Event Bounding Boxes
 
-Events can include SVG overlays showing where motion/objects were detected:
+Events can include SVG overlays showing where motion/objects were detected.
+
+> **SECURITY WARNING:** Using `v-html` can introduce XSS vulnerabilities. Always sanitize
+> SVG content before rendering, even when data comes from a trusted API. Use DOMPurify
+> or a similar sanitization library.
 
 ```vue
+<script setup lang="ts">
+import DOMPurify from 'dompurify'
+import { computed } from 'vue'
+
+const props = defineProps<{
+  event: Event
+  eventImageUrl: string
+}>()
+
+// Sanitize SVG to prevent XSS attacks
+const sanitizedSvg = computed(() => {
+  const svg = props.event.data?.overlays?.svg
+  if (!svg) return null
+  return DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } })
+})
+</script>
+
 <template>
   <div class="event-thumbnail">
     <img :src="eventImageUrl" />
-    <!-- Overlay SVG from event data -->
+    <!-- Overlay SVG - sanitized to prevent XSS -->
     <div
-      v-if="event.data?.overlays?.svg"
+      v-if="sanitizedSvg"
       class="overlay"
-      v-html="event.data.overlays.svg"
+      v-html="sanitizedSvg"
     />
   </div>
 </template>
@@ -293,6 +314,8 @@ Events can include SVG overlays showing where motion/objects were detected:
 }
 </style>
 ```
+
+Install DOMPurify: `npm install dompurify @types/dompurify`
 
 ## Chart.js Integration for Metrics
 
