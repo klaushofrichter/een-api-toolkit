@@ -29,7 +29,8 @@ const TIMEOUTS = {
   AUTH_COMPLETE: 30000,
   UI_UPDATE: 10000,
   PROXY_CHECK: 5000,
-  MEDIA_LOAD: 30000
+  MEDIA_LOAD: 30000,
+  VUE_REACTIVITY: 100 // Wait for Vue v-model to update and persist to sessionStorage
 } as const
 
 const TEST_USER = process.env.TEST_USER
@@ -372,8 +373,7 @@ test.describe('Vue Media Example - Auth', () => {
       await datetimeInput.fill(specificTimeStr)
       // Trigger blur to ensure Vue v-model updates and persists to sessionStorage
       await datetimeInput.blur()
-      // Wait for Vue reactivity and sessionStorage write to complete
-      await page.waitForTimeout(100)
+      await page.waitForTimeout(TIMEOUTS.VUE_REACTIVITY)
 
       // Verify the input has the specific time
       const valueOnRecorded = await datetimeInput.inputValue()

@@ -41,6 +41,7 @@ Domain-specific agents are available in `.claude/agents/`:
 | `een-devices-agent` | Cameras, bridges, status filtering |
 | `een-media-agent` | Live video, previews, HLS, recorded images |
 | `een-events-agent` | Events, alerts, metrics, SSE subscriptions |
+| `een-grouping-agent` | Layouts, camera groupings, pane management |
 
 **Using Agents in Your Project:**
 
