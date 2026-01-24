@@ -485,6 +485,18 @@ describe('Layout service functions', () => {
       expect(result.error?.message).toBe('Layout ID is required')
     })
 
+    it('should return VALIDATION_ERROR when no fields are provided', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      const result = await updateLayout('layout-123', {})
+
+      expect(result.error?.code).toBe('VALIDATION_ERROR')
+      expect(result.error?.message).toBe('At least one field (name, settings, or panes) must be provided for update')
+      expect(mockFetch).not.toHaveBeenCalled()
+    })
+
     it('should update layout name successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)

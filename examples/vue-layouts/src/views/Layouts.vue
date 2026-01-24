@@ -83,7 +83,9 @@ function refresh() {
 
 async function fetchNextPage() {
   if (!nextPageToken.value) return
-  return fetchLayouts({ ...params.value, pageToken: nextPageToken.value }, true)
+  // Destructure to explicitly exclude any existing pageToken from params
+  const { pageToken: _existingToken, ...restParams } = params.value
+  return fetchLayouts({ ...restParams, pageToken: nextPageToken.value }, true)
 }
 
 function openCreateModal() {

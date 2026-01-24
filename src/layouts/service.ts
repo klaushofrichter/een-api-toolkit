@@ -374,6 +374,10 @@ export async function updateLayout(layoutId: string, params: UpdateLayoutParams)
     return failure('VALIDATION_ERROR', 'Layout ID is required')
   }
 
+  if (params.name === undefined && params.settings === undefined && params.panes === undefined) {
+    return failure('VALIDATION_ERROR', 'At least one field (name, settings, or panes) must be provided for update')
+  }
+
   const url = `${authStore.baseUrl}/api/v3.0/layouts/${encodeURIComponent(layoutId)}`
   debug('Updating layout:', layoutId)
 
