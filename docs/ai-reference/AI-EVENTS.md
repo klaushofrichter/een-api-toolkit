@@ -1,6 +1,6 @@
 # Events, Alerts & Real-Time Streaming - EEN API Toolkit
 
-> **Version:** 0.3.31
+> **Version:** 0.3.32
 >
 > Complete reference for events, alerts, metrics, and SSE subscriptions.
 > Load this document when implementing event-driven features.

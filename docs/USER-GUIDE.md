@@ -1603,6 +1603,10 @@ The toolkit includes several example applications demonstrating different featur
 
 - [vue-users](../examples/vue-users/) - User management with pagination and error handling
 - [vue-cameras](../examples/vue-cameras/) - Camera listing with status display
+- [vue-bridges](../examples/vue-bridges/) - Bridge listing with device info
+- [vue-layouts](../examples/vue-layouts/) - Layout CRUD with camera pane management
 - [vue-media](../examples/vue-media/) - Live and recorded image playback
 - [vue-feeds](../examples/vue-feeds/) - Live video streaming with preview and main streams
 - [vue-events](../examples/vue-events/) - Events API with filtering, time ranges, and thumbnails
+- [vue-alerts-metrics](../examples/vue-alerts-metrics/) - Event metrics, alerts, and notifications
+- [vue-event-subscriptions](../examples/vue-event-subscriptions/) - Real-time SSE event streaming

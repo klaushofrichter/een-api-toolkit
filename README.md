@@ -16,7 +16,7 @@ This repository is provided as-is without any warranty, functionality guarantee,
 
 ## Key Features
 
-- **Plain Async Functions** - Simple API calls with `getCurrentUser()`, `getUsers()`, `getUser()`, `getCameras()`, `getCamera()`
+- **Plain Async Functions** - Simple API calls with `getCurrentUser()`, `getUsers()`, `getCameras()`, `getLayouts()`, and more
 - **Secure OAuth** - Token management via proxy (refresh tokens never exposed to client)
 - **Type-Safe** - Full TypeScript types from OpenAPI spec
 - **Predictable Errors** - Always returns `{data, error}`, no exceptions thrown
@@ -140,8 +140,8 @@ if (!cameraError) {
 │  │                   import from 'een-api-toolkit'                │  │
 │  │           ┌────────────────────────────────────┐               │  │
 │  │           │     Plain Async Functions          │               │  │
-│  │           │     getUsers(), getCameras()       │               │  │
-│  │           │     getUser(), getCamera()         │               │  │
+│  │           │  getUsers(), getCameras(), etc.    │               │  │
+│  │           │  getLayouts(), createLayout()...   │               │  │
 │  │           └────────────────────────────────────┘               │  │
 │  └────────────────────────────────────────────────────────────────┘  │
 │                                      │                               │
@@ -189,6 +189,7 @@ The toolkit includes specialized [Claude Code](https://docs.anthropic.com/en/doc
 - `een-devices-agent` - Camera and bridge management
 - `een-media-agent` - Live video, previews, HLS playback
 - `een-events-agent` - Events, alerts, metrics, SSE subscriptions
+- `een-grouping-agent` - Layouts CRUD operations, camera pane management
 
 **Installation:**
 ```bash
@@ -208,6 +209,7 @@ The `examples/` directory contains complete Vue 3 applications demonstrating too
 | **[vue-users](./examples/vue-users/)** | User management with pagination | `getUsers()`, `getCurrentUser()` |
 | **[vue-cameras](./examples/vue-cameras/)** | Camera listing with status filters | `getCameras()` |
 | **[vue-bridges](./examples/vue-bridges/)** | Bridge listing with device info | `getBridges()` |
+| **[vue-layouts](./examples/vue-layouts/)** | Layout CRUD with camera panes | `getLayouts()`, `createLayout()`, `updateLayout()`, `deleteLayout()` |
 | **[vue-media](./examples/vue-media/)** | Live and recorded image viewing | `getCameras()`, `getLiveImage()`, `getRecordedImage()` |
 | **[vue-feeds](./examples/vue-feeds/)** | Live video streaming with preview and main streams | `getCameras()`, `listFeeds()`, `initMediaSession()` |
 | **[vue-events](./examples/vue-events/)** | Event listing with bounding box overlays | `listEvents()`, `listEventTypes()`, `listEventFieldValues()`, `getRecordedImage()` |
