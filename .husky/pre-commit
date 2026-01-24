@@ -9,8 +9,9 @@
 #   - src/**/* and e2e/**/* (source and test files)
 #   - .claude/agents/**/* and .claude/skills/**/* (AI agents and skills)
 #   - docs/**/* (documentation included in npm package)
+#   - examples/**/* (example applications)
 #   - README.md (documentation included in npm package)
-if git diff --cached --name-only | grep -qE "^(src|e2e|\.claude/agents|\.claude/skills|docs)/|^README\.md$"; then
+if git diff --cached --name-only | grep -qE "^(src|e2e|\.claude/agents|\.claude/skills|docs|examples)/|^README\.md$"; then
     echo "Incrementing main package version..."
 
     # Increment patch version

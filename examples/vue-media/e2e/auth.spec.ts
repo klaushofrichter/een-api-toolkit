@@ -134,10 +134,6 @@ test.describe('Vue Media Example - Auth', () => {
     test.skip(!TEST_USER || !TEST_PASSWORD, 'Test credentials not available')
   }
 
-  function skipIfCI() {
-    test.skip(Boolean(process.env.CI), 'Skipped in CI - timezone-dependent test')
-  }
-
   test.beforeAll(async () => {
     proxyAccessible = await isProxyAccessible()
     if (!proxyAccessible) {
@@ -344,7 +340,26 @@ test.describe('Vue Media Example - Auth', () => {
   test('datetime selection persists between recorded and video pages', async ({ page }) => {
     skipIfNoProxy()
     skipIfNoCredentials()
-    skipIfCI() // Timezone differences between CI and local cause flaky failures
+
+    // Force browser to use UTC timezone for consistent behavior across CI and local environments
+    await page.addInitScript(() => {
+      const OriginalDate = Date
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      ;(window as any).Date = class extends OriginalDate {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        constructor(...args: any[]) {
+          if (args.length === 0) {
+            super()
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            super(...(args as [any]))
+          }
+        }
+        getTimezoneOffset() {
+          return 0 // UTC
+        }
+      }
+    })
 
     await performLogin(page, TEST_USER!, TEST_PASSWORD!)
     await expect(page.getByTestId('nav-recorded')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
