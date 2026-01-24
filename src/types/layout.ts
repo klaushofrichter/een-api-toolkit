@@ -73,7 +73,15 @@ export type CameraAspectRatio = '16x9' | '4x3'
  * @category Layouts
  */
 export interface LayoutPane {
-  /** Unique identifier for the pane within the layout */
+  /**
+   * Unique identifier for the pane within the layout.
+   *
+   * @remarks
+   * - Must be unique within the same layout (no duplicate IDs)
+   * - IDs are client-managed; you assign them when creating/updating panes
+   * - Can be reused after a pane is deleted from the layout
+   * - Typically assigned sequentially (0, 1, 2, ...) but any unique number works
+   */
   id: number
   /** Display name for the pane */
   name: string
@@ -354,8 +362,18 @@ export interface CreateLayoutParams {
 export interface UpdateLayoutParams {
   /** New display name for the layout */
   name?: string
-  /** Updated display settings (partial update supported) */
+  /**
+   * Updated display settings.
+   *
+   * @remarks
+   * The EEN API supports partial PATCH updates for settings. You only need to
+   * include the fields you want to change; other fields retain their current values.
+   *
+   * @example
+   * // Only update paneColumns, keeping other settings unchanged
+   * { settings: { paneColumns: 4 } }
+   */
   settings?: Partial<LayoutSettings>
-  /** New panes array (replaces existing panes) */
+  /** New panes array (replaces existing panes entirely) */
   panes?: LayoutPane[]
 }

@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.32
+> **Version:** 0.3.33
 >
 > This documentation is optimized for AI assistants. It provides focused, domain-specific
 > references to help you understand and use the een-api-toolkit efficiently.

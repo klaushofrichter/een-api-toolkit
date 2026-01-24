@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.32**](../README.md)
+[**EEN API Toolkit v0.3.33**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListLayoutsParams
 
-Defined in: [src/types/layout.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L215)
+Defined in: [src/types/layout.ts:223](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L223)
 
 Parameters for listing layouts.
 
@@ -47,7 +47,7 @@ const { data: filtered } = await getLayouts({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/layout.ts:218](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L218)
+Defined in: [src/types/layout.ts:226](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L226)
 
 Number of results per page (default: 100, max: 1000)
 
@@ -57,7 +57,7 @@ Number of results per page (default: 100, max: 1000)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/layout.ts:220](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L220)
+Defined in: [src/types/layout.ts:228](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L228)
 
 Token for fetching a specific page
 
@@ -67,7 +67,7 @@ Token for fetching a specific page
 
 > `optional` **include**: [`ListLayoutsInclude`](../type-aliases/ListLayoutsInclude.md)[]
 
-Defined in: [src/types/layout.ts:224](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L224)
+Defined in: [src/types/layout.ts:232](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L232)
 
 Additional fields to include in the response
 
@@ -77,7 +77,7 @@ Additional fields to include in the response
 
 > `optional` **sort**: [`ListLayoutsSort`](../type-aliases/ListLayoutsSort.md)[]
 
-Defined in: [src/types/layout.ts:226](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L226)
+Defined in: [src/types/layout.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L234)
 
 Fields to sort by (prefix with - for descending, + for ascending)
 
@@ -87,7 +87,7 @@ Fields to sort by (prefix with - for descending, + for ascending)
 
 > `optional` **name**: `string`
 
-Defined in: [src/types/layout.ts:230](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L230)
+Defined in: [src/types/layout.ts:238](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L238)
 
 Filter by exact name
 
@@ -97,7 +97,7 @@ Filter by exact name
 
 > `optional` **name\_\_in**: `string`[]
 
-Defined in: [src/types/layout.ts:232](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L232)
+Defined in: [src/types/layout.ts:240](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L240)
 
 Filter by names (any match)
 
@@ -107,7 +107,7 @@ Filter by names (any match)
 
 > `optional` **name\_\_contains**: `string`
 
-Defined in: [src/types/layout.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L234)
+Defined in: [src/types/layout.ts:242](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L242)
 
 Filter by name containing substring (case-insensitive)
 
@@ -117,7 +117,7 @@ Filter by name containing substring (case-insensitive)
 
 > `optional` **id\_\_in**: `string`[]
 
-Defined in: [src/types/layout.ts:238](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L238)
+Defined in: [src/types/layout.ts:246](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L246)
 
 Filter by layout IDs
 
@@ -127,7 +127,7 @@ Filter by layout IDs
 
 > `optional` **layoutPanes.cameras.bridgeId**: `string`
 
-Defined in: [src/types/layout.ts:242](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L242)
+Defined in: [src/types/layout.ts:250](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L250)
 
 Filter by bridge ID of cameras in layout panes
 
@@ -137,7 +137,7 @@ Filter by bridge ID of cameras in layout panes
 
 > `optional` **q**: `string`
 
-Defined in: [src/types/layout.ts:246](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L246)
+Defined in: [src/types/layout.ts:254](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L254)
 
 Full-text search query
 
@@ -147,6 +147,6 @@ Full-text search query
 
 > `optional` **qRelevance\_\_gte**: `number`
 
-Defined in: [src/types/layout.ts:248](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L248)
+Defined in: [src/types/layout.ts:256](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L256)
 
 Minimum search relevance score (0.0 to 1.0)

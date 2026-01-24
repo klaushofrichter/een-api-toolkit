@@ -12,16 +12,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: Home,
-      // Handle OAuth callback on root path (EEN IDP redirects to http://127.0.0.1:3333)
-      beforeEnter: (to, _from, next) => {
-        // If URL has code and state params, it's an OAuth callback
-        if (to.query.code && to.query.state) {
-          next({ name: 'callback', query: to.query })
-        } else {
-          next()
-        }
-      }
+      component: Home
     },
     {
       path: '/login',
@@ -47,8 +38,18 @@ const router = createRouter({
   ]
 })
 
-// Navigation guard for protected routes
+// Navigation guard for OAuth callback and protected routes
+// IMPORTANT: OAuth callback check MUST come FIRST, before auth check
+// This ensures the callback is processed even if the root route becomes protected
 router.beforeEach((to, _from, next) => {
+  // Handle OAuth callback on root path (EEN IDP redirects to http://127.0.0.1:3333)
+  // Check for code and state params which indicate an OAuth callback
+  if (to.path === '/' && to.query.code && to.query.state) {
+    next({ name: 'callback', query: to.query })
+    return
+  }
+
+  // Check authentication for protected routes
   const authStore = useAuthStore()
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {

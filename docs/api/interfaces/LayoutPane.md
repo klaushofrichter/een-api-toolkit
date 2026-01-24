@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.32**](../README.md)
+[**EEN API Toolkit v0.3.33**](../README.md)
 
 ***
 
@@ -20,9 +20,16 @@ Represents one camera view position in the layout grid.
 
 > **id**: `number`
 
-Defined in: [src/types/layout.ts:77](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L77)
+Defined in: [src/types/layout.ts:85](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L85)
 
-Unique identifier for the pane within the layout
+Unique identifier for the pane within the layout.
+
+#### Remarks
+
+- Must be unique within the same layout (no duplicate IDs)
+- IDs are client-managed; you assign them when creating/updating panes
+- Can be reused after a pane is deleted from the layout
+- Typically assigned sequentially (0, 1, 2, ...) but any unique number works
 
 ***
 
@@ -30,7 +37,7 @@ Unique identifier for the pane within the layout
 
 > **name**: `string`
 
-Defined in: [src/types/layout.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L79)
+Defined in: [src/types/layout.ts:87](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L87)
 
 Display name for the pane
 
@@ -40,7 +47,7 @@ Display name for the pane
 
 > **type**: [`LayoutPaneType`](../type-aliases/LayoutPaneType.md)
 
-Defined in: [src/types/layout.ts:81](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L81)
+Defined in: [src/types/layout.ts:89](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L89)
 
 Type of preview to display
 
@@ -50,7 +57,7 @@ Type of preview to display
 
 > **size**: [`LayoutPaneSize`](../type-aliases/LayoutPaneSize.md)
 
-Defined in: [src/types/layout.ts:83](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L83)
+Defined in: [src/types/layout.ts:91](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L91)
 
 Size of the pane in the grid (1-3)
 
@@ -60,7 +67,7 @@ Size of the pane in the grid (1-3)
 
 > **cameraId**: `string`
 
-Defined in: [src/types/layout.ts:85](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L85)
+Defined in: [src/types/layout.ts:93](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L93)
 
 ID of the camera to display in this pane
 
@@ -70,6 +77,6 @@ ID of the camera to display in this pane
 
 > `optional` **compositeId**: `string` \| `null`
 
-Defined in: [src/types/layout.ts:87](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L87)
+Defined in: [src/types/layout.ts:95](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L95)
 
 ID of composite preview if using compositePreview type

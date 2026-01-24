@@ -139,6 +139,10 @@ async function handleSave(data: { name: string; settings: LayoutSettings; panes:
 
     closeModal()
     await fetchLayouts()
+  } catch (err) {
+    // Handle unexpected errors (network failures, state mutations, etc.)
+    modalError.value = err instanceof Error ? err.message : 'An unexpected error occurred'
+    console.error('handleSave error:', err)
   } finally {
     modalLoading.value = false
   }
