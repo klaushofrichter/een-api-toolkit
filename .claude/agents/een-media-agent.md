@@ -76,6 +76,15 @@ assistant: "I'll use the een-media-agent to diagnose the HLS configuration and a
 | Full-quality live video | Live Video SDK | Full resolution, lowest latency |
 | Recorded video playback | HLS via `listMedia()` | Seek capability, standard player |
 
+**CRITICAL: Main feeds do NOT support multipartUrl**
+
+The EEN API only returns `multipartUrl` for **preview feeds** (`type: 'preview'`), not main feeds (`type: 'main'`).
+
+- **Preview feeds** → Use `multipartUrl` (MJPEG in `<img>` element)
+- **Main feeds** → Use **Live Video SDK** (full HD in `<video>` element)
+
+If you need HD quality video, you MUST use the Live Video SDK. Do not attempt to use `multipartUrl` with main feeds - it won't work.
+
 ## Key Functions
 
 ### getLiveImage(cameraId)
@@ -117,6 +126,13 @@ async function setupMediaSession() {
 ```
 
 ### Using multipartUrl (MJPEG Stream)
+
+**Feed Types:**
+| Feed Type | Use Case | Quality |
+|-----------|----------|---------|
+| `preview` | Camera sidebar thumbnails, grids | Lower bandwidth, smaller resolution |
+| `main` | Primary video player, HD viewing | Full quality, higher bandwidth |
+
 ```typescript
 // MUST call initMediaSession() first!
 import { listFeeds, initMediaSession } from 'een-api-toolkit'
@@ -125,14 +141,18 @@ onMounted(async () => {
   // Step 1: Initialize media session
   await initMediaSession()
 
-  // Step 2: Get feeds
-  const result = await listFeeds({ cameraId: props.cameraId })
+  // Step 2: Get feeds - specify type for desired quality
+  const result = await listFeeds({
+    deviceId: props.camera.id,
+    type: 'preview',           // 'preview' for thumbnails, 'main' for HD
+    include: ['multipartUrl']  // Request multipartUrl to be included
+  })
 
   if (result.data) {
-    const previewFeed = result.data.results.find(f => f.type === 'preview')
-    if (previewFeed?.multipartUrl) {
+    const feed = result.data.results?.find(f => f.multipartUrl)
+    if (feed?.multipartUrl) {
       // Step 3: Use multipartUrl directly - DO NOT modify it
-      previewImageUrl.value = previewFeed.multipartUrl
+      previewImageUrl.value = feed.multipartUrl
     }
   }
 })

@@ -141,6 +141,77 @@ const actor = `camera:${cameraId}`
 const actor = `account:${accountId}`
 ```
 
+### listEventFieldValues()
+Discover available event types for a specific camera:
+```typescript
+import { listEventFieldValues } from 'een-api-toolkit'
+
+async function getAvailableEventTypes(cameraId: string) {
+  const result = await listEventFieldValues({
+    actor: `camera:${cameraId}`
+  })
+
+  if (result.data) {
+    // result.data.type is an array of event type strings available for this camera
+    const availableTypes = result.data.type || []
+    // e.g., ['een.motionDetectionEvent.v1', 'een.tamperDetectionEvent.v1']
+    return availableTypes
+  }
+  return []
+}
+```
+
+### listEventTypes()
+Get human-readable names for event types:
+```typescript
+import { listEventTypes } from 'een-api-toolkit'
+
+async function fetchEventTypeNames() {
+  const result = await listEventTypes({ pageSize: 100 })
+
+  if (result.data) {
+    // Build a map of type -> name for display
+    const nameMap = new Map<string, string>()
+    for (const et of result.data.results) {
+      nameMap.set(et.type, et.name)
+      // e.g., 'een.motionDetectionEvent.v1' -> 'Motion Detection'
+    }
+    return nameMap
+  }
+  return new Map()
+}
+
+// Fallback: Parse event type string if API name not available
+function parseEventTypeName(type: string): string {
+  const match = type.match(/een\.(\w+)Event\.v\d+/)
+  if (match) {
+    return match[1]
+      .replace(/([A-Z])/g, ' $1')  // Add space before capitals
+      .replace(/^./, str => str.toUpperCase())
+      .trim()
+  }
+  return type
+}
+```
+
+### Motion Detection Preselection Pattern
+When implementing event type toggles, preselect motion detection by default:
+```typescript
+const MOTION_DETECTION_EVENT = 'een.motionDetectionEvent.v1'
+
+function preselectEventTypes(availableTypes: string[]): string[] {
+  // Preselect motion detection if available
+  if (availableTypes.includes(MOTION_DETECTION_EVENT)) {
+    return [MOTION_DETECTION_EVENT]
+  }
+  // Otherwise select the first available type
+  if (availableTypes.length > 0) {
+    return [availableTypes[0]]
+  }
+  return []
+}
+```
+
 ### getEventMetrics()
 Get aggregated event counts:
 ```typescript
@@ -260,6 +331,33 @@ onUnmounted(async () => {
     await deleteEventSubscription(subscriptionId.value)
   }
 })
+```
+
+## Getting Event Thumbnails
+
+Use `getRecordedImage()` to fetch a thumbnail image for an event:
+```typescript
+import { getRecordedImage, type Event } from 'een-api-toolkit'
+
+const eventImages = ref<Map<string, string>>(new Map())
+
+async function fetchEventThumbnail(event: Event) {
+  // Extract camera ID from actor (format: "camera:{cameraId}")
+  const cameraId = event.actor.replace('camera:', '')
+
+  const result = await getRecordedImage({
+    cameraId,
+    timestamp: event.timestamp,
+    width: 120,  // Thumbnail size
+    height: 80
+  })
+
+  if (result.data?.dataUrl) {
+    eventImages.value.set(event.id, result.data.dataUrl)
+  }
+}
+
+// In template: <img :src="eventImages.get(event.id)" />
 ```
 
 ## Displaying Event Bounding Boxes
