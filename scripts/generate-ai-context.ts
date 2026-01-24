@@ -175,6 +175,7 @@ function generateOverview(config: GeneratorConfig): string {
 | Implementing OAuth login | [AI-AUTH.md](./ai-reference/AI-AUTH.md) | ~2K |
 | Working with users | [AI-USERS.md](./ai-reference/AI-USERS.md) | ~1.5K |
 | Working with cameras or bridges | [AI-DEVICES.md](./ai-reference/AI-DEVICES.md) | ~3K |
+| Working with layouts | [AI-GROUPING.md](./ai-reference/AI-GROUPING.md) | ~3K |
 | Live video, images, HLS playback | [AI-MEDIA.md](./ai-reference/AI-MEDIA.md) | ~4K |
 | Events, alerts, metrics, SSE | [AI-EVENTS.md](./ai-reference/AI-EVENTS.md) | ~3.5K |
 
@@ -188,6 +189,7 @@ Specialized agents are available in \`.claude/agents/\` for domain-specific task
 | \`een-auth-agent\` | Implementing login/logout, auth callbacks, route guards, token refresh |
 | \`een-users-agent\` | Listing users, user profiles, user management features |
 | \`een-devices-agent\` | Working with cameras or bridges, filtering by status/tags |
+| \`een-grouping-agent\` | Layouts CRUD, camera pane management, layout settings |
 | \`een-media-agent\` | Live video, camera previews, HLS playback, recorded images |
 | \`een-events-agent\` | Events, alerts, metrics, real-time SSE subscriptions |
 
@@ -223,6 +225,7 @@ Then follow the context files and instructions specified within.
 | [vue-users](../examples/vue-users/) | User management with pagination | \`src/views/Users.vue\` |
 | [vue-cameras](../examples/vue-cameras/) | Camera listing with status filters | \`src/views/Cameras.vue\` |
 | [vue-bridges](../examples/vue-bridges/) | Bridge listing with device info | \`src/views/Bridges.vue\` |
+| [vue-layouts](../examples/vue-layouts/) | Layout CRUD with camera panes | \`src/views/Layouts.vue\` |
 | [vue-media](../examples/vue-media/) | Live and recorded image viewing | \`src/views/LiveCamera.vue\` |
 | [vue-feeds](../examples/vue-feeds/) | Live video streaming | \`src/views/Feeds.vue\` |
 | [vue-events](../examples/vue-events/) | Events with bounding boxes | \`src/components/EventsModal.vue\` |
@@ -264,6 +267,15 @@ Then follow the context files and instructions specified within.
 |----------|---------|
 | \`getBridges(params?)\` | List all bridges (paginated) |
 | \`getBridge(bridgeId, params?)\` | Get a specific bridge |
+
+### Layouts
+| Function | Purpose |
+|----------|---------|
+| \`getLayouts(params?)\` | List all layouts (paginated) |
+| \`getLayout(layoutId, params?)\` | Get a specific layout |
+| \`createLayout(params)\` | Create a new layout |
+| \`updateLayout(layoutId, params)\` | Update a layout |
+| \`deleteLayout(layoutId)\` | Delete a layout |
 
 ### Media
 | Function | Purpose |

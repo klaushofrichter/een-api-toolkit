@@ -2,6 +2,8 @@
 
 This example demonstrates how to use the Event Subscriptions API from the EEN API Toolkit to create SSE subscriptions and receive real-time events from cameras.
 
+![Event Subscriptions Screenshot](event-subscriptions-screenshot.png)
+
 ## Features
 
 - Create and delete event subscriptions with SSE delivery

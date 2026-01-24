@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.30**
+**EEN API Toolkit v0.3.34**
 
 ***
 
-# EEN API Toolkit v0.3.30
+# EEN API Toolkit v0.3.34
 
 ## Interfaces
 
@@ -96,6 +96,18 @@
 - [ListFeedsParams](interfaces/ListFeedsParams.md)
 - [ListFeedsResult](interfaces/ListFeedsResult.md)
 
+### Layouts
+
+- [CameraStatusCounts](interfaces/CameraStatusCounts.md)
+- [LayoutPermissions](interfaces/LayoutPermissions.md)
+- [LayoutPane](interfaces/LayoutPane.md)
+- [LayoutSettings](interfaces/LayoutSettings.md)
+- [Layout](interfaces/Layout.md)
+- [ListLayoutsParams](interfaces/ListLayoutsParams.md)
+- [GetLayoutParams](interfaces/GetLayoutParams.md)
+- [CreateLayoutParams](interfaces/CreateLayoutParams.md)
+- [UpdateLayoutParams](interfaces/UpdateLayoutParams.md)
+
 ### Media
 
 - [MediaInterval](interfaces/MediaInterval.md)
@@ -159,6 +171,15 @@
 - [FeedStreamType](type-aliases/FeedStreamType.md)
 - [FeedMediaType](type-aliases/FeedMediaType.md)
 - [FeedIncludeOption](type-aliases/FeedIncludeOption.md)
+
+### Layouts
+
+- [LayoutPaneType](type-aliases/LayoutPaneType.md)
+- [LayoutPaneSize](type-aliases/LayoutPaneSize.md)
+- [CameraAspectRatio](type-aliases/CameraAspectRatio.md)
+- [ListLayoutsInclude](type-aliases/ListLayoutsInclude.md)
+- [ListLayoutsSort](type-aliases/ListLayoutsSort.md)
+- [GetLayoutInclude](type-aliases/GetLayoutInclude.md)
 
 ### Media
 
@@ -230,6 +251,14 @@
 ### Feeds
 
 - [listFeeds](functions/listFeeds.md)
+
+### Layouts
+
+- [getLayouts](functions/getLayouts.md)
+- [getLayout](functions/getLayout.md)
+- [createLayout](functions/createLayout.md)
+- [updateLayout](functions/updateLayout.md)
+- [deleteLayout](functions/deleteLayout.md)
 
 ### Media
 

@@ -10,6 +10,7 @@ This guide covers development setup, architecture, testing, and the CI/CD pipeli
 - [Development Workflow](#development-workflow)
 - [Testing](#testing)
 - [Build System](#build-system)
+- [Documentation](#documentation)
 - [CI/CD Pipeline](#cicd-pipeline)
 - [Publishing](#publishing)
 - [Contributing](#contributing)
@@ -399,6 +400,55 @@ dist/
 ├── index.cjs       # CommonJS build
 └── index.d.ts      # TypeScript declarations
 ```
+
+## Documentation
+
+### Generated Documentation
+
+Several documentation files are auto-generated and should not be edited directly:
+
+| File | Generator | Purpose |
+|------|-----------|---------|
+| `docs/AI-CONTEXT.md` | `scripts/generate-ai-context.ts` | AI assistant reference (overview) |
+| `docs/ai-reference/AI-SETUP.md` | `scripts/generate-ai-context.ts` | Setup documentation |
+| `docs/ai-reference/AI-AUTH.md` | `scripts/generate-ai-context.ts` | Auth documentation |
+| `docs/ai-reference/AI-USERS.md` | `scripts/generate-ai-context.ts` | Users documentation |
+| `docs/ai-reference/AI-DEVICES.md` | `scripts/generate-ai-context.ts` | Devices documentation |
+| `docs/ai-reference/AI-MEDIA.md` | `scripts/generate-ai-context.ts` | Media documentation |
+| `docs/ai-reference/AI-EVENTS.md` | `scripts/generate-ai-context.ts` | Events documentation |
+| `docs/api/*` | TypeDoc | API reference from JSDoc |
+
+**Important:** To update generated documentation:
+1. Edit the generator script (`scripts/generate-ai-context.ts`) for AI docs
+2. Edit JSDoc comments in source files for API docs
+3. Run `npm run docs` to regenerate all documentation
+
+### Manually Maintained Documentation
+
+These files are maintained manually:
+
+| File | Purpose |
+|------|---------|
+| `README.md` | Project overview and quick start |
+| `docs/USER-GUIDE.md` | Comprehensive user guide |
+| `docs/DEVELOPER-GUIDE.md` | Developer reference (this file) |
+| `docs/ai-reference/AI-GROUPING.md` | Layouts API documentation |
+| `.claude/agents/*.md` | Claude Code agent definitions |
+
+### Regenerating Documentation
+
+```bash
+# Regenerate all documentation
+npm run docs
+
+# Regenerate only AI context files
+npm run docs:ai-context
+
+# Regenerate only API reference
+npm run docs:api
+```
+
+Documentation is automatically regenerated during the pre-commit hook when source files change.
 
 ## CI/CD Pipeline
 

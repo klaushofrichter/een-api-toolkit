@@ -31,6 +31,22 @@ export type {
   BridgeDevicePosition,
   ListBridgesParams,
   GetBridgeParams,
+  // Layout types
+  Layout,
+  LayoutPane,
+  LayoutPaneType,
+  LayoutPaneSize,
+  LayoutSettings,
+  LayoutPermissions,
+  CameraAspectRatio,
+  CameraStatusCounts,
+  ListLayoutsParams,
+  ListLayoutsInclude,
+  ListLayoutsSort,
+  GetLayoutParams,
+  GetLayoutInclude,
+  CreateLayoutParams,
+  UpdateLayoutParams,
   MediaType,
   MediaStreamType,
   MediaInterval,
@@ -135,6 +151,15 @@ export {
   getBridges,
   getBridge
 } from './bridges'
+
+// Layouts - Plain functions
+export {
+  getLayouts,
+  getLayout,
+  createLayout,
+  updateLayout,
+  deleteLayout
+} from './layouts'
 
 // Media - Plain functions
 export {
