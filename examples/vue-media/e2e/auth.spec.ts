@@ -21,6 +21,7 @@
 
 import { test, expect, Page } from '@playwright/test'
 import { baseURL } from '../playwright.config'
+import { formatDateTimeLocal } from '../src/utils/timestamp'
 
 const TIMEOUTS = {
   OAUTH_REDIRECT: 30000,
@@ -358,8 +359,16 @@ test.describe('Vue Media Example - Auth', () => {
 
       // Set a specific datetime (2 hours ago to ensure it's different from default)
       const specificTime = new Date(Date.now() - 2 * 60 * 60 * 1000)
-      const specificTimeStr = specificTime.toISOString().slice(0, 19) // Format: YYYY-MM-DDTHH:mm:ss
+      // Use shared utility for local time formatting (datetime-local inputs use local time, not UTC)
+      const specificTimeStr = formatDateTimeLocal(specificTime)
       await datetimeInput.fill(specificTimeStr)
+      // Trigger blur and dispatch input event to ensure Vue v-model updates the shared ref
+      await datetimeInput.blur()
+      await datetimeInput.dispatchEvent('input')
+      // Brief wait for Vue reactivity to propagate to the module singleton
+      // Note: waitForFunction on sessionStorage doesn't work here because the SPA shares
+      // a module-level ref that only reads from storage on initial load, not on navigation
+      await page.waitForTimeout(100)
 
       // Verify the input has the specific time
       const valueOnRecorded = await datetimeInput.inputValue()

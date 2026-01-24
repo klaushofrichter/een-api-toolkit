@@ -32,7 +32,8 @@ const AGENT_FILES = [
   'een-users-agent.md',
   'een-devices-agent.md',
   'een-media-agent.md',
-  'een-events-agent.md'
+  'een-events-agent.md',
+  'een-grouping-agent.md'
 ]
 
 function main() {
@@ -102,12 +103,13 @@ function main() {
     console.log('Claude Code will automatically discover them.')
     console.log('')
     console.log('Available agents:')
-    console.log('  - een-setup-agent    (Vue 3 project setup)')
-    console.log('  - een-auth-agent     (OAuth authentication)')
-    console.log('  - een-users-agent    (User management)')
-    console.log('  - een-devices-agent  (Cameras & bridges)')
-    console.log('  - een-media-agent    (Video & media)')
-    console.log('  - een-events-agent   (Events & real-time)')
+    console.log('  - een-setup-agent     (Vue 3 project setup)')
+    console.log('  - een-auth-agent      (OAuth authentication)')
+    console.log('  - een-users-agent     (User management)')
+    console.log('  - een-devices-agent   (Cameras & bridges)')
+    console.log('  - een-media-agent     (Video & media)')
+    console.log('  - een-events-agent    (Events & real-time)')
+    console.log('  - een-grouping-agent  (Layouts & camera groupings)')
   }
 
   process.exit(errors > 0 ? 1 : 0)

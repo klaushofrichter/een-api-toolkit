@@ -20,7 +20,7 @@ const TIMEOUTS = {
   OAUTH_REDIRECT: 30000,
   ELEMENT_VISIBLE: 15000,
   PASSWORD_VISIBLE: 10000,
-  AUTH_COMPLETE: 30000,
+  AUTH_COMPLETE: 45000,  // Increased for CI stability (OAuth callback can be slow)
   UI_UPDATE: 10000,
   PROXY_CHECK: 5000
 } as const
