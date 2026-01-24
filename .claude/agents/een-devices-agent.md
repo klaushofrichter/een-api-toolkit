@@ -69,14 +69,14 @@ interface Camera {
 type CameraStatus =
   | 'online'
   | 'offline'
-  | 'streaming'
-  | 'recording'
-  | 'registered'
   | 'deviceOffline'
   | 'bridgeOffline'
   | 'invalidCredentials'
   | 'error'
-  | 'unknown'
+  | 'streaming'
+  | 'registered'
+  | 'attaching'
+  | 'initializing'
 
 // Status can also be nested in an object:
 // camera.status?.connectionStatus
@@ -97,7 +97,10 @@ type BridgeStatus =
   | 'online'
   | 'offline'
   | 'error'
-  | 'unknown'
+  | 'idle'
+  | 'registered'
+  | 'attaching'
+  | 'initializing'
 ```
 
 ### ListCamerasParams
@@ -141,7 +144,7 @@ async function fetchCameras() {
 async function fetchOnlineCameras() {
   const result = await getCameras({
     include: ['status'],  // Required to display status in UI
-    status__in: ['online', 'streaming', 'recording'],
+    status__in: ['online', 'streaming', 'registered'],
     pageSize: 100
   })
 
@@ -249,7 +252,7 @@ import { getCameras, type Camera, type CameraStatus, type ListCamerasParams } fr
 
 const cameras = ref<Camera[]>([])
 const loading = ref(false)
-const statusFilter = ref<string[]>(['online', 'streaming', 'recording'])
+const statusFilter = ref<string[]>(['online', 'streaming', 'registered'])
 
 // Helper: status can be a string OR an object with connectionStatus
 function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStatus }): string | undefined {

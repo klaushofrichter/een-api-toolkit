@@ -75,8 +75,10 @@ jobs:
 
       - name: Install Playwright browsers
         run: |
-          # Install Playwright browsers once (they're shared across examples)
+          # Install Playwright browsers from first example
+          # All examples use the same pinned version (1.58.0)
           FIRST_EXAMPLE=$(echo '${{ steps.discover.outputs.examples }}' | jq -r '.[0]')
+          echo "Installing Playwright browsers from $FIRST_EXAMPLE..."
           (cd "$FIRST_EXAMPLE" && npm exec playwright install -- --with-deps chromium)
 
       - name: Clone OAuth proxy
