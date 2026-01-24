@@ -61,6 +61,8 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the README and a
 
 1. **Discovery Phase**:
    - List all markdown files in the project (README.md, docs/**, CLAUDE.md, etc.)
+   - **Scan ALL example directories** (`examples/*/README.md`) - do not skip any
+   - Check agent files in `.claude/agents/*.md`
    - Identify the source code structure for cross-referencing
 
 2. **Analysis Phase**:
@@ -81,6 +83,15 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the README and a
    - Add missing documentation for undocumented features when appropriate
 
 ## Specific Checks to Perform
+
+### For Example Application Documentation:
+- **Check ALL example apps** in `examples/*/README.md` (not just one)
+- Verify screenshot references exist and filenames match actual files
+- Confirm all listed API functions are exported from `src/index.ts`
+- Check that `.env.example` files exist when referenced in setup instructions
+- Validate project structure sections match actual directory contents
+- Ensure port numbers are correct (should be `127.0.0.1:3333`)
+- Verify code examples use current API signatures
 
 ### For API Documentation:
 - Compare documented function signatures with `src/index.ts` exports
@@ -141,6 +152,7 @@ When reporting findings, use this structure:
 
 Before completing your review:
 1. Verify you've checked ALL markdown files in the project
-2. Confirm each fix you made is backed by evidence from source code
-3. Re-read modified sections to ensure they're clear and accurate
-4. Check that your fixes didn't introduce new broken links or inconsistencies
+2. **Confirm ALL example app READMEs were reviewed** (list them in your report)
+3. Confirm each fix you made is backed by evidence from source code
+4. Re-read modified sections to ensure they're clear and accurate
+5. Check that your fixes didn't introduce new broken links or inconsistencies
