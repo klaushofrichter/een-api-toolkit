@@ -21,6 +21,7 @@
 
 import { test, expect, Page } from '@playwright/test'
 import { baseURL } from '../playwright.config'
+import { formatDateTimeLocal } from '../src/utils/timestamp'
 
 const TIMEOUTS = {
   OAUTH_REDIRECT: 30000,
@@ -29,8 +30,7 @@ const TIMEOUTS = {
   AUTH_COMPLETE: 30000,
   UI_UPDATE: 10000,
   PROXY_CHECK: 5000,
-  MEDIA_LOAD: 30000,
-  VUE_REACTIVITY: 100 // Wait for Vue v-model to update and persist to sessionStorage
+  MEDIA_LOAD: 30000
 } as const
 
 const TEST_USER = process.env.TEST_USER
@@ -359,21 +359,16 @@ test.describe('Vue Media Example - Auth', () => {
 
       // Set a specific datetime (2 hours ago to ensure it's different from default)
       const specificTime = new Date(Date.now() - 2 * 60 * 60 * 1000)
-      // Format as local time string (datetime-local inputs use local time, not UTC)
-      const formatLocalDateTime = (d: Date) => {
-        const year = d.getFullYear()
-        const month = String(d.getMonth() + 1).padStart(2, '0')
-        const day = String(d.getDate()).padStart(2, '0')
-        const hours = String(d.getHours()).padStart(2, '0')
-        const minutes = String(d.getMinutes()).padStart(2, '0')
-        const seconds = String(d.getSeconds()).padStart(2, '0')
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
-      }
-      const specificTimeStr = formatLocalDateTime(specificTime)
+      // Use shared utility for local time formatting (datetime-local inputs use local time, not UTC)
+      const specificTimeStr = formatDateTimeLocal(specificTime)
       await datetimeInput.fill(specificTimeStr)
-      // Trigger blur to ensure Vue v-model updates and persists to sessionStorage
+      // Trigger blur and dispatch input event to ensure Vue v-model updates the shared ref
       await datetimeInput.blur()
-      await page.waitForTimeout(TIMEOUTS.VUE_REACTIVITY)
+      await datetimeInput.dispatchEvent('input')
+      // Brief wait for Vue reactivity to propagate to the module singleton
+      // Note: waitForFunction on sessionStorage doesn't work here because the SPA shares
+      // a module-level ref that only reads from storage on initial load, not on navigation
+      await page.waitForTimeout(100)
 
       // Verify the input has the specific time
       const valueOnRecorded = await datetimeInput.inputValue()
