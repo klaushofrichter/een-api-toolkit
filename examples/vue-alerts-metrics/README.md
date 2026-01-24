@@ -2,6 +2,8 @@
 
 A Vue 3 example application demonstrating the Event Metrics, Alerts, and Notifications APIs from the `een-api-toolkit`.
 
+![Alerts Metrics Screenshot](alert-metrics-screenshot.png)
+
 ## Status
 
 | Feature | Status |
