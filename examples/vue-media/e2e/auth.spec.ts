@@ -135,7 +135,7 @@ test.describe('Vue Media Example - Auth', () => {
   }
 
   function skipIfCI() {
-    test.skip(!!process.env.CI, 'Skipped in CI - timezone-dependent test')
+    test.skip(Boolean(process.env.CI), 'Skipped in CI - timezone-dependent test')
   }
 
   test.beforeAll(async () => {
