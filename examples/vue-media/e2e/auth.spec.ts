@@ -358,8 +358,22 @@ test.describe('Vue Media Example - Auth', () => {
 
       // Set a specific datetime (2 hours ago to ensure it's different from default)
       const specificTime = new Date(Date.now() - 2 * 60 * 60 * 1000)
-      const specificTimeStr = specificTime.toISOString().slice(0, 19) // Format: YYYY-MM-DDTHH:mm:ss
+      // Format as local time string (datetime-local inputs use local time, not UTC)
+      const formatLocalDateTime = (d: Date) => {
+        const year = d.getFullYear()
+        const month = String(d.getMonth() + 1).padStart(2, '0')
+        const day = String(d.getDate()).padStart(2, '0')
+        const hours = String(d.getHours()).padStart(2, '0')
+        const minutes = String(d.getMinutes()).padStart(2, '0')
+        const seconds = String(d.getSeconds()).padStart(2, '0')
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`
+      }
+      const specificTimeStr = formatLocalDateTime(specificTime)
       await datetimeInput.fill(specificTimeStr)
+      // Trigger blur to ensure Vue v-model updates and persists to sessionStorage
+      await datetimeInput.blur()
+      // Wait for Vue reactivity and sessionStorage write to complete
+      await page.waitForTimeout(100)
 
       // Verify the input has the specific time
       const valueOnRecorded = await datetimeInput.inputValue()
