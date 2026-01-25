@@ -1,12 +1,18 @@
 <script setup lang="ts">
+import { onMounted, computed } from 'vue'
 import { useAuthStore } from 'een-api-toolkit'
-import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 
 const authStore = useAuthStore()
 const router = useRouter()
 
 const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+// Initialize auth store from storage on app mount
+// This restores the session if a valid token exists in localStorage/sessionStorage
+onMounted(() => {
+  authStore.initialize()
+})
 const refreshFailed = computed(() => authStore.refreshFailed)
 const refreshFailedMessage = computed(() => authStore.refreshFailedMessage)
 const isRefreshing = computed(() => authStore.isRefreshing)

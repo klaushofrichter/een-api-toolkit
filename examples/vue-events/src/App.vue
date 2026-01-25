@@ -1,9 +1,15 @@
 <script setup lang="ts">
+import { onMounted, computed } from 'vue'
 import { useAuthStore } from 'een-api-toolkit'
-import { computed } from 'vue'
 
 const authStore = useAuthStore()
 const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+// Initialize auth store from storage on app mount
+// This restores the session if a valid token exists in localStorage/sessionStorage
+onMounted(() => {
+  authStore.initialize()
+})
 </script>
 
 <template>

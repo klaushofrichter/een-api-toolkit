@@ -122,6 +122,32 @@ authStore.isAuthenticated // Computed: true if valid token exists
 authStore.isExpired      // Computed: true if token expired
 ```
 
+### authStore.initialize() - Session Restoration (CRITICAL)
+**Must be called in App.vue onMounted to restore sessions from storage.**
+
+Without this call, users must re-login after every page refresh, even with localStorage strategy:
+
+```vue
+<script setup lang="ts">
+import { onMounted, computed } from 'vue'
+import { useAuthStore } from 'een-api-toolkit'
+
+const authStore = useAuthStore()
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+// CRITICAL: Restore session from storage on app mount
+onMounted(() => {
+  authStore.initialize()
+})
+</script>
+```
+
+What `initialize()` does:
+1. Loads token, expiration, session ID, base URL from storage
+2. If valid token exists: Sets up auto-refresh timer
+3. If expired token: Clears auth state (user must re-login)
+4. If no token: No action (user must login)
+
 ## Auth Guard Pattern
 
 **CRITICAL**: The OAuth callback check MUST come BEFORE the auth check in the global guard.
@@ -297,3 +323,5 @@ async function clearAuthState(page: Page): Promise<void> {
 | invalid_grant | Code expired or reused | Restart OAuth flow |
 | invalid_state | State mismatch | Clear storage, restart flow |
 | REFRESH_FAILED | Refresh token invalid | Redirect to login |
+| Session lost on refresh | Missing initialize() call | Add `authStore.initialize()` in App.vue onMounted |
+| Must login after refresh | Missing initialize() call | Add `authStore.initialize()` in App.vue onMounted |
