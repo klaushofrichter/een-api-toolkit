@@ -203,4 +203,101 @@ test.describe('Vue Bridges Example - Auth', () => {
     await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
     await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
   })
+
+  test('after logout, localStorage is cleared and new login flow is required', async ({ page }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    // First login
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    // Verify we're authenticated
+    await expect(page.locator('[data-testid="nav-bridges"]')).toBeVisible()
+
+    // Logout
+    await page.click('[data-testid="nav-logout"]')
+    await page.waitForURL('**/')
+    await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    // Verify localStorage is cleared (session data removed)
+    const tokenAfterLogout = await page.evaluate(() => localStorage.getItem('een_token'))
+    expect(tokenAfterLogout).toBeNull()
+
+    const sessionIdAfterLogout = await page.evaluate(() => localStorage.getItem('een_sessionId'))
+    expect(sessionIdAfterLogout).toBeNull()
+
+    const hostnameAfterLogout = await page.evaluate(() => localStorage.getItem('een_hostname'))
+    expect(hostnameAfterLogout).toBeNull()
+
+    // Verify the app shows not-authenticated state (proves our session is cleared)
+    await expect(page.locator('[data-testid="not-authenticated"]')).toBeVisible()
+    await expect(page.locator('[data-testid="nav-login"]')).toBeVisible()
+    await expect(page.locator('[data-testid="nav-logout"]')).not.toBeVisible()
+
+    // Click login to start new OAuth flow
+    await page.click('[data-testid="login-button"]')
+    await page.waitForURL('/login')
+
+    // Click OAuth login button - this initiates the OAuth redirect
+    await page.click('button:has-text("Login with Eagle Eye Networks")')
+
+    // Wait for either:
+    // 1. OAuth page (if IDP session expired) - user needs to enter credentials
+    // 2. Callback/bridges page (if IDP remembers user via cookies) - auto-login
+    // Either way, our localStorage was cleared and user had to initiate a new login
+    await page.waitForURL(/eagleeyenetworks\.com|127\.0\.0\.1:3333/, { timeout: TIMEOUTS.AUTH_COMPLETE })
+
+    // If we ended up back at our app (auto-login via IDP cookies), verify we're authenticated again
+    const currentUrl = page.url()
+    if (currentUrl.includes('127.0.0.1:3333')) {
+      // Auto-logged in - wait for the full flow to complete
+      await page.waitForURL('**/bridges', { timeout: TIMEOUTS.AUTH_COMPLETE })
+      await expect(page.locator('[data-testid="nav-bridges"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+      await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible()
+
+      // Verify localStorage has new token (proves it was cleared and refilled)
+      const newToken = await page.evaluate(() => localStorage.getItem('een_token'))
+      expect(newToken).not.toBeNull()
+    } else {
+      // At OAuth page - user needs to enter credentials
+      const emailInput = page.locator('#authentication--input__email')
+      await expect(emailInput).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    }
+  })
+
+  test('localStorage: second tab shares session without re-login', async ({ page, context }) => {
+    skipIfNoProxy()
+    skipIfNoCredentials()
+
+    // First tab: login
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+    await expect(page.locator('[data-testid="nav-logout"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+
+    // Verify localStorage has token
+    const tokenInFirstTab = await page.evaluate(() => localStorage.getItem('een_token'))
+    expect(tokenInFirstTab).not.toBeNull()
+
+    // Open second tab in same browser context (shares localStorage)
+    const secondTab = await context.newPage()
+    await secondTab.goto('/')
+
+    // Second tab should be authenticated immediately (no login needed)
+    // because localStorage is shared and App.vue calls initialize()
+    await expect(secondTab.locator('[data-testid="nav-logout"]')).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
+    await expect(secondTab.locator('[data-testid="nav-bridges"]')).toBeVisible()
+    await expect(secondTab.locator('[data-testid="nav-login"]')).not.toBeVisible()
+
+    // Verify second tab has the same token from localStorage
+    const tokenInSecondTab = await secondTab.evaluate(() => localStorage.getItem('een_token'))
+    expect(tokenInSecondTab).toBe(tokenInFirstTab)
+
+    // Navigate to bridges in second tab - should work without login
+    await secondTab.click('[data-testid="nav-bridges"]')
+    await secondTab.waitForURL('**/bridges')
+    await expect(secondTab.locator('.bridge-grid, .no-bridges')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+
+    // Clean up second tab
+    await secondTab.close()
+  })
 })

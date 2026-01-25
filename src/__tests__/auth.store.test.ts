@@ -423,4 +423,245 @@ describe('Auth Store Session Persistence', () => {
       expect(authStore.isAuthenticated).toBe(false)
     })
   })
+
+  describe('login -> logout -> second login requires credentials', () => {
+    it('localStorage: after logout, second login requires new credentials', () => {
+      setStorageStrategy('localStorage')
+
+      // First login
+      const authStore1 = useAuthStore()
+      authStore1.setToken('first-login-token', 3600)
+      authStore1.setBaseUrl('https://c001.eagleeyenetworks.com')
+      authStore1.setSessionId('first-session')
+      expect(authStore1.isAuthenticated).toBe(true)
+
+      // Verify token is in storage
+      expect(mockLocalStorage['een_token']).toBe('first-login-token')
+
+      // Logout
+      authStore1.logout()
+      expect(authStore1.isAuthenticated).toBe(false)
+
+      // Verify storage is cleared
+      expect(mockLocalStorage['een_token']).toBeUndefined()
+      expect(mockLocalStorage['een_sessionId']).toBeUndefined()
+
+      // Simulate page refresh after logout - new Pinia instance
+      setActivePinia(createPinia())
+      const authStore2 = useAuthStore()
+
+      // Try to initialize (restore from storage)
+      authStore2.initialize()
+
+      // Should NOT be authenticated - storage was cleared by logout
+      // This proves a second login with credentials is required
+      expect(authStore2.isAuthenticated).toBe(false)
+      expect(authStore2.token).toBeNull()
+      expect(authStore2.sessionId).toBeNull()
+    })
+
+    it('sessionStorage: after logout, second login requires new credentials', () => {
+      setStorageStrategy('sessionStorage')
+
+      // First login
+      const authStore1 = useAuthStore()
+      authStore1.setToken('session-first-token', 3600)
+      authStore1.setBaseUrl('https://c002.eagleeyenetworks.com')
+      authStore1.setSessionId('session-first')
+      expect(authStore1.isAuthenticated).toBe(true)
+
+      // Verify token is in storage
+      expect(mockSessionStorage['een_token']).toBe('session-first-token')
+
+      // Logout
+      authStore1.logout()
+
+      // Verify storage is cleared
+      expect(mockSessionStorage['een_token']).toBeUndefined()
+
+      // Simulate new store instance
+      setActivePinia(createPinia())
+      const authStore2 = useAuthStore()
+      authStore2.initialize()
+
+      // Should NOT be authenticated
+      expect(authStore2.isAuthenticated).toBe(false)
+      expect(authStore2.token).toBeNull()
+    })
+
+    it('memory: after logout, second login requires new credentials', () => {
+      setStorageStrategy('memory')
+
+      // First login
+      const authStore1 = useAuthStore()
+      authStore1.setToken('memory-first-token', 3600)
+      authStore1.setBaseUrl('https://c003.eagleeyenetworks.com')
+      expect(authStore1.isAuthenticated).toBe(true)
+
+      // Logout
+      authStore1.logout()
+
+      // Memory is cleared
+      const storage = getStorageAdapter()
+      expect(storage.getItem('een_token')).toBeNull()
+
+      // New store instance
+      setActivePinia(createPinia())
+      const authStore2 = useAuthStore()
+      authStore2.initialize()
+
+      // Should NOT be authenticated
+      expect(authStore2.isAuthenticated).toBe(false)
+    })
+
+    it('localStorage: logout clears ALL auth data, not just token', () => {
+      setStorageStrategy('localStorage')
+
+      const authStore = useAuthStore()
+
+      // Set up full authenticated state
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://c001.eagleeyenetworks.com')
+      authStore.setSessionId('test-session')
+      authStore.setRefreshTokenMarker('present')
+
+      // Verify all data is stored
+      expect(mockLocalStorage['een_token']).toBe('test-token')
+      expect(mockLocalStorage['een_hostname']).toBe('c001.eagleeyenetworks.com')
+      expect(mockLocalStorage['een_sessionId']).toBe('test-session')
+      expect(mockLocalStorage['een_refreshTokenMarker']).toBe('present')
+      expect(mockLocalStorage['een_tokenExpiration']).toBeDefined()
+
+      // Logout
+      authStore.logout()
+
+      // ALL auth data should be cleared
+      expect(mockLocalStorage['een_token']).toBeUndefined()
+      expect(mockLocalStorage['een_hostname']).toBeUndefined()
+      expect(mockLocalStorage['een_sessionId']).toBeUndefined()
+      expect(mockLocalStorage['een_refreshTokenMarker']).toBeUndefined()
+      expect(mockLocalStorage['een_tokenExpiration']).toBeUndefined()
+
+      // In-memory state should also be cleared
+      expect(authStore.token).toBeNull()
+      expect(authStore.sessionId).toBeNull()
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.refreshTokenMarker).toBeNull()
+    })
+  })
+
+  describe('multi-tab session sharing', () => {
+    it('localStorage: second tab shares session without re-login', () => {
+      setStorageStrategy('localStorage')
+
+      // First tab: login
+      const tab1Store = useAuthStore()
+      tab1Store.setToken('shared-token', 3600)
+      tab1Store.setBaseUrl('https://c001.eagleeyenetworks.com')
+      tab1Store.setSessionId('shared-session')
+      expect(tab1Store.isAuthenticated).toBe(true)
+
+      // Second tab: new Pinia instance (simulates new tab with same localStorage)
+      setActivePinia(createPinia())
+      const tab2Store = useAuthStore()
+
+      // Before initialize, tab2 is not authenticated
+      expect(tab2Store.token).toBeNull()
+      expect(tab2Store.isAuthenticated).toBe(false)
+
+      // After initialize, tab2 should share the session from localStorage
+      tab2Store.initialize()
+
+      expect(tab2Store.isAuthenticated).toBe(true)
+      expect(tab2Store.token).toBe('shared-token')
+      expect(tab2Store.sessionId).toBe('shared-session')
+      expect(tab2Store.baseUrl).toBe('https://c001.eagleeyenetworks.com')
+    })
+
+    it('sessionStorage: second tab does NOT share session (tab-isolated)', () => {
+      setStorageStrategy('sessionStorage')
+
+      // First tab: login
+      const tab1Store = useAuthStore()
+      tab1Store.setToken('tab1-token', 3600)
+      tab1Store.setBaseUrl('https://c001.eagleeyenetworks.com')
+      expect(tab1Store.isAuthenticated).toBe(true)
+
+      // Verify token is in sessionStorage
+      expect(mockSessionStorage['een_token']).toBe('tab1-token')
+
+      // Second tab: new Pinia instance
+      // In a real browser, sessionStorage is per-tab, so a new tab would have empty sessionStorage
+      // We simulate this by clearing the mock sessionStorage (simulating new tab's empty storage)
+      setActivePinia(createPinia())
+
+      // Clear sessionStorage to simulate new tab (each tab has its own sessionStorage)
+      mockSessionStorage = {}
+      globalThis.sessionStorage = {
+        getItem: (key: string) => mockSessionStorage[key] ?? null,
+        setItem: (key: string, value: string) => { mockSessionStorage[key] = value },
+        removeItem: (key: string) => { delete mockSessionStorage[key] },
+        clear: () => { mockSessionStorage = {} },
+        key: (index: number) => Object.keys(mockSessionStorage)[index] ?? null,
+        length: Object.keys(mockSessionStorage).length
+      } as Storage
+
+      const tab2Store = useAuthStore()
+      tab2Store.initialize()
+
+      // Tab2 should NOT be authenticated (sessionStorage is isolated per tab)
+      expect(tab2Store.isAuthenticated).toBe(false)
+      expect(tab2Store.token).toBeNull()
+    })
+
+    it('memory: second tab does NOT share session', () => {
+      setStorageStrategy('memory')
+
+      // First tab: login
+      const tab1Store = useAuthStore()
+      tab1Store.setToken('memory-token', 3600)
+      tab1Store.setBaseUrl('https://c001.eagleeyenetworks.com')
+      expect(tab1Store.isAuthenticated).toBe(true)
+
+      // Second tab: new Pinia instance with cleared memory (simulates new tab)
+      // Memory storage is in-process, so a new tab would have empty memory
+      clearMemoryStorage()
+      setActivePinia(createPinia())
+
+      const tab2Store = useAuthStore()
+      tab2Store.initialize()
+
+      // Tab2 should NOT be authenticated (memory is not shared between tabs)
+      expect(tab2Store.isAuthenticated).toBe(false)
+      expect(tab2Store.token).toBeNull()
+    })
+
+    it('localStorage: changes in one tab are visible in another after initialize', () => {
+      setStorageStrategy('localStorage')
+
+      // Tab1: login
+      const tab1Store = useAuthStore()
+      tab1Store.setToken('original-token', 3600)
+      tab1Store.setBaseUrl('https://c001.eagleeyenetworks.com')
+
+      // Tab2: initialize and verify session
+      setActivePinia(createPinia())
+      const tab2Store = useAuthStore()
+      tab2Store.initialize()
+      expect(tab2Store.token).toBe('original-token')
+
+      // Tab1: logout (clears localStorage)
+      tab1Store.logout()
+      expect(mockLocalStorage['een_token']).toBeUndefined()
+
+      // Tab2: if it re-initializes (e.g., after page refresh), session is gone
+      setActivePinia(createPinia())
+      const tab2StoreRefreshed = useAuthStore()
+      tab2StoreRefreshed.initialize()
+
+      // Tab2 is now logged out because localStorage was cleared by Tab1
+      expect(tab2StoreRefreshed.isAuthenticated).toBe(false)
+      expect(tab2StoreRefreshed.token).toBeNull()
+    })
+  })
 })
