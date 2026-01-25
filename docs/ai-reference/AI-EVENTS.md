@@ -1,6 +1,6 @@
 # Events, Alerts & Real-Time Streaming - EEN API Toolkit
 
-> **Version:** 0.3.38
+> **Version:** 0.3.39
 >
 > Complete reference for events, alerts, metrics, and SSE subscriptions.
 > Load this document when implementing event-driven features.
@@ -1632,7 +1632,7 @@ watch(selectedSubscriptionId, (newId) => {
       <ul class="warning-list">
         <li>SSE URLs are single-use. Once disconnected, the subscription cannot be reconnected.</li>
         <li>To receive events again after disconnecting, create a new subscription.</li>
-        <li>Subscriptions have a 15-minute TTL and expire if not connected.</li>
+        <li>SSE subscriptions have a server-determined 15-minute TTL (not configurable) and expire if not connected.</li>
       </ul>
     </div>
 
