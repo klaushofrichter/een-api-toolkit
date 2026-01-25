@@ -74,6 +74,35 @@ app.use(router)
 app.mount('#app')
 ```
 
+### App.vue Session Restoration (CRITICAL)
+**Users will need to re-login after every page refresh unless you call `authStore.initialize()` in App.vue.**
+
+```vue
+<script setup lang="ts">
+import { onMounted, computed } from 'vue'
+import { useAuthStore } from 'een-api-toolkit'
+
+const authStore = useAuthStore()
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+// CRITICAL: Initialize auth store from storage on app mount
+// This restores the session if a valid token exists in localStorage/sessionStorage
+onMounted(() => {
+  authStore.initialize()
+})
+</script>
+```
+
+Without `initialize()`:
+- Token is saved to localStorage after login ✓
+- On page refresh, Pinia store starts with empty state
+- `isAuthenticated` returns false → user must login again
+
+With `initialize()`:
+- Token is loaded from localStorage on app mount
+- `isAuthenticated` returns true → session is restored
+- User can continue without re-logging in
+
 ### vite.config.ts for EEN OAuth
 ```typescript
 import { defineConfig } from 'vite'
@@ -115,6 +144,7 @@ export default router
 - Pinia must be installed before initEenToolkit()
 - Never add trailing slashes to redirect URIs
 - Ensure VITE_PROXY_URL is set in .env file
+- **Always call `authStore.initialize()` in App.vue onMounted** for session persistence
 
 ## Common Errors and Solutions
 
@@ -124,3 +154,5 @@ export default router
 | "redirect_uri mismatch" | Wrong host/port | Use 127.0.0.1:3333 in vite.config.ts |
 | "Invalid redirect_uri" | Trailing slash | Remove trailing slash from redirect URI |
 | "CORS error" | Proxy not running | Start the OAuth proxy server |
+| Session lost on refresh | Missing initialize() call | Add `authStore.initialize()` in App.vue onMounted |
+| Must login after refresh | Missing initialize() call | Add `authStore.initialize()` in App.vue onMounted |

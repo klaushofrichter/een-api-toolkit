@@ -269,12 +269,20 @@ async function fetchNotifications() {
 
 ## SSE (Server-Sent Events) for Real-Time Updates
 
+### SSE Subscription Behavior
+
+**Important: TTL is read-only and server-determined**
+- SSE subscriptions have a **15-minute TTL** (900 seconds) set by the server
+- The `timeToLiveSeconds` value **cannot be customized** when creating a subscription
+- The `subscriptionConfig` (including `lifeCycle` and `timeToLiveSeconds`) is returned in the API response but is not a configurable input
+- SSE URLs are **single-use**: once disconnected, you must create a new subscription
+
 ### SSE Lifecycle
 
-1. **Create Subscription** - Get a subscription with SSE URL
+1. **Create Subscription** - Get a subscription with SSE URL (server sets 15-min TTL)
 2. **Connect to Stream** - Open EventSource connection
 3. **Handle Events** - Process events as they arrive
-4. **Cleanup** - Delete subscription when done
+4. **Cleanup** - Delete subscription when done (or it auto-expires after 15 min of inactivity)
 
 ### createEventSubscription()
 ```typescript

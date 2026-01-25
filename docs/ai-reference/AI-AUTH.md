@@ -1,6 +1,6 @@
 # Authentication - EEN API Toolkit
 
-> **Version:** 0.3.38
+> **Version:** 0.3.43
 >
 > OAuth flow implementation, token management, and session handling.
 > Load this document when implementing login, logout, or auth guards.
@@ -95,6 +95,47 @@ authStore.token            // Access token (or null)
 authStore.baseUrl          // EEN API base URL (e.g., https://c001.eagleeyenetworks.com)
 authStore.sessionId        // Session identifier
 ```
+
+---
+
+## Session Persistence (IMPORTANT)
+
+**To restore sessions from storage on page load, you must call `authStore.initialize()` in your App.vue.**
+
+Without this call, users will need to log in again after every page refresh, even with `localStorage` strategy.
+
+### App.vue Setup
+
+```vue
+<script setup lang="ts">
+import { onMounted, computed } from 'vue'
+import { useAuthStore } from 'een-api-toolkit'
+
+const authStore = useAuthStore()
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+
+// CRITICAL: Initialize auth store from storage on app mount
+// This restores the session if a valid token exists in localStorage/sessionStorage
+onMounted(() => {
+  authStore.initialize()
+})
+</script>
+```
+
+### What initialize() Does
+
+1. Loads token, expiration, session ID, and base URL from configured storage
+2. If token exists and is **not expired**: Sets up auto-refresh timer
+3. If token exists but **is expired**: Clears auth state (user must re-login)
+4. If no token: No action (user must login)
+
+### Storage Strategy Behavior
+
+| Strategy | Persists Across Refresh? | Requires initialize()? |
+|----------|-------------------------|------------------------|
+| `localStorage` | Yes | Yes |
+| `sessionStorage` | Yes (within tab) | Yes |
+| `memory` | No | No (always requires re-login) |
 
 ---
 
