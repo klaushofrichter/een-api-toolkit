@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.43**](../README.md)
+[**EEN API Toolkit v0.3.44**](../README.md)
 
 ***
 

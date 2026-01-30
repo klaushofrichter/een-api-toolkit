@@ -250,6 +250,19 @@ async function fetchAlerts() {
 }
 ```
 
+### Alert Priority
+Alert priority is an integer value ranging from **0 to 10**:
+- `0` = Lowest priority
+- `10` = Highest priority
+
+Use priority to filter or sort alerts by importance:
+```typescript
+const result = await listAlerts({
+  priority__gte: 7,  // High priority alerts only
+  status__in: ['active']
+})
+```
+
 ### listNotifications()
 Get user notifications:
 ```typescript
