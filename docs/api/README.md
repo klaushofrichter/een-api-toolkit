@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.44**
+**EEN API Toolkit v0.3.45**
 
 ***
 
-# EEN API Toolkit v0.3.44
+# EEN API Toolkit v0.3.45
 
 ## Interfaces
 
@@ -31,6 +31,33 @@
 - [ListAlertsParams](interfaces/ListAlertsParams.md)
 - [GetAlertParams](interfaces/GetAlertParams.md)
 - [ListAlertTypesParams](interfaces/ListAlertTypesParams.md)
+
+### Automations
+
+- [HumanValidation](interfaces/HumanValidation.md)
+- [EventResourceFilter](interfaces/EventResourceFilter.md)
+- [EventFilter](interfaces/EventFilter.md)
+- [EventAlertConditionRule](interfaces/EventAlertConditionRule.md)
+- [EventAlertConditionRuleFieldValues](interfaces/EventAlertConditionRuleFieldValues.md)
+- [AlertConditionRuleActor](interfaces/AlertConditionRuleActor.md)
+- [AlertConditionRuleAction](interfaces/AlertConditionRuleAction.md)
+- [AlertConditionRuleInsights](interfaces/AlertConditionRuleInsights.md)
+- [AlertConditionRule](interfaces/AlertConditionRule.md)
+- [AlertActionRule](interfaces/AlertActionRule.md)
+- [NotificationSettings](interfaces/NotificationSettings.md)
+- [SmsSettings](interfaces/SmsSettings.md)
+- [SmtpSettings](interfaces/SmtpSettings.md)
+- [SlackSettings](interfaces/SlackSettings.md)
+- [WebhookSettings](interfaces/WebhookSettings.md)
+- [OutputPortSettings](interfaces/OutputPortSettings.md)
+- [PlaySpeakerAudioClipSettings](interfaces/PlaySpeakerAudioClipSettings.md)
+- [AutomationAlertAction](interfaces/AutomationAlertAction.md)
+- [ListEventAlertConditionRulesParams](interfaces/ListEventAlertConditionRulesParams.md)
+- [GetEventAlertConditionRuleFieldValuesParams](interfaces/GetEventAlertConditionRuleFieldValuesParams.md)
+- [ListAlertConditionRulesParams](interfaces/ListAlertConditionRulesParams.md)
+- [GetAlertConditionRuleParams](interfaces/GetAlertConditionRuleParams.md)
+- [ListAlertActionRulesParams](interfaces/ListAlertActionRulesParams.md)
+- [ListAlertActionsParams](interfaces/ListAlertActionsParams.md)
 
 ### Bridges
 
@@ -137,6 +164,12 @@
 - [AlertSort](type-aliases/AlertSort.md)
 - [AlertActionStatus](type-aliases/AlertActionStatus.md)
 
+### Automations
+
+- [AlertActionType](type-aliases/AlertActionType.md)
+- [AlertActionSettings](type-aliases/AlertActionSettings.md)
+- [AlertConditionRuleInclude](type-aliases/AlertConditionRuleInclude.md)
+
 ### Bridges
 
 - [BridgeStatus](type-aliases/BridgeStatus.md)
@@ -214,6 +247,18 @@
 - [listAlerts](functions/listAlerts.md)
 - [getAlert](functions/getAlert.md)
 - [listAlertTypes](functions/listAlertTypes.md)
+
+### Automations
+
+- [listEventAlertConditionRules](functions/listEventAlertConditionRules.md)
+- [getEventAlertConditionRuleFieldValues](functions/getEventAlertConditionRuleFieldValues.md)
+- [getEventAlertConditionRule](functions/getEventAlertConditionRule.md)
+- [listAlertConditionRules](functions/listAlertConditionRules.md)
+- [getAlertConditionRule](functions/getAlertConditionRule.md)
+- [listAlertActionRules](functions/listAlertActionRules.md)
+- [getAlertActionRule](functions/getAlertActionRule.md)
+- [listAlertActions](functions/listAlertActions.md)
+- [getAlertAction](functions/getAlertAction.md)
 
 ### Bridges
 

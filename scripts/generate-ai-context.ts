@@ -178,6 +178,7 @@ function generateOverview(config: GeneratorConfig): string {
 | Working with layouts | [AI-GROUPING.md](./ai-reference/AI-GROUPING.md) | ~3K |
 | Live video, images, HLS playback | [AI-MEDIA.md](./ai-reference/AI-MEDIA.md) | ~4K |
 | Events, alerts, metrics, SSE | [AI-EVENTS.md](./ai-reference/AI-EVENTS.md) | ~3.5K |
+| Automation rules, alert actions | [AI-AUTOMATIONS.md](./ai-reference/AI-AUTOMATIONS.md) | ~4K |
 
 ## Specialized Agents
 
@@ -192,6 +193,7 @@ Specialized agents are available in \`.claude/agents/\` for domain-specific task
 | \`een-grouping-agent\` | Layouts CRUD, camera pane management, layout settings |
 | \`een-media-agent\` | Live video, camera previews, HLS playback, recorded images |
 | \`een-events-agent\` | Events, alerts, metrics, real-time SSE subscriptions |
+| \`een-automations-agent\` | Automation rules, alert condition rules, alert actions |
 
 **How to Use Agents:**
 
@@ -231,6 +233,7 @@ Then follow the context files and instructions specified within.
 | [vue-events](../examples/vue-events/) | Events with bounding boxes | \`src/components/EventsModal.vue\` |
 | [vue-alerts-metrics](../examples/vue-alerts-metrics/) | Event metrics and alerts | \`src/components/MetricsChart.vue\` |
 | [vue-event-subscriptions](../examples/vue-event-subscriptions/) | Real-time SSE streaming | \`src/views/LiveEvents.vue\` |
+| [vue-automations](../examples/vue-automations/) | Automation rules listing | \`src/views/Automations.vue\` |
 
 ---
 
@@ -321,6 +324,19 @@ Then follow the context files and instructions specified within.
 | \`createEventSubscription(params)\` | Create a new subscription |
 | \`deleteEventSubscription(id)\` | Delete a subscription |
 | \`connectToEventSubscription(sseUrl, options)\` | Connect to SSE stream |
+
+### Automations
+| Function | Purpose |
+|----------|---------|
+| \`listEventAlertConditionRules(params?)\` | List event alert condition rules |
+| \`getEventAlertConditionRuleFieldValues(params?)\` | Get filter values for rules |
+| \`getEventAlertConditionRule(id)\` | Get a specific event alert condition rule |
+| \`listAlertConditionRules(params?)\` | List alert condition rules |
+| \`getAlertConditionRule(id, params?)\` | Get a specific alert condition rule |
+| \`listAlertActionRules(params?)\` | List alert action rules |
+| \`getAlertActionRule(id)\` | Get a specific alert action rule |
+| \`listAlertActions(params?)\` | List alert actions |
+| \`getAlertAction(id)\` | Get a specific alert action |
 
 ### Utilities
 | Function | Purpose |
@@ -1890,6 +1906,57 @@ ${generateEventsDoc(config).split('---\n\n')[1] || ''}
 }
 
 // =============================================================================
+// AI-AUTOMATIONS.md (Automations)
+// =============================================================================
+
+function generateAutomationsDoc(config: GeneratorConfig): string {
+  // For now, read the manual AI-AUTOMATIONS.md if it exists, otherwise generate minimal
+  const manualPath = path.join(AI_REF_DIR, 'AI-AUTOMATIONS.md')
+  if (fs.existsSync(manualPath)) {
+    return fs.readFileSync(manualPath, 'utf-8')
+  }
+
+  return `# Automations API - EEN API Toolkit
+
+> **Version:** ${config.version}
+>
+> Complete reference for automation rules and alert actions.
+> Load this document when working with automated alert workflows.
+
+---
+
+## Overview
+
+The Automations API provides read access to the EEN alert automation system:
+
+| Entity | Description |
+|--------|-------------|
+| **Event Alert Condition Rules** | Filter incoming events to generate alerts |
+| **Alert Condition Rules** | Process events and create alerts with actors |
+| **Alert Action Rules** | Route alerts to appropriate actions |
+| **Alert Actions** | Execute notifications, webhooks, integrations |
+
+## Functions
+
+| Function | Purpose |
+|----------|---------|
+| \`listEventAlertConditionRules(params?)\` | List event alert condition rules |
+| \`getEventAlertConditionRuleFieldValues(params?)\` | Get available filter values |
+| \`getEventAlertConditionRule(id)\` | Get single event alert condition rule |
+| \`listAlertConditionRules(params?)\` | List alert condition rules |
+| \`getAlertConditionRule(id, params?)\` | Get single alert condition rule |
+| \`listAlertActionRules(params?)\` | List alert action rules |
+| \`getAlertActionRule(id)\` | Get single alert action rule |
+| \`listAlertActions(params?)\` | List alert actions |
+| \`getAlertAction(id)\` | Get single alert action |
+
+## Reference Example
+
+See \`examples/vue-automations/\` for a complete working example.
+`
+}
+
+// =============================================================================
 // MAIN
 // =============================================================================
 
@@ -1931,7 +1998,8 @@ function main() {
       { name: 'AI-USERS.md', generator: generateUsersDoc },
       { name: 'AI-DEVICES.md', generator: generateDevicesDoc },
       { name: 'AI-MEDIA.md', generator: generateMediaDoc },
-      { name: 'AI-EVENTS.md', generator: generateEventsDoc }
+      { name: 'AI-EVENTS.md', generator: generateEventsDoc },
+      { name: 'AI-AUTOMATIONS.md', generator: generateAutomationsDoc }
     ]
 
     for (const doc of docs) {
