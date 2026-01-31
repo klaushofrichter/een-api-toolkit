@@ -26,19 +26,25 @@ const SOURCE_AGENTS_DIR = path.join(TOOLKIT_ROOT, '.claude', 'agents')
 // Target directory is always the current working directory's .claude/agents/
 const TARGET_AGENTS_DIR = path.join(process.cwd(), '.claude', 'agents')
 
-// Pattern for agent files to copy
+// Pattern for EEN coding support agent files to copy.
+// Only copies een-*-agent.md files (e.g., een-auth-agent.md, een-media-agent.md).
+// Other agents in the directory (test-runner, docs-accuracy-reviewer, etc.) are
+// internal toolkit agents and are not intended for distribution to consuming projects.
 const AGENT_PATTERN = /^een-.*-agent\.md$/
 
 /**
- * Discover agent files matching the een-*-agent.md pattern in the source directory.
+ * Discover EEN coding support agent files matching the een-*-agent.md pattern.
  */
 function discoverAgentFiles(sourceDir: string): string[] {
-  if (!fs.existsSync(sourceDir)) {
-    return []
+  try {
+    const files = fs.readdirSync(sourceDir)
+    return files.filter((file) => AGENT_PATTERN.test(file)).sort()
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err)
+    console.error(`Error: Failed to read agent directory '${sourceDir}'.`)
+    console.error(`Details: ${message}`)
+    process.exit(1)
   }
-
-  const files = fs.readdirSync(sourceDir)
-  return files.filter((file) => AGENT_PATTERN.test(file)).sort()
 }
 
 function main() {
