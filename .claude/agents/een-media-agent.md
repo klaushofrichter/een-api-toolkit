@@ -87,23 +87,21 @@ If you need HD quality video, you MUST use the Live Video SDK. Do not attempt to
 
 ## Key Functions
 
-### getLiveImage(cameraId)
-Get a live preview image (returns data URL):
+### getLiveImage(params)
+Get a live preview image (returns base64 data URL):
 ```typescript
 import { getLiveImage, type LiveImageResult } from 'een-api-toolkit'
 
 const imageUrl = ref<string>('')
 
-async function fetchPreview(cameraId: string) {
+async function fetchPreview(deviceId: string) {
   const result = await getLiveImage({
-    cameraId,
-    width: 320,
-    height: 240,
-    type: 'jpeg'
+    deviceId,
+    type: 'preview'  // Optional, defaults to 'preview'
   })
 
   if (result.data) {
-    imageUrl.value = result.data.dataUrl  // Use directly in <img src>
+    imageUrl.value = result.data.imageData  // Use directly in <img src>
   }
 }
 ```
@@ -158,21 +156,20 @@ onMounted(async () => {
 })
 ```
 
-### getRecordedImage()
+### getRecordedImage(params)
 Get an image at a specific timestamp:
 ```typescript
 import { getRecordedImage, formatTimestamp } from 'een-api-toolkit'
 
-async function fetchRecordedFrame(cameraId: string, date: Date) {
+async function fetchRecordedFrame(deviceId: string, date: Date) {
   const result = await getRecordedImage({
-    cameraId,
-    timestamp: formatTimestamp(date),  // MUST use formatTimestamp()
-    width: 640,
-    height: 480
+    deviceId,
+    timestamp: formatTimestamp(date.toISOString()),  // MUST use formatTimestamp()
+    type: 'preview'  // Optional, defaults to 'preview'
   })
 
   if (result.data) {
-    imageUrl.value = result.data.dataUrl
+    imageUrl.value = result.data.imageData
   }
 }
 ```

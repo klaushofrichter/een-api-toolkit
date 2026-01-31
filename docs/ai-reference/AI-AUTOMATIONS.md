@@ -1,6 +1,6 @@
 # Automations API - EEN API Toolkit
 
-> **Version:** 0.3.44
+> **Version:** 0.3.46
 >
 > Complete reference for automation rules and alert actions.
 > Load this document when working with automated alert workflows.
@@ -510,97 +510,285 @@ if (data) {
 
 ## Vue Component Example
 
-```vue
-<script setup lang="ts">
-import { ref, onMounted } from 'vue'
+```typescript
+import { ref, computed, onMounted } from 'vue'
 import {
+  listEventAlertConditionRules,
   listAlertConditionRules,
+  listAlertActionRules,
   listAlertActions,
+  type EventAlertConditionRule,
   type AlertConditionRule,
+  type AlertActionRule,
   type AutomationAlertAction,
   type EenError
 } from 'een-api-toolkit'
 
-const rules = ref<AlertConditionRule[]>([])
+// Active tab
+type TabName = 'eventAlertRules' | 'conditionRules' | 'actionRules' | 'actions'
+const activeTab = ref<TabName>('eventAlertRules')
+
+// Modal state
+type SelectedItem = EventAlertConditionRule | AlertConditionRule | AlertActionRule | AutomationAlertAction
+const showModal = ref(false)
+const selectedItem = ref<SelectedItem | null>(null)
+const selectedItemTitle = ref('')
+
+function openModal(item: SelectedItem, title: string) {
+  selectedItem.value = item
+  selectedItemTitle.value = title
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+  selectedItem.value = null
+  selectedItemTitle.value = ''
+}
+
+function formatJson(obj: unknown): string {
+  return JSON.stringify(obj, null, 2)
+}
+
+// Event Alert Condition Rules
+const eventAlertRules = ref<EventAlertConditionRule[]>([])
+const eventAlertRulesLoading = ref(false)
+const eventAlertRulesError = ref<EenError | null>(null)
+const eventAlertRulesNextToken = ref<string | undefined>(undefined)
+const hasMoreEventAlertRules = computed(() => !!eventAlertRulesNextToken.value)
+
+// Alert Condition Rules
+const conditionRules = ref<AlertConditionRule[]>([])
+const conditionRulesLoading = ref(false)
+const conditionRulesError = ref<EenError | null>(null)
+const conditionRulesNextToken = ref<string | undefined>(undefined)
+const hasMoreConditionRules = computed(() => !!conditionRulesNextToken.value)
+
+// Alert Action Rules
+const actionRules = ref<AlertActionRule[]>([])
+const actionRulesLoading = ref(false)
+const actionRulesError = ref<EenError | null>(null)
+const actionRulesNextToken = ref<string | undefined>(undefined)
+const hasMoreActionRules = computed(() => !!actionRulesNextToken.value)
+
+// Alert Actions
 const actions = ref<AutomationAlertAction[]>([])
-const loading = ref(false)
-const error = ref<EenError | null>(null)
+const actionsLoading = ref(false)
+const actionsError = ref<EenError | null>(null)
+const actionsNextToken = ref<string | undefined>(undefined)
+const hasMoreActions = computed(() => !!actionsNextToken.value)
 
-async function fetchAutomations() {
-  loading.value = true
-  error.value = null
+// Filter state
+const enabledFilter = ref<'all' | 'enabled' | 'disabled'>('all')
 
-  // Fetch rules and actions in parallel
-  const [rulesResult, actionsResult] = await Promise.all([
-    listAlertConditionRules({
-      enabled: true,
-      include: ['actions', 'insights']
-    }),
-    listAlertActions({ enabled: true })
-  ])
+// Fetch functions
+async function fetchEventAlertRules(append = false) {
+  eventAlertRulesLoading.value = true
+  eventAlertRulesError.value = null
 
-  if (rulesResult.error) {
-    error.value = rulesResult.error
+  const params: Parameters<typeof listEventAlertConditionRules>[0] = {
+    pageSize: 10,
+    ...(append && eventAlertRulesNextToken.value ? { pageToken: eventAlertRulesNextToken.value } : {}),
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
+  }
+
+  const result = await listEventAlertConditionRules(params)
+
+  if (result.error) {
+    eventAlertRulesError.value = result.error
+    if (!append) eventAlertRules.value = []
+    eventAlertRulesNextToken.value = undefined
   } else {
-    rules.value = rulesResult.data.results
+    if (append) {
+      eventAlertRules.value = [...eventAlertRules.value, ...result.data.results]
+    } else {
+      eventAlertRules.value = result.data.results
+    }
+    eventAlertRulesNextToken.value = result.data.nextPageToken
   }
 
-  if (actionsResult.error && !error.value) {
-    error.value = actionsResult.error
-  } else if (!actionsResult.error) {
-    actions.value = actionsResult.data.results
+  eventAlertRulesLoading.value = false
+}
+
+async function fetchConditionRules(append = false) {
+  conditionRulesLoading.value = true
+  conditionRulesError.value = null
+
+  const params: Parameters<typeof listAlertConditionRules>[0] = {
+    pageSize: 10,
+    include: ['actions', 'insights'],
+    ...(append && conditionRulesNextToken.value ? { pageToken: conditionRulesNextToken.value } : {}),
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
   }
 
-  loading.value = false
+  const result = await listAlertConditionRules(params)
+
+  if (result.error) {
+    conditionRulesError.value = result.error
+    if (!append) conditionRules.value = []
+    conditionRulesNextToken.value = undefined
+  } else {
+    if (append) {
+      conditionRules.value = [...conditionRules.value, ...result.data.results]
+    } else {
+      conditionRules.value = result.data.results
+    }
+    conditionRulesNextToken.value = result.data.nextPageToken
+  }
+
+  conditionRulesLoading.value = false
 }
 
-function getActionName(actionId: string): string {
-  const action = actions.value.find(a => a.id === actionId)
-  return action?.name ?? actionId
+async function fetchActionRules(append = false) {
+  actionRulesLoading.value = true
+  actionRulesError.value = null
+
+  const params: Parameters<typeof listAlertActionRules>[0] = {
+    pageSize: 10,
+    ...(append && actionRulesNextToken.value ? { pageToken: actionRulesNextToken.value } : {}),
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
+  }
+
+  const result = await listAlertActionRules(params)
+
+  if (result.error) {
+    actionRulesError.value = result.error
+    if (!append) actionRules.value = []
+    actionRulesNextToken.value = undefined
+  } else {
+    if (append) {
+      actionRules.value = [...actionRules.value, ...result.data.results]
+    } else {
+      actionRules.value = result.data.results
+    }
+    actionRulesNextToken.value = result.data.nextPageToken
+  }
+
+  actionRulesLoading.value = false
 }
 
-onMounted(() => fetchAutomations())
-</script>
+async function fetchActions(append = false) {
+  actionsLoading.value = true
+  actionsError.value = null
 
-<template>
-  <div class="automations">
-    <h2>Alert Condition Rules</h2>
+  const params: Parameters<typeof listAlertActions>[0] = {
+    pageSize: 10,
+    ...(append && actionsNextToken.value ? { pageToken: actionsNextToken.value } : {}),
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
+  }
 
-    <div v-if="loading">Loading automations...</div>
-    <div v-else-if="error" class="error">{{ error.message }}</div>
+  const result = await listAlertActions(params)
 
-    <div v-else>
-      <div v-for="rule in rules" :key="rule.id" class="rule-card">
-        <h3>{{ rule.name }}</h3>
-        <p>Priority: {{ rule.priority }}</p>
-        <p>Input Events: {{ rule.inputEventTypes.join(', ') }}</p>
-        <p>Output Alert: {{ rule.outputAlertType }}</p>
+  if (result.error) {
+    actionsError.value = result.error
+    if (!append) actions.value = []
+    actionsNextToken.value = undefined
+  } else {
+    if (append) {
+      actions.value = [...actions.value, ...result.data.results]
+    } else {
+      actions.value = result.data.results
+    }
+    actionsNextToken.value = result.data.nextPageToken
+  }
 
-        <div v-if="rule.actions?.length">
-          <h4>Actions</h4>
-          <ul>
-            <li v-for="action in rule.actions" :key="action.id">
-              {{ action.name ?? action.id }}
-            </li>
-          </ul>
-        </div>
+  actionsLoading.value = false
+}
 
-        <div v-if="rule.insights">
-          <h4>Insights</h4>
-          <p>Total alerts: {{ rule.insights.totalAlerts }}</p>
-          <p>Last 24h: {{ rule.insights.alertCounts?.last24Hours }}</p>
-        </div>
-      </div>
+function refreshCurrentTab() {
+  switch (activeTab.value) {
+    case 'eventAlertRules':
+      fetchEventAlertRules()
+      break
+    case 'conditionRules':
+      fetchConditionRules()
+      break
+    case 'actionRules':
+      fetchActionRules()
+      break
+    case 'actions':
+      fetchActions()
+      break
+  }
+}
 
-      <h2>Alert Actions ({{ actions.length }})</h2>
-      <div v-for="action in actions" :key="action.id" class="action-card">
-        <h3>{{ action.name }}</h3>
-        <p>Type: {{ action.type }}</p>
-        <p>Enabled: {{ action.enabled ? 'Yes' : 'No' }}</p>
-      </div>
-    </div>
-  </div>
-</template>
+function loadMore() {
+  switch (activeTab.value) {
+    case 'eventAlertRules':
+      fetchEventAlertRules(true)
+      break
+    case 'conditionRules':
+      fetchConditionRules(true)
+      break
+    case 'actionRules':
+      fetchActionRules(true)
+      break
+    case 'actions':
+      fetchActions(true)
+      break
+  }
+}
+
+function switchTab(tab: TabName) {
+  activeTab.value = tab
+  // Fetch data for the tab if not loaded
+  switch (tab) {
+    case 'eventAlertRules':
+      if (eventAlertRules.value.length === 0 && !eventAlertRulesLoading.value) {
+        fetchEventAlertRules()
+      }
+      break
+    case 'conditionRules':
+      if (conditionRules.value.length === 0 && !conditionRulesLoading.value) {
+        fetchConditionRules()
+      }
+      break
+    case 'actionRules':
+      if (actionRules.value.length === 0 && !actionRulesLoading.value) {
+        fetchActionRules()
+      }
+      break
+    case 'actions':
+      if (actions.value.length === 0 && !actionsLoading.value) {
+        fetchActions()
+      }
+      break
+  }
+}
+
+const isLoading = computed(() => {
+  switch (activeTab.value) {
+    case 'eventAlertRules':
+      return eventAlertRulesLoading.value
+    case 'conditionRules':
+      return conditionRulesLoading.value
+    case 'actionRules':
+      return actionRulesLoading.value
+    case 'actions':
+      return actionsLoading.value
+    default:
+      return false
+  }
+})
+
+const hasMore = computed(() => {
+  switch (activeTab.value) {
+    case 'eventAlertRules':
+      return hasMoreEventAlertRules.value
+    case 'conditionRules':
+      return hasMoreConditionRules.value
+    case 'actionRules':
+      return hasMoreActionRules.value
+    case 'actions':
+      return hasMoreActions.value
+    default:
+      return false
+  }
+})
+
+onMounted(() => {
+  fetchEventAlertRules()
+})
 ```
 
 ---

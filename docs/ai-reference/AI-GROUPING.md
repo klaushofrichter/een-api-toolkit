@@ -1,6 +1,6 @@
 # Layouts API - EEN API Toolkit
 
-> **Version:** 0.3.30
+> **Version:** 0.3.46
 >
 > Complete reference for layout management (camera grouping).
 > Load this document when working with layouts.
@@ -241,16 +241,29 @@ if (error) {
 
 ---
 
-## Vue Components
+## Vue Component Example
 
-### Layouts.vue
-
-```vue
-<script setup lang="ts">
+```typescript
 import { ref, computed, onMounted } from 'vue'
-import { getLayouts, createLayout, updateLayout, deleteLayout, type Layout, type EenError, type ListLayoutsParams, type LayoutSettings } from 'een-api-toolkit'
+import {
+  getLayouts,
+  getCameras,
+  createLayout,
+  updateLayout,
+  deleteLayout,
+  type Layout,
+  type Camera,
+  type EenError,
+  type ListLayoutsParams,
+  type CreateLayoutParams,
+  type UpdateLayoutParams,
+  type LayoutSettings
+} from 'een-api-toolkit'
+import LayoutModal from '../components/LayoutModal.vue'
 
+// Reactive state
 const layouts = ref<Layout[]>([])
+const cameras = ref<Camera[]>([])
 const loading = ref(false)
 const error = ref<EenError | null>(null)
 const nextPageToken = ref<string | undefined>(undefined)
@@ -262,6 +275,20 @@ const params = ref<ListLayoutsParams>({
   include: ['resourceCounts', 'effectivePermissions']
 })
 
+// Modal state
+const showModal = ref(false)
+const selectedLayout = ref<Layout | null>(null)
+const modalLoading = ref(false)
+const modalError = ref<string | null>(null)
+
+// Default settings for new layouts
+const defaultSettings: LayoutSettings = {
+  showCameraBorder: true,
+  showCameraName: true,
+  cameraAspectRatio: '16x9',
+  paneColumns: 3
+}
+
 async function fetchLayouts(fetchParams?: ListLayoutsParams, append = false) {
   loading.value = true
   error.value = null
@@ -271,7 +298,9 @@ async function fetchLayouts(fetchParams?: ListLayoutsParams, append = false) {
 
   if (result.error) {
     error.value = result.error
-    if (!append) layouts.value = []
+    if (!append) {
+      layouts.value = []
+    }
     nextPageToken.value = undefined
   } else {
     if (append) {
@@ -283,80 +312,113 @@ async function fetchLayouts(fetchParams?: ListLayoutsParams, append = false) {
   }
 
   loading.value = false
+  return result
+}
+
+async function fetchCameras() {
+  const result = await getCameras({ pageSize: 100, include: ['status'] })
+  if (result.data) {
+    cameras.value = result.data.results
+  }
+}
+
+function refresh() {
+  return fetchLayouts()
 }
 
 async function fetchNextPage() {
   if (!nextPageToken.value) return
-  return fetchLayouts({ ...params.value, pageToken: nextPageToken.value }, true)
+  // Destructure to explicitly exclude any existing pageToken from params
+  const { pageToken: _existingToken, ...restParams } = params.value
+  return fetchLayouts({ ...restParams, pageToken: nextPageToken.value }, true)
 }
 
-async function handleCreate(name: string, settings: LayoutSettings) {
-  const result = await createLayout({ name, settings })
-  if (result.data) {
-    await fetchLayouts()
-  }
-  return result
+function openCreateModal() {
+  selectedLayout.value = null
+  modalError.value = null
+  showModal.value = true
 }
 
-async function handleUpdate(layoutId: string, name: string, settings: Partial<LayoutSettings>) {
-  const result = await updateLayout(layoutId, { name, settings })
-  if (!result.error) {
+function openEditModal(layout: Layout) {
+  selectedLayout.value = layout
+  modalError.value = null
+  showModal.value = true
+}
+
+function closeModal() {
+  showModal.value = false
+  selectedLayout.value = null
+  modalError.value = null
+}
+
+async function handleSave(data: { name: string; settings: LayoutSettings; panes: Layout['panes'] }) {
+  modalLoading.value = true
+  modalError.value = null
+
+  try {
+    if (selectedLayout.value) {
+      // Update existing layout
+      const updateParams: UpdateLayoutParams = {
+        name: data.name,
+        settings: data.settings,
+        panes: data.panes
+      }
+
+      const result = await updateLayout(selectedLayout.value.id, updateParams)
+      if (result.error) {
+        modalError.value = result.error.message
+        return
+      }
+    } else {
+      // Create new layout
+      const createParams: CreateLayoutParams = {
+        name: data.name,
+        settings: data.settings,
+        panes: data.panes
+      }
+
+      const result = await createLayout(createParams)
+      if (result.error) {
+        modalError.value = result.error.message
+        return
+      }
+    }
+
+    closeModal()
     await fetchLayouts()
+  } catch (err) {
+    // Handle unexpected errors (network failures, state mutations, etc.)
+    modalError.value = err instanceof Error ? err.message : 'An unexpected error occurred'
+    console.error('handleSave error:', err)
+  } finally {
+    modalLoading.value = false
   }
-  return result
 }
 
 async function handleDelete(layoutId: string) {
-  const result = await deleteLayout(layoutId)
-  if (!result.error) {
-    await fetchLayouts()
+  if (!confirm('Are you sure you want to delete this layout?')) {
+    return
   }
-  return result
+
+  modalLoading.value = true
+  modalError.value = null
+
+  const result = await deleteLayout(layoutId)
+
+  if (result.error) {
+    modalError.value = result.error.message
+    modalLoading.value = false
+    return
+  }
+
+  closeModal()
+  await fetchLayouts()
+  modalLoading.value = false
 }
 
-onMounted(() => fetchLayouts())
-</script>
-
-<template>
-  <div class="layouts">
-    <div class="header">
-      <h2>Layouts</h2>
-      <button @click="fetchLayouts" :disabled="loading">
-        {{ loading ? 'Loading...' : 'Refresh' }}
-      </button>
-    </div>
-
-    <div v-if="loading && layouts.length === 0" class="loading">
-      Loading layouts...
-    </div>
-
-    <div v-else-if="error" class="error">
-      Error: {{ error.message }}
-    </div>
-
-    <div v-else>
-      <div v-if="layouts.length > 0" class="layout-grid">
-        <div v-for="layout in layouts" :key="layout.id" class="layout-card">
-          <h3>{{ layout.name }}</h3>
-          <p>Panes: {{ layout.panes.length }}</p>
-          <p>Columns: {{ layout.settings.paneColumns }}</p>
-          <div v-if="layout.effectivePermissions">
-            <span v-if="layout.effectivePermissions.edit">Can Edit</span>
-            <span v-if="layout.effectivePermissions.delete">Can Delete</span>
-          </div>
-        </div>
-      </div>
-
-      <p v-else>No layouts found.</p>
-
-      <div v-if="hasNextPage" class="pagination">
-        <button @click="fetchNextPage" :disabled="loading">
-          {{ loading ? 'Loading...' : 'Load More' }}
-        </button>
-      </div>
-    </div>
-  </div>
-</template>
+onMounted(async () => {
+  await Promise.all([fetchLayouts(), fetchCameras()])
+})
 ```
 
 ---

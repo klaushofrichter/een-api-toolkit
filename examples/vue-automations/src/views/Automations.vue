@@ -77,7 +77,7 @@ async function fetchEventAlertRules(append = false) {
   const params: Parameters<typeof listEventAlertConditionRules>[0] = {
     pageSize: 10,
     ...(append && eventAlertRulesNextToken.value ? { pageToken: eventAlertRulesNextToken.value } : {}),
-    ...(enabledFilter.value !== 'all' ? { enabled__eq: enabledFilter.value === 'enabled' } : {})
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
   }
 
   const result = await listEventAlertConditionRules(params)
@@ -106,7 +106,7 @@ async function fetchConditionRules(append = false) {
     pageSize: 10,
     include: ['actions', 'insights'],
     ...(append && conditionRulesNextToken.value ? { pageToken: conditionRulesNextToken.value } : {}),
-    ...(enabledFilter.value !== 'all' ? { enabled__eq: enabledFilter.value === 'enabled' } : {})
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
   }
 
   const result = await listAlertConditionRules(params)
@@ -134,7 +134,7 @@ async function fetchActionRules(append = false) {
   const params: Parameters<typeof listAlertActionRules>[0] = {
     pageSize: 10,
     ...(append && actionRulesNextToken.value ? { pageToken: actionRulesNextToken.value } : {}),
-    ...(enabledFilter.value !== 'all' ? { enabled__eq: enabledFilter.value === 'enabled' } : {})
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
   }
 
   const result = await listAlertActionRules(params)
@@ -162,7 +162,7 @@ async function fetchActions(append = false) {
   const params: Parameters<typeof listAlertActions>[0] = {
     pageSize: 10,
     ...(append && actionsNextToken.value ? { pageToken: actionsNextToken.value } : {}),
-    ...(enabledFilter.value !== 'all' ? { enabled__eq: enabledFilter.value === 'enabled' } : {})
+    ...(enabledFilter.value !== 'all' ? { enabled: enabledFilter.value === 'enabled' } : {})
   }
 
   const result = await listAlertActions(params)

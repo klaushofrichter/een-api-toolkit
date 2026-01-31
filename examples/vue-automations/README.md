@@ -123,7 +123,7 @@ const rules = ref<EventAlertConditionRule[]>([])
 async function fetchRules() {
   const result = await listEventAlertConditionRules({
     pageSize: 10,
-    enabled__eq: true  // Only enabled rules
+    enabled: true  // Only enabled rules
   })
 
   if (result.error) {

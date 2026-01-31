@@ -79,12 +79,14 @@ type EventType =
 ```typescript
 interface ListEventsParams {
   actor: string                    // Required: "camera:{cameraId}"
-  startTimestamp?: string
-  endTimestamp?: string
-  type__in?: EventType[]
+  type__in: string[]               // Required: event types to query
+  startTimestamp__gte: string      // Required: start time (ISO 8601)
+  startTimestamp__lte?: string     // Optional: end time filter
+  endTimestamp__gte?: string       // Optional: filter by event end time
+  endTimestamp__lte?: string       // Optional: filter by event end time
   pageSize?: number
   pageToken?: string
-  include?: string[]               // Include SVG overlays: ['data.overlays']
+  include?: string[]               // Include SVG overlays: ['data.een.fullFrameImageUrl.v1']
 }
 ```
 
@@ -118,10 +120,10 @@ async function fetchEvents(cameraId: string) {
 
   const result = await listEvents({
     actor: `camera:${cameraId}`,
-    startTimestamp: formatTimestamp(hourAgo),
-    endTimestamp: formatTimestamp(now),
     type__in: ['een.motionDetectionEvent.v1', 'een.objectDetectionEvent.v1'],
-    include: ['data.overlays'],  // Include bounding box SVGs
+    startTimestamp__gte: formatTimestamp(hourAgo.toISOString()),
+    startTimestamp__lte: formatTimestamp(now.toISOString()),
+    include: ['data.een.fullFrameImageUrl.v1'],  // Include image URLs
     pageSize: 50
   })
 
@@ -358,23 +360,22 @@ onUnmounted(async () => {
 
 Use `getRecordedImage()` to fetch a thumbnail image for an event:
 ```typescript
-import { getRecordedImage, type Event } from 'een-api-toolkit'
+import { getRecordedImage, formatTimestamp, type Event } from 'een-api-toolkit'
 
 const eventImages = ref<Map<string, string>>(new Map())
 
 async function fetchEventThumbnail(event: Event) {
-  // Extract camera ID from actor (format: "camera:{cameraId}")
-  const cameraId = event.actor.replace('camera:', '')
+  // Extract device ID from actorId
+  const deviceId = event.actorId
 
   const result = await getRecordedImage({
-    cameraId,
-    timestamp: event.timestamp,
-    width: 120,  // Thumbnail size
-    height: 80
+    deviceId,
+    timestamp: formatTimestamp(event.startTimestamp),
+    type: 'preview'
   })
 
-  if (result.data?.dataUrl) {
-    eventImages.value.set(event.id, result.data.dataUrl)
+  if (result.data?.imageData) {
+    eventImages.value.set(event.id, result.data.imageData)
   }
 }
 

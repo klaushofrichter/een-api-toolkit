@@ -449,23 +449,13 @@ test.describe('Vue Automations Example - Auth', () => {
     skipIfNoProxy()
     skipIfNoCredentials()
 
-    // Go to home page first
+    // Always perform login to ensure test isolation
+    await performLogin(page, TEST_USER!, TEST_PASSWORD!)
+
+    // Go to home to see the logout button
     await page.goto('/')
 
-    // Wait a moment for auth state to settle
-    await page.waitForTimeout(1000)
-
-    // Check if already logged in (from previous test) - if so, we can proceed with logout
     const logoutButton = page.locator('[data-testid="nav-logout"]')
-    const isLoggedIn = await logoutButton.isVisible()
-
-    if (!isLoggedIn) {
-      // Need to log in first
-      await performLogin(page, TEST_USER!, TEST_PASSWORD!)
-      // Go to home to see the logout button
-      await page.goto('/')
-    }
-
     await expect(logoutButton).toBeVisible({ timeout: TIMEOUTS.UI_UPDATE })
 
     await logoutButton.click()
