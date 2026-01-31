@@ -26,15 +26,20 @@ const SOURCE_AGENTS_DIR = path.join(TOOLKIT_ROOT, '.claude', 'agents')
 // Target directory is always the current working directory's .claude/agents/
 const TARGET_AGENTS_DIR = path.join(process.cwd(), '.claude', 'agents')
 
-const AGENT_FILES = [
-  'een-setup-agent.md',
-  'een-auth-agent.md',
-  'een-users-agent.md',
-  'een-devices-agent.md',
-  'een-media-agent.md',
-  'een-events-agent.md',
-  'een-grouping-agent.md'
-]
+// Pattern for agent files to copy
+const AGENT_PATTERN = /^een-.*-agent\.md$/
+
+/**
+ * Discover agent files matching the een-*-agent.md pattern in the source directory.
+ */
+function discoverAgentFiles(sourceDir: string): string[] {
+  if (!fs.existsSync(sourceDir)) {
+    return []
+  }
+
+  const files = fs.readdirSync(sourceDir)
+  return files.filter((file) => AGENT_PATTERN.test(file)).sort()
+}
 
 function main() {
   console.log('EEN API Toolkit - Agent Setup\n')
@@ -45,6 +50,16 @@ function main() {
     console.error('Make sure you have installed een-api-toolkit correctly.')
     process.exit(1)
   }
+
+  // Discover agent files dynamically
+  const agentFiles = discoverAgentFiles(SOURCE_AGENTS_DIR)
+
+  if (agentFiles.length === 0) {
+    console.error('Error: No agent files matching een-*-agent.md found.')
+    process.exit(1)
+  }
+
+  console.log(`Found ${agentFiles.length} agent(s) to install.\n`)
 
   // Create target directory if it doesn't exist
   if (!fs.existsSync(TARGET_AGENTS_DIR)) {
@@ -57,7 +72,7 @@ function main() {
   let skipped = 0
   let errors = 0
 
-  for (const agentFile of AGENT_FILES) {
+  for (const agentFile of agentFiles) {
     const sourcePath = path.join(SOURCE_AGENTS_DIR, agentFile)
     const targetPath = path.join(TARGET_AGENTS_DIR, agentFile)
 
@@ -98,18 +113,16 @@ function main() {
   console.log(`Summary: ${copied} copied, ${skipped} skipped, ${errors} errors`)
   console.log('')
 
-  if (copied > 0) {
+  if (copied > 0 || skipped > 0) {
     console.log('Agents are now available in .claude/agents/')
     console.log('Claude Code will automatically discover them.')
     console.log('')
-    console.log('Available agents:')
-    console.log('  - een-setup-agent     (Vue 3 project setup)')
-    console.log('  - een-auth-agent      (OAuth authentication)')
-    console.log('  - een-users-agent     (User management)')
-    console.log('  - een-devices-agent   (Cameras & bridges)')
-    console.log('  - een-media-agent     (Video & media)')
-    console.log('  - een-events-agent    (Events & real-time)')
-    console.log('  - een-grouping-agent  (Layouts & camera groupings)')
+    console.log('Installed agents:')
+    for (const agentFile of agentFiles) {
+      // Extract agent name from filename (e.g., "een-setup-agent.md" -> "een-setup-agent")
+      const agentName = agentFile.replace(/\.md$/, '')
+      console.log(`  - ${agentName}`)
+    }
   }
 
   process.exit(errors > 0 ? 1 : 0)
