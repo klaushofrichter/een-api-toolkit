@@ -152,8 +152,22 @@ jobs:
           echo "Documentation is up to date"
 
   example-e2e-tests:
-    name: Example E2E Tests
+    name: E2E Tests (${{ matrix.example }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        example:
+          - vue-users
+          - vue-automations
+          - vue-cameras
+          - vue-bridges
+          - vue-events
+          - vue-feeds
+          - vue-layouts
+          - vue-media
+          - vue-event-subscriptions
+          - vue-alerts-metrics
 
     steps:
       - name: Checkout repository
@@ -173,11 +187,11 @@ jobs:
 
       - name: Install example dependencies
         run: npm ci
-        working-directory: examples/vue-users
+        working-directory: examples/${{ matrix.example }}
 
       - name: Install Playwright browsers
         run: npm exec playwright install -- --with-deps chromium
-        working-directory: examples/vue-users
+        working-directory: examples/${{ matrix.example }}
 
       - name: Clone OAuth proxy
         run: git clone --depth 1 https://github.com/klaushofrichter/een-oauth-proxy.git ../een-oauth-proxy
@@ -230,7 +244,7 @@ jobs:
 
       - name: Run example E2E tests
         run: npm run test:e2e
-        working-directory: examples/vue-users
+        working-directory: examples/${{ matrix.example }}
         env:
           VITE_PROXY_URL: http://127.0.0.1:8787
           VITE_EEN_CLIENT_ID: ${{ secrets.VITE_EEN_CLIENT_ID }}
@@ -241,8 +255,8 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: playwright-report
-          path: examples/vue-users/playwright-report/
+          name: playwright-report-${{ matrix.example }}
+          path: examples/${{ matrix.example }}/playwright-report/
           retention-days: 7
 
       - name: Stop OAuth proxy

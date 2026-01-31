@@ -111,7 +111,35 @@ export type {
   SSEConnection,
   SSEConnectionOptions,
   SSEConnectionStatus,
-  SSEEvent
+  SSEEvent,
+  // Automation types
+  EventAlertConditionRule,
+  EventAlertConditionRuleFieldValues,
+  HumanValidation,
+  EventResourceFilter,
+  EventFilter,
+  AlertConditionRule,
+  AlertConditionRuleActor,
+  AlertConditionRuleAction,
+  AlertConditionRuleInsights,
+  AlertConditionRuleInclude,
+  AlertActionRule,
+  AutomationAlertAction,
+  AlertActionType,
+  AlertActionSettings,
+  NotificationSettings,
+  SmsSettings,
+  SmtpSettings,
+  SlackSettings,
+  WebhookSettings,
+  OutputPortSettings,
+  PlaySpeakerAudioClipSettings,
+  ListEventAlertConditionRulesParams,
+  GetEventAlertConditionRuleFieldValuesParams,
+  ListAlertConditionRulesParams,
+  GetAlertConditionRuleParams,
+  ListAlertActionRulesParams,
+  ListAlertActionsParams
 } from './types'
 
 // Type helpers
@@ -209,3 +237,16 @@ export {
   deleteEventSubscription,
   connectToEventSubscription
 } from './eventSubscriptions'
+
+// Automations - Plain functions
+export {
+  listEventAlertConditionRules,
+  getEventAlertConditionRuleFieldValues,
+  getEventAlertConditionRule,
+  listAlertConditionRules,
+  getAlertConditionRule,
+  listAlertActionRules,
+  getAlertActionRule,
+  listAlertActions,
+  getAlertAction
+} from './automations'

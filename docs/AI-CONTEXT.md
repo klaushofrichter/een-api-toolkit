@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.43
+> **Version:** 0.3.46
 >
 > This documentation is optimized for AI assistants. It provides focused, domain-specific
 > references to help you understand and use the een-api-toolkit efficiently.
@@ -20,6 +20,7 @@
 | Working with layouts | [AI-GROUPING.md](./ai-reference/AI-GROUPING.md) | ~3K |
 | Live video, images, HLS playback | [AI-MEDIA.md](./ai-reference/AI-MEDIA.md) | ~4K |
 | Events, alerts, metrics, SSE | [AI-EVENTS.md](./ai-reference/AI-EVENTS.md) | ~3.5K |
+| Automation rules, alert actions | [AI-AUTOMATIONS.md](./ai-reference/AI-AUTOMATIONS.md) | ~4K |
 
 ## Specialized Agents
 
@@ -34,6 +35,7 @@ Specialized agents are available in `.claude/agents/` for domain-specific tasks:
 | `een-grouping-agent` | Layouts CRUD, camera pane management, layout settings |
 | `een-media-agent` | Live video, camera previews, HLS playback, recorded images |
 | `een-events-agent` | Events, alerts, metrics, real-time SSE subscriptions |
+| `een-automations-agent` | Automation rules, alert condition rules, alert actions |
 
 **How to Use Agents:**
 
@@ -73,6 +75,7 @@ Then follow the context files and instructions specified within.
 | [vue-events](../examples/vue-events/) | Events with bounding boxes | `src/components/EventsModal.vue` |
 | [vue-alerts-metrics](../examples/vue-alerts-metrics/) | Event metrics and alerts | `src/components/MetricsChart.vue` |
 | [vue-event-subscriptions](../examples/vue-event-subscriptions/) | Real-time SSE streaming | `src/views/LiveEvents.vue` |
+| [vue-automations](../examples/vue-automations/) | Automation rules listing | `src/views/Automations.vue` |
 
 ---
 
@@ -163,6 +166,19 @@ Then follow the context files and instructions specified within.
 | `createEventSubscription(params)` | Create a new subscription |
 | `deleteEventSubscription(id)` | Delete a subscription |
 | `connectToEventSubscription(sseUrl, options)` | Connect to SSE stream |
+
+### Automations
+| Function | Purpose |
+|----------|---------|
+| `listEventAlertConditionRules(params?)` | List event alert condition rules |
+| `getEventAlertConditionRuleFieldValues(params?)` | Get filter values for rules |
+| `getEventAlertConditionRule(id)` | Get a specific event alert condition rule |
+| `listAlertConditionRules(params?)` | List alert condition rules |
+| `getAlertConditionRule(id, params?)` | Get a specific alert condition rule |
+| `listAlertActionRules(params?)` | List alert action rules |
+| `getAlertActionRule(id)` | Get a specific alert action rule |
+| `listAlertActions(params?)` | List alert actions |
+| `getAlertAction(id)` | Get a specific alert action |
 
 ### Utilities
 | Function | Purpose |

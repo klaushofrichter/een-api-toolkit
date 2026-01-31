@@ -137,13 +137,13 @@ async function loadMore() {
 }
 ```
 
-### getUser(id)
+### getUser(userId, params?)
 Get a specific user by ID:
 ```typescript
 import { getUser, type User } from 'een-api-toolkit'
 
 async function fetchUser(userId: string) {
-  const result = await getUser({ id: userId })
+  const result = await getUser(userId)
 
   if (result.error) {
     if (result.error.code === 'NOT_FOUND') {

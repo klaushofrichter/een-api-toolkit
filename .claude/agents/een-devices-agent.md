@@ -170,14 +170,13 @@ async function getCamerasByTags(tags: string[]) {
 }
 ```
 
-### getCamera(id)
+### getCamera(cameraId, params?)
 Get a specific camera:
 ```typescript
 import { getCamera, type Camera } from 'een-api-toolkit'
 
 async function fetchCamera(cameraId: string) {
-  const result = await getCamera({
-    id: cameraId,
+  const result = await getCamera(cameraId, {
     include: ['deviceInfo', 'settings']  // Request additional details
   })
 
@@ -216,14 +215,13 @@ async function fetchOnlineBridges() {
 }
 ```
 
-### getBridge(id)
+### getBridge(bridgeId, params?)
 Get a specific bridge:
 ```typescript
 import { getBridge, type Bridge } from 'een-api-toolkit'
 
 async function fetchBridge(bridgeId: string) {
-  const result = await getBridge({
-    id: bridgeId,
+  const result = await getBridge(bridgeId, {
     include: ['networkInfo']
   })
 
@@ -334,7 +332,7 @@ onMounted(fetchCameras)
 The `camera.id` property is used consistently across all toolkit functions:
 - `getCameras()` returns cameras with `id` property
 - `listFeeds({ deviceId: camera.id })` for feeds
-- `getLiveImage({ cameraId: camera.id })` for images
+- `getLiveImage({ deviceId: camera.id })` for images
 - LivePlayer SDK: `{ cameraId: camera.id }` for live video
 
 **Note:** Some legacy EEN documentation may refer to "ESN" (Electronic Serial Number). This is outdated terminology - the current API uses `id`. In the toolkit, always use `camera.id`.

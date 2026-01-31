@@ -178,6 +178,7 @@ function generateOverview(config: GeneratorConfig): string {
 | Working with layouts | [AI-GROUPING.md](./ai-reference/AI-GROUPING.md) | ~3K |
 | Live video, images, HLS playback | [AI-MEDIA.md](./ai-reference/AI-MEDIA.md) | ~4K |
 | Events, alerts, metrics, SSE | [AI-EVENTS.md](./ai-reference/AI-EVENTS.md) | ~3.5K |
+| Automation rules, alert actions | [AI-AUTOMATIONS.md](./ai-reference/AI-AUTOMATIONS.md) | ~4K |
 
 ## Specialized Agents
 
@@ -192,6 +193,7 @@ Specialized agents are available in \`.claude/agents/\` for domain-specific task
 | \`een-grouping-agent\` | Layouts CRUD, camera pane management, layout settings |
 | \`een-media-agent\` | Live video, camera previews, HLS playback, recorded images |
 | \`een-events-agent\` | Events, alerts, metrics, real-time SSE subscriptions |
+| \`een-automations-agent\` | Automation rules, alert condition rules, alert actions |
 
 **How to Use Agents:**
 
@@ -231,6 +233,7 @@ Then follow the context files and instructions specified within.
 | [vue-events](../examples/vue-events/) | Events with bounding boxes | \`src/components/EventsModal.vue\` |
 | [vue-alerts-metrics](../examples/vue-alerts-metrics/) | Event metrics and alerts | \`src/components/MetricsChart.vue\` |
 | [vue-event-subscriptions](../examples/vue-event-subscriptions/) | Real-time SSE streaming | \`src/views/LiveEvents.vue\` |
+| [vue-automations](../examples/vue-automations/) | Automation rules listing | \`src/views/Automations.vue\` |
 
 ---
 
@@ -321,6 +324,19 @@ Then follow the context files and instructions specified within.
 | \`createEventSubscription(params)\` | Create a new subscription |
 | \`deleteEventSubscription(id)\` | Delete a subscription |
 | \`connectToEventSubscription(sseUrl, options)\` | Connect to SSE stream |
+
+### Automations
+| Function | Purpose |
+|----------|---------|
+| \`listEventAlertConditionRules(params?)\` | List event alert condition rules |
+| \`getEventAlertConditionRuleFieldValues(params?)\` | Get filter values for rules |
+| \`getEventAlertConditionRule(id)\` | Get a specific event alert condition rule |
+| \`listAlertConditionRules(params?)\` | List alert condition rules |
+| \`getAlertConditionRule(id, params?)\` | Get a specific alert condition rule |
+| \`listAlertActionRules(params?)\` | List alert action rules |
+| \`getAlertActionRule(id)\` | Get a specific alert action rule |
+| \`listAlertActions(params?)\` | List alert actions |
+| \`getAlertAction(id)\` | Get a specific alert action |
 
 ### Utilities
 | Function | Purpose |
@@ -1890,6 +1906,877 @@ ${generateEventsDoc(config).split('---\n\n')[1] || ''}
 }
 
 // =============================================================================
+// AI-AUTOMATIONS.md (Automations)
+// =============================================================================
+
+function generateGroupingDoc(config: GeneratorConfig): string {
+  const layoutsVue = extractVueScript(path.join(EXAMPLES_DIR, 'vue-layouts/src/views/Layouts.vue'))
+
+  return `# Layouts API - EEN API Toolkit
+
+> **Version:** ${config.version}
+>
+> Complete reference for layout management (camera grouping).
+> Load this document when working with layouts.
+
+---
+
+## Overview
+
+Layouts organize multiple camera views into a grid for monitoring. Each layout contains:
+- **Name** - Display name for the layout
+- **Settings** - Display configuration (columns, aspect ratio, borders)
+- **Panes** - Array of camera positions in the grid
+
+---
+
+## Layout Types
+
+### Layout
+
+\`\`\`typescript
+interface Layout {
+  id: string
+  name: string
+  accountId: string
+  panes: LayoutPane[]
+  settings: LayoutSettings
+  effectivePermissions?: LayoutPermissions
+  resourceCounts?: { cameras?: number }
+  resourceStatusCounts?: { cameras?: CameraStatusCounts }
+  qRelevance?: number
+}
+
+interface LayoutPane {
+  id: number              // Unique pane ID within layout
+  name: string            // Display name
+  type: 'preview' | 'compositePreview'
+  size: 1 | 2 | 3        // Grid size (1=small, 2=medium, 3=large)
+  cameraId: string       // Camera to display
+  compositeId?: string | null
+}
+
+interface LayoutSettings {
+  showCameraBorder: boolean
+  showCameraName: boolean
+  cameraAspectRatio: '16x9' | '4x3'
+  paneColumns: number    // 1-6 columns
+}
+
+interface LayoutPermissions {
+  read?: boolean
+  edit?: boolean
+  delete?: boolean
+}
+\`\`\`
+
+### Parameters
+
+\`\`\`typescript
+interface ListLayoutsParams {
+  pageSize?: number              // Results per page
+  pageToken?: string             // Pagination token
+  include?: ListLayoutsInclude[] // Additional fields
+  sort?: ListLayoutsSort[]       // Sort order
+  name?: string                  // Exact name match
+  name__in?: string[]            // Names (any match)
+  name__contains?: string        // Partial name match
+  id__in?: string[]              // Filter by IDs
+  q?: string                     // Full-text search
+  qRelevance__gte?: number       // Min relevance (0.0-1.0)
+}
+
+type ListLayoutsInclude =
+  | 'effectivePermissions'
+  | 'resourceCounts'
+  | 'resourceStatusCounts'
+  | 'qRelevance'
+
+type ListLayoutsSort =
+  | '+name' | '-name'
+  | '+rotationOrder'
+  | '+qRelevance' | '-qRelevance'
+
+interface CreateLayoutParams {
+  name: string           // Required
+  settings: LayoutSettings  // Required
+  panes?: LayoutPane[]   // Optional initial panes
+}
+
+interface UpdateLayoutParams {
+  name?: string
+  settings?: Partial<LayoutSettings>
+  panes?: LayoutPane[]   // Replaces existing panes
+}
+\`\`\`
+
+---
+
+## Layout Functions
+
+### getLayouts(params?)
+
+\`\`\`typescript
+import { getLayouts } from 'een-api-toolkit'
+
+// Basic usage
+const { data, error } = await getLayouts()
+
+// With pagination and includes
+const { data } = await getLayouts({
+  pageSize: 50,
+  include: ['resourceCounts', 'effectivePermissions']
+})
+
+// Search layouts
+const { data } = await getLayouts({
+  q: 'lobby',
+  qRelevance__gte: 0.5
+})
+
+// Filter by name
+const { data } = await getLayouts({
+  name__contains: 'entrance'
+})
+\`\`\`
+
+### getLayout(layoutId, params?)
+
+\`\`\`typescript
+import { getLayout } from 'een-api-toolkit'
+
+const { data, error } = await getLayout('layout-123')
+
+// With additional fields
+const { data: detailed } = await getLayout('layout-123', {
+  include: ['effectivePermissions', 'resourceStatusCounts']
+})
+
+if (data) {
+  console.log(\`Layout: \${data.name}\`)
+  console.log(\`Panes: \${data.panes.length}\`)
+  console.log(\`Columns: \${data.settings.paneColumns}\`)
+}
+\`\`\`
+
+### createLayout(params)
+
+\`\`\`typescript
+import { createLayout, type LayoutSettings } from 'een-api-toolkit'
+
+const settings: LayoutSettings = {
+  showCameraBorder: true,
+  showCameraName: true,
+  cameraAspectRatio: '16x9',
+  paneColumns: 3
+}
+
+// Create empty layout
+const { data, error } = await createLayout({
+  name: 'Main Lobby View',
+  settings
+})
+
+// Create with panes
+const { data } = await createLayout({
+  name: 'Entrance Cameras',
+  settings,
+  panes: [
+    { id: 1, name: 'Front Door', type: 'preview', size: 2, cameraId: 'cam-123' },
+    { id: 2, name: 'Side Gate', type: 'preview', size: 1, cameraId: 'cam-456' }
+  ]
+})
+
+if (data) {
+  console.log(\`Created layout: \${data.id}\`)
+}
+\`\`\`
+
+### updateLayout(layoutId, params)
+
+\`\`\`typescript
+import { updateLayout } from 'een-api-toolkit'
+
+// Update name
+const { error } = await updateLayout('layout-123', {
+  name: 'Updated Layout Name'
+})
+
+// Update settings (partial)
+const { error } = await updateLayout('layout-123', {
+  settings: {
+    paneColumns: 4,
+    showCameraName: false
+  }
+})
+
+// Replace panes
+const { error } = await updateLayout('layout-123', {
+  panes: [
+    { id: 1, name: 'New Pane', type: 'preview', size: 1, cameraId: 'cam-789' }
+  ]
+})
+
+if (!error) {
+  console.log('Layout updated successfully')
+}
+\`\`\`
+
+### deleteLayout(layoutId)
+
+\`\`\`typescript
+import { deleteLayout } from 'een-api-toolkit'
+
+const { error } = await deleteLayout('layout-123')
+
+if (error) {
+  if (error.code === 'NOT_FOUND') {
+    console.log('Layout already deleted')
+  } else if (error.code === 'FORBIDDEN') {
+    console.log('No permission to delete')
+  }
+} else {
+  console.log('Layout deleted successfully')
+}
+\`\`\`
+
+---
+
+## Filter Patterns
+
+| Filter | Example | Description |
+|--------|---------|-------------|
+| \`name\` | \`'Main Lobby'\` | Exact name match |
+| \`name__in\` | \`['Lobby', 'Entrance']\` | Any name matches |
+| \`name__contains\` | \`'lobby'\` | Partial name match |
+| \`id__in\` | \`['id1', 'id2']\` | Filter by IDs |
+| \`q\` | \`'front door'\` | Full-text search |
+| \`qRelevance__gte\` | \`0.5\` | Min search relevance |
+
+---
+
+## Vue Component Example
+
+\`\`\`typescript
+${layoutsVue}
+\`\`\`
+
+---
+
+## Error Handling
+
+| Error Code | HTTP Status | Meaning | Action |
+|------------|-------------|---------|--------|
+| AUTH_REQUIRED | 401 | Not authenticated | Redirect to login |
+| FORBIDDEN | 403 | No permission | Show access denied |
+| NOT_FOUND | 404 | Layout doesn't exist | Show "not found" |
+| VALIDATION_ERROR | 400 | Invalid request | Show validation error |
+| RATE_LIMITED | 429 | Too many requests | Retry with backoff |
+| API_ERROR | 5xx | Server error | Show error, allow retry |
+
+---
+
+## Best Practices
+
+1. **Check permissions before edit/delete**
+   \`\`\`typescript
+   if (layout.effectivePermissions?.edit) {
+     // Show edit button
+   }
+   \`\`\`
+
+2. **Use includes sparingly** - Only request fields you need
+   \`\`\`typescript
+   // Only include what you'll display
+   const { data } = await getLayouts({
+     include: ['resourceCounts']  // Skip permissions if not needed
+   })
+   \`\`\`
+
+3. **Handle empty panes array**
+   \`\`\`typescript
+   // Layout can have empty panes array
+   const paneCount = layout.panes?.length || 0
+   \`\`\`
+
+4. **Validate panes before save**
+   \`\`\`typescript
+   // Remove panes without cameras
+   const validPanes = panes.filter(p => p.cameraId)
+   await updateLayout(layoutId, { panes: validPanes })
+   \`\`\`
+
+---
+
+## Reference Examples
+
+- \`examples/vue-layouts/\` - Complete CRUD example with modal
+`
+}
+
+function generateAutomationsDoc(config: GeneratorConfig): string {
+  const automationsVue = extractVueScript(path.join(EXAMPLES_DIR, 'vue-automations/src/views/Automations.vue'))
+
+  return `# Automations API - EEN API Toolkit
+
+> **Version:** ${config.version}
+>
+> Complete reference for automation rules and alert actions.
+> Load this document when working with automated alert workflows.
+
+---
+
+## Overview
+
+The Automations API provides read access to the EEN alert automation system:
+
+| Entity | Description |
+|--------|-------------|
+| **Event Alert Condition Rules** | Filter incoming events to generate alerts |
+| **Alert Condition Rules** | Process events and create alerts with actors |
+| **Alert Action Rules** | Route alerts to appropriate actions |
+| **Alert Actions** | Execute notifications, webhooks, integrations |
+
+### Workflow Diagram
+
+\`\`\`
+┌─────────────┐     ┌─────────────────────────┐     ┌─────────┐
+│   Events    │────▶│ Event Alert Condition   │────▶│ Alerts  │
+│ (from       │     │ Rules                   │     │         │
+│  cameras)   │     │ (filter & prioritize)   │     │         │
+└─────────────┘     └─────────────────────────┘     └────┬────┘
+                                                         │
+                    ┌─────────────────────────┐          │
+                    │ Alert Action Rules      │◀─────────┘
+                    │ (match alerts to        │
+                    │  actions)               │
+                    └───────────┬─────────────┘
+                                │
+                    ┌───────────▼─────────────┐
+                    │ Alert Actions           │
+                    │ (notification, webhook, │
+                    │  SMS, email, etc.)      │
+                    └─────────────────────────┘
+\`\`\`
+
+---
+
+## Event Alert Condition Rule Types
+
+\`\`\`typescript
+interface EventAlertConditionRule {
+  id: string
+  createTimestamp: string          // ISO 8601
+  updateTimestamp: string          // ISO 8601
+  name: string
+  priority: number                 // 1-10 (higher = more important)
+  notes?: string
+  enabled: boolean
+  cooldownSeconds: number          // Seconds between alerts
+  humanValidation?: HumanValidation
+  eventFilter: EventFilter
+  outputAlertTypes: string[]
+}
+
+interface HumanValidation {
+  required: boolean
+  timeoutSeconds?: number
+}
+
+interface EventFilter {
+  types: string[]                  // Event types to match
+  resourceFilter?: EventResourceFilter
+}
+
+interface EventResourceFilter {
+  accountIds?: string[]
+  actorIds?: string[]
+  actorTags__contains?: string[]   // All tags must match
+  actorTags__any?: string[]        // Any tag matches
+}
+
+interface EventAlertConditionRuleFieldValues {
+  eventTypes?: string[]
+  outputAlertTypes?: string[]
+}
+
+interface ListEventAlertConditionRulesParams {
+  pageSize?: number
+  pageToken?: string
+  enabled?: boolean
+  id__in?: string[]
+  outputAlertType__in?: string[]
+  priority__gte?: number
+  priority__lte?: number
+}
+\`\`\`
+
+---
+
+## Alert Condition Rule Types
+
+\`\`\`typescript
+interface AlertConditionRule {
+  id: string
+  createTimestamp: string
+  type: string
+  creatorId: string
+  name: string
+  notes?: string
+  enabled: boolean
+  priority: number                      // 1-10
+  actors: AlertConditionRuleActor[]
+  inputEventTypes: string[]
+  outputAlertType: string
+  actions?: AlertConditionRuleAction[]  // include=actions
+  insights?: AlertConditionRuleInsights // include=insights
+}
+
+interface AlertConditionRuleActor {
+  id: string
+  type: string
+  accountId?: string
+}
+
+interface AlertConditionRuleAction {
+  id: string
+  name?: string
+  type?: string
+}
+
+interface AlertConditionRuleInsights {
+  totalAlerts?: number
+  lastTriggered?: string               // ISO 8601
+  alertCounts?: {
+    last24Hours?: number
+    last7Days?: number
+    last30Days?: number
+  }
+}
+
+type AlertConditionRuleInclude = 'actions' | 'insights'
+
+interface ListAlertConditionRulesParams {
+  pageSize?: number
+  pageToken?: string
+  enabled?: boolean
+  id__in?: string[]
+  actorId__in?: string[]
+  inputEventType__in?: string[]
+  outputAlertType?: string
+  type?: string
+  include?: AlertConditionRuleInclude[]
+}
+\`\`\`
+
+---
+
+## Alert Action Rule Types
+
+\`\`\`typescript
+interface AlertActionRule {
+  id: string
+  createTimestamp: string
+  name: string
+  notes?: string
+  enabled: boolean
+  alertTypes: string[]           // Alert types this rule matches
+  actorIds: string[]
+  actorTypes: string[]
+  ruleIds: string[]              // Alert condition rule IDs
+  alertActionIds: string[]       // Actions to execute
+  priority__gte?: number
+  priority__lte?: number
+}
+
+interface ListAlertActionRulesParams {
+  pageSize?: number
+  pageToken?: string
+  enabled?: boolean
+  id__in?: string[]
+  alertType__in?: string[]
+  actorId__in?: string[]
+  alertActionId__in?: string[]
+  ruleId__in?: string[]
+}
+\`\`\`
+
+---
+
+## Alert Action Types
+
+\`\`\`typescript
+type AlertActionType =
+  | 'notification'         // Push notifications to mobile app
+  | 'sms'                  // SMS text messages
+  | 'smtp'                 // Email notifications
+  | 'slack'                // Slack webhook
+  | 'webhook'              // Generic HTTP webhook
+  | 'brivo'                // Brivo access control
+  | 'zendesk'              // Zendesk ticket creation
+  | 'immix'                // Immix integration
+  | 'zapier'               // Zapier automation
+  | 'sentinel'             // Sentinel integration
+  | 'evalinkTalos'         // Evalink Talos integration
+  | 'outputPort'           // Physical output port trigger
+  | 'ebus'                 // eBus integration
+  | 'playSpeakerAudioClip' // Play audio on speaker
+  | 'zulipPrivate'         // Zulip private message
+  | 'zulipStream'          // Zulip stream message
+
+interface AutomationAlertAction {
+  id: string
+  createTimestamp: string
+  type: AlertActionType
+  name: string
+  notes?: string
+  enabled: boolean
+  settings: AlertActionSettings    // Type-specific
+}
+
+// Type-specific settings interfaces
+interface NotificationSettings {
+  userIds: string[]
+}
+
+interface SmsSettings {
+  phoneNumbers: string[]
+}
+
+interface SmtpSettings {
+  recipients: string[]
+  subject?: string
+  body?: string
+}
+
+interface SlackSettings {
+  webhookUrl: string
+  channel?: string
+  username?: string
+}
+
+interface WebhookSettings {
+  url: string
+  method?: 'GET' | 'POST' | 'PUT'
+  headers?: Record<string, string>
+}
+
+interface OutputPortSettings {
+  deviceId: string
+  outputPort: number
+  durationMs?: number
+}
+
+interface PlaySpeakerAudioClipSettings {
+  speakerId: string
+  audioClipId: string
+  volume?: number
+}
+
+interface ListAlertActionsParams {
+  pageSize?: number
+  pageToken?: string
+  enabled?: boolean
+  id__in?: string[]
+  type__in?: AlertActionType[]
+}
+\`\`\`
+
+---
+
+## Event Alert Condition Rule Functions
+
+### listEventAlertConditionRules(params?)
+
+\`\`\`typescript
+import { listEventAlertConditionRules } from 'een-api-toolkit'
+
+// Get all enabled rules
+const { data, error } = await listEventAlertConditionRules({
+  enabled: true,
+  pageSize: 50
+})
+
+if (data) {
+  data.results.forEach(rule => {
+    console.log(\`\${rule.name} (priority: \${rule.priority})\`)
+    console.log(\`  Events: \${rule.eventFilter.types.join(', ')}\`)
+    console.log(\`  Outputs: \${rule.outputAlertTypes.join(', ')}\`)
+  })
+}
+
+// Filter by priority
+const { data: highPriority } = await listEventAlertConditionRules({
+  priority__gte: 7,
+  priority__lte: 10
+})
+
+// Filter by output alert type
+const { data: motionRules } = await listEventAlertConditionRules({
+  outputAlertType__in: ['een.motionDetectionAlert.v1']
+})
+\`\`\`
+
+### getEventAlertConditionRuleFieldValues(params?)
+
+Discover available filter values for building UIs:
+
+\`\`\`typescript
+import { getEventAlertConditionRuleFieldValues } from 'een-api-toolkit'
+
+const { data, error } = await getEventAlertConditionRuleFieldValues()
+
+if (data) {
+  // Populate event type dropdown
+  const eventTypeOptions = data.eventTypes ?? []
+
+  // Populate alert type dropdown
+  const alertTypeOptions = data.outputAlertTypes ?? []
+}
+\`\`\`
+
+### getEventAlertConditionRule(ruleId)
+
+\`\`\`typescript
+import { getEventAlertConditionRule } from 'een-api-toolkit'
+
+const { data, error } = await getEventAlertConditionRule('rule-123')
+
+if (error) {
+  if (error.code === 'NOT_FOUND') {
+    console.log('Rule not found')
+  }
+  return
+}
+
+console.log(\`Rule: \${data.name}\`)
+console.log(\`Cooldown: \${data.cooldownSeconds} seconds\`)
+console.log(\`Human validation: \${data.humanValidation?.required ?? false}\`)
+\`\`\`
+
+---
+
+## Alert Condition Rule Functions
+
+### listAlertConditionRules(params?)
+
+\`\`\`typescript
+import { listAlertConditionRules } from 'een-api-toolkit'
+
+// Get rules with actions and insights
+const { data, error } = await listAlertConditionRules({
+  enabled: true,
+  include: ['actions', 'insights']
+})
+
+if (data) {
+  data.results.forEach(rule => {
+    console.log(\`\${rule.name}\`)
+    console.log(\`  Type: \${rule.type}\`)
+    console.log(\`  Input events: \${rule.inputEventTypes.join(', ')}\`)
+    console.log(\`  Output alert: \${rule.outputAlertType}\`)
+
+    if (rule.actions) {
+      console.log(\`  Actions: \${rule.actions.length}\`)
+    }
+
+    if (rule.insights) {
+      console.log(\`  Total alerts: \${rule.insights.totalAlerts}\`)
+      console.log(\`  Last triggered: \${rule.insights.lastTriggered}\`)
+    }
+  })
+}
+
+// Filter by actor
+const { data: cameraRules } = await listAlertConditionRules({
+  actorId__in: ['camera-123', 'camera-456']
+})
+
+// Filter by event type
+const { data: motionRules } = await listAlertConditionRules({
+  inputEventType__in: ['een.motionDetectionEvent.v1']
+})
+\`\`\`
+
+### getAlertConditionRule(ruleId, params?)
+
+\`\`\`typescript
+import { getAlertConditionRule } from 'een-api-toolkit'
+
+const { data, error } = await getAlertConditionRule('rule-123', {
+  include: ['actions', 'insights']
+})
+
+if (data) {
+  console.log(\`Rule: \${data.name}\`)
+  console.log(\`Actors: \${data.actors.length}\`)
+  console.log(\`Actions: \${data.actions?.length ?? 0}\`)
+
+  // Display insights
+  if (data.insights) {
+    console.log(\`Alerts last 24h: \${data.insights.alertCounts?.last24Hours}\`)
+    console.log(\`Alerts last 7d: \${data.insights.alertCounts?.last7Days}\`)
+  }
+}
+\`\`\`
+
+---
+
+## Alert Action Rule Functions
+
+### listAlertActionRules(params?)
+
+\`\`\`typescript
+import { listAlertActionRules } from 'een-api-toolkit'
+
+// Get enabled rules for motion alerts
+const { data, error } = await listAlertActionRules({
+  enabled: true,
+  alertType__in: ['een.motionDetectionAlert.v1']
+})
+
+if (data) {
+  data.results.forEach(rule => {
+    console.log(\`\${rule.name}\`)
+    console.log(\`  Alert types: \${rule.alertTypes.join(', ')}\`)
+    console.log(\`  Action count: \${rule.alertActionIds.length}\`)
+
+    if (rule.priority__gte !== undefined) {
+      console.log(\`  Min priority: \${rule.priority__gte}\`)
+    }
+  })
+}
+
+// Find rules for specific actions
+const { data: webhookRules } = await listAlertActionRules({
+  alertActionId__in: ['webhook-action-123']
+})
+\`\`\`
+
+### getAlertActionRule(ruleId)
+
+\`\`\`typescript
+import { getAlertActionRule } from 'een-api-toolkit'
+
+const { data, error } = await getAlertActionRule('rule-123')
+
+if (data) {
+  console.log(\`Rule: \${data.name}\`)
+  console.log(\`Alert types: \${data.alertTypes.join(', ')}\`)
+  console.log(\`Actor IDs: \${data.actorIds.join(', ')}\`)
+  console.log(\`Actions: \${data.alertActionIds.join(', ')}\`)
+}
+\`\`\`
+
+---
+
+## Alert Action Functions
+
+### listAlertActions(params?)
+
+\`\`\`typescript
+import { listAlertActions } from 'een-api-toolkit'
+
+// Get all enabled notification and webhook actions
+const { data, error } = await listAlertActions({
+  enabled: true,
+  type__in: ['notification', 'webhook', 'slack']
+})
+
+if (data) {
+  data.results.forEach(action => {
+    console.log(\`\${action.name} (\${action.type})\`)
+
+    switch (action.type) {
+      case 'notification':
+        const notifSettings = action.settings as NotificationSettings
+        console.log(\`  Users: \${notifSettings.userIds.join(', ')}\`)
+        break
+      case 'webhook':
+        const webhookSettings = action.settings as WebhookSettings
+        console.log(\`  URL: \${webhookSettings.url}\`)
+        break
+      case 'slack':
+        const slackSettings = action.settings as SlackSettings
+        console.log(\`  Channel: \${slackSettings.channel}\`)
+        break
+    }
+  })
+}
+
+// Get all SMS actions
+const { data: smsActions } = await listAlertActions({
+  type__in: ['sms']
+})
+\`\`\`
+
+### getAlertAction(actionId)
+
+\`\`\`typescript
+import { getAlertAction } from 'een-api-toolkit'
+
+const { data, error } = await getAlertAction('action-123')
+
+if (data) {
+  console.log(\`Action: \${data.name}\`)
+  console.log(\`Type: \${data.type}\`)
+  console.log(\`Enabled: \${data.enabled}\`)
+  console.log('Settings:', JSON.stringify(data.settings, null, 2))
+}
+\`\`\`
+
+---
+
+## Vue Component Example
+
+\`\`\`typescript
+${automationsVue}
+\`\`\`
+
+---
+
+## Filter Patterns
+
+| Filter | Entity | Example | Description |
+|--------|--------|---------|-------------|
+| \`enabled\` | All | \`true\` | Filter by enabled/disabled |
+| \`id__in\` | All | \`['id1', 'id2']\` | Filter by IDs |
+| \`pageSize\` | All | \`50\` | Results per page |
+| \`pageToken\` | All | \`'token'\` | Pagination cursor |
+| \`priority__gte\` | Event Alert Rules | \`5\` | Min priority (1-10) |
+| \`priority__lte\` | Event Alert Rules | \`10\` | Max priority (1-10) |
+| \`outputAlertType__in\` | Event Alert Rules | \`['type']\` | Output alert types |
+| \`actorId__in\` | Alert Condition Rules | \`['actor1']\` | Actor IDs |
+| \`inputEventType__in\` | Alert Condition Rules | \`['type']\` | Input event types |
+| \`outputAlertType\` | Alert Condition Rules | \`'type'\` | Output alert type |
+| \`type\` | Alert Condition Rules | \`'basic'\` | Rule type |
+| \`include\` | Alert Condition Rules | \`['actions']\` | Include fields |
+| \`alertType__in\` | Alert Action Rules | \`['type']\` | Alert types |
+| \`alertActionId__in\` | Alert Action Rules | \`['id']\` | Action IDs |
+| \`ruleId__in\` | Alert Action Rules | \`['id']\` | Rule IDs |
+| \`type__in\` | Alert Actions | \`['webhook']\` | Action types |
+
+---
+
+## Error Handling
+
+| Error Code | HTTP Status | Meaning | Action |
+|------------|-------------|---------|--------|
+| AUTH_REQUIRED | 401 | Not authenticated | Redirect to login |
+| FORBIDDEN | 403 | No permission | Show access denied |
+| NOT_FOUND | 404 | Entity not found | Show "not found" |
+| RATE_LIMITED | 429 | Too many requests | Retry with backoff |
+| API_ERROR | 5xx | Server error | Show error, retry |
+
+---
+
+## Reference Examples
+
+- \`examples/vue-automations/\` - Automation rules listing
+`
+}
+
+// =============================================================================
 // MAIN
 // =============================================================================
 
@@ -1930,8 +2817,10 @@ function main() {
       { name: 'AI-AUTH.md', generator: generateAuthDoc },
       { name: 'AI-USERS.md', generator: generateUsersDoc },
       { name: 'AI-DEVICES.md', generator: generateDevicesDoc },
+      { name: 'AI-GROUPING.md', generator: generateGroupingDoc },
       { name: 'AI-MEDIA.md', generator: generateMediaDoc },
-      { name: 'AI-EVENTS.md', generator: generateEventsDoc }
+      { name: 'AI-EVENTS.md', generator: generateEventsDoc },
+      { name: 'AI-AUTOMATIONS.md', generator: generateAutomationsDoc }
     ]
 
     for (const doc of docs) {

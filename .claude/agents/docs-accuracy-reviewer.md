@@ -31,6 +31,13 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the README and a
 <Task tool call to launch docs-accuracy-reviewer agent>
 </example>
 
+<example>
+Context: User wants to verify Claude agent definitions are accurate.
+user: "Check if the agent files in .claude/agents match the actual API"
+assistant: "I'll use the docs-accuracy-reviewer agent to verify the een-* agent files have correct function signatures, parameter names, and code examples."
+<Task tool call to launch docs-accuracy-reviewer agent>
+</example>
+
 ## Your Core Responsibilities
 
 1. **Function and Feature Verification**: Cross-reference every documented function, method, API, and feature against the actual source code. Verify that:
@@ -62,8 +69,8 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the README and a
 1. **Discovery Phase**:
    - List all markdown files in the project (README.md, docs/**, CLAUDE.md, etc.)
    - **Scan ALL example directories** (`examples/*/README.md`) - do not skip any
-   - Check agent files in `.claude/agents/*.md`
-   - Identify the source code structure for cross-referencing
+   - **Check ALL agent files** in `.claude/agents/een-*.md` - verify function signatures and code examples against actual implementations
+   - Identify the source code structure for cross-referencing (especially `src/index.ts` exports, `src/*/service.ts` implementations, and `src/types/*.ts` definitions)
 
 2. **Analysis Phase**:
    - Read each documentation file thoroughly
@@ -115,6 +122,18 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the README and a
 - Verify .env.example matches documentation
 - Check that all required secrets are documented
 
+### For Claude Agent Files (`.claude/agents/een-*.md`):
+- **Function Signatures**: Verify all documented function signatures match actual implementations in `src/*/service.ts`
+- **Parameter Names**: Check that parameter names in examples match the actual API (e.g., `deviceId` not `cameraId`, `userId` as direct param not `{ id: userId }`)
+- **Result Properties**: Verify result property names (e.g., `imageData` not `dataUrl`)
+- **Type Definitions**: Cross-reference documented types against `src/types/*.ts`
+- **Filter Parameters**: Verify filter parameter names use correct suffixes (e.g., `startTimestamp__gte` not `startTimestamp`)
+- **Include Options**: Check that documented include options are valid for each API
+- **Code Examples**: Ensure all code examples use current API patterns and would actually compile
+- **Referenced Examples**: Verify that referenced example directories (`examples/vue-*/`) exist
+- **Referenced Docs**: Verify that referenced documentation files (`docs/ai-reference/AI-*.md`) exist
+- **Version Consistency**: If version numbers are present, verify they match `package.json`
+
 ## Output Format
 
 When reporting findings, use this structure:
@@ -153,6 +172,17 @@ When reporting findings, use this structure:
 Before completing your review:
 1. Verify you've checked ALL markdown files in the project
 2. **Confirm ALL example app READMEs were reviewed** (list them in your report)
-3. Confirm each fix you made is backed by evidence from source code
-4. Re-read modified sections to ensure they're clear and accurate
-5. Check that your fixes didn't introduce new broken links or inconsistencies
+3. **Confirm ALL `.claude/agents/een-*.md` files were reviewed** for API accuracy
+4. Confirm each fix you made is backed by evidence from source code
+5. Re-read modified sections to ensure they're clear and accurate
+6. Check that your fixes didn't introduce new broken links or inconsistencies
+
+## Common Agent File Issues to Watch For
+
+These are the most common inaccuracies found in agent files:
+- Using `cameraId` instead of `deviceId` for media/image functions
+- Using `{ id: userId }` instead of `userId` as direct parameter for get functions
+- Using `dataUrl` instead of `imageData` for image result properties
+- Using `startTimestamp` instead of `startTimestamp__gte` for event filters
+- Using `width/height` instead of `targetWidth/targetHeight` for image dimensions
+- Missing `formatTimestamp()` calls for timestamp parameters
