@@ -1,6 +1,6 @@
 # Users API - EEN API Toolkit
 
-> **Version:** 0.3.47
+> **Version:** 0.3.48
 >
 > Complete reference for user management.
 > Load this document when working with user data.

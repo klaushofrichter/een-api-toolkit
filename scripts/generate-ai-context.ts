@@ -179,6 +179,7 @@ function generateOverview(config: GeneratorConfig): string {
 | Live video, images, HLS playback | [AI-MEDIA.md](./ai-reference/AI-MEDIA.md) | ~4K |
 | Events, alerts, metrics, SSE | [AI-EVENTS.md](./ai-reference/AI-EVENTS.md) | ~3.5K |
 | Automation rules, alert actions | [AI-AUTOMATIONS.md](./ai-reference/AI-AUTOMATIONS.md) | ~4K |
+| Jobs, exports, files, downloads | [AI-JOBS.md](./ai-reference/AI-JOBS.md) | ~3.5K |
 
 ## Specialized Agents
 
@@ -194,6 +195,7 @@ Specialized agents are available in \`.claude/agents/\` for domain-specific task
 | \`een-media-agent\` | Live video, camera previews, HLS playback, recorded images |
 | \`een-events-agent\` | Events, alerts, metrics, real-time SSE subscriptions |
 | \`een-automations-agent\` | Automation rules, alert condition rules, alert actions |
+| \`een-jobs-agent\` | Jobs, exports, files, downloads, video export workflows |
 
 **How to Use Agents:**
 
@@ -234,6 +236,7 @@ Then follow the context files and instructions specified within.
 | [vue-alerts-metrics](../examples/vue-alerts-metrics/) | Event metrics and alerts | \`src/components/MetricsChart.vue\` |
 | [vue-event-subscriptions](../examples/vue-event-subscriptions/) | Real-time SSE streaming | \`src/views/LiveEvents.vue\` |
 | [vue-automations](../examples/vue-automations/) | Automation rules listing | \`src/views/Automations.vue\` |
+| [vue-jobs](../examples/vue-jobs/) | Jobs, exports, file downloads | \`src/views/Jobs.vue\` |
 
 ---
 
@@ -337,6 +340,24 @@ Then follow the context files and instructions specified within.
 | \`getAlertActionRule(id)\` | Get a specific alert action rule |
 | \`listAlertActions(params?)\` | List alert actions |
 | \`getAlertAction(id)\` | Get a specific alert action |
+
+### Exports & Jobs
+| Function | Purpose |
+|----------|---------|
+| \`createExportJob(params)\` | Create video/timelapse export job |
+| \`listJobs(params?)\` | List jobs with filtering |
+| \`getJob(jobId)\` | Get a specific job |
+
+### Files & Downloads
+| Function | Purpose |
+|----------|---------|
+| \`listFiles(params?)\` | List available files |
+| \`getFile(fileId)\` | Get a specific file |
+| \`addFile(params)\` | Add a new file |
+| \`downloadFile(fileId)\` | Download file content |
+| \`listDownloads(params?)\` | List available downloads |
+| \`getDownload(downloadId)\` | Get a specific download |
+| \`downloadDownload(downloadId)\` | Download from downloads endpoint |
 
 ### Utilities
 | Function | Purpose |
@@ -2777,6 +2798,561 @@ ${automationsVue}
 }
 
 // =============================================================================
+// AI-JOBS.md (Jobs, Exports, Files & Downloads)
+// =============================================================================
+
+function generateJobsDoc(config: GeneratorConfig): string {
+  const jobsVue = extractVueScript(path.join(EXAMPLES_DIR, 'vue-jobs/src/views/Jobs.vue'))
+  const jobDetailVue = extractVueScript(path.join(EXAMPLES_DIR, 'vue-jobs/src/views/JobDetail.vue'))
+  const createExportVue = extractVueScript(path.join(EXAMPLES_DIR, 'vue-jobs/src/views/CreateExport.vue'))
+  const filesVue = extractVueScript(path.join(EXAMPLES_DIR, 'vue-jobs/src/views/Files.vue'))
+
+  return `# Jobs, Exports, Files & Downloads - EEN API Toolkit
+
+> **Version:** ${config.version}
+>
+> Complete reference for async jobs, video exports, and file management.
+> Load this document when implementing export workflows or file downloads.
+
+---
+
+## Overview
+
+| Concept | Description |
+|---------|-------------|
+| **Export Jobs** | Create video/timelapse exports from camera recordings |
+| **Jobs** | Track async job progress (pending, started, success, failure) |
+| **Files** | Access files created by completed export jobs |
+| **Downloads** | Access downloadable content |
+
+### Export Workflow
+
+\`\`\`
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────────────────┐
+│ createExportJob │────▶│   Poll with     │────▶│      downloadFile           │
+│ (camera, time)  │     │   getJob()      │     │ (extract fileId from URL)   │
+└─────────────────┘     └─────────────────┘     └─────────────────────────────┘
+                              │
+                              ▼
+                        Job States:
+                        pending → started → success/failure
+
+When job.state === 'success':
+  File URL at: job.result?.intervals?.[0]?.files?.[0]?.url
+  Extract fileId from URL (last path segment)
+\`\`\`
+
+---
+
+## Job Types
+
+\`\`\`typescript
+type JobState = 'pending' | 'started' | 'success' | 'failure' | 'revoked'
+
+// Nested structures for Job response
+interface JobResultFile {
+  name: string
+  path?: string
+  size?: number
+  startTimestamp?: string
+  endTimestamp?: string
+  url?: string                    // Download URL - extract fileId from last segment
+  checksum?: string
+}
+
+interface JobResultInterval {
+  startTimestamp?: string
+  endTimestamp?: string
+  state?: string
+  files?: JobResultFile[]
+  error?: string | null
+}
+
+interface JobResult {
+  state?: string
+  error?: string | null
+  intervals?: JobResultInterval[]
+}
+
+interface JobOriginalRequest {
+  type?: string
+  name?: string                   // Job display name set at creation
+  directory?: string
+  startTimestamp?: string
+  endTimestamp?: string
+  notes?: string | null
+  tags?: string[] | null
+}
+
+interface JobArguments {
+  deviceId?: string
+  originalRequest?: JobOriginalRequest
+}
+
+interface Job {
+  id: string
+  namespace?: string
+  type: string                    // 'video' | 'timeLapse' | 'bundle'
+  userId: string
+  state: JobState
+  detailedState?: string | null
+  progress?: number               // 0-1 float (multiply by 100 for percentage)
+  error?: string | null           // Set when job fails
+  arguments?: JobArguments        // Contains originalRequest with name
+  result?: JobResult              // Contains intervals with file URLs
+  createTimestamp: string
+  updateTimestamp?: string
+  expireTimestamp?: string
+  scheduleTimestamp?: string | null
+}
+
+// Access nested fields:
+// - Job name: job.arguments?.originalRequest?.name
+// - File URL: job.result?.intervals?.[0]?.files?.[0]?.url
+// - Request timestamps: job.arguments?.originalRequest?.startTimestamp
+
+interface ListJobsParams {
+  pageSize?: number
+  pageToken?: string
+  state__in?: JobState[]          // Filter by state
+  type__in?: string[]             // Filter by job type
+  userId?: string                 // Filter by user
+  createTimestamp__gte?: string   // Filter by creation time
+  createTimestamp__lte?: string
+  sort?: string[]                 // Sort fields
+}
+
+interface GetJobParams {
+  include?: string[]
+}
+\`\`\`
+
+---
+
+## Export Types
+
+\`\`\`typescript
+type ExportType = 'bundle' | 'timeLapse' | 'video'
+
+interface CreateExportParams {
+  type: ExportType                // Required
+  cameraId: string                // Required
+  startTimestamp: string          // Required: ISO 8601 with +00:00 timezone
+  endTimestamp: string            // Required: ISO 8601 with +00:00 timezone
+  name?: string                   // Optional display name
+  playbackMultiplier?: number     // Required for timeLapse/bundle (1-48)
+  autoDelete?: boolean            // Auto-delete after 2 weeks (default: false)
+  directory?: string              // Archive directory (default: '/')
+  notes?: string                  // Optional notes
+  tags?: string[]                 // Optional tags
+}
+
+interface ExportJobResponse {
+  id: string
+  type: ExportType
+  name?: string
+  state: JobState
+  createTimestamp: string
+}
+\`\`\`
+
+---
+
+## File Types
+
+\`\`\`typescript
+type FileType = 'video' | 'image' | 'bundle' | 'timeLapse' | 'other'
+
+interface EenFile {
+  id: string
+  name: string
+  type?: FileType
+  sizeBytes?: number
+  contentType?: string
+  createTimestamp: string
+}
+
+interface ListFilesParams {
+  pageSize?: number
+  pageToken?: string
+  type__in?: FileType[]
+  name__contains?: string
+}
+
+interface DownloadFileResult {
+  blob: Blob                      // Binary file data
+  filename: string                // Parsed from Content-Disposition
+  contentType: string             // MIME type
+  size: number                    // File size in bytes
+}
+\`\`\`
+
+---
+
+## Download Types
+
+\`\`\`typescript
+type DownloadStatus = 'available' | 'expired' | 'pending' | 'error'
+
+interface Download {
+  id: string
+  name?: string
+  status: DownloadStatus
+  sizeBytes?: number
+  contentType?: string
+  downloadUrl?: string
+  expiresAt?: string
+  createTimestamp: string
+}
+
+interface ListDownloadsParams {
+  pageSize?: number
+  pageToken?: string
+  status__in?: DownloadStatus[]
+  name__contains?: string
+}
+
+interface DownloadDownloadResult {
+  blob: Blob
+  filename: string
+  contentType: string
+  size: number
+}
+\`\`\`
+
+---
+
+## Export Functions
+
+### createExportJob(params)
+
+Create a video export from a camera:
+
+\`\`\`typescript
+import { createExportJob, formatTimestamp, type ExportType } from 'een-api-toolkit'
+
+async function createExport(cameraId: string, durationMinutes: number = 15) {
+  const endTime = new Date()
+  const startTime = new Date(endTime.getTime() - durationMinutes * 60 * 1000)
+
+  const { data, error } = await createExportJob({
+    name: \`Export - \${new Date().toLocaleString()}\`,
+    type: 'video',
+    cameraId,
+    startTimestamp: formatTimestamp(startTime.toISOString()),
+    endTimestamp: formatTimestamp(endTime.toISOString())
+  })
+
+  if (error) {
+    console.error('Failed to create export:', error.message)
+    return null
+  }
+
+  console.log('Export job created:', data.id)
+  return data
+}
+\`\`\`
+
+---
+
+## Job Functions
+
+### listJobs(params?)
+
+List jobs with optional state filtering:
+
+\`\`\`typescript
+import { listJobs, type Job, type JobState } from 'een-api-toolkit'
+
+const { data, error } = await listJobs({
+  pageSize: 20,
+  state__in: ['pending', 'started', 'success']
+})
+
+if (data) {
+  data.results.forEach(job => {
+    const progressPercent = Math.round((job.progress || 0) * 100)
+    console.log(\`\${job.name}: \${job.state} (\${progressPercent}%)\`)
+  })
+}
+\`\`\`
+
+### getJob(jobId, params?)
+
+Get a single job with polling pattern:
+
+\`\`\`typescript
+import { ref, onUnmounted } from 'vue'
+import { getJob, type Job } from 'een-api-toolkit'
+
+const job = ref<Job | null>(null)
+let pollInterval: ReturnType<typeof setInterval> | null = null
+
+async function fetchJob(jobId: string) {
+  const { data, error } = await getJob(jobId)
+
+  if (error) {
+    stopPolling()
+    return
+  }
+
+  job.value = data
+
+  // Auto-manage polling based on job state
+  if (['pending', 'started'].includes(data.state)) {
+    startPolling(jobId)
+  } else {
+    stopPolling()
+  }
+}
+
+function startPolling(jobId: string) {
+  if (pollInterval) return
+  pollInterval = setInterval(() => fetchJob(jobId), 3000)
+}
+
+function stopPolling() {
+  if (pollInterval) {
+    clearInterval(pollInterval)
+    pollInterval = null
+  }
+}
+
+onUnmounted(() => stopPolling())
+\`\`\`
+
+---
+
+## File Functions
+
+### listFiles(params?)
+
+List available files:
+
+\`\`\`typescript
+import { listFiles, type EenFile } from 'een-api-toolkit'
+
+const { data, error } = await listFiles({
+  pageSize: 20
+})
+
+if (data) {
+  data.results.forEach(file => {
+    console.log(\`\${file.name} (\${file.sizeBytes} bytes)\`)
+  })
+}
+\`\`\`
+
+### downloadFile(fileId)
+
+Download a file by ID:
+
+\`\`\`typescript
+import { downloadFile, type EenFile } from 'een-api-toolkit'
+
+async function handleDownload(file: EenFile) {
+  const { data, error } = await downloadFile(file.id)
+
+  if (error) {
+    console.error('Download failed:', error.message)
+    return
+  }
+
+  // Create browser download
+  const url = URL.createObjectURL(data.blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = data.filename || file.name
+  document.body.appendChild(a)
+  a.click()
+  document.body.removeChild(a)
+  URL.revokeObjectURL(url)
+}
+\`\`\`
+
+---
+
+## Download Functions
+
+### listDownloads(params?)
+
+List available downloads:
+
+\`\`\`typescript
+import { listDownloads, type Download } from 'een-api-toolkit'
+
+const { data, error } = await listDownloads({
+  status__in: ['available'],
+  pageSize: 20
+})
+\`\`\`
+
+### downloadDownload(downloadId)
+
+Download from downloads endpoint:
+
+\`\`\`typescript
+import { downloadDownload, type Download } from 'een-api-toolkit'
+
+async function handleDownload(download: Download) {
+  const { data, error } = await downloadDownload(download.id)
+
+  if (error) {
+    console.error('Download failed:', error.message)
+    return
+  }
+
+  const url = URL.createObjectURL(data.blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = data.filename || download.name || 'download'
+  a.click()
+  URL.revokeObjectURL(url)
+}
+\`\`\`
+
+---
+
+## Complete Export Workflow
+
+\`\`\`typescript
+import { ref, onUnmounted } from 'vue'
+import {
+  createExportJob,
+  getJob,
+  downloadFile,
+  formatTimestamp,
+  type Job
+} from 'een-api-toolkit'
+
+const job = ref<Job | null>(null)
+const error = ref<string | null>(null)
+let pollInterval: ReturnType<typeof setInterval> | null = null
+
+async function startExport(cameraId: string, durationMinutes: number) {
+  const endTime = new Date()
+  const startTime = new Date(endTime.getTime() - durationMinutes * 60 * 1000)
+
+  const result = await createExportJob({
+    type: 'video',
+    cameraId,
+    startTimestamp: formatTimestamp(startTime.toISOString()),
+    endTimestamp: formatTimestamp(endTime.toISOString())
+  })
+
+  if (result.error) {
+    error.value = result.error.message
+    return
+  }
+
+  job.value = result.data
+  pollInterval = setInterval(() => pollJob(result.data.id), 3000)
+}
+
+async function pollJob(jobId: string) {
+  const result = await getJob(jobId)
+  if (result.error) {
+    error.value = result.error.message
+    stopPolling()
+    return
+  }
+
+  job.value = result.data
+
+  if (!['pending', 'started'].includes(result.data.state)) {
+    stopPolling()
+  }
+}
+
+function stopPolling() {
+  if (pollInterval) {
+    clearInterval(pollInterval)
+    pollInterval = null
+  }
+}
+
+async function downloadExport() {
+  if (!job.value?.fileId) return
+
+  const result = await downloadFile(job.value.fileId)
+  if (result.error) {
+    error.value = result.error.message
+    return
+  }
+
+  const url = URL.createObjectURL(result.data.blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = result.data.filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+onUnmounted(() => stopPolling())
+\`\`\`
+
+---
+
+## Vue Component Examples
+
+### Jobs.vue
+
+\`\`\`typescript
+${jobsVue}
+\`\`\`
+
+### JobDetail.vue
+
+\`\`\`typescript
+${jobDetailVue}
+\`\`\`
+
+### CreateExport.vue
+
+\`\`\`typescript
+${createExportVue}
+\`\`\`
+
+### Files.vue
+
+\`\`\`typescript
+${filesVue}
+\`\`\`
+
+---
+
+## Error Handling
+
+| Error Code | HTTP Status | Meaning | Action |
+|------------|-------------|---------|--------|
+| AUTH_REQUIRED | 401 | Not authenticated | Redirect to login |
+| CAMERA_NOT_FOUND | 404 | Invalid camera ID | Verify camera exists |
+| INVALID_TIMESTAMP | 400 | Bad timestamp format | Use formatTimestamp() |
+| JOB_NOT_FOUND | 404 | Job ID doesn't exist | Check job ID |
+| FILE_NOT_FOUND | 404 | File ID doesn't exist | Job may not be complete |
+| DOWNLOAD_EXPIRED | 410 | Download link expired | Request new download |
+| EXPORT_FAILED | 500 | Export processing failed | Check job.errorMessage |
+
+---
+
+## Best Practices
+
+1. **Always use formatTimestamp()** for timestamp parameters
+2. **Poll at reasonable intervals** (3-5 seconds recommended)
+3. **Clean up polling** on component unmount
+4. **Check job.state === 'success'** before attempting download
+5. **Use job.fileId** (not job.id) when calling downloadFile()
+6. **Handle large downloads** appropriately (show progress)
+
+---
+
+## Reference Examples
+
+- \`examples/vue-jobs/\` - Complete jobs, exports, files example
+`
+}
+
+// =============================================================================
 // MAIN
 // =============================================================================
 
@@ -2820,7 +3396,8 @@ function main() {
       { name: 'AI-GROUPING.md', generator: generateGroupingDoc },
       { name: 'AI-MEDIA.md', generator: generateMediaDoc },
       { name: 'AI-EVENTS.md', generator: generateEventsDoc },
-      { name: 'AI-AUTOMATIONS.md', generator: generateAutomationsDoc }
+      { name: 'AI-AUTOMATIONS.md', generator: generateAutomationsDoc },
+      { name: 'AI-JOBS.md', generator: generateJobsDoc }
     ]
 
     for (const doc of docs) {

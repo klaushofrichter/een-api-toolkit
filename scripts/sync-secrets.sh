@@ -136,6 +136,8 @@ EXAMPLE_VARS=(
     "VITE_PROXY_URL"
     "VITE_EEN_CLIENT_ID"
     "VITE_DEBUG"
+    "TEST_USER"
+    "TEST_PASSWORD"
 )
 
 # Find all example directories that have a .env.example file

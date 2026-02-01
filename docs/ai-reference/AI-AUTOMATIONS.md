@@ -1,6 +1,6 @@
 # Automations API - EEN API Toolkit
 
-> **Version:** 0.3.47
+> **Version:** 0.3.48
 >
 > Complete reference for automation rules and alert actions.
 > Load this document when working with automated alert workflows.

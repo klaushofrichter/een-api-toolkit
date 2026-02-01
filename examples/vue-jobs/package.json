@@ -1,0 +1,28 @@
+{
+  "name": "een-api-toolkit-example-jobs",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "stop": "lsof -ti :3333 2>/dev/null | xargs -r kill -9 || echo 'Port 3333 is free'",
+    "dev": "npm run stop && vite",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "dependencies": {
+    "een-api-toolkit": "file:../..",
+    "pinia": "^3.0.4",
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.0",
+    "@vitejs/plugin-vue": "^6.0.0",
+    "dotenv": "^17.2.3",
+    "typescript": "~5.8.0",
+    "vite": "^7.3.0",
+    "vue-tsc": "^3.2.1"
+  }
+}

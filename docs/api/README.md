@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.47**
+**EEN API Toolkit v0.3.48**
 
 ***
 
-# EEN API Toolkit v0.3.47
+# EEN API Toolkit v0.3.48
 
 ## Interfaces
 
@@ -84,6 +84,12 @@
 
 - [EenToolkitConfig](interfaces/EenToolkitConfig.md)
 
+### Downloads
+
+- [Download](interfaces/Download.md)
+- [ListDownloadsParams](interfaces/ListDownloadsParams.md)
+- [GetDownloadParams](interfaces/GetDownloadParams.md)
+
 ### Event Metrics
 
 - [EventMetric](interfaces/EventMetric.md)
@@ -117,11 +123,29 @@
 - [ListEventFieldValuesParams](interfaces/ListEventFieldValuesParams.md)
 - [EventFieldValues](interfaces/EventFieldValues.md)
 
+### Exports
+
+- [CreateExportParams](interfaces/CreateExportParams.md)
+
 ### Feeds
 
 - [Feed](interfaces/Feed.md)
 - [ListFeedsParams](interfaces/ListFeedsParams.md)
 - [ListFeedsResult](interfaces/ListFeedsResult.md)
+
+### Files
+
+- [EenFile](interfaces/EenFile.md)
+- [ListFilesParams](interfaces/ListFilesParams.md)
+- [GetFileParams](interfaces/GetFileParams.md)
+- [CreateFileParams](interfaces/CreateFileParams.md)
+- [DownloadFileResult](interfaces/DownloadFileResult.md)
+
+### Jobs
+
+- [Job](interfaces/Job.md)
+- [ListJobsParams](interfaces/ListJobsParams.md)
+- [GetJobParams](interfaces/GetJobParams.md)
 
 ### Layouts
 
@@ -182,6 +206,11 @@
 
 - [StorageStrategy](type-aliases/StorageStrategy.md)
 
+### Downloads
+
+- [DownloadStatus](type-aliases/DownloadStatus.md)
+- [DownloadDownloadResult](type-aliases/DownloadDownloadResult.md)
+
 ### Event Metrics
 
 - [MetricActorType](type-aliases/MetricActorType.md)
@@ -199,11 +228,25 @@
 
 - [ActorType](type-aliases/ActorType.md)
 
+### Exports
+
+- [ExportType](type-aliases/ExportType.md)
+- [ExportJobResponse](type-aliases/ExportJobResponse.md)
+
 ### Feeds
 
 - [FeedStreamType](type-aliases/FeedStreamType.md)
 - [FeedMediaType](type-aliases/FeedMediaType.md)
 - [FeedIncludeOption](type-aliases/FeedIncludeOption.md)
+
+### Files
+
+- [FileType](type-aliases/FileType.md)
+- [FileIncludeField](type-aliases/FileIncludeField.md)
+
+### Jobs
+
+- [JobState](type-aliases/JobState.md)
 
 ### Layouts
 
@@ -274,6 +317,12 @@
 
 - [getStorageStrategy](functions/getStorageStrategy.md)
 
+### Downloads
+
+- [listDownloads](functions/listDownloads.md)
+- [getDownload](functions/getDownload.md)
+- [downloadDownload](functions/downloadDownload.md)
+
 ### Event Metrics
 
 - [getEventMetrics](functions/getEventMetrics.md)
@@ -293,9 +342,27 @@
 - [listEventTypes](functions/listEventTypes.md)
 - [listEventFieldValues](functions/listEventFieldValues.md)
 
+### Exports
+
+- [createExportJob](functions/createExportJob.md)
+
 ### Feeds
 
 - [listFeeds](functions/listFeeds.md)
+
+### Files
+
+- [listFiles](functions/listFiles.md)
+- [getFile](functions/getFile.md)
+- [addFile](functions/addFile.md)
+- [downloadFile](functions/downloadFile.md)
+- [deleteFile](functions/deleteFile.md)
+
+### Jobs
+
+- [listJobs](functions/listJobs.md)
+- [getJob](functions/getJob.md)
+- [deleteJob](functions/deleteJob.md)
 
 ### Layouts
 

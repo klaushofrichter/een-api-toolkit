@@ -139,7 +139,30 @@ export type {
   ListAlertConditionRulesParams,
   GetAlertConditionRuleParams,
   ListAlertActionRulesParams,
-  ListAlertActionsParams
+  ListAlertActionsParams,
+  // Job types
+  Job,
+  JobState,
+  ListJobsParams,
+  GetJobParams,
+  // Export types
+  ExportType,
+  CreateExportParams,
+  ExportJobResponse,
+  // File types
+  EenFile,
+  FileType,
+  FileIncludeField,
+  ListFilesParams,
+  GetFileParams,
+  CreateFileParams,
+  DownloadFileResult,
+  // Download types
+  Download,
+  DownloadStatus,
+  ListDownloadsParams,
+  GetDownloadParams,
+  DownloadDownloadResult
 } from './types'
 
 // Type helpers
@@ -250,3 +273,31 @@ export {
   listAlertActions,
   getAlertAction
 } from './automations'
+
+// Exports - Plain functions
+export {
+  createExportJob
+} from './exports'
+
+// Jobs - Plain functions
+export {
+  listJobs,
+  getJob,
+  deleteJob
+} from './jobs'
+
+// Files - Plain functions
+export {
+  listFiles,
+  getFile,
+  addFile,
+  downloadFile,
+  deleteFile
+} from './files'
+
+// Downloads - Plain functions
+export {
+  listDownloads,
+  getDownload,
+  downloadDownload
+} from './downloads'
