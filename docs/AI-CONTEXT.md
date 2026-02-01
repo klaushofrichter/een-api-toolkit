@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.47
+> **Version:** 0.3.49
 >
 > This documentation is optimized for AI assistants. It provides focused, domain-specific
 > references to help you understand and use the een-api-toolkit efficiently.
@@ -21,6 +21,7 @@
 | Live video, images, HLS playback | [AI-MEDIA.md](./ai-reference/AI-MEDIA.md) | ~4K |
 | Events, alerts, metrics, SSE | [AI-EVENTS.md](./ai-reference/AI-EVENTS.md) | ~3.5K |
 | Automation rules, alert actions | [AI-AUTOMATIONS.md](./ai-reference/AI-AUTOMATIONS.md) | ~4K |
+| Jobs, exports, files, downloads | [AI-JOBS.md](./ai-reference/AI-JOBS.md) | ~3.5K |
 
 ## Specialized Agents
 
@@ -36,6 +37,7 @@ Specialized agents are available in `.claude/agents/` for domain-specific tasks:
 | `een-media-agent` | Live video, camera previews, HLS playback, recorded images |
 | `een-events-agent` | Events, alerts, metrics, real-time SSE subscriptions |
 | `een-automations-agent` | Automation rules, alert condition rules, alert actions |
+| `een-jobs-agent` | Jobs, exports, files, downloads, video export workflows |
 
 **How to Use Agents:**
 
@@ -76,6 +78,7 @@ Then follow the context files and instructions specified within.
 | [vue-alerts-metrics](../examples/vue-alerts-metrics/) | Event metrics and alerts | `src/components/MetricsChart.vue` |
 | [vue-event-subscriptions](../examples/vue-event-subscriptions/) | Real-time SSE streaming | `src/views/LiveEvents.vue` |
 | [vue-automations](../examples/vue-automations/) | Automation rules listing | `src/views/Automations.vue` |
+| [vue-jobs](../examples/vue-jobs/) | Jobs, exports, file downloads | `src/views/Jobs.vue` |
 
 ---
 
@@ -179,6 +182,24 @@ Then follow the context files and instructions specified within.
 | `getAlertActionRule(id)` | Get a specific alert action rule |
 | `listAlertActions(params?)` | List alert actions |
 | `getAlertAction(id)` | Get a specific alert action |
+
+### Exports & Jobs
+| Function | Purpose |
+|----------|---------|
+| `createExportJob(params)` | Create video/timelapse export job |
+| `listJobs(params?)` | List jobs with filtering |
+| `getJob(jobId)` | Get a specific job |
+
+### Files & Downloads
+| Function | Purpose |
+|----------|---------|
+| `listFiles(params?)` | List available files |
+| `getFile(fileId)` | Get a specific file |
+| `addFile(params)` | Add a new file |
+| `downloadFile(fileId)` | Download file content |
+| `listDownloads(params?)` | List available downloads |
+| `getDownload(downloadId)` | Get a specific download |
+| `downloadDownload(downloadId)` | Download from downloads endpoint |
 
 ### Utilities
 | Function | Purpose |
