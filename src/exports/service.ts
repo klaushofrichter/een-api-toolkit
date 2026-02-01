@@ -44,10 +44,12 @@ import { debug } from '../utils/debug'
  *   await new Promise(r => setTimeout(r, 2000)) // Wait 2 seconds
  *   const { data: status } = await getJob(job.id)
  *   if (status?.state === 'success') {
- *     console.log('Export complete! File:', status.fileId)
+ *     const fileUrl = status.result?.intervals?.[0]?.files?.[0]?.url
+ *     const fileId = fileUrl?.substring(fileUrl.lastIndexOf('/') + 1)
+ *     console.log('Export complete! File ID:', fileId)
  *     completed = true
  *   } else if (status?.state === 'failure') {
- *     console.error('Export failed:', status.errorMessage)
+ *     console.error('Export failed:', status.error)
  *     completed = true
  *   } else {
  *     console.log('Progress:', status?.progress || 0, '%')

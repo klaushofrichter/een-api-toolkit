@@ -150,7 +150,9 @@ export async function listJobs(params?: ListJobsParams): Promise<Result<Paginate
  *   console.log(`Progress: ${data.progress}%`)
  * }
  * if (data.state === 'success') {
- *   console.log(`File ID: ${data.fileId}`)
+ *   const fileUrl = data.result?.intervals?.[0]?.files?.[0]?.url
+ *   const fileId = fileUrl?.substring(fileUrl.lastIndexOf('/') + 1)
+ *   console.log(`File ID: ${fileId}`)
  * }
  * ```
  *

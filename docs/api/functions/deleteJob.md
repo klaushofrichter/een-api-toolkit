@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.48**](../README.md)
+[**EEN API Toolkit v0.3.49**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **deleteJob**(`jobId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<`void`\>\>
 
-Defined in: [src/jobs/service.ts:243](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/jobs/service.ts#L243)
+Defined in: [src/jobs/service.ts:245](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/jobs/service.ts#L245)
 
 Delete (revoke) a job by ID.
 

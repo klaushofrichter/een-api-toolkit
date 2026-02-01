@@ -430,7 +430,9 @@ async function downloadExportFromJob(jobId: string) {
   const a = document.createElement('a')
   a.href = url
   a.download = fileResult.data.filename || `export-${jobId}.mp4`
+  document.body.appendChild(a)
   a.click()
+  document.body.removeChild(a)
   URL.revokeObjectURL(url)
 }
 ```
@@ -607,7 +609,7 @@ async function pollJob(jobId: string) {
     stopPolling()
 
     if (result.data.state === 'failure') {
-      error.value = result.data.errorMessage || 'Export failed'
+      error.value = result.data.error || 'Export failed'
     }
   }
 }
@@ -640,8 +642,10 @@ async function downloadExport() {
   const url = URL.createObjectURL(result.data.blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = result.data.filename
+  a.download = result.data.filename || `export-${job.value?.id}.mp4`
+  document.body.appendChild(a)
   a.click()
+  document.body.removeChild(a)
   URL.revokeObjectURL(url)
 }
 

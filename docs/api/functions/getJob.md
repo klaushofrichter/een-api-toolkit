@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.48**](../README.md)
+[**EEN API Toolkit v0.3.49**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getJob**(`jobId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Job`](../interfaces/Job.md)\>\>
 
-Defined in: [src/jobs/service.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/jobs/service.ts#L159)
+Defined in: [src/jobs/service.ts:161](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/jobs/service.ts#L161)
 
 Get a specific job by ID.
 
@@ -59,6 +59,8 @@ if (data.state === 'started') {
   console.log(`Progress: ${data.progress}%`)
 }
 if (data.state === 'success') {
-  console.log(`File ID: ${data.fileId}`)
+  const fileUrl = data.result?.intervals?.[0]?.files?.[0]?.url
+  const fileId = fileUrl?.substring(fileUrl.lastIndexOf('/') + 1)
+  console.log(`File ID: ${fileId}`)
 }
 ```

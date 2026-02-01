@@ -1,6 +1,6 @@
 # Jobs, Exports, Files & Downloads - EEN API Toolkit
 
-> **Version:** 0.3.48
+> **Version:** 0.3.49
 >
 > Complete reference for async jobs, video exports, and file management.
 > Load this document when implementing export workflows or file downloads.
@@ -463,9 +463,15 @@ function stopPolling() {
 }
 
 async function downloadExport() {
-  if (!job.value?.fileId) return
+  // Extract file URL from job result
+  const fileUrl = job.value?.result?.intervals?.[0]?.files?.[0]?.url
+  if (!fileUrl) return
 
-  const result = await downloadFile(job.value.fileId)
+  // Extract fileId from URL (last path segment)
+  const fileId = fileUrl.substring(fileUrl.lastIndexOf('/') + 1)
+  if (!fileId) return
+
+  const result = await downloadFile(fileId)
   if (result.error) {
     error.value = result.error.message
     return
@@ -474,8 +480,10 @@ async function downloadExport() {
   const url = URL.createObjectURL(result.data.blob)
   const a = document.createElement('a')
   a.href = url
-  a.download = result.data.filename
+  a.download = result.data.filename || `export-${job.value?.id}.mp4`
+  document.body.appendChild(a)
   a.click()
+  document.body.removeChild(a)
   URL.revokeObjectURL(url)
 }
 
@@ -1056,7 +1064,7 @@ onMounted(() => {
 | JOB_NOT_FOUND | 404 | Job ID doesn't exist | Check job ID |
 | FILE_NOT_FOUND | 404 | File ID doesn't exist | Job may not be complete |
 | DOWNLOAD_EXPIRED | 410 | Download link expired | Request new download |
-| EXPORT_FAILED | 500 | Export processing failed | Check job.errorMessage |
+| EXPORT_FAILED | 500 | Export processing failed | Check job.error |
 
 ---
 
@@ -1066,7 +1074,7 @@ onMounted(() => {
 2. **Poll at reasonable intervals** (3-5 seconds recommended)
 3. **Clean up polling** on component unmount
 4. **Check job.state === 'success'** before attempting download
-5. **Use job.fileId** (not job.id) when calling downloadFile()
+5. **Extract fileId from job.result URL** when calling downloadFile()
 6. **Handle large downloads** appropriately (show progress)
 
 ---

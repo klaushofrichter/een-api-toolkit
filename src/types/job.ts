@@ -213,7 +213,9 @@ export interface ListJobsParams {
  * // Poll for job completion
  * const { data, error } = await getJob('job-123')
  * if (data?.state === 'success') {
- *   console.log('Job completed! File:', data.fileId)
+ *   const fileUrl = data.result?.intervals?.[0]?.files?.[0]?.url
+ *   const fileId = fileUrl?.substring(fileUrl.lastIndexOf('/') + 1)
+ *   console.log('Job completed! File ID:', fileId)
  * }
  * ```
  *

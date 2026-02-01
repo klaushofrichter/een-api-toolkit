@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.48**](../README.md)
+[**EEN API Toolkit v0.3.49**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **createExportJob**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Job`](../interfaces/Job.md)\>\>
 
-Defined in: [src/exports/service.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/exports/service.ts#L60)
+Defined in: [src/exports/service.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/exports/service.ts#L62)
 
 Create a new export job.
 
@@ -63,10 +63,12 @@ while (!completed) {
   await new Promise(r => setTimeout(r, 2000)) // Wait 2 seconds
   const { data: status } = await getJob(job.id)
   if (status?.state === 'success') {
-    console.log('Export complete! File:', status.fileId)
+    const fileUrl = status.result?.intervals?.[0]?.files?.[0]?.url
+    const fileId = fileUrl?.substring(fileUrl.lastIndexOf('/') + 1)
+    console.log('Export complete! File ID:', fileId)
     completed = true
   } else if (status?.state === 'failure') {
-    console.error('Export failed:', status.errorMessage)
+    console.error('Export failed:', status.error)
     completed = true
   } else {
     console.log('Progress:', status?.progress || 0, '%')
