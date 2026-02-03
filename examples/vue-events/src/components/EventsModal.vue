@@ -5,6 +5,7 @@ import {
   listEventFieldValues,
   listEventTypes,
   getRecordedImage,
+  getEvent,
   type Camera,
   type Event,
   type EventType,
@@ -87,6 +88,13 @@ const imageLoadingIds = ref<Set<string>>(new Set()) // Track which images are cu
 const boundingBoxCache = ref<Map<string, BoundingBox[]>>(new Map()) // Cache bounding boxes per event
 const enlargedEventId = ref<string | null>(null)
 
+// JSON viewer state
+const jsonViewerEventId = ref<string | null>(null)
+const jsonViewerFullEvent = ref<Event | null>(null)
+const jsonViewerLoading = ref(false)
+const jsonViewerError = ref<string | null>(null)
+const copySuccess = ref(false)
+
 // Lightbox media state
 const showVideo = ref(false)
 const hdImageUrl = ref<string | null>(null)
@@ -108,6 +116,21 @@ const enlargedImage = computed(() => {
 const enlargedBoundingBoxes = computed(() => {
   if (!enlargedEvent.value) return []
   return getBoundingBoxes(enlargedEvent.value)
+})
+const jsonViewerEvent = computed(() => {
+  if (!jsonViewerEventId.value) return null
+  return events.value.find(e => e.id === jsonViewerEventId.value) || null
+})
+const jsonViewerContent = computed(() => {
+  // Use full event if loaded, otherwise fall back to list event
+  const eventToShow = jsonViewerFullEvent.value || jsonViewerEvent.value
+  if (!eventToShow) return ''
+  try {
+    return JSON.stringify(eventToShow, null, 2)
+  } catch (err) {
+    // Safely handle any JSON serialization errors
+    return `Error serializing event data: ${String(err)}`
+  }
 })
 
 // Get start timestamp based on time range
@@ -411,6 +434,77 @@ function closeEnlargedImage() {
   resetVideo()
 }
 
+// Open JSON viewer and fetch full event details
+async function openJsonViewer(eventId: string) {
+  jsonViewerEventId.value = eventId
+  jsonViewerFullEvent.value = null
+  jsonViewerError.value = null
+  copySuccess.value = false
+
+  // Find the event in the list to get its dataSchemas
+  const listEvent = events.value.find(e => e.id === eventId)
+  if (!listEvent) {
+    jsonViewerError.value = 'Event not found in current list'
+    return
+  }
+
+  // Build include array from dataSchemas (prefix with "data.")
+  const includes = listEvent.dataSchemas?.map(schema => `data.${schema}`) || []
+
+  if (includes.length === 0) {
+    // No additional data to fetch, use the list event as-is
+    return
+  }
+
+  // Fetch full event details with all data schemas
+  jsonViewerLoading.value = true
+  const { data, error } = await getEvent(eventId, { include: includes })
+  jsonViewerLoading.value = false
+
+  if (error) {
+    jsonViewerError.value = error.message
+    return
+  }
+
+  if (data) {
+    jsonViewerFullEvent.value = data
+  }
+}
+
+// Close JSON viewer
+function closeJsonViewer() {
+  jsonViewerEventId.value = null
+  jsonViewerFullEvent.value = null
+  jsonViewerError.value = null
+  copySuccess.value = false
+}
+
+// Copy JSON to clipboard
+async function copyJsonToClipboard() {
+  if (!jsonViewerContent.value) return
+  try {
+    await navigator.clipboard.writeText(jsonViewerContent.value)
+    copySuccess.value = true
+    setTimeout(() => {
+      copySuccess.value = false
+    }, 2000)
+  } catch {
+    // Fallback for older browsers
+    const textarea = document.createElement('textarea')
+    textarea.value = jsonViewerContent.value
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+    copySuccess.value = true
+    setTimeout(() => {
+      copySuccess.value = false
+    }, 2000)
+  }
+}
+
 // Switch to preview mode
 function showPreview() {
   currentMediaType.value = 'preview'
@@ -460,8 +554,12 @@ async function showVideoPlayer() {
 
 // Handle keyboard events for accessibility
 function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && enlargedEventId.value) {
-    closeEnlargedImage()
+  if (event.key === 'Escape') {
+    if (jsonViewerEventId.value) {
+      closeJsonViewer()
+    } else if (enlargedEventId.value) {
+      closeEnlargedImage()
+    }
   }
 }
 
@@ -472,6 +570,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
+  // Clean up JSON viewer state to prevent memory leaks
+  jsonViewerFullEvent.value = null
+  jsonViewerEventId.value = null
 })
 
 // Watch for modal open/close
@@ -497,6 +598,7 @@ watch(() => props.isOpen, async (isOpen) => {
     boundingBoxCache.value.clear()
     events.value = []
     enlargedEventId.value = null
+    jsonViewerEventId.value = null
   }
 }, { immediate: true })
 
@@ -596,7 +698,15 @@ watch([timeRange, selectedEventTypes], () => {
               </div>
             </div>
             <div class="event-info">
-              <div class="event-type">{{ getEventTypeName(event.type) }}</div>
+              <div class="event-type-row">
+                <span class="event-type">{{ getEventTypeName(event.type) }}</span>
+                <button
+                  class="json-button"
+                  @click="openJsonViewer(event.id)"
+                  title="View JSON data"
+                  data-testid="json-button"
+                >{ }</button>
+              </div>
               <div class="event-time">{{ formatTimestamp(event.startTimestamp) }}</div>
               <div v-if="getBoundingBoxCount(event) > 0" class="event-detections" data-testid="event-detections">
                 {{ getBoundingBoxCount(event) }} detection{{ getBoundingBoxCount(event) !== 1 ? 's' : '' }}
@@ -766,6 +876,50 @@ watch([timeRange, selectedEventTypes], () => {
             <div v-if="enlargedBoundingBoxes.length > 0" class="lightbox-detections" data-testid="lightbox-detections">
               {{ enlargedBoundingBoxes.length }} detection{{ enlargedBoundingBoxes.length !== 1 ? 's' : '' }}
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JSON viewer lightbox -->
+      <div
+        v-if="jsonViewerEventId"
+        class="json-viewer-overlay"
+        @click.self="closeJsonViewer"
+        data-testid="json-viewer-overlay"
+      >
+        <div class="json-viewer-content">
+          <div class="json-viewer-header">
+            <h3>Event JSON Data</h3>
+            <div class="json-viewer-actions">
+              <button
+                class="copy-button"
+                :class="{ success: copySuccess }"
+                @click="copyJsonToClipboard"
+                data-testid="copy-json-button"
+              >
+                {{ copySuccess ? 'Copied!' : 'Copy' }}
+              </button>
+              <button
+                class="json-viewer-close"
+                @click="closeJsonViewer"
+                aria-label="Close JSON viewer"
+                data-testid="json-viewer-close"
+              >&times;</button>
+            </div>
+          </div>
+          <div class="json-viewer-body">
+            <div v-if="jsonViewerLoading" class="json-viewer-loading">
+              Loading full event details...
+            </div>
+            <div v-else-if="jsonViewerError" class="json-viewer-error">
+              Error: {{ jsonViewerError }}
+            </div>
+            <pre v-else><code>{{ jsonViewerContent }}</code></pre>
+          </div>
+          <div v-if="jsonViewerEvent" class="json-viewer-footer">
+            <span class="json-event-type">{{ getEventTypeName(jsonViewerEvent.type) }}</span>
+            <span class="json-event-time">{{ formatTimestamp(jsonViewerEvent.startTimestamp) }}</span>
+            <span v-if="jsonViewerFullEvent" class="json-full-indicator">Full data loaded</span>
           </div>
         </div>
       </div>
@@ -1226,5 +1380,176 @@ watch([timeRange, selectedEventTypes], () => {
   font-weight: normal;
   opacity: 0.8;
   margin-left: 4px;
+}
+
+/* Event type row with JSON button */
+.event-type-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+
+.event-type-row .event-type {
+  margin-bottom: 0;
+  flex: 1;
+}
+
+/* JSON button on event cards */
+.json-button {
+  padding: 2px 5px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-family: monospace;
+  color: #666;
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+  line-height: 1;
+}
+
+.json-button:hover {
+  background: #e0e0e0;
+  border-color: #999;
+  color: #333;
+}
+
+/* JSON viewer lightbox */
+.json-viewer-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2100;
+}
+
+.json-viewer-content {
+  background: #1e1e1e;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.json-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  border-bottom: 1px solid #333;
+}
+
+.json-viewer-header h3 {
+  margin: 0;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.json-viewer-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.copy-button {
+  padding: 6px 14px;
+  background: #42b883;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.copy-button:hover {
+  background: #3aa876;
+}
+
+.copy-button.success {
+  background: #2d8659;
+}
+
+.json-viewer-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 5px;
+  line-height: 1;
+}
+
+.json-viewer-close:hover {
+  color: #fff;
+}
+
+.json-viewer-body {
+  flex: 1;
+  overflow: auto;
+  padding: 15px 20px;
+}
+
+.json-viewer-body pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.json-viewer-body code {
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: #d4d4d4;
+}
+
+.json-viewer-footer {
+  padding: 12px 20px;
+  border-top: 1px solid #333;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #888;
+  font-size: 0.8rem;
+}
+
+.json-event-type {
+  font-weight: 500;
+  color: #aaa;
+}
+
+.json-event-time {
+  color: #666;
+}
+
+.json-full-indicator {
+  color: #42b883;
+  font-size: 0.75rem;
+  margin-left: auto;
+}
+
+.json-viewer-loading {
+  color: #aaa;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.json-viewer-error {
+  color: #ff6b6b;
+  font-size: 0.85rem;
+  margin-bottom: 15px;
 }
 </style>
