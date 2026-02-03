@@ -3361,6 +3361,39 @@ ${filesVue}
 }
 
 // =============================================================================
+// VERSION UPDATE FOR MANUALLY MAINTAINED DOCS
+// =============================================================================
+
+/**
+ * Updates the version number in manually maintained documentation files.
+ * These files are not fully regenerated, only the version line is updated.
+ */
+function updateVersionInManualDocs(version: string): void {
+  const manualDocs = ['AI-EVENT-DATA-SCHEMAS.md']
+
+  for (const docName of manualDocs) {
+    const docPath = path.join(AI_REF_DIR, docName)
+
+    if (!fs.existsSync(docPath)) {
+      console.log(`Skipping ${docName} (file not found)`)
+      continue
+    }
+
+    const content = fs.readFileSync(docPath, 'utf-8')
+
+    // Update version line: > **Version:** X.Y.Z
+    const versionPattern = /^> \*\*Version:\*\* [\d.]+$/m
+    if (versionPattern.test(content)) {
+      const updatedContent = content.replace(versionPattern, `> **Version:** ${version}`)
+      fs.writeFileSync(docPath, updatedContent)
+      console.log(`Updated version in ${docPath}`)
+    } else {
+      console.log(`Warning: Version pattern not found in ${docName}`)
+    }
+  }
+}
+
+// =============================================================================
 // MAIN
 // =============================================================================
 
@@ -3413,6 +3446,9 @@ function main() {
       fs.writeFileSync(docPath, doc.generator(config))
       console.log(`Generated ${docPath}`)
     }
+
+    // Update version in manually maintained docs
+    updateVersionInManualDocs(config.version)
   }
 
   console.log(`\nVersion: ${config.version}`)
