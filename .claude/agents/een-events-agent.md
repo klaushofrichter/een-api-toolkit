@@ -38,6 +38,7 @@ assistant: "I'll use the een-events-agent to help set up SSE (Server-Sent Events
 - docs/ai-reference/AI-AUTH.md (auth is required)
 - docs/ai-reference/AI-DEVICES.md (events are per-camera)
 - docs/ai-reference/AI-EVENTS.md (primary reference)
+- docs/ai-reference/AI-EVENT-DATA-SCHEMAS.md (event type to data schema mapping)
 
 ## Reference Examples
 - examples/vue-events/ (Event listing with bounding boxes)
@@ -52,6 +53,8 @@ assistant: "I'll use the een-events-agent to help set up SSE (Server-Sent Events
 5. List notifications with listNotifications()
 6. Create SSE subscriptions with createEventSubscription()
 7. Connect to real-time streams with connectToEventSubscription()
+8. Build dynamic include parameters with getIncludeParameterForEventTypes()
+9. Map event types to data schemas with EVENT_TYPE_DATA_SCHEMAS
 
 ## Key Types
 
@@ -122,6 +125,40 @@ const includes = simpleEvent?.dataSchemas.map(schema => `data.${schema}`) || []
 const { data: fullEvent } = await getEvent(eventId, { include: includes })
 // fullEvent.data[] now contains all available data objects
 ```
+
+### Event Type to Data Schema Mapping
+
+The toolkit provides a static mapping and utility functions for dynamically building the `include` parameter:
+
+```typescript
+import {
+  getIncludeParameterForEventTypes,
+  getDataSchemasForEventType,
+  eventTypeHasDataSchemas,
+  EVENT_TYPE_DATA_SCHEMAS
+} from 'een-api-toolkit'
+
+// Get include values for selected event types (with data. prefix)
+const includeValues = getIncludeParameterForEventTypes([
+  'een.personDetectionEvent.v1',
+  'een.vehicleDetectionEvent.v1'
+])
+// ['data.een.objectDetection.v1', 'data.een.personAttributes.v1', ...]
+
+// Get schemas for a specific event type (without data. prefix)
+const schemas = getDataSchemasForEventType('een.personDetectionEvent.v1')
+// ['een.objectDetection.v1', 'een.personAttributes.v1', ...]
+
+// Check if event type has data schemas
+if (eventTypeHasDataSchemas('een.personDetectionEvent.v1')) {
+  // Include data schemas in the API call
+}
+
+// Access the complete mapping
+const mapping = EVENT_TYPE_DATA_SCHEMAS['een.motionDetectionEvent.v1']
+```
+
+See `docs/ai-reference/AI-EVENT-DATA-SCHEMAS.md` for the complete event type to data schema reference.
 
 ### EventMetric Interface
 ```typescript

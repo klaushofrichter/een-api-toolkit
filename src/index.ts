@@ -231,8 +231,19 @@ export {
   listEvents,
   getEvent,
   listEventTypes,
-  listEventFieldValues
+  listEventFieldValues,
+  // Event data schema mapping
+  EVENT_TYPE_DATA_SCHEMAS,
+  getDataSchemasForEventType,
+  getIncludeParameterForEventTypes,
+  eventTypeHasDataSchemas,
+  getEventTypesForDataSchema,
+  getAllDataSchemas,
+  getAllKnownEventTypes
 } from './events'
+
+// Event data schema types
+export type { DataSchema, KnownEventType } from './events'
 
 // Event Metrics - Plain functions
 export {
