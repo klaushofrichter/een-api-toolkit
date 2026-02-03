@@ -132,7 +132,10 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the een-* agent 
 - **Code Examples**: Ensure all code examples use current API patterns and would actually compile
 - **Referenced Examples**: Verify that referenced example directories (`examples/vue-*/`) exist
 - **Referenced Docs**: Verify that referenced documentation files (`docs/ai-reference/AI-*.md`) exist
-- **Version Consistency**: If version numbers are present, verify they match `package.json`
+- **Version Consistency**: Verify that version numbers in all AI reference documents match `package.json`. Pay special attention to:
+  - `docs/ai-reference/AI-EVENT-DATA-SCHEMAS.md` - manually maintained file that must have correct version (line 3)
+  - All other `docs/ai-reference/AI-*.md` files are auto-generated and should have consistent versions
+  - If versions are mismatched, run `npm run docs:ai-context` to regenerate all docs with current version
 
 ## Output Format
 
@@ -186,3 +189,26 @@ These are the most common inaccuracies found in agent files:
 - Using `startTimestamp` instead of `startTimestamp__gte` for event filters
 - Using `width/height` instead of `targetWidth/targetHeight` for image dimensions
 - Missing `formatTimestamp()` calls for timestamp parameters
+
+## AI-EVENT-DATA-SCHEMAS.md Specific Checks
+
+The `docs/ai-reference/AI-EVENT-DATA-SCHEMAS.md` file is manually maintained and requires special attention:
+
+1. **Version Check**: Verify the version on line 3 matches `package.json` version
+   - Pattern: `> **Version:** X.Y.Z`
+   - If mismatched, run `npm run docs:ai-context` to update it automatically
+
+2. **Event Type Coverage**: Verify documented event types match those exported from `src/events/dataSchemas.ts`
+   - Check `EVENT_TYPE_DATA_SCHEMAS` constant has all documented event types
+   - Check `KnownEventType` type includes all event type names
+
+3. **Data Schema Coverage**: Verify documented data schemas match those in `src/events/dataSchemas.ts`
+   - Check `DataSchema` type includes all schema names used in the mapping
+
+4. **Function Signatures**: Verify documented utility functions match actual exports:
+   - `getIncludeParameterForEventTypes(eventTypes: string[]): string[]`
+   - `getDataSchemasForEventType(eventType: string): readonly string[]`
+   - `eventTypeHasDataSchemas(eventType: string): boolean`
+   - `getEventTypesForDataSchema(schema: string): string[]`
+   - `getAllDataSchemas(): string[]`
+   - `getAllKnownEventTypes(): string[]`

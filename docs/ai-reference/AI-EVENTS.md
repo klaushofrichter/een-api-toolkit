@@ -1,6 +1,6 @@
 # Events, Alerts & Real-Time Streaming - EEN API Toolkit
 
-> **Version:** 0.3.51
+> **Version:** 0.3.54
 >
 > Complete reference for events, alerts, metrics, and SSE subscriptions.
 > Load this document when implementing event-driven features.
@@ -293,6 +293,7 @@ import {
   listEventTypes,
   getRecordedImage,
   getEvent,
+  getIncludeParameterForEventTypes,
   type Camera,
   type Event,
   type EventType,
@@ -571,6 +572,9 @@ async function fetchEvents(append = false) {
     error.value = null
   }
 
+  // Build include parameter dynamically based on selected event types
+  const includeValues = getIncludeParameterForEventTypes(selectedEventTypes.value)
+
   const result = await listEvents({
     actor: `camera:${props.camera.id}`,
     type__in: selectedEventTypes.value,
@@ -579,7 +583,7 @@ async function fetchEvents(append = false) {
     pageSize: 20,
     pageToken: append ? nextPageToken.value : undefined,
     sort: '-startTimestamp',
-    include: ['data.een.fullFrameImageUrl.v1', 'data.een.croppedFrameImageUrl.v1', 'data.een.objectDetection.v1', 'data.een.objectClassification.v1']
+    include: includeValues
   })
 
   if (result.error) {

@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.51**
+**EEN API Toolkit v0.3.54**
 
 ***
 
-# EEN API Toolkit v0.3.51
+# EEN API Toolkit v0.3.54
 
 ## Interfaces
 
@@ -226,6 +226,8 @@
 
 ### Events
 
+- [DataSchema](type-aliases/DataSchema.md)
+- [KnownEventType](type-aliases/KnownEventType.md)
 - [ActorType](type-aliases/ActorType.md)
 
 ### Exports
@@ -272,6 +274,10 @@
 ### Configuration
 
 - [STORAGE\_STRATEGY\_DESCRIPTIONS](variables/STORAGE_STRATEGY_DESCRIPTIONS.md)
+
+### Events
+
+- [EVENT\_TYPE\_DATA\_SCHEMAS](variables/EVENT_TYPE_DATA_SCHEMAS.md)
 
 ### Other
 
@@ -337,6 +343,12 @@
 
 ### Events
 
+- [getDataSchemasForEventType](functions/getDataSchemasForEventType.md)
+- [getIncludeParameterForEventTypes](functions/getIncludeParameterForEventTypes.md)
+- [eventTypeHasDataSchemas](functions/eventTypeHasDataSchemas.md)
+- [getEventTypesForDataSchema](functions/getEventTypesForDataSchema.md)
+- [getAllDataSchemas](functions/getAllDataSchemas.md)
+- [getAllKnownEventTypes](functions/getAllKnownEventTypes.md)
 - [listEvents](functions/listEvents.md)
 - [getEvent](functions/getEvent.md)
 - [listEventTypes](functions/listEventTypes.md)
