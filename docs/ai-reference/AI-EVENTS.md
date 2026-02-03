@@ -1,6 +1,6 @@
 # Events, Alerts & Real-Time Streaming - EEN API Toolkit
 
-> **Version:** 0.3.50
+> **Version:** 0.3.51
 >
 > Complete reference for events, alerts, metrics, and SSE subscriptions.
 > Load this document when implementing event-driven features.
@@ -412,7 +412,12 @@ const jsonViewerContent = computed(() => {
   // Use full event if loaded, otherwise fall back to list event
   const eventToShow = jsonViewerFullEvent.value || jsonViewerEvent.value
   if (!eventToShow) return ''
-  return JSON.stringify(eventToShow, null, 2)
+  try {
+    return JSON.stringify(eventToShow, null, 2)
+  } catch (err) {
+    // Safely handle any JSON serialization errors
+    return `Error serializing event data: ${String(err)}`
+  }
 })
 
 // Get start timestamp based on time range
@@ -725,7 +730,10 @@ async function openJsonViewer(eventId: string) {
 
   // Find the event in the list to get its dataSchemas
   const listEvent = events.value.find(e => e.id === eventId)
-  if (!listEvent) return
+  if (!listEvent) {
+    jsonViewerError.value = 'Event not found in current list'
+    return
+  }
 
   // Build include array from dataSchemas (prefix with "data.")
   const includes = listEvent.dataSchemas?.map(schema => `data.${schema}`) || []
@@ -849,6 +857,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
+  // Clean up JSON viewer state to prevent memory leaks
+  jsonViewerFullEvent.value = null
+  jsonViewerEventId.value = null
 })
 
 // Watch for modal open/close
