@@ -719,6 +719,41 @@ if (event) {
 }
 ```
 
+#### Include Parameter & Data Schemas
+
+The `include` parameter controls which data schemas are populated in the `event.data[]` array.
+Include values are derived from the event's `dataSchemas` array by adding the `data.` prefix.
+
+**How it works:**
+1. Each event has a `dataSchemas` array listing available schemas (e.g., `['een.objectDetection.v1', 'een.fullFrameImageUrl.v1']`)
+2. To include that data, prefix with `data.` (e.g., `include: ['data.een.objectDetection.v1']`)
+3. Without includes, the event may return with minimal or empty `data[]`
+
+**Common data schemas:**
+
+| Schema | Include Value | Description |
+|--------|---------------|-------------|
+| `een.objectDetection.v1` | `data.een.objectDetection.v1` | Bounding boxes `[x1, y1, x2, y2]` (normalized 0-1) |
+| `een.objectClassification.v1` | `data.een.objectClassification.v1` | Object labels (person, vehicle, etc.) |
+| `een.fullFrameImageUrl.v1` | `data.een.fullFrameImageUrl.v1` | Full frame image URL |
+| `een.croppedFrameImageUrl.v1` | `data.een.croppedFrameImageUrl.v1` | Cropped/zoomed image URL |
+| `een.fullFrameImageUrlWithOverlay.v1` | `data.een.fullFrameImageUrlWithOverlay.v1` | Image URL with bounding box overlay |
+| `een.eevaAttributes.v1` | `data.een.eevaAttributes.v1` | EEVA analytics attributes |
+| `een.customLabels.v1` | `data.een.customLabels.v1` | Custom detection labels |
+
+**Fetching full event details:**
+
+```typescript
+import { getEvent } from 'een-api-toolkit'
+
+// Get event with all available data based on its dataSchemas
+const simpleEvent = events.value.find(e => e.id === eventId)
+const includes = simpleEvent?.dataSchemas.map(schema => `data.${schema}`) || []
+
+const { data: fullEvent } = await getEvent(eventId, { include: includes })
+// fullEvent.data[] now contains all available data objects
+```
+
 **Complete Vue Example (Events Modal):**
 
 ```vue

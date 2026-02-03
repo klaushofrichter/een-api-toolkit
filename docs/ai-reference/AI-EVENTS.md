@@ -1,6 +1,6 @@
 # Events, Alerts & Real-Time Streaming - EEN API Toolkit
 
-> **Version:** 0.3.49
+> **Version:** 0.3.50
 >
 > Complete reference for events, alerts, metrics, and SSE subscriptions.
 > Load this document when implementing event-driven features.
@@ -292,6 +292,7 @@ import {
   listEventFieldValues,
   listEventTypes,
   getRecordedImage,
+  getEvent,
   type Camera,
   type Event,
   type EventType,
@@ -374,6 +375,13 @@ const imageLoadingIds = ref<Set<string>>(new Set()) // Track which images are cu
 const boundingBoxCache = ref<Map<string, BoundingBox[]>>(new Map()) // Cache bounding boxes per event
 const enlargedEventId = ref<string | null>(null)
 
+// JSON viewer state
+const jsonViewerEventId = ref<string | null>(null)
+const jsonViewerFullEvent = ref<Event | null>(null)
+const jsonViewerLoading = ref(false)
+const jsonViewerError = ref<string | null>(null)
+const copySuccess = ref(false)
+
 // Lightbox media state
 const showVideo = ref(false)
 const hdImageUrl = ref<string | null>(null)
@@ -395,6 +403,16 @@ const enlargedImage = computed(() => {
 const enlargedBoundingBoxes = computed(() => {
   if (!enlargedEvent.value) return []
   return getBoundingBoxes(enlargedEvent.value)
+})
+const jsonViewerEvent = computed(() => {
+  if (!jsonViewerEventId.value) return null
+  return events.value.find(e => e.id === jsonViewerEventId.value) || null
+})
+const jsonViewerContent = computed(() => {
+  // Use full event if loaded, otherwise fall back to list event
+  const eventToShow = jsonViewerFullEvent.value || jsonViewerEvent.value
+  if (!eventToShow) return ''
+  return JSON.stringify(eventToShow, null, 2)
 })
 
 // Get start timestamp based on time range
@@ -698,6 +716,74 @@ function closeEnlargedImage() {
   resetVideo()
 }
 
+// Open JSON viewer and fetch full event details
+async function openJsonViewer(eventId: string) {
+  jsonViewerEventId.value = eventId
+  jsonViewerFullEvent.value = null
+  jsonViewerError.value = null
+  copySuccess.value = false
+
+  // Find the event in the list to get its dataSchemas
+  const listEvent = events.value.find(e => e.id === eventId)
+  if (!listEvent) return
+
+  // Build include array from dataSchemas (prefix with "data.")
+  const includes = listEvent.dataSchemas?.map(schema => `data.${schema}`) || []
+
+  if (includes.length === 0) {
+    // No additional data to fetch, use the list event as-is
+    return
+  }
+
+  // Fetch full event details with all data schemas
+  jsonViewerLoading.value = true
+  const { data, error } = await getEvent(eventId, { include: includes })
+  jsonViewerLoading.value = false
+
+  if (error) {
+    jsonViewerError.value = error.message
+    return
+  }
+
+  if (data) {
+    jsonViewerFullEvent.value = data
+  }
+}
+
+// Close JSON viewer
+function closeJsonViewer() {
+  jsonViewerEventId.value = null
+  jsonViewerFullEvent.value = null
+  jsonViewerError.value = null
+  copySuccess.value = false
+}
+
+// Copy JSON to clipboard
+async function copyJsonToClipboard() {
+  if (!jsonViewerContent.value) return
+  try {
+    await navigator.clipboard.writeText(jsonViewerContent.value)
+    copySuccess.value = true
+    setTimeout(() => {
+      copySuccess.value = false
+    }, 2000)
+  } catch {
+    // Fallback for older browsers
+    const textarea = document.createElement('textarea')
+    textarea.value = jsonViewerContent.value
+    textarea.style.position = 'fixed'
+    textarea.style.opacity = '0'
+    document.body.appendChild(textarea)
+    textarea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textarea)
+    copySuccess.value = true
+    setTimeout(() => {
+      copySuccess.value = false
+    }, 2000)
+  }
+}
+
 // Switch to preview mode
 function showPreview() {
   currentMediaType.value = 'preview'
@@ -747,8 +833,12 @@ async function showVideoPlayer() {
 
 // Handle keyboard events for accessibility
 function handleKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape' && enlargedEventId.value) {
-    closeEnlargedImage()
+  if (event.key === 'Escape') {
+    if (jsonViewerEventId.value) {
+      closeJsonViewer()
+    } else if (enlargedEventId.value) {
+      closeEnlargedImage()
+    }
   }
 }
 
@@ -784,6 +874,7 @@ watch(() => props.isOpen, async (isOpen) => {
     boundingBoxCache.value.clear()
     events.value = []
     enlargedEventId.value = null
+    jsonViewerEventId.value = null
   }
 }, { immediate: true })
 
@@ -883,7 +974,15 @@ watch([timeRange, selectedEventTypes], () => {
               </div>
             </div>
             <div class="event-info">
-              <div class="event-type">{{ getEventTypeName(event.type) }}</div>
+              <div class="event-type-row">
+                <span class="event-type">{{ getEventTypeName(event.type) }}</span>
+                <button
+                  class="json-button"
+                  @click="openJsonViewer(event.id)"
+                  title="View JSON data"
+                  data-testid="json-button"
+                >{ }</button>
+              </div>
               <div class="event-time">{{ formatTimestamp(event.startTimestamp) }}</div>
               <div v-if="getBoundingBoxCount(event) > 0" class="event-detections" data-testid="event-detections">
                 {{ getBoundingBoxCount(event) }} detection{{ getBoundingBoxCount(event) !== 1 ? 's' : '' }}
