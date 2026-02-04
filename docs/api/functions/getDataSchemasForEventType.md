@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.54**](../README.md)
+[**EEN API Toolkit v0.3.55**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getDataSchemasForEventType**(`eventType`): readonly `string`[]
 
-Defined in: [src/events/dataSchemas.ts:490](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L490)
+Defined in: [src/events/dataSchemas.ts:598](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L598)
 
 Get the data schemas supported by a specific event type.
 

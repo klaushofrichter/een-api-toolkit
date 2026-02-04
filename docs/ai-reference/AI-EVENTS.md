@@ -1,6 +1,6 @@
 # Events, Alerts & Real-Time Streaming - EEN API Toolkit
 
-> **Version:** 0.3.54
+> **Version:** 0.3.55
 >
 > Complete reference for events, alerts, metrics, and SSE subscriptions.
 > Load this document when implementing event-driven features.
@@ -294,6 +294,7 @@ import {
   getRecordedImage,
   getEvent,
   getIncludeParameterForEventTypes,
+  getDataSchemasForEventType,
   type Camera,
   type Event,
   type EventType,
@@ -419,6 +420,12 @@ const jsonViewerContent = computed(() => {
     // Safely handle any JSON serialization errors
     return `Error serializing event data: ${String(err)}`
   }
+})
+
+// Data schemas for the current event type
+const jsonViewerDataSchemas = computed(() => {
+  if (!jsonViewerEvent.value) return []
+  return getDataSchemasForEventType(jsonViewerEvent.value.type)
 })
 
 // Get start timestamp based on time range

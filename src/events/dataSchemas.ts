@@ -68,6 +68,8 @@ export type DataSchema =
   | 'een.intrusionArea.v1'
   | 'een.monitoredArea.v1'
   | 'een.thermalMonitoredArea.v1'
+  // Counting
+  | 'een.countedLineCross.v1'
   // AI and scene analysis
   | 'een.eevaAttributes.v1'
   | 'een.customLabels.v1'
@@ -76,6 +78,9 @@ export type DataSchema =
   | 'een.lprDetection.v1'
   | 'een.lprAccessType.v1'
   | 'een.userData.v1'
+  | 'een.userTags.v1'
+  | 'een.vehicleListInfo.v1'
+  | 'een.vspInsightsSummary.v1'
   // Fleet recognition
   | 'een.dotNumberRecognition.v1'
   | 'een.truckNumberRecognition.v1'
@@ -92,12 +97,19 @@ export type DataSchema =
   | 'een.posTransactionCardLoadSummary.v1'
   | 'een.posTransactionFlag.v1'
   | 'een.posTransactionLabel.v1'
+  | 'een.rawData.v1'
+  | 'een.displayLocationSummary.v1'
   // Device and system
   | 'een.deviceCloudStatusUpdate.v1'
   | 'een.deviceCloudPreviousStatus.v1'
+  | 'een.deviceCloudConnectionStatusUpdate.v1'
+  | 'een.deviceCloudConnectionPreviousStatus.v1'
+  | 'een.deviceCommonStatusUpdate.v1'
+  | 'een.deviceErrorStatusUpdate.v1'
   | 'een.deviceIO.v1'
   | 'een.deviceOperationDetails.v1'
   | 'een.deviceOperationSubStep.v1'
+  | 'een.deviceOperationUpdate.v1'
   | 'een.ptzPositionUpdate.v1'
   // Sensor
   | 'een.measurementStringValueUpdate.v1'
@@ -124,10 +136,13 @@ export type KnownEventType =
   | 'een.motionDetectionEvent.v1'
   | 'een.motionInRegionDetectionEvent.v1'
   | 'een.personDetectionEvent.v1'
+  | 'een.personMotionDetectionEvent.v1'
   | 'een.animalDetectionEvent.v1'
   | 'een.faceDetectionEvent.v1'
   | 'een.vehicleDetectionEvent.v1'
+  | 'een.vehicleMotionDetectionEvent.v1'
   | 'een.gunDetectionEvent.v1'
+  | 'een.weaponDetectionEvent.v1'
   | 'een.fallDetectionEvent.v1'
   | 'een.fireDetectionEvent.v1'
   | 'een.spillDetectionEvent.v1'
@@ -136,6 +151,8 @@ export type KnownEventType =
   | 'een.tamperDetectionEvent.v1'
   | 'een.loiterDetectionEvent.v1'
   | 'een.objectLineCrossEvent.v1'
+  | 'een.objectLineCrossCountEvent.v1'
+  | 'een.countedObjectLineCrossEvent.v1'
   | 'een.objectIntrusionEvent.v1'
   | 'een.objectRemovalEvent.v1'
   | 'een.personTailgateEvent.v1'
@@ -154,6 +171,8 @@ export type KnownEventType =
   | 'een.posTransactionEvent.v1'
   // Device and system events
   | 'een.deviceCloudStatusUpdateEvent.v1'
+  | 'een.deviceCloudConnectionStatusUpdateEvent.v1'
+  | 'een.edgeReportedDeviceStatusEvent.v1'
   | 'een.deviceIOEvent.v1'
   | 'een.deviceOperationEvent.v1'
   | 'een.ptzPositionUpdateEvent.v1'
@@ -214,70 +233,107 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
   // Detection events
   'een.motionDetectionEvent.v1': [
     'een.objectDetection.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
     'een.displayOverlay.boundingBox.v1',
     'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.motionInRegionDetectionEvent.v1': [
     'een.motionRegion.v1',
     'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
     'een.croppedFrameImageUrl.v1',
-    'een.fullFrameImageUrl.v1'
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.personDetectionEvent.v1': [
     'een.objectDetection.v1',
     'een.personAttributes.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
     'een.objectClassification.v1',
     'een.objectRegionMapping.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1',
     'een.geoLocation.v1'
+  ],
+  'een.personMotionDetectionEvent.v1': [
+    'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
+    'een.objectClassification.v1'
   ],
   'een.animalDetectionEvent.v1': [
     'een.objectDetection.v1',
     'een.animalAttributes.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
     'een.objectClassification.v1',
-    'een.objectRegionMapping.v1'
+    'een.objectRegionMapping.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.faceDetectionEvent.v1': [
     'een.objectDetection.v1',
     'een.personAttributes.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
     'een.objectClassification.v1',
-    'een.objectRegionMapping.v1'
+    'een.objectRegionMapping.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.vehicleDetectionEvent.v1': [
     'een.objectDetection.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
     'een.objectClassification.v1',
     'een.vehicleAttributes.v1',
-    'een.objectRegionMapping.v1'
+    'een.objectRegionMapping.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
+  ],
+  'een.vehicleMotionDetectionEvent.v1': [
+    'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
+    'een.objectClassification.v1',
+    'een.vehicleAttributes.v1'
   ],
   'een.gunDetectionEvent.v1': [
-    'een.objectDetection.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
+    'een.objectDetection.v1',
     'een.motionRegion.v1',
     'een.objectClassification.v1',
-    'een.personAttributes.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1',
     'een.weaponAttributes.v1',
+    'een.personAttributes.v1',
     'een.humanValidationDetails.v1'
+  ],
+  'een.weaponDetectionEvent.v1': [
+    'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
+    'een.objectDetection.v1',
+    'een.motionRegion.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.fallDetectionEvent.v1': [
     'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
     'een.croppedFrameImageUrl.v1',
-    'een.fullFrameImageUrl.v1'
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.fireDetectionEvent.v1': [
     'een.objectDetection.v1',
+    'een.objectClassification.v1',
     'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
-    'een.objectClassification.v1'
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.spillDetectionEvent.v1': [
     'een.objectDetection.v1',
@@ -303,78 +359,116 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
   'een.loiterDetectionEvent.v1': [
     'een.loiterArea.v1',
     'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
     'een.croppedFrameImageUrl.v1',
-    'een.fullFrameImageUrl.v1'
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.objectLineCrossEvent.v1': [
     'een.lineCrossLine.v1',
     'een.objectDetection.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
-    'een.entryDirection.v1'
+    'een.croppedFrameImageUrl.v1',
+    'een.entryDirection.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
+  ],
+  'een.objectLineCrossCountEvent.v1': [
+    'een.lineCrossLine.v1',
+    'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
+    'een.entryDirection.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
+  ],
+  'een.countedObjectLineCrossEvent.v1': [
+    'een.countedLineCross.v1'
   ],
   'een.objectIntrusionEvent.v1': [
     'een.intrusionArea.v1',
     'een.objectDetection.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
-    'een.entryDirection.v1'
+    'een.croppedFrameImageUrl.v1',
+    'een.entryDirection.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.objectRemovalEvent.v1': [
     'een.monitoredArea.v1',
     'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
     'een.croppedFrameImageUrl.v1',
-    'een.fullFrameImageUrl.v1'
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.personTailgateEvent.v1': [
     'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
     'een.croppedFrameImageUrl.v1',
-    'een.fullFrameImageUrl.v1'
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.ppeViolationEvent.v1': [
     'een.objectDetection.v1',
     'een.personAttributes.v1',
-    'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
+    'een.croppedFrameImageUrl.v1',
     'een.objectClassification.v1',
-    'een.objectRegionMapping.v1'
+    'een.objectRegionMapping.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
 
   // AI/Scene events
   'een.sceneLabelEvent.v1': [
     'een.objectDetection.v1',
-    'een.personAttributes.v1',
+    'een.objectClassification.v1',
     'een.vehicleAttributes.v1',
+    'een.personAttributes.v1',
+    'een.animalAttributes.v1',
     'een.croppedFrameImageUrl.v1',
     'een.fullFrameImageUrl.v1',
-    'een.objectClassification.v1',
     'een.objectRegionMapping.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.customLabels.v1',
     'een.eevaAttributes.v1',
-    'een.customLabels.v1'
+    'een.fullFrameImageUrlWithOverlay.v1'
   ],
   'een.eevaQueryEvent.v1': [
+    'een.customLabels.v1',
     'een.eevaAttributes.v1',
-    'een.customLabels.v1'
+    'een.objectDetection.v1',
+    'een.fullFrameImageUrl.v1',
+    'een.fullFrameImageUrlWithOverlay.v1',
+    'een.displayOverlay.boundingBox.v1'
   ],
 
   // License plate and fleet recognition
   'een.lprPlateReadEvent.v1': [
-    'een.lprDetection.v1',
-    'een.lprAccessType.v1',
-    'een.vehicleAttributes.v1',
     'een.objectDetection.v1',
+    'een.lprDetection.v1',
+    'een.vehicleAttributes.v1',
+    'een.lprAccessType.v1',
     'een.userData.v1',
+    'een.userTags.v1',
     'een.croppedFrameImageUrl.v1',
-    'een.fullFrameImageUrl.v1'
+    'een.fullFrameImageUrl.v1',
+    'een.displayOverlay.boundingBox.v1',
+    'een.fullFrameImageUrlWithOverlay.v1',
+    'een.vehicleListInfo.v1',
+    'een.resourceDetails.v1',
+    'een.vspInsightsSummary.v1'
   ],
   'een.fleetCodeRecognitionEvent.v1': [
     'een.objectDetection.v1',
     'een.dotNumberRecognition.v1',
     'een.truckNumberRecognition.v1',
     'een.trailerNumberRecognition.v1',
-    'een.recognizedText.v1',
     'een.croppedFrameImageUrl.v1',
-    'een.fullFrameImageUrl.v1'
+    'een.fullFrameImageUrl.v1',
+    'een.recognizedText.v1',
+    'een.resourceDetails.v1'
   ],
 
   // Audio detection
@@ -398,7 +492,10 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
     'een.posTransactionCartChangeTrail.v1',
     'een.posTransactionCardLoadSummary.v1',
     'een.posTransactionFlag.v1',
-    'een.posTransactionLabel.v1'
+    'een.posTransactionLabel.v1',
+    'een.rawData.v1',
+    'een.displayLocationSummary.v1',
+    'een.fullFrameImageUrl.v1'
   ],
 
   // Device and system events
@@ -406,12 +503,22 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
     'een.deviceCloudStatusUpdate.v1',
     'een.deviceCloudPreviousStatus.v1'
   ],
+  'een.deviceCloudConnectionStatusUpdateEvent.v1': [
+    'een.deviceCloudConnectionStatusUpdate.v1',
+    'een.deviceCloudConnectionPreviousStatus.v1'
+  ],
+  'een.edgeReportedDeviceStatusEvent.v1': [
+    'een.deviceCommonStatusUpdate.v1',
+    'een.deviceErrorStatusUpdate.v1'
+  ],
   'een.deviceIOEvent.v1': [
     'een.deviceIO.v1'
   ],
   'een.deviceOperationEvent.v1': [
+    'een.resourceDetails.v1',
     'een.deviceOperationDetails.v1',
-    'een.deviceOperationSubStep.v1'
+    'een.deviceOperationSubStep.v1',
+    'een.deviceOperationUpdate.v1'
   ],
   'een.ptzPositionUpdateEvent.v1': [
     'een.ptzPositionUpdate.v1'
@@ -426,7 +533,8 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
   ],
   'een.measurementThresholdStatusEvent.v1': [
     'een.measurementThresholdStatus.v1',
-    'een.measurementValueUpdate.v1'
+    'een.measurementValueUpdate.v1',
+    'een.measurementStringValueUpdate.v1'
   ],
   'een.thermalCameraThresholdStatusEvent.v1': [
     'een.thermalCameraValueUpdate.v1',

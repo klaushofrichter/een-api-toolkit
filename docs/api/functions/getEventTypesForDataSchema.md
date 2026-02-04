@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.54**](../README.md)
+[**EEN API Toolkit v0.3.55**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getEventTypesForDataSchema**(`schema`): `string`[]
 
-Defined in: [src/events/dataSchemas.ts:581](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L581)
+Defined in: [src/events/dataSchemas.ts:689](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L689)
 
 Get all known event types that have the specified data schema.
 
