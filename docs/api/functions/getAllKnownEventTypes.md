@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.54**](../README.md)
+[**EEN API Toolkit v0.3.55**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getAllKnownEventTypes**(): `string`[]
 
-Defined in: [src/events/dataSchemas.ts:642](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L642)
+Defined in: [src/events/dataSchemas.ts:750](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L750)
 
 Get all known event types.
 

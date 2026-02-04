@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.54**](../README.md)
+[**EEN API Toolkit v0.3.55**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getIncludeParameterForEventTypes**(`eventTypes`): `string`[]
 
-Defined in: [src/events/dataSchemas.ts:522](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L522)
+Defined in: [src/events/dataSchemas.ts:630](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L630)
 
 Get the include parameter values for multiple event types.
 

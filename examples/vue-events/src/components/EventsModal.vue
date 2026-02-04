@@ -7,6 +7,7 @@ import {
   getRecordedImage,
   getEvent,
   getIncludeParameterForEventTypes,
+  getDataSchemasForEventType,
   type Camera,
   type Event,
   type EventType,
@@ -132,6 +133,12 @@ const jsonViewerContent = computed(() => {
     // Safely handle any JSON serialization errors
     return `Error serializing event data: ${String(err)}`
   }
+})
+
+// Data schemas for the current event type
+const jsonViewerDataSchemas = computed(() => {
+  if (!jsonViewerEvent.value) return []
+  return getDataSchemasForEventType(jsonViewerEvent.value.type)
 })
 
 // Get start timestamp based on time range
@@ -911,6 +918,16 @@ watch([timeRange, selectedEventTypes], () => {
               >&times;</button>
             </div>
           </div>
+          <div v-if="jsonViewerDataSchemas.length > 0" class="json-viewer-schemas" data-testid="json-viewer-schemas">
+            <span class="schemas-label">Data Schemas:</span>
+            <div class="schemas-list">
+              <span
+                v-for="schema in jsonViewerDataSchemas"
+                :key="schema"
+                class="schema-tag"
+              >{{ schema }}</span>
+            </div>
+          </div>
           <div class="json-viewer-body">
             <div v-if="jsonViewerLoading" class="json-viewer-loading">
               Loading full event details...
@@ -1498,6 +1515,38 @@ watch([timeRange, selectedEventTypes], () => {
 
 .json-viewer-close:hover {
   color: #fff;
+}
+
+.json-viewer-schemas {
+  padding: 12px 20px;
+  border-bottom: 1px solid #333;
+  background: #252525;
+}
+
+.schemas-label {
+  color: #888;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.schemas-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.schema-tag {
+  background: #333;
+  color: #42b883;
+  font-size: 0.7rem;
+  font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, monospace;
+  padding: 3px 8px;
+  border-radius: 3px;
+  border: 1px solid #444;
 }
 
 .json-viewer-body {

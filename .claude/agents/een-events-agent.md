@@ -72,10 +72,13 @@ interface Event {
 
 type EventType =
   | 'een.motionDetectionEvent.v1'
-  | 'een.objectDetectionEvent.v1'
-  | 'een.lineCrossingEvent.v1'
+  | 'een.personDetectionEvent.v1'
+  | 'een.vehicleDetectionEvent.v1'
+  | 'een.objectLineCrossEvent.v1'
   | 'een.tamperDetectionEvent.v1'
-  // ... other event types
+  | 'een.loiterDetectionEvent.v1'
+  | 'een.weaponDetectionEvent.v1'
+  // ... and many more (see AI-EVENT-DATA-SCHEMAS.md)
 ```
 
 ### ListEventsParams
