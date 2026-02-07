@@ -54,8 +54,8 @@ assistant: "I'll use the een-users-agent to diagnose the user lookup issue and i
 ```typescript
 interface User {
   id: string
-  firstName?: string
-  lastName?: string
+  firstName: string
+  lastName: string
   email: string
   isActive?: boolean
   permissions?: string[]
@@ -71,9 +71,9 @@ interface UserProfile {
   firstName: string
   lastName: string
   email: string
-  accountId: string
-  permissions: string[]
-  // ... profile-specific fields
+  accountId?: string
+  timeZone?: string
+  language?: string
 }
 ```
 

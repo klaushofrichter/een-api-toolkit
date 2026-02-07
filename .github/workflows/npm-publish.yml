@@ -83,8 +83,16 @@ jobs:
           echo "### Release Summary" >> CHANGELOG.md
           echo "" >> CHANGELOG.md
 
-          # Get PR numbers from merge commits in the commit range (only PRs in this release)
-          git log "$COMMIT_RANGE" --oneline --merges | grep -oE "Merge pull request #[0-9]+" | grep -oE "[0-9]+" | sort -u > pr_numbers.txt 2>/dev/null || echo "" > pr_numbers.txt
+          # Find PRs merged to production since last tag using GitHub API
+          if [ -n "$LAST_TAG" ]; then
+            LAST_TAG_DATE=$(git log -1 --format=%aI "$LAST_TAG" 2>/dev/null || echo "2000-01-01T00:00:00+00:00")
+          else
+            LAST_TAG_DATE="2000-01-01T00:00:00+00:00"
+          fi
+
+          gh pr list --base production --state merged --limit 50 --json number,mergedAt 2>/dev/null \
+            | jq -r --arg since "$LAST_TAG_DATE" '.[] | select(.mergedAt > $since) | .number' \
+            | sort -u > pr_numbers.txt || echo "" > pr_numbers.txt
 
           # Fetch details for each PR in this release
           > pr_summaries.txt

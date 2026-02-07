@@ -1,6 +1,6 @@
 {
   "name": "een-api-toolkit",
-  "version": "0.3.60",
+  "version": "0.3.61",
   "description": "EEN Video platform API v3.0 library for Vue 3",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -30,6 +30,7 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
+    "test:e2e:examples": "./scripts/run-examples-e2e.sh",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "typecheck": "vue-tsc --noEmit",

@@ -2,7 +2,7 @@
 name: docs-accuracy-reviewer
 description: |
   Use this agent when you need to verify that project documentation accurately reflects the actual codebase, when checking for broken links in markdown files, when validating configuration examples in documentation, or when ensuring README and other docs are up-to-date with implemented features. This agent reads documentation and compares it against source code but does not modify code files.
-model: inherit
+model: sonnet
 color: purple
 ---
 
@@ -70,6 +70,7 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the een-* agent 
    - List all markdown files in the project (README.md, docs/**, CLAUDE.md, etc.)
    - **Scan ALL example directories** (`examples/*/README.md`) - do not skip any
    - **Check ALL agent files** in `.claude/agents/een-*.md` - verify function signatures and code examples against actual implementations
+   - **Check ALL skill files** in `.claude/skills/*/SKILL.md` - verify referenced scripts, npm commands, and workflows match actual implementations
    - Identify the source code structure for cross-referencing (especially `src/index.ts` exports, `src/*/service.ts` implementations, and `src/types/*.ts` definitions)
 
 2. **Analysis Phase**:
@@ -121,6 +122,17 @@ assistant: "I'll use the docs-accuracy-reviewer agent to verify the een-* agent 
 - Cross-reference all VITE_* variables with actual usage
 - Verify .env.example matches documentation
 - Check that all required secrets are documented
+
+### For Skills (`.claude/skills/*/SKILL.md`):
+- **Script References**: Verify all referenced scripts exist in `scripts/` and are executable
+- **npm Commands**: Verify all `npm run` commands exist in `package.json` scripts
+- **Workflow Steps**: Verify described workflows match actual tool capabilities and script behavior
+- **File Paths**: Verify all referenced file paths and directories exist
+- Cross-reference the PR-and-check skill's test commands against actual `package.json` scripts
+
+### For Test Runner Agent (`.claude/agents/test-runner.md`):
+- Verify documented test commands match `package.json` scripts (e.g., `npm run test:e2e:examples` for example app E2E tests)
+- Verify the E2E test execution approach matches the actual `scripts/run-examples-e2e.sh` behavior
 
 ### For Claude Agent Files (`.claude/agents/een-*.md`):
 - **Function Signatures**: Verify all documented function signatures match actual implementations in `src/*/service.ts`
@@ -176,6 +188,7 @@ Before completing your review:
 1. Verify you've checked ALL markdown files in the project
 2. **Confirm ALL example app READMEs were reviewed** (list them in your report)
 3. **Confirm ALL `.claude/agents/een-*.md` files were reviewed** for API accuracy
+3. **Confirm ALL `.claude/skills/*/SKILL.md` files were reviewed** for script and npm command accuracy
 4. Confirm each fix you made is backed by evidence from source code
 5. Re-read modified sections to ensure they're clear and accurate
 6. Check that your fixes didn't introduce new broken links or inconsistencies

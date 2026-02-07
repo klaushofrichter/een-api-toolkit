@@ -141,7 +141,7 @@ interface ListCamerasParams {
   status__ne?: CameraStatus      // Exclude this status
   tags__contains?: string[]      // Must have ALL these tags
   tags__any?: string[]           // Must have ANY of these tags
-  bridgeId__eq?: string          // Cameras on specific bridge
+  bridgeId__in?: string[]        // Cameras on specific bridge(s)
   q?: string                     // Full-text search
 }
 ```
