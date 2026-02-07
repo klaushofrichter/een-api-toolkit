@@ -1101,6 +1101,29 @@ interface CameraDeviceInfo {
   serialNumber?: string
   resolution?: string
 }
+
+interface CameraSettings {
+  data: CameraSettingsData
+  schema?: object         // When include contains 'schema'
+  proposedValues?: object // When include contains 'proposedValues'
+}
+
+interface CameraSettingsData {
+  timeZone?: string
+  rtsp?: CameraRtspConnectionSettings
+  credentials?: { username?: string; password?: string }
+  retention?: { cloudDays?: number; cloudPreviewOnly?: boolean; minimumOnPremiseDays?: number; maximumOnPremiseDays?: number; alwaysRecordingDays?: number }
+  audio?: { microphoneEnabled?: boolean; inputSourceId?: string }
+  previewVideo?: { transmitMode?: string; resolution?: string; intervalMs?: number; quality?: string; supportedResolutions?: string[] }
+  mainVideo?: { transmitMode?: string; resolution?: string; quality?: string; kbpsFactor?: number; captureMode?: string; supportedResolutions?: string[] }
+  analog?: { videoStandard?: string; badSignalProtection?: boolean; badSignalDetected?: boolean }
+  operatingSettings?: { on?: boolean; scheduledOverride?: { on?: boolean; schedule?: string } | null }
+  talkdown?: { protocol?: string; audioMode?: string; sipCredentials?: object }
+}
+
+interface GetCameraSettingsParams {
+  include?: ('schema' | 'proposedValues')[]
+}
 \`\`\`
 
 ### Parameters
@@ -1195,6 +1218,23 @@ const { data, error } = await getCamera('camera-id-123')
 // With additional fields
 const { data: detailed } = await getCamera('camera-id-123', {
   include: ['deviceInfo', 'status', 'shareDetails', 'tags']
+})
+\`\`\`
+
+### getCameraSettings(cameraId, params?)
+
+\`\`\`typescript
+import { getCameraSettings } from 'een-api-toolkit'
+
+// Basic usage
+const { data, error } = await getCameraSettings('camera-id-123')
+if (data) {
+  console.log('Retention:', data.data.retention?.cloudDays, 'days')
+}
+
+// With schema and proposed values
+const { data: settings } = await getCameraSettings('camera-id-123', {
+  include: ['schema', 'proposedValues']
 })
 \`\`\`
 

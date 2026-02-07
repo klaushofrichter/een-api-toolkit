@@ -24,6 +24,19 @@ export type {
   CameraRecordingModes,
   ListCamerasParams,
   GetCameraParams,
+  CameraSettings,
+  CameraSettingsData,
+  CameraSettingsInclude,
+  GetCameraSettingsParams,
+  CameraSettingsRetention,
+  CameraSettingsAudio,
+  CameraSettingsPreviewVideo,
+  CameraSettingsMainVideo,
+  CameraSettingsAnalog,
+  CameraSettingsOperating,
+  CameraSettingsTalkdown,
+  CameraSettingsCredentials,
+  CameraSettingsScheduledOverride,
   Bridge,
   BridgeStatus,
   BridgeDeviceInfo,
@@ -194,7 +207,8 @@ export {
 // Cameras - Plain functions
 export {
   getCameras,
-  getCamera
+  getCamera,
+  getCameraSettings
 } from './cameras'
 
 // Bridges - Plain functions

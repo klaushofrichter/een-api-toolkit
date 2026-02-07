@@ -1,6 +1,6 @@
 import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
-import type { Result, PaginatedResult, Camera, ListCamerasParams, GetCameraParams } from '../types'
+import type { Result, PaginatedResult, Camera, ListCamerasParams, GetCameraParams, CameraSettings, GetCameraSettingsParams } from '../types'
 import { debug } from '../utils/debug'
 
 /**
@@ -281,6 +281,87 @@ export async function getCamera(cameraId: string, params?: GetCameraParams): Pro
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to fetch camera: ${String(err)}`)
+  }
+}
+
+/**
+ * Get operational settings for a specific camera.
+ *
+ * @remarks
+ * Fetches camera settings from `/api/v3.0/cameras/{cameraId}/settings`.
+ * Returns retention, audio, video, operating, and other settings.
+ * Use the `include` parameter to request additional data like JSON Schema
+ * or proposed values.
+ *
+ * For more details, see the
+ * [EEN API Documentation](https://developer.eagleeyenetworks.com/reference/getcamerasettings).
+ *
+ * @param cameraId - The unique identifier of the camera
+ * @param params - Optional parameters (e.g., include schema or proposedValues)
+ * @returns A Result containing the camera settings or an error
+ *
+ * @example
+ * ```typescript
+ * import { getCameraSettings } from 'een-api-toolkit'
+ *
+ * // Basic usage
+ * const { data, error } = await getCameraSettings('camera-123')
+ * if (data) {
+ *   console.log('Retention:', data.data.retention?.cloudDays, 'days')
+ * }
+ *
+ * // With schema and proposed values
+ * const { data: settings } = await getCameraSettings('camera-123', {
+ *   include: ['schema', 'proposedValues']
+ * })
+ * ```
+ *
+ * @category Cameras
+ */
+export async function getCameraSettings(cameraId: string, params?: GetCameraSettingsParams): Promise<Result<CameraSettings>> {
+  const authStore = useAuthStore()
+
+  if (!authStore.isAuthenticated) {
+    return failure('AUTH_REQUIRED', 'Authentication required')
+  }
+
+  if (!authStore.baseUrl) {
+    return failure('AUTH_REQUIRED', 'Base URL not configured')
+  }
+
+  if (!cameraId) {
+    return failure('VALIDATION_ERROR', 'Camera ID is required')
+  }
+
+  const queryParams = new URLSearchParams()
+
+  if (params?.include && params.include.length > 0) {
+    queryParams.append('include', params.include.join(','))
+  }
+
+  const queryString = queryParams.toString()
+  const url = `${authStore.baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/settings${queryString ? `?${queryString}` : ''}`
+  debug('Fetching camera settings:', url)
+
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Authorization': `Bearer ${authStore.token}`
+      }
+    })
+
+    if (!response.ok) {
+      return handleErrorResponse(response)
+    }
+
+    const data = await response.json() as CameraSettings
+    debug('Camera settings fetched for:', cameraId)
+
+    return success(data)
+  } catch (err) {
+    return failure('NETWORK_ERROR', `Failed to fetch camera settings: ${String(err)}`)
   }
 }
 

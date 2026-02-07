@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import { getCameras, type Camera, type CameraStatus, type EenError, type ListCamerasParams } from 'een-api-toolkit'
-
-// Status filter
-const statusFilter = ref<CameraStatus | ''>('')
+import { ref, computed, onMounted } from 'vue'
+import { getCameras, getCamera, getCameraSettings, type Camera, type CameraSettings, type EenError, type ListCamerasParams } from 'een-api-toolkit'
 
 // Reactive state
 const cameras = ref<Camera[]>([])
@@ -14,9 +11,82 @@ const totalSize = ref<number | undefined>(undefined)
 
 const hasNextPage = computed(() => !!nextPageToken.value)
 
+// Detail modal state
+const detailCamera = ref<Camera | null>(null)
+const detailLoading = ref(false)
+const detailError = ref<EenError | null>(null)
+const showDetail = ref(false)
+const detailLoadingId = ref<string | null>(null)
+
+// Settings modal state
+const settingsData = ref<CameraSettings | null>(null)
+const settingsLoading = ref(false)
+const settingsError = ref<EenError | null>(null)
+const showSettings = ref(false)
+const settingsLoadingId = ref<string | null>(null)
+
+const settingsIncludes = ['schema', 'proposedValues'] as const
+
+async function fetchSettings(cameraId: string) {
+  settingsLoading.value = true
+  settingsLoadingId.value = cameraId
+  settingsData.value = null
+  settingsError.value = null
+  showSettings.value = true
+
+  const result = await getCameraSettings(cameraId, { include: [...settingsIncludes] })
+
+  if (result.error) {
+    settingsError.value = result.error
+  } else {
+    settingsData.value = result.data
+  }
+
+  settingsLoading.value = false
+  settingsLoadingId.value = null
+}
+
+function closeSettings() {
+  showSettings.value = false
+  settingsData.value = null
+  settingsError.value = null
+}
+
+const allCameraIncludes = [
+  'bridge', 'account', 'status', 'locationSummary', 'deviceAddress',
+  'timeZone', 'notes', 'tags', 'devicePosition', 'networkInfo',
+  'deviceInfo', 'effectivePermissions', 'firmware', 'shareDetails',
+  'visibleByBridges', 'capabilities', 'analog', 'packages',
+  'dewarpConfig', 'adminCredentials', 'publicSafetySharing', 'enabledAnalytics'
+]
+
+async function fetchDetail(cameraId: string) {
+  detailLoading.value = true
+  detailLoadingId.value = cameraId
+  detailCamera.value = null
+  detailError.value = null
+  showDetail.value = true
+
+  const result = await getCamera(cameraId, { include: allCameraIncludes })
+
+  if (result.error) {
+    detailError.value = result.error
+  } else {
+    detailCamera.value = result.data
+  }
+
+  detailLoading.value = false
+  detailLoadingId.value = null
+}
+
+function closeDetail() {
+  showDetail.value = false
+  detailCamera.value = null
+  detailError.value = null
+}
+
 const params = ref<ListCamerasParams>({
-  pageSize: 20,
-  include: ['deviceInfo', 'status']
+  pageSize: 20
 })
 
 async function fetchCameras(fetchParams?: ListCamerasParams, append = false) {
@@ -56,53 +126,6 @@ async function fetchNextPage() {
   return fetchCameras({ ...params.value, pageToken: nextPageToken.value }, true)
 }
 
-function setParams(newParams: ListCamerasParams) {
-  params.value = newParams
-}
-
-// Watch for status filter changes
-watch(statusFilter, async (newStatus) => {
-  if (newStatus) {
-    setParams({
-      pageSize: 20,
-      include: ['deviceInfo', 'status'],
-      status__in: [newStatus]
-    })
-  } else {
-    setParams({
-      pageSize: 20,
-      include: ['deviceInfo', 'status']
-    })
-  }
-  await fetchCameras()
-})
-
-// Helper to extract status string from the union type
-function getStatusString(status?: CameraStatus | { connectionStatus?: CameraStatus }): CameraStatus | undefined {
-  if (!status) return undefined
-  if (typeof status === 'string') return status
-  return status.connectionStatus
-}
-
-// Get status badge class
-function getStatusClass(status?: CameraStatus | { connectionStatus?: CameraStatus }): string {
-  const statusStr = getStatusString(status)
-  switch (statusStr) {
-    case 'online':
-    case 'streaming':
-      return 'status-online'
-    case 'offline':
-    case 'deviceOffline':
-    case 'bridgeOffline':
-      return 'status-offline'
-    case 'error':
-    case 'invalidCredentials':
-      return 'status-error'
-    default:
-      return 'status-unknown'
-  }
-}
-
 onMounted(() => {
   fetchCameras()
 })
@@ -113,15 +136,6 @@ onMounted(() => {
     <div class="header">
       <h2>Cameras</h2>
       <div class="controls">
-        <select v-model="statusFilter" class="status-filter">
-          <option value="">All Statuses</option>
-          <option value="online">Online</option>
-          <option value="streaming">Streaming</option>
-          <option value="offline">Offline</option>
-          <option value="deviceOffline">Device Offline</option>
-          <option value="bridgeOffline">Bridge Offline</option>
-          <option value="error">Error</option>
-        </select>
         <button @click="refresh" :disabled="loading">
           {{ loading ? 'Loading...' : 'Refresh' }}
         </button>
@@ -150,33 +164,76 @@ onMounted(() => {
         >
           <div class="camera-header">
             <h3>{{ camera.name }}</h3>
-            <span :class="['status-badge', getStatusClass(camera.status)]">
-              {{ getStatusString(camera.status) || 'Unknown' }}
-            </span>
           </div>
           <div class="camera-details">
-            <p v-if="camera.deviceInfo?.make || camera.deviceInfo?.model">
-              <strong>Device:</strong>
-              {{ camera.deviceInfo?.make || '' }} {{ camera.deviceInfo?.model || '' }}
-            </p>
-            <p v-if="camera.locationId">
-              <strong>Location:</strong> {{ camera.locationId }}
-            </p>
-            <p v-if="camera.tags && camera.tags.length > 0">
-              <strong>Tags:</strong> {{ camera.tags.join(', ') }}
-            </p>
+            <p><strong>ID:</strong> {{ camera.id }}</p>
+            <p><strong>Bridge:</strong> {{ camera.bridgeId || 'N/A' }}</p>
+          </div>
+          <div class="card-actions">
+            <button
+              class="details-btn"
+              data-testid="details-btn"
+              @click.prevent.stop="fetchDetail(camera.id)"
+              :disabled="detailLoadingId === camera.id"
+            >
+              {{ detailLoadingId === camera.id ? 'Loading...' : 'Details' }}
+            </button>
+            <button
+              class="settings-btn"
+              data-testid="settings-btn"
+              @click.prevent.stop="fetchSettings(camera.id)"
+              :disabled="settingsLoadingId === camera.id"
+            >
+              {{ settingsLoadingId === camera.id ? 'Loading...' : 'Settings' }}
+            </button>
           </div>
         </router-link>
       </div>
 
       <p v-else class="no-cameras">
-        No cameras found{{ statusFilter ? ' with selected filter' : '' }}.
+        No cameras found.
       </p>
 
       <div v-if="hasNextPage" class="pagination">
         <button @click="fetchNextPage" :disabled="loading">
           {{ loading ? 'Loading...' : 'Load More' }}
         </button>
+      </div>
+    </div>
+    <!-- Detail Modal -->
+    <div v-if="showDetail" class="modal-overlay" data-testid="modal-overlay" @click.self="closeDetail">
+      <div class="modal-content" data-testid="modal-content">
+        <div class="modal-header">
+          <h3>Camera Details</h3>
+          <button class="modal-close" data-testid="modal-close-x" @click="closeDetail">&times;</button>
+        </div>
+        <div class="modal-includes" data-testid="modal-includes">
+          <strong>Include:</strong> {{ allCameraIncludes.join(', ') }}
+        </div>
+        <div v-if="detailLoading" class="modal-loading" data-testid="modal-loading">Loading camera details...</div>
+        <div v-else-if="detailError" class="modal-error" data-testid="modal-error">Error: {{ detailError.message }}</div>
+        <pre v-else class="modal-pre" data-testid="modal-json">{{ JSON.stringify(detailCamera, null, 2) }}</pre>
+        <div class="modal-footer">
+          <button data-testid="modal-close-btn" @click="closeDetail">Close</button>
+        </div>
+      </div>
+    </div>
+    <!-- Settings Modal -->
+    <div v-if="showSettings" class="modal-overlay" data-testid="settings-modal-overlay" @click.self="closeSettings">
+      <div class="modal-content" data-testid="settings-modal-content">
+        <div class="modal-header">
+          <h3>Camera Settings</h3>
+          <button class="modal-close" data-testid="settings-modal-close-x" @click="closeSettings">&times;</button>
+        </div>
+        <div class="modal-includes" data-testid="settings-modal-includes">
+          <strong>Include:</strong> {{ settingsIncludes.join(', ') }}
+        </div>
+        <div v-if="settingsLoading" class="modal-loading" data-testid="settings-modal-loading">Loading camera settings...</div>
+        <div v-else-if="settingsError" class="modal-error" data-testid="settings-modal-error">Error: {{ settingsError.message }}</div>
+        <pre v-else class="modal-pre" data-testid="settings-modal-json">{{ JSON.stringify(settingsData, null, 2) }}</pre>
+        <div class="modal-footer">
+          <button data-testid="settings-modal-close-btn" @click="closeSettings">Close</button>
+        </div>
       </div>
     </div>
   </div>
@@ -197,15 +254,7 @@ onMounted(() => {
 
 .controls {
   display: flex;
-  gap: 10px;
   align-items: center;
-}
-
-.status-filter {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
 }
 
 .total-count {
@@ -244,37 +293,6 @@ onMounted(() => {
 .camera-header h3 {
   margin: 0;
   font-size: 1.1rem;
-  flex: 1;
-  margin-right: 10px;
-}
-
-.status-badge {
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  white-space: nowrap;
-}
-
-.status-online {
-  background: #d4edda;
-  color: #155724;
-}
-
-.status-offline {
-  background: #f8d7da;
-  color: #721c24;
-}
-
-.status-error {
-  background: #fff3cd;
-  color: #856404;
-}
-
-.status-unknown {
-  background: #e2e3e5;
-  color: #383d41;
 }
 
 .camera-details p {
@@ -296,5 +314,133 @@ onMounted(() => {
 .pagination {
   margin-top: 30px;
   text-align: center;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.details-btn {
+  padding: 6px 16px;
+  background: #42b883;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.details-btn:hover {
+  background: #369970;
+}
+
+.details-btn:disabled {
+  background: #a0d4bf;
+  cursor: not-allowed;
+}
+
+.settings-btn {
+  padding: 6px 16px;
+  background: #3498db;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.settings-btn:hover {
+  background: #2980b9;
+}
+
+.settings-btn:disabled {
+  background: #85c1e9;
+  cursor: not-allowed;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 24px;
+  width: 80%;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.modal-header h3 {
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: #666;
+  padding: 0 4px;
+}
+
+.modal-close:hover {
+  color: #333;
+}
+
+.modal-includes {
+  font-size: 0.8rem;
+  color: #555;
+  background: #f0f0f0;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin-bottom: 12px;
+  word-break: break-word;
+}
+
+.modal-loading,
+.modal-error {
+  padding: 20px;
+  text-align: center;
+}
+
+.modal-error {
+  color: #dc3545;
+}
+
+.modal-pre {
+  overflow: auto;
+  flex: 1;
+  background: #f5f5f5;
+  padding: 16px;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.85rem;
+  margin: 0;
+  white-space: pre;
+}
+
+.modal-footer {
+  margin-top: 16px;
+  text-align: right;
 }
 </style>

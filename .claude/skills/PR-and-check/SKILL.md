@@ -28,13 +28,17 @@ description: Use this skill when you are requested to create a PR for a feature 
 - Run build to verify compilation:
   - run: `npm run build`
   - if build fails, analyse the failure, report findings, and stop
-- Start the OAuth proxy for E2E tests:
+- Restart the OAuth proxy for E2E tests:
   - run: `./scripts/restart-proxy.sh`
   - verify proxy is running: `curl -s http://127.0.0.1:8787/health`
   - if proxy fails to start, report warning but continue (E2E OAuth tests will be skipped)
-- Run E2E tests for all example apps:
+- Run E2E tests for all example apps sequentially:
   - find all example app directories with e2e tests: `for dir in examples/*/; do if [ -d "${dir}e2e" ]; then echo "$dir"; fi; done`
-  - for each example app, run from the project root using absolute path: `cd /path/to/project/examples/<app-name> && npx playwright test`
+  - for each example app, run the following steps in sequence:
+    1. Kill any process using port 3333: `kill $(lsof -ti :3333) 2>/dev/null || true`
+    2. Verify port 3333 is free: `lsof -ti :3333` (should return empty)
+    3. Run the E2E tests: `cd /path/to/project/examples/<app-name> && npx playwright test`
+    4. After the tests complete, kill the vite server on port 3333 again: `kill $(lsof -ti :3333) 2>/dev/null || true`
   - if any E2E tests fail, analyse the failure, report findings, and stop
   - report total number of E2E tests passed across all example apps
 - Run security review:

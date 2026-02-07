@@ -46,9 +46,10 @@ assistant: "I'll use the een-devices-agent to help fetch bridges with getBridges
 1. List and filter cameras with getCameras()
 2. List and filter bridges with getBridges()
 3. Get device details with getCamera() / getBridge()
-4. Implement status filtering (online, offline, streaming, etc.)
-5. Implement tag-based filtering
-6. Full-text search with q parameter
+4. Get camera operational settings with getCameraSettings()
+5. Implement status filtering (online, offline, streaming, etc.)
+6. Implement tag-based filtering
+7. Full-text search with q parameter
 
 ## Key Types
 
@@ -101,6 +102,32 @@ type BridgeStatus =
   | 'registered'
   | 'attaching'
   | 'initializing'
+```
+
+### CameraSettings
+```typescript
+interface CameraSettings {
+  data: CameraSettingsData
+  schema?: object         // When include contains 'schema'
+  proposedValues?: object // When include contains 'proposedValues'
+}
+
+interface CameraSettingsData {
+  timeZone?: string
+  rtsp?: CameraRtspConnectionSettings
+  credentials?: { username?: string; password?: string }
+  retention?: CameraSettingsRetention
+  audio?: CameraSettingsAudio
+  previewVideo?: CameraSettingsPreviewVideo
+  mainVideo?: CameraSettingsMainVideo
+  analog?: CameraSettingsAnalog
+  operatingSettings?: CameraSettingsOperating
+  talkdown?: CameraSettingsTalkdown
+}
+
+interface GetCameraSettingsParams {
+  include?: ('schema' | 'proposedValues')[]
+}
 ```
 
 ### ListCamerasParams
@@ -187,6 +214,26 @@ async function fetchCamera(cameraId: string) {
     return null
   }
 
+  return result.data
+}
+```
+
+### getCameraSettings(cameraId, params?)
+Get operational settings for a camera:
+```typescript
+import { getCameraSettings, type CameraSettings } from 'een-api-toolkit'
+
+async function fetchSettings(cameraId: string) {
+  const result = await getCameraSettings(cameraId, {
+    include: ['schema', 'proposedValues']
+  })
+
+  if (result.error) {
+    console.error('Failed to get settings:', result.error.message)
+    return null
+  }
+
+  console.log('Retention:', result.data.data.retention?.cloudDays, 'days')
   return result.data
 }
 ```

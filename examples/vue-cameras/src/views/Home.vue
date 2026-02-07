@@ -66,16 +66,17 @@ onMounted(() => {
     <div class="description">
       <h3>About This Example</h3>
       <p>
-        This example demonstrates how to use the <code>getCameras</code> and
-        <code>getCamera</code> functions from the EEN API Toolkit to display
-        and manage cameras from the Eagle Eye Networks platform.
+        This example demonstrates how to use the <code>getCameras</code>,
+        <code>getCamera</code>, and <code>getCameraSettings</code> functions
+        from the EEN API Toolkit to display and manage cameras from the
+        Eagle Eye Networks platform.
       </p>
       <h4>Features</h4>
       <ul>
         <li>List cameras with pagination</li>
-        <li>Filter cameras by status</li>
-        <li>View camera details</li>
-        <li>Display device information</li>
+        <li>View full camera details with all include parameters</li>
+        <li>View camera operational settings (retention, video, audio, etc.)</li>
+        <li>Google Maps link for cameras with location coordinates</li>
       </ul>
       <p class="storage-note" data-testid="storage-strategy">
         Storage strategy: <strong>{{ storageStrategy }}</strong> ({{ storageDescription }})

@@ -389,3 +389,271 @@ export interface GetCameraParams {
    */
   include?: string[]
 }
+
+/**
+ * Valid include values for the camera settings endpoint.
+ *
+ * @remarks
+ * - `schema` - Returns the JSON Schema describing all settings fields
+ * - `proposedValues` - Returns proposed/recommended values for settings
+ *
+ * @category Cameras
+ */
+export type CameraSettingsInclude = 'schema' | 'proposedValues'
+
+/**
+ * Parameters for getting camera settings.
+ *
+ * @remarks
+ * Controls what additional data is returned with camera settings.
+ *
+ * @example
+ * ```typescript
+ * import { getCameraSettings } from 'een-api-toolkit'
+ *
+ * const { data } = await getCameraSettings('camera-123', {
+ *   include: ['schema', 'proposedValues']
+ * })
+ * ```
+ *
+ * @category Cameras
+ */
+export interface GetCameraSettingsParams {
+  /** Additional data to include: 'schema' and/or 'proposedValues' */
+  include?: CameraSettingsInclude[]
+}
+
+/**
+ * Camera retention settings.
+ *
+ * @remarks
+ * Controls how long video data is retained in cloud and on-premise storage.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsRetention {
+  /** Number of days to retain recordings in cloud */
+  cloudDays?: number
+  /** Whether cloud stores only preview (lower resolution) video */
+  cloudPreviewOnly?: boolean
+  /** Minimum days to retain on the bridge */
+  minimumOnPremiseDays?: number
+  /** Maximum days to retain on the bridge */
+  maximumOnPremiseDays?: number
+  /** Number of days to always record (regardless of motion) */
+  alwaysRecordingDays?: number
+}
+
+/**
+ * Camera audio settings.
+ *
+ * @remarks
+ * Controls microphone and audio input configuration.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsAudio {
+  /** Whether the microphone is enabled */
+  microphoneEnabled?: boolean
+  /** Audio input source identifier */
+  inputSourceId?: string
+}
+
+/**
+ * Camera preview video settings.
+ *
+ * @remarks
+ * Configuration for the lower-resolution preview stream.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsPreviewVideo {
+  /** Transmit mode (e.g., "always", "event") */
+  transmitMode?: string
+  /** Resolution of the preview stream */
+  resolution?: string
+  /** Interval between preview frames in milliseconds */
+  intervalMs?: number
+  /** Quality setting for preview stream */
+  quality?: string
+  /** List of supported resolutions */
+  supportedResolutions?: string[]
+}
+
+/**
+ * Camera main video settings.
+ *
+ * @remarks
+ * Configuration for the full-resolution main stream.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsMainVideo {
+  /** Transmit mode (e.g., "always", "event") */
+  transmitMode?: string
+  /** Resolution of the main stream */
+  resolution?: string
+  /** Quality setting for main stream */
+  quality?: string
+  /** Bitrate factor in kbps */
+  kbpsFactor?: number
+  /** Capture mode */
+  captureMode?: string
+  /** List of supported resolutions */
+  supportedResolutions?: string[]
+}
+
+/**
+ * Camera analog video settings.
+ *
+ * @remarks
+ * Settings specific to analog cameras connected via encoders.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsAnalog {
+  /** Video standard (e.g., "NTSC", "PAL") */
+  videoStandard?: string
+  /** Whether bad signal protection is enabled */
+  badSignalProtection?: boolean
+  /** Whether a bad signal has been detected */
+  badSignalDetected?: boolean
+}
+
+/**
+ * Scheduled override for camera operating settings.
+ *
+ * @remarks
+ * Allows the camera to be turned on/off on a schedule.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsScheduledOverride {
+  /** Whether the scheduled override is active */
+  on?: boolean
+  /** Schedule definition */
+  schedule?: string
+}
+
+/**
+ * Camera operating settings.
+ *
+ * @remarks
+ * Controls whether the camera is on or off, with optional scheduled overrides.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsOperating {
+  /** Whether the camera is currently on */
+  on?: boolean
+  /** Optional scheduled override for on/off state */
+  scheduledOverride?: CameraSettingsScheduledOverride | null
+}
+
+/**
+ * Camera talkdown (two-way audio) settings.
+ *
+ * @remarks
+ * Configuration for cameras with speaker/talkdown capability.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsTalkdown {
+  /** Communication protocol for talkdown */
+  protocol?: string
+  /** Audio mode for talkdown */
+  audioMode?: string
+  /** SIP credentials for talkdown, if applicable */
+  sipCredentials?: object
+}
+
+/**
+ * Camera credentials settings.
+ *
+ * @remarks
+ * Credentials used to authenticate with the camera device.
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsCredentials {
+  /** Username for camera authentication */
+  username?: string
+  /** Password for camera authentication (write-only, may not be returned) */
+  password?: string
+}
+
+/**
+ * Aggregated camera settings data.
+ *
+ * @remarks
+ * Contains all operational settings for a camera, including retention,
+ * audio, video, analog, operating, and talkdown settings.
+ *
+ * @example
+ * ```typescript
+ * import { getCameraSettings, type CameraSettingsData } from 'een-api-toolkit'
+ *
+ * const { data } = await getCameraSettings('camera-123')
+ * if (data) {
+ *   console.log('Timezone:', data.data.timeZone)
+ *   console.log('Retention cloud days:', data.data.retention?.cloudDays)
+ * }
+ * ```
+ *
+ * @category Cameras
+ */
+export interface CameraSettingsData {
+  /** Camera timezone (IANA timezone name) */
+  timeZone?: string
+  /** RTSP connection settings */
+  rtsp?: CameraRtspConnectionSettings
+  /** Camera device credentials */
+  credentials?: CameraSettingsCredentials
+  /** Retention settings */
+  retention?: CameraSettingsRetention
+  /** Audio settings */
+  audio?: CameraSettingsAudio
+  /** Preview video stream settings */
+  previewVideo?: CameraSettingsPreviewVideo
+  /** Main video stream settings */
+  mainVideo?: CameraSettingsMainVideo
+  /** Analog video settings */
+  analog?: CameraSettingsAnalog
+  /** Operating on/off settings */
+  operatingSettings?: CameraSettingsOperating
+  /** Talkdown (two-way audio) settings */
+  talkdown?: CameraSettingsTalkdown
+}
+
+/**
+ * Top-level camera settings response from EEN API v3.0.
+ *
+ * @remarks
+ * The response wraps `CameraSettingsData` in a `data` property.
+ * Optionally includes `schema` (JSON Schema) and `proposedValues`
+ * when requested via the `include` query parameter.
+ *
+ * @example
+ * ```typescript
+ * import { getCameraSettings, type CameraSettings } from 'een-api-toolkit'
+ *
+ * const { data, error } = await getCameraSettings('camera-123', {
+ *   include: ['schema', 'proposedValues']
+ * })
+ * if (data) {
+ *   console.log('Settings:', data.data)
+ *   console.log('Schema:', data.schema)
+ *   console.log('Proposed values:', data.proposedValues)
+ * }
+ * ```
+ *
+ * @category Cameras
+ */
+export interface CameraSettings {
+  /** The camera settings data */
+  data: CameraSettingsData
+  /** JSON Schema describing all settings fields (when include contains 'schema') */
+  schema?: object
+  /** Proposed/recommended values (when include contains 'proposedValues') */
+  proposedValues?: object
+}
