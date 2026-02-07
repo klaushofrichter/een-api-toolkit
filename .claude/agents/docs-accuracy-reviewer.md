@@ -188,10 +188,10 @@ Before completing your review:
 1. Verify you've checked ALL markdown files in the project
 2. **Confirm ALL example app READMEs were reviewed** (list them in your report)
 3. **Confirm ALL `.claude/agents/een-*.md` files were reviewed** for API accuracy
-3. **Confirm ALL `.claude/skills/*/SKILL.md` files were reviewed** for script and npm command accuracy
-4. Confirm each fix you made is backed by evidence from source code
-5. Re-read modified sections to ensure they're clear and accurate
-6. Check that your fixes didn't introduce new broken links or inconsistencies
+4. **Confirm ALL `.claude/skills/*/SKILL.md` files were reviewed** for script and npm command accuracy
+5. Confirm each fix you made is backed by evidence from source code
+6. Re-read modified sections to ensure they're clear and accurate
+7. Check that your fixes didn't introduce new broken links or inconsistencies
 
 ## Common Agent File Issues to Watch For
 

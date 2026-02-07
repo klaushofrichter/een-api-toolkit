@@ -91,8 +91,8 @@ jobs:
           fi
 
           gh pr list --base production --state merged --limit 50 --json number,mergedAt 2>/dev/null \
-            | jq -r --arg since "$LAST_TAG_DATE" '.[] | select(.mergedAt > $since) | .number' \
-            | sort -u > pr_numbers.txt || echo "" > pr_numbers.txt
+            | jq -r --arg since "$LAST_TAG_DATE" '.[] | select(.mergedAt > $since) | .number // empty' \
+            | grep -v '^$' | sort -u > pr_numbers.txt || echo "" > pr_numbers.txt
 
           # Fetch details for each PR in this release
           > pr_summaries.txt

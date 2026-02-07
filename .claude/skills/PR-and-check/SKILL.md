@@ -38,7 +38,7 @@ description: Use this skill when you are requested to create a PR for a feature 
   - verify proxy is running: `curl -s http://127.0.0.1:8787/health`
   - if proxy fails to start, report warning but continue (E2E OAuth tests will be skipped)
 - Run E2E tests for all example apps (allow up to 20 minutes for all apps):
-  - run: `npm run test:e2e:examples` (with a 20-minute timeout)
+  - run: `npm run test:e2e:examples` (use a 20-minute bash timeout, e.g. `timeout 1200s npm run test:e2e:examples`)
   - this script discovers all example apps with playwright.config.ts, frees port 3333 between runs, and stops on first failure
   - if any E2E tests fail, analyse the failure, report findings, and stop
 - Run security review:
@@ -64,13 +64,13 @@ description: Use this skill when you are requested to create a PR for a feature 
   - wait 5 seconds, then check: `gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,headBranch`
   - confirm the run is for the correct branch
   - if workflow failed to start, report error and stop
-- Poll for completion (check once per minute, max 10 minutes total):
+- Poll for completion (check once per minute, max 20 minutes total):
   - Use separate bash commands with `sleep 60 && gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,conclusion`
-  - IMPORTANT: Do NOT use complex shell constructs like `for i in {1..10}` as they cause parse errors
+  - IMPORTANT: Do NOT use complex shell constructs like `for i in {1..20}` as they cause parse errors
   - Make sequential individual bash calls, checking the status after each one
   - If status is "completed", stop polling
 - Check the result:
-  - if the workflow did not finish within 10 minutes, report timeout and stop
+  - if the workflow did not finish within 20 minutes, report timeout and stop
   - view the review: `gh pr view <pr-number> --comments` or check the PR review file artifact
   - if the review includes recommendations to address before merging, summarize the recommendations and stop
   - if the review ended without critical recommendations, summarize the overall comments and stop
