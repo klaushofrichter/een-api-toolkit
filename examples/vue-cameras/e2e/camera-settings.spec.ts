@@ -271,6 +271,38 @@ test.describe('Camera Settings Modal', () => {
     expect(parsed).toHaveProperty('schema')
   })
 
+  test('modal JSON includes data, schema, and proposedValues', async ({ page }) => {
+    skipIfNotReady()
+
+    await loginAndNavigateToCameras(page)
+
+    const cardCount = await page.locator('.camera-card').count()
+    test.skip(cardCount === 0, 'No cameras available to test')
+
+    // Open settings modal
+    await page.locator('[data-testid="settings-btn"]').first().click()
+    await expect(page.locator('[data-testid="settings-modal-json"]')).toBeVisible({ timeout: TIMEOUTS.MODAL_CONTENT })
+
+    // Parse the JSON
+    const jsonText = await page.locator('[data-testid="settings-modal-json"]').textContent()
+    const parsed = JSON.parse(jsonText!)
+
+    // The settings response must always have a data property with actual settings
+    expect(parsed).toHaveProperty('data')
+    expect(parsed.data).toBeTruthy()
+    expect(typeof parsed.data).toBe('object')
+
+    // Both schema and proposedValues should be present since the
+    // component requests include: ['schema', 'proposedValues']
+    expect(parsed).toHaveProperty('schema')
+    expect(parsed).toHaveProperty('proposedValues')
+
+    // Verify the modal includes line confirms both include params
+    const includesText = await page.locator('[data-testid="settings-modal-includes"]').textContent()
+    expect(includesText).toContain('schema')
+    expect(includesText).toContain('proposedValues')
+  })
+
   test('modal displays header with title and includes', async ({ page }) => {
     skipIfNotReady()
 

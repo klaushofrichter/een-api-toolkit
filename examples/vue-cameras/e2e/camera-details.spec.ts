@@ -116,6 +116,43 @@ test.describe('Camera Details Modal', () => {
     await clearAuthState(page)
   })
 
+  test('camera card shows only name, ID, and bridge ID', async ({ page }) => {
+    skipIfNotReady()
+
+    await loginAndNavigateToCameras(page)
+
+    const cameraCards = page.locator('.camera-card')
+    const cardCount = await cameraCards.count()
+    test.skip(cardCount === 0, 'No cameras available to test')
+
+    const firstCard = cameraCards.first()
+
+    // Card should show the camera name in an h3
+    const name = firstCard.locator('.camera-header h3')
+    await expect(name).toBeVisible()
+    const nameText = await name.textContent()
+    expect(nameText!.trim().length).toBeGreaterThan(0)
+
+    // Card should show the ID
+    const details = firstCard.locator('.camera-details')
+    await expect(details).toContainText('ID:')
+
+    // Card should show the Bridge ID (or N/A)
+    await expect(details).toContainText('Bridge:')
+
+    // Card should NOT show status badges (no include params on list)
+    await expect(firstCard.locator('.status-badge')).not.toBeVisible()
+
+    // Card should NOT show device info, location, or tags sections
+    await expect(firstCard.locator('.device-info')).not.toBeVisible()
+    await expect(firstCard.locator('.location')).not.toBeVisible()
+    await expect(firstCard.locator('.tag')).not.toBeVisible()
+
+    // Verify the card has exactly the expected structure: header, details, actions
+    const paragraphs = details.locator('p')
+    await expect(paragraphs).toHaveCount(2) // ID and Bridge only
+  })
+
   test('each camera card has a Details button', async ({ page }) => {
     skipIfNotReady()
 
@@ -268,11 +305,24 @@ test.describe('Camera Details Modal', () => {
     const jsonText = await page.locator('[data-testid="modal-json"]').textContent()
     const parsed = JSON.parse(jsonText!)
 
-    // These fields are only present when requested via include parameter
-    // The Details modal calls getCamera with all includes, so status and deviceInfo should be present
+    // Basic fields always present
     expect(parsed).toHaveProperty('id')
     expect(parsed).toHaveProperty('name')
+
+    // These fields are only present when requested via include parameter.
+    // The Details modal calls getCamera with all 22 include values.
+    // status and deviceInfo are reliably returned for cameras that exist.
     expect(parsed).toHaveProperty('status')
+    expect(parsed).toHaveProperty('deviceInfo')
+
+    // Verify the modal includes line lists the include parameters used
+    const includesText = await page.locator('[data-testid="modal-includes"]').textContent()
+    expect(includesText).toContain('status')
+    expect(includesText).toContain('deviceInfo')
+    expect(includesText).toContain('devicePosition')
+    expect(includesText).toContain('tags')
+    expect(includesText).toContain('shareDetails')
+    expect(includesText).toContain('enabledAnalytics')
   })
 
   test('modal displays header with title', async ({ page }) => {
@@ -406,6 +456,47 @@ test.describe('Camera Details Modal', () => {
 
     // Camera grid should still exist in the DOM (behind the overlay)
     await expect(page.locator('.camera-grid')).toBeAttached()
+  })
+
+  test('camera detail page shows Google Maps link when coordinates exist', async ({ page }) => {
+    skipIfNotReady()
+
+    await loginAndNavigateToCameras(page)
+
+    const cardCount = await page.locator('.camera-card').count()
+    test.skip(cardCount === 0, 'No cameras available to test')
+
+    // Click on the card itself to navigate to the detail page
+    await page.locator('.camera-card .camera-header').first().click()
+
+    // Should navigate to camera detail page
+    await expect(page).toHaveURL(/\/cameras\/[a-f0-9-]+/, { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+    await expect(page.locator('.camera-detail')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE })
+
+    // Wait for loading to complete
+    await expect(page.locator('.loading')).not.toBeVisible({ timeout: TIMEOUTS.MODAL_CONTENT })
+
+    // Check if this camera has devicePosition with coordinates
+    const locationSection = page.locator('.info-section:has(h3:text("Location"))')
+    const hasLocation = await locationSection.count() > 0
+
+    if (hasLocation) {
+      // Verify the Google Maps link is present
+      const mapLink = page.locator('a.map-link')
+      await expect(mapLink).toBeVisible()
+      await expect(mapLink).toHaveText('View on Google Maps')
+
+      // Verify the link points to Google Maps with correct URL format
+      const href = await mapLink.getAttribute('href')
+      expect(href).toMatch(/^https:\/\/www\.google\.com\/maps\/search\/\?api=1&query=-?[\d.]+,-?[\d.]+$/)
+
+      // Verify the link opens in a new tab
+      await expect(mapLink).toHaveAttribute('target', '_blank')
+      await expect(mapLink).toHaveAttribute('rel', 'noopener noreferrer')
+    } else {
+      // If no location data, the map link should not be present
+      await expect(page.locator('a.map-link')).not.toBeVisible()
+    }
   })
 
   test('full workflow: login, view cameras, open details, close, go home', async ({ page }) => {
