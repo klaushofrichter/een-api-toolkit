@@ -25,7 +25,7 @@ const settingsError = ref<EenError | null>(null)
 const showSettings = ref(false)
 const settingsLoadingId = ref<string | null>(null)
 
-const settingsIncludes = ['schema', 'proposedValues']
+const settingsIncludes = ['schema', 'proposedValues'] as const
 
 async function fetchSettings(cameraId: string) {
   settingsLoading.value = true
@@ -34,7 +34,7 @@ async function fetchSettings(cameraId: string) {
   settingsError.value = null
   showSettings.value = true
 
-  const result = await getCameraSettings(cameraId, { include: settingsIncludes as ('schema' | 'proposedValues')[] })
+  const result = await getCameraSettings(cameraId, { include: [...settingsIncludes] })
 
   if (result.error) {
     settingsError.value = result.error
