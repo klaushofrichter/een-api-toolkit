@@ -29,10 +29,14 @@ This is the recommended strategy for high-security deployments where protecting 
 - `listAlertConditionRules()` - List alert condition rules with optional includes
 - `listAlertActionRules()` - List alert action rules
 - `listAlertActions()` - List alert actions
+- `getCurrentUser()` - Get current user profile
 - `useAuthStore()` - Authentication state management
 - `getAuthUrl()` - Generate OAuth login URL
 - `handleAuthCallback()` - Process OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Setup
 

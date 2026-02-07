@@ -23,12 +23,24 @@ A Vue 3 example demonstrating how to query and display events from EEN cameras u
 ## APIs Used
 
 - `listEvents()` - List events with actor, type, and timestamp filters
+- `getEvent()` - Get a single event by ID
 - `listEventFieldValues()` - Get available event types for a specific camera
 - `listEventTypes()` - Get human-readable names for event types
+- `getIncludeParameterForEventTypes()` - Get include parameters for event types
+- `getDataSchemasForEventType()` - Get data schemas for a specific event type
 - `getRecordedImage()` - Fetch preview image at event timestamp
 - `getCameras()` - List cameras for the camera grid
+- `getCurrentUser()` - Get current user profile
+- `initMediaSession()` - Initialize media session for image access
+- `listMedia()` - Get media intervals
+- `formatTimestamp()` - Format timestamps for display
 - `useAuthStore()` - Authentication state management
+- `getAuthUrl()` - Generate OAuth login URL
+- `handleAuthCallback()` - Process OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Setup
 

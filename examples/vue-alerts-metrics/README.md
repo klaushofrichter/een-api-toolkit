@@ -123,13 +123,23 @@ This example demonstrates the following `een-api-toolkit` functions:
 - `initEenToolkit()` - Initialize the toolkit
 - `getAuthUrl()` - Get OAuth authorization URL
 - `handleAuthCallback()` - Handle OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `useAuthStore()` - Access authentication state
+- `getCurrentUser()` - Get current user profile
 - `getCameras()` - List available cameras
 - `listEventFieldValues()` - Get available event types for a camera
 - `getEventMetrics()` - Fetch event metrics time-series data
 - `listAlertTypes()` - Get available alert types
 - `listAlerts()` - Fetch alerts for a camera
+- `getAlert()` - Get a single alert by ID
 - `listNotifications()` - Fetch notifications for a camera
+- `getNotification()` - Get a single notification by ID
+- `getRecordedImage()` - Fetch recorded image at a timestamp
+- `initMediaSession()` - Initialize media session for image access
+- `listMedia()` - Get media intervals
+- `formatTimestamp()` - Format timestamps for display
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Known Limitations
 

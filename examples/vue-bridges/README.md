@@ -18,8 +18,14 @@ A Vue 3 example demonstrating how to list and view EEN bridge devices using the 
 
 - `getBridges()` - List bridges with filtering and pagination
 - `getBridge()` - Get single bridge by ID
+- `getCurrentUser()` - Get current user profile
 - `useAuthStore()` - Authentication state management
+- `getAuthUrl()` - Generate OAuth login URL
+- `handleAuthCallback()` - Process OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Setup
 

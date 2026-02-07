@@ -22,7 +22,12 @@ A Vue 3 example demonstrating how to list camera feeds and display live video us
 - `listFeeds()` - List feeds with streaming URLs (HLS, Multipart, FLV, RTSP)
 - `initMediaSession()` - Initialize session cookie for media access
 - `useAuthStore()` - Authentication state management
+- `getAuthUrl()` - Generate OAuth login URL
+- `handleAuthCallback()` - Process OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Video Streaming Modes
 
