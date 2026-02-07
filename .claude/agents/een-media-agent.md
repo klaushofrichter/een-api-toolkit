@@ -164,8 +164,8 @@ import { getRecordedImage, formatTimestamp } from 'een-api-toolkit'
 async function fetchRecordedFrame(deviceId: string, date: Date) {
   const result = await getRecordedImage({
     deviceId,
-    timestamp: formatTimestamp(date.toISOString()),  // MUST use formatTimestamp()
-    type: 'preview'  // Optional, defaults to 'preview'
+    timestamp__gte: formatTimestamp(date.toISOString()),  // MUST use formatTimestamp()
+    type: 'preview'  // Optional
   })
 
   if (result.data) {
@@ -179,12 +179,14 @@ List recorded media intervals:
 ```typescript
 import { listMedia, formatTimestamp, type ListMediaParams } from 'een-api-toolkit'
 
-async function fetchRecordings(cameraId: string, startDate: Date, endDate: Date) {
+async function fetchRecordings(deviceId: string, startDate: Date, endDate: Date) {
   const result = await listMedia({
-    cameraId,
+    deviceId,
+    type: 'preview',                              // Stream type: 'preview' or 'main'
+    mediaType: 'video',                            // Content type: 'video' or 'image'
     startTimestamp: formatTimestamp(startDate),
     endTimestamp: formatTimestamp(endDate),
-    type: 'video'
+    include: ['hlsUrl']                            // Request HLS URLs for playback
   })
 
   if (result.data) {

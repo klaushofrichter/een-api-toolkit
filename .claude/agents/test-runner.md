@@ -2,7 +2,7 @@
 name: test-runner
 description: |
   Use this agent when you need to run the complete test suite for the project, including unit tests (Vitest) and E2E tests (Playwright). This agent is ideal after writing a logical chunk of code, before creating a PR, or when you want to verify the overall health of the codebase. The agent executes tests and reports results but does not modify any code.
-model: inherit
+model: sonnet
 color: green
 ---
 
@@ -69,14 +69,16 @@ Capture and analyze:
 - Test file locations for failures
 
 ### Step 3: Execute E2E Tests
-Run the Playwright E2E test suite:
+Run the Playwright E2E tests for all example apps:
 ```bash
-npm run test:e2e
+npm run test:e2e:examples
 ```
+This script (`scripts/run-examples-e2e.sh`) discovers all example apps with `playwright.config.ts`, frees port 3333 between runs, and stops on first failure.
+
 Capture and analyze:
-- Browser contexts tested
-- Total E2E scenarios run
-- Passed/failed counts
+- Which example apps passed/failed
+- Total E2E scenarios run across all apps
+- Passed/failed counts per app
 - Screenshots or traces for failures (if available)
 - Timeout or network-related issues
 

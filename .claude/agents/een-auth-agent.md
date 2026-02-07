@@ -119,7 +119,7 @@ const authStore = useAuthStore()
 authStore.token          // Current access token
 authStore.baseUrl        // EEN API base URL (region-specific)
 authStore.isAuthenticated // Computed: true if valid token exists
-authStore.isExpired      // Computed: true if token expired
+authStore.isTokenExpired // Computed: true if token expired
 ```
 
 ### authStore.initialize() - Session Restoration (CRITICAL)

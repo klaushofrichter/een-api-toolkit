@@ -5,13 +5,18 @@ description: Use this skill when you are requested to create a PR for a feature 
 
 # Instructions
 
-## 1. Validate branch and determine PR target
+## 1. Validate branch and sync state
+- Fetch all remote refs and tags: `git fetch origin --tags`
 - Check current branch: `git branch --show-current`
 - Determine the PR flow:
   - If on `develop` → create PR to `production`
   - If on `production` → report error and stop (cannot create PR from production)
   - If on any other branch (feature branch) → create PR to `develop`
 - Store the target branch for later use
+- Check for in-progress release workflows:
+  - run: `gh run list --workflow="Test Release" --status=in_progress --json databaseId,status --jq 'length'`
+  - run: `gh run list --workflow="Publish Release" --status=in_progress --json databaseId,status --jq 'length'`
+  - if either returns > 0, report that a release is in progress and stop (wait for it to complete before creating a new PR)
 
 ## 2. Check for existing PR
 - Check if a PR already exists for this branch to the target:
@@ -32,15 +37,10 @@ description: Use this skill when you are requested to create a PR for a feature 
   - run: `./scripts/restart-proxy.sh`
   - verify proxy is running: `curl -s http://127.0.0.1:8787/health`
   - if proxy fails to start, report warning but continue (E2E OAuth tests will be skipped)
-- Run E2E tests for all example apps sequentially:
-  - find all example app directories with e2e tests: `for dir in examples/*/; do if [ -d "${dir}e2e" ]; then echo "$dir"; fi; done`
-  - for each example app, run the following steps in sequence:
-    1. Kill any process using port 3333: `kill $(lsof -ti :3333) 2>/dev/null || true`
-    2. Verify port 3333 is free: `lsof -ti :3333` (should return empty)
-    3. Run the E2E tests: `cd /path/to/project/examples/<app-name> && npx playwright test`
-    4. After the tests complete, kill the vite server on port 3333 again: `kill $(lsof -ti :3333) 2>/dev/null || true`
+- Run E2E tests for all example apps (allow up to 20 minutes for all apps):
+  - run: `npm run test:e2e:examples` (use a 20-minute bash timeout, e.g. `timeout 1200s npm run test:e2e:examples`)
+  - this script discovers all example apps with playwright.config.ts, frees port 3333 between runs, and stops on first failure
   - if any E2E tests fail, analyse the failure, report findings, and stop
-  - report total number of E2E tests passed across all example apps
 - Run security review:
   - invoke the `/security-review` skill to analyze code changes for security vulnerabilities
   - if any HIGH severity vulnerabilities are found with confidence >= 8, report findings and stop
@@ -64,13 +64,13 @@ description: Use this skill when you are requested to create a PR for a feature 
   - wait 5 seconds, then check: `gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,headBranch`
   - confirm the run is for the correct branch
   - if workflow failed to start, report error and stop
-- Poll for completion (check once per minute, max 10 minutes total):
+- Poll for completion (check once per minute, max 20 minutes total):
   - Use separate bash commands with `sleep 60 && gh run list --workflow=claude-code-review.yml --limit 1 --json databaseId,status,conclusion`
-  - IMPORTANT: Do NOT use complex shell constructs like `for i in {1..10}` as they cause parse errors
+  - IMPORTANT: Do NOT use complex shell constructs like `for i in {1..20}` as they cause parse errors
   - Make sequential individual bash calls, checking the status after each one
   - If status is "completed", stop polling
 - Check the result:
-  - if the workflow did not finish within 10 minutes, report timeout and stop
+  - if the workflow did not finish within 20 minutes, report timeout and stop
   - view the review: `gh pr view <pr-number> --comments` or check the PR review file artifact
   - if the review includes recommendations to address before merging, summarize the recommendations and stop
   - if the review ended without critical recommendations, summarize the overall comments and stop
