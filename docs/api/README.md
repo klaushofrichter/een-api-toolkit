@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.61**
+**EEN API Toolkit v0.3.62**
 
 ***
 
-# EEN API Toolkit v0.3.61
+# EEN API Toolkit v0.3.62
 
 ## Interfaces
 

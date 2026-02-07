@@ -37,8 +37,8 @@ description: Use this skill when you are requested to create a PR for a feature 
   - run: `./scripts/restart-proxy.sh`
   - verify proxy is running: `curl -s http://127.0.0.1:8787/health`
   - if proxy fails to start, report warning but continue (E2E OAuth tests will be skipped)
-- Run E2E tests for all example apps:
-  - run: `npm run test:e2e:examples`
+- Run E2E tests for all example apps (allow up to 20 minutes for all apps):
+  - run: `npm run test:e2e:examples` (with a 20-minute timeout)
   - this script discovers all example apps with playwright.config.ts, frees port 3333 between runs, and stops on first failure
   - if any E2E tests fail, analyse the failure, report findings, and stop
 - Run security review:
