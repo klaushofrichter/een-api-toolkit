@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.55**
+**EEN API Toolkit v0.3.56**
 
 ***
 
-# EEN API Toolkit v0.3.55
+# EEN API Toolkit v0.3.56
 
 ## Interfaces
 
@@ -79,6 +79,18 @@
 - [Camera](interfaces/Camera.md)
 - [ListCamerasParams](interfaces/ListCamerasParams.md)
 - [GetCameraParams](interfaces/GetCameraParams.md)
+- [GetCameraSettingsParams](interfaces/GetCameraSettingsParams.md)
+- [CameraSettingsRetention](interfaces/CameraSettingsRetention.md)
+- [CameraSettingsAudio](interfaces/CameraSettingsAudio.md)
+- [CameraSettingsPreviewVideo](interfaces/CameraSettingsPreviewVideo.md)
+- [CameraSettingsMainVideo](interfaces/CameraSettingsMainVideo.md)
+- [CameraSettingsAnalog](interfaces/CameraSettingsAnalog.md)
+- [CameraSettingsScheduledOverride](interfaces/CameraSettingsScheduledOverride.md)
+- [CameraSettingsOperating](interfaces/CameraSettingsOperating.md)
+- [CameraSettingsTalkdown](interfaces/CameraSettingsTalkdown.md)
+- [CameraSettingsCredentials](interfaces/CameraSettingsCredentials.md)
+- [CameraSettingsData](interfaces/CameraSettingsData.md)
+- [CameraSettings](interfaces/CameraSettings.md)
 
 ### Configuration
 
@@ -201,6 +213,7 @@
 ### Cameras
 
 - [CameraStatus](type-aliases/CameraStatus.md)
+- [CameraSettingsInclude](type-aliases/CameraSettingsInclude.md)
 
 ### Configuration
 
@@ -318,6 +331,7 @@
 
 - [getCameras](functions/getCameras.md)
 - [getCamera](functions/getCamera.md)
+- [getCameraSettings](functions/getCameraSettings.md)
 
 ### Configuration
 

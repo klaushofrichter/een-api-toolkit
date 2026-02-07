@@ -316,6 +316,7 @@ import { listAlerts, type Alert, type ListAlertsParams } from 'een-api-toolkit'
 async function fetchAlerts() {
   const result = await listAlerts({
     status__in: ['active', 'acknowledged'],
+    include: ['data', 'actions', 'dataSchemas', 'description'],
     pageSize: 20
   })
 
@@ -324,6 +325,13 @@ async function fetchAlerts() {
   }
 }
 ```
+
+#### Alert Include Parameter
+The `include` parameter controls what additional data is returned with each alert:
+- `'data'` - Include alert data objects (varies by alert type)
+- `'actions'` - Include actions executed for this alert
+- `'dataSchemas'` - Include list of data schema types
+- `'description'` - Include human-readable description
 
 ### Alert Priority
 Alert priority is an integer value ranging from **0 to 10**:

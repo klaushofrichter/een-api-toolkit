@@ -194,6 +194,12 @@ watch(
             <dt v-if="camera.devicePosition.latitude !== undefined">Coordinates</dt>
             <dd v-if="camera.devicePosition.latitude !== undefined">
               {{ camera.devicePosition.latitude }}, {{ camera.devicePosition.longitude }}
+              <a
+                :href="`https://www.google.com/maps/search/?api=1&query=${camera.devicePosition.latitude},${camera.devicePosition.longitude}`"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="map-link"
+              >View on Google Maps</a>
             </dd>
 
             <dt v-if="camera.devicePosition.floor !== undefined">Floor</dt>
@@ -336,6 +342,17 @@ dt {
 dd {
   margin: 0;
   color: #333;
+}
+
+.map-link {
+  margin-left: 8px;
+  color: #42b883;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.map-link:hover {
+  text-decoration: underline;
 }
 
 .tag {

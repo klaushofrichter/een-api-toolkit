@@ -1,2 +1,2 @@
 // Plain functions
-export { getCameras, getCamera } from './service'
+export { getCameras, getCamera, getCameraSettings } from './service'

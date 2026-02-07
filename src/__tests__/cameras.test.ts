@@ -9,7 +9,15 @@ import type {
   CameraDevicePosition,
   CameraRecordingModes,
   ListCamerasParams,
-  GetCameraParams
+  GetCameraParams,
+  CameraSettings,
+  CameraSettingsRetention,
+  CameraSettingsAudio,
+  CameraSettingsPreviewVideo,
+  CameraSettingsMainVideo,
+  CameraSettingsAnalog,
+  CameraSettingsOperating,
+  GetCameraSettingsParams
 } from '../types'
 
 describe('Camera types', () => {
@@ -380,6 +388,234 @@ describe('Camera types', () => {
 
     it('should accept empty params', () => {
       const params: GetCameraParams = {}
+
+      expect(params.include).toBeUndefined()
+    })
+  })
+
+  describe('CameraSettings types', () => {
+    it('should accept a minimal CameraSettings object', () => {
+      const settings: CameraSettings = {
+        data: {}
+      }
+
+      expect(settings.data).toBeDefined()
+      expect(settings.schema).toBeUndefined()
+      expect(settings.proposedValues).toBeUndefined()
+    })
+
+    it('should accept a full CameraSettings with all nested data', () => {
+      const settings: CameraSettings = {
+        data: {
+          timeZone: 'America/Los_Angeles',
+          rtsp: {
+            url: 'rtsp://camera.local/stream',
+            username: 'admin',
+            transport: 'tcp'
+          },
+          credentials: {
+            username: 'admin',
+            password: 'secret'
+          },
+          retention: {
+            cloudDays: 30,
+            cloudPreviewOnly: false,
+            minimumOnPremiseDays: 7,
+            maximumOnPremiseDays: 90,
+            alwaysRecordingDays: 3
+          },
+          audio: {
+            microphoneEnabled: true,
+            inputSourceId: 'mic-1'
+          },
+          previewVideo: {
+            transmitMode: 'always',
+            resolution: 'CIF',
+            intervalMs: 4000,
+            quality: 'medium',
+            supportedResolutions: ['CIF', 'QCIF', '4CIF']
+          },
+          mainVideo: {
+            transmitMode: 'always',
+            resolution: '1080p',
+            quality: 'high',
+            kbpsFactor: 1.0,
+            captureMode: 'stream',
+            supportedResolutions: ['720p', '1080p', '4K']
+          },
+          analog: {
+            videoStandard: 'NTSC',
+            badSignalProtection: true,
+            badSignalDetected: false
+          },
+          operatingSettings: {
+            on: true,
+            scheduledOverride: {
+              on: false,
+              schedule: '0 22 * * *'
+            }
+          },
+          talkdown: {
+            protocol: 'SIP',
+            audioMode: 'simplex',
+            sipCredentials: { user: 'sip-user' }
+          }
+        }
+      }
+
+      expect(settings.data.timeZone).toBe('America/Los_Angeles')
+      expect(settings.data.retention?.cloudDays).toBe(30)
+      expect(settings.data.previewVideo?.supportedResolutions).toContain('CIF')
+      expect(settings.data.mainVideo?.kbpsFactor).toBe(1.0)
+      expect(settings.data.operatingSettings?.on).toBe(true)
+    })
+
+    it('should accept CameraSettings with schema and proposedValues', () => {
+      const settings: CameraSettings = {
+        data: {
+          timeZone: 'UTC',
+          retention: { cloudDays: 14 }
+        },
+        schema: {
+          type: 'object',
+          properties: {
+            timeZone: { type: 'string' }
+          }
+        },
+        proposedValues: {
+          retention: { cloudDays: 30 }
+        }
+      }
+
+      expect(settings.schema).toBeDefined()
+      expect(settings.proposedValues).toBeDefined()
+    })
+  })
+
+  describe('CameraSettingsRetention interface', () => {
+    it('should accept retention settings', () => {
+      const retention: CameraSettingsRetention = {
+        cloudDays: 30,
+        cloudPreviewOnly: false,
+        minimumOnPremiseDays: 7,
+        maximumOnPremiseDays: 90,
+        alwaysRecordingDays: 3
+      }
+
+      expect(retention.cloudDays).toBe(30)
+      expect(retention.cloudPreviewOnly).toBe(false)
+      expect(retention.maximumOnPremiseDays).toBe(90)
+    })
+  })
+
+  describe('CameraSettingsPreviewVideo interface', () => {
+    it('should accept preview video settings with supportedResolutions', () => {
+      const preview: CameraSettingsPreviewVideo = {
+        transmitMode: 'always',
+        resolution: 'CIF',
+        intervalMs: 4000,
+        quality: 'medium',
+        supportedResolutions: ['CIF', 'QCIF']
+      }
+
+      expect(preview.resolution).toBe('CIF')
+      expect(preview.supportedResolutions).toHaveLength(2)
+    })
+  })
+
+  describe('CameraSettingsMainVideo interface', () => {
+    it('should accept main video settings with supportedResolutions', () => {
+      const main: CameraSettingsMainVideo = {
+        transmitMode: 'always',
+        resolution: '1080p',
+        quality: 'high',
+        kbpsFactor: 1.5,
+        captureMode: 'stream',
+        supportedResolutions: ['720p', '1080p']
+      }
+
+      expect(main.kbpsFactor).toBe(1.5)
+      expect(main.supportedResolutions).toContain('1080p')
+    })
+  })
+
+  describe('CameraSettingsAudio interface', () => {
+    it('should accept audio settings', () => {
+      const audio: CameraSettingsAudio = {
+        microphoneEnabled: true,
+        inputSourceId: 'mic-0'
+      }
+
+      expect(audio.microphoneEnabled).toBe(true)
+      expect(audio.inputSourceId).toBe('mic-0')
+    })
+  })
+
+  describe('CameraSettingsAnalog interface', () => {
+    it('should accept analog settings', () => {
+      const analog: CameraSettingsAnalog = {
+        videoStandard: 'PAL',
+        badSignalProtection: true,
+        badSignalDetected: false
+      }
+
+      expect(analog.videoStandard).toBe('PAL')
+      expect(analog.badSignalProtection).toBe(true)
+    })
+  })
+
+  describe('CameraSettingsOperating interface', () => {
+    it('should accept operating settings with scheduledOverride', () => {
+      const operating: CameraSettingsOperating = {
+        on: true,
+        scheduledOverride: {
+          on: true,
+          schedule: '0 8-18 * * 1-5'
+        }
+      }
+
+      expect(operating.on).toBe(true)
+      expect(operating.scheduledOverride?.on).toBe(true)
+      expect(operating.scheduledOverride?.schedule).toBe('0 8-18 * * 1-5')
+    })
+
+    it('should accept operating settings with null scheduledOverride', () => {
+      const operating: CameraSettingsOperating = {
+        on: true,
+        scheduledOverride: null
+      }
+
+      expect(operating.scheduledOverride).toBeNull()
+    })
+  })
+
+  describe('GetCameraSettingsParams interface', () => {
+    it('should accept include with schema', () => {
+      const params: GetCameraSettingsParams = {
+        include: ['schema']
+      }
+
+      expect(params.include).toContain('schema')
+    })
+
+    it('should accept include with proposedValues', () => {
+      const params: GetCameraSettingsParams = {
+        include: ['proposedValues']
+      }
+
+      expect(params.include).toContain('proposedValues')
+    })
+
+    it('should accept include with both schema and proposedValues', () => {
+      const params: GetCameraSettingsParams = {
+        include: ['schema', 'proposedValues']
+      }
+
+      expect(params.include).toHaveLength(2)
+    })
+
+    it('should accept empty params', () => {
+      const params: GetCameraSettingsParams = {}
 
       expect(params.include).toBeUndefined()
     })
