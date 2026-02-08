@@ -30,7 +30,6 @@ This is the recommended strategy for high-security deployments where protecting 
 ## APIs Used
 
 - `getLayouts()` - List layouts with pagination and filtering
-- `getLayout()` - Get a specific layout by ID
 - `createLayout()` - Create a new layout
 - `updateLayout()` - Update an existing layout
 - `deleteLayout()` - Delete a layout
@@ -39,7 +38,10 @@ This is the recommended strategy for high-security deployments where protecting 
 - `useAuthStore()` - Authentication state management
 - `getAuthUrl()` - Generate OAuth login URL
 - `handleAuthCallback()` - Process OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Setup
 

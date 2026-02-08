@@ -18,8 +18,15 @@ A Vue 3 example demonstrating how to list and view EEN cameras using the een-api
 
 - `getCameras()` - List cameras with filtering and pagination
 - `getCamera()` - Get single camera by ID
+- `getCameraSettings()` - Get camera settings
+- `getCurrentUser()` - Get current user profile
 - `useAuthStore()` - Authentication state management
+- `getAuthUrl()` - Generate OAuth login URL
+- `handleAuthCallback()` - Process OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Setup
 

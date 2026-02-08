@@ -27,14 +27,21 @@ This is the recommended strategy for high-security deployments where protecting 
 
 - `listJobs()` - List jobs with filtering and pagination
 - `getJob()` - Get single job details
+- `deleteJob()` - Delete a job
 - `createExportJob()` - Create video export job
 - `listFiles()` - List files with pagination
 - `downloadFile()` - Download file content
+- `deleteFile()` - Delete a file
 - `getCameras()` - Get cameras for export selection
+- `getCurrentUser()` - Get current user profile
+- `formatTimestamp()` - Format timestamps for display
 - `useAuthStore()` - Authentication state management
 - `getAuthUrl()` - Generate OAuth login URL
 - `handleAuthCallback()` - Process OAuth callback
+- `revokeToken()` - Revoke authentication token on logout
 - `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Setup
 

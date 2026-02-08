@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useAuthStore, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from 'een-api-toolkit'
 
 const authStore = useAuthStore()
+const isAuthenticated = computed(() => authStore.isAuthenticated)
 
 const storageStrategy = getStorageStrategy()
 const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
@@ -11,7 +13,7 @@ const storageDescription = STORAGE_STRATEGY_DESCRIPTIONS[storageStrategy]
   <div class="home">
     <h2>Welcome to the EEN Feeds Example</h2>
 
-    <div v-if="!authStore.isAuthenticated" class="login-prompt" data-testid="not-authenticated">
+    <div v-if="!isAuthenticated" class="login-prompt" data-testid="not-authenticated">
       <p>Please log in to view camera feeds.</p>
       <router-link to="/login">
         <button data-testid="login-button">Login with Eagle Eye Networks</button>

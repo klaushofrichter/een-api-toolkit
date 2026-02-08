@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.63**
+**EEN API Toolkit v0.3.67**
 
 ***
 
-# EEN API Toolkit v0.3.63
+# EEN API Toolkit v0.3.67
 
 ## Interfaces
 
@@ -426,4 +426,6 @@
 
 ### Utilities
 
+- [getCameraStatusString](functions/getCameraStatusString.md)
+- [isStatusObject](functions/isStatusObject.md)
 - [formatTimestamp](functions/formatTimestamp.md)

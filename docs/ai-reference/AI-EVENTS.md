@@ -1,6 +1,6 @@
 # Events, Alerts & Real-Time Streaming - EEN API Toolkit
 
-> **Version:** 0.3.63
+> **Version:** 0.3.67
 >
 > Complete reference for events, alerts, metrics, and SSE subscriptions.
 > Load this document when implementing event-driven features.
@@ -1002,6 +1002,7 @@ watch([timeRange, selectedEventTypes], () => {
                   class="json-button"
                   @click="openJsonViewer(event.id)"
                   title="View JSON data"
+                  aria-label="View event JSON data"
                   data-testid="json-button"
                 >{ }</button>
               </div>

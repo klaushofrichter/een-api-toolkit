@@ -88,7 +88,12 @@ Streams recorded video using HLS (HTTP Live Streaming) protocol with adaptive bi
 | `initMediaSession()` | HLS Video | Initialize media session for video URLs |
 | `listMedia()` | HLS Video | Get media intervals with streaming URLs |
 | `useAuthStore()` | All pages | Authentication state management |
+| `getAuthUrl()` | Login | Generate OAuth login URL |
+| `handleAuthCallback()` | Callback | Process OAuth callback |
+| `revokeToken()` | Logout | Revoke authentication token on logout |
 | `initEenToolkit()` | App initialization | Configure toolkit settings |
+| `getStorageStrategy()` | Home | Get the current storage strategy |
+| `STORAGE_STRATEGY_DESCRIPTIONS` | Home | Human-readable storage strategy descriptions |
 
 **Note on `useAuthStore()`:** All toolkit functions (`getCameras`, `getLiveImage`, `getRecordedImage`, `listMedia`) use `useAuthStore()` internally to get the authentication token. The HLS Video page is the only one that explicitly calls `useAuthStore()` in its code because HLS.js is a third-party library that makes its own HTTP requests - the token must be manually passed to HLS.js via the `xhrSetup` callback.
 

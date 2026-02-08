@@ -1,6 +1,6 @@
 # Event Type to Data Schemas Mapping - EEN API Toolkit
 
-> **Version:** 0.3.63
+> **Version:** 0.3.67
 >
 > Complete reference for event type to data schema mappings.
 > Load this document when building dynamic event queries with the `include` parameter.
@@ -112,123 +112,122 @@ const schemas = EVENT_TYPE_DATA_SCHEMAS['een.personDetectionEvent.v1']
 
 ## Event Type to Data Schemas Reference
 
+
 ### Detection Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.motionDetectionEvent.v1` | `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.motionInRegionDetectionEvent.v1` | `motionRegion`, `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.personDetectionEvent.v1` | `objectDetection`, `personAttributes`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectClassification`, `objectRegionMapping`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay`, `geoLocation` |
-| `een.personMotionDetectionEvent.v1` | `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectClassification` |
-| `een.animalDetectionEvent.v1` | `objectDetection`, `animalAttributes`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectClassification`, `objectRegionMapping`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.faceDetectionEvent.v1` | `objectDetection`, `personAttributes`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectClassification`, `objectRegionMapping`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.vehicleDetectionEvent.v1` | `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectClassification`, `vehicleAttributes`, `objectRegionMapping`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.vehicleMotionDetectionEvent.v1` | `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectClassification`, `vehicleAttributes` |
-| `een.gunDetectionEvent.v1` | `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectDetection`, `motionRegion`, `objectClassification`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay`, `weaponAttributes`, `personAttributes`, `humanValidationDetails` |
-| `een.weaponDetectionEvent.v1` | `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectDetection`, `motionRegion`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.fallDetectionEvent.v1` | `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.fireDetectionEvent.v1` | `objectDetection`, `objectClassification`, `croppedFrameImageUrl`, `fullFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.spillDetectionEvent.v1` | `objectDetection`, `objectClassification`, `croppedFrameImageUrl`, `fullFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.crowdFormationDetectionEvent.v1` | `objectDetection`, `objectClassification`, `croppedFrameImageUrl`, `fullFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
+| `een.motionDetectionEvent.v1` | objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.motionInRegionDetectionEvent.v1` | motionRegion, objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.personDetectionEvent.v1` | objectDetection, personAttributes, fullFrameImageUrl, croppedFrameImageUrl, objectClassification, objectRegionMapping, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay, geoLocation |
+| `een.personMotionDetectionEvent.v1` | objectDetection, fullFrameImageUrl, croppedFrameImageUrl, objectClassification |
+| `een.animalDetectionEvent.v1` | objectDetection, animalAttributes, fullFrameImageUrl, croppedFrameImageUrl, objectClassification, objectRegionMapping, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.faceDetectionEvent.v1` | objectDetection, personAttributes, fullFrameImageUrl, croppedFrameImageUrl, objectClassification, objectRegionMapping, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.vehicleDetectionEvent.v1` | objectDetection, fullFrameImageUrl, croppedFrameImageUrl, objectClassification, vehicleAttributes, objectRegionMapping, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.vehicleMotionDetectionEvent.v1` | objectDetection, fullFrameImageUrl, croppedFrameImageUrl, objectClassification, vehicleAttributes |
+| `een.gunDetectionEvent.v1` | fullFrameImageUrl, croppedFrameImageUrl, objectDetection, motionRegion, objectClassification, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay, weaponAttributes, personAttributes, humanValidationDetails |
+| `een.weaponDetectionEvent.v1` | fullFrameImageUrl, croppedFrameImageUrl, objectDetection, motionRegion, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.fallDetectionEvent.v1` | objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.fireDetectionEvent.v1` | objectDetection, objectClassification, croppedFrameImageUrl, fullFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.spillDetectionEvent.v1` | objectDetection, objectClassification, croppedFrameImageUrl, fullFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.crowdFormationDetectionEvent.v1` | objectDetection, objectClassification, croppedFrameImageUrl, fullFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.tamperDetectionEvent.v1` | fullFrameImageUrl |
+| `een.loiterDetectionEvent.v1` | loiterArea, objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.gunShotAudioDetectionEvent.v1` | audioDetection, geoLocation |
+| `een.t3AlarmAudioDetectionEvent.v1` | audioDetection |
+| `een.t4AlarmAudioDetectionEvent.v1` | audioDetection |
+| `een.violenceDetectionEvent.v1` | *(none)* |
+| `een.fightDetectionEvent.v1` | *(none)* |
+| `een.handsUpDetectionEvent.v1` | *(none)* |
+| `een.vapeDetectionEvent.v1` | *(none)* |
+
+### Other Events
+
+| Event Type | Data Schemas |
+|------------|--------------|
+| `een.objectLineCrossEvent.v1` | lineCrossLine, objectDetection, fullFrameImageUrl, croppedFrameImageUrl, entryDirection, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.objectLineCrossCountEvent.v1` | lineCrossLine, objectDetection, fullFrameImageUrl, croppedFrameImageUrl, entryDirection, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.countedObjectLineCrossEvent.v1` | countedLineCross |
+| `een.objectIntrusionEvent.v1` | intrusionArea, objectDetection, fullFrameImageUrl, croppedFrameImageUrl, entryDirection, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.objectRemovalEvent.v1` | monitoredArea, objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.personTailgateEvent.v1` | objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
+| `een.edgeReportedDeviceStatusEvent.v1` | deviceCommonStatusUpdate, deviceErrorStatusUpdate |
 
 ### Camera Analytics Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.tamperDetectionEvent.v1` | `fullFrameImageUrl` |
-| `een.loiterDetectionEvent.v1` | `loiterArea`, `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.objectLineCrossEvent.v1` | `lineCrossLine`, `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `entryDirection`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.objectLineCrossCountEvent.v1` | `lineCrossLine`, `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `entryDirection`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.countedObjectLineCrossEvent.v1` | `countedLineCross` |
-| `een.objectIntrusionEvent.v1` | `intrusionArea`, `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `entryDirection`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.objectRemovalEvent.v1` | `monitoredArea`, `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.personTailgateEvent.v1` | `objectDetection`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
-| `een.ppeViolationEvent.v1` | `objectDetection`, `personAttributes`, `fullFrameImageUrl`, `croppedFrameImageUrl`, `objectClassification`, `objectRegionMapping`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay` |
+| `een.ppeViolationEvent.v1` | objectDetection, personAttributes, fullFrameImageUrl, croppedFrameImageUrl, objectClassification, objectRegionMapping, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
 
 ### AI/Scene Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.sceneLabelEvent.v1` | `objectDetection`, `objectClassification`, `vehicleAttributes`, `personAttributes`, `animalAttributes`, `croppedFrameImageUrl`, `fullFrameImageUrl`, `objectRegionMapping`, `displayOverlay.boundingBox`, `customLabels`, `eevaAttributes`, `fullFrameImageUrlWithOverlay` |
-| `een.eevaQueryEvent.v1` | `customLabels`, `eevaAttributes`, `objectDetection`, `fullFrameImageUrl`, `fullFrameImageUrlWithOverlay`, `displayOverlay.boundingBox` |
+| `een.sceneLabelEvent.v1` | objectDetection, objectClassification, vehicleAttributes, personAttributes, animalAttributes, croppedFrameImageUrl, fullFrameImageUrl, objectRegionMapping, displayOverlay.boundingBox, customLabels, eevaAttributes, fullFrameImageUrlWithOverlay |
+| `een.eevaQueryEvent.v1` | customLabels, eevaAttributes, objectDetection, fullFrameImageUrl, fullFrameImageUrlWithOverlay, displayOverlay.boundingBox |
 
 ### License Plate & Fleet Recognition Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.lprPlateReadEvent.v1` | `objectDetection`, `lprDetection`, `vehicleAttributes`, `lprAccessType`, `userData`, `userTags`, `croppedFrameImageUrl`, `fullFrameImageUrl`, `displayOverlay.boundingBox`, `fullFrameImageUrlWithOverlay`, `vehicleListInfo`, `resourceDetails`, `vspInsightsSummary` |
-| `een.fleetCodeRecognitionEvent.v1` | `objectDetection`, `dotNumberRecognition`, `truckNumberRecognition`, `trailerNumberRecognition`, `croppedFrameImageUrl`, `fullFrameImageUrl`, `recognizedText`, `resourceDetails` |
-
-### Audio Detection Events
-
-| Event Type | Data Schemas |
-|------------|--------------|
-| `een.gunShotAudioDetectionEvent.v1` | `audioDetection`, `geoLocation` |
-| `een.t3AlarmAudioDetectionEvent.v1` | `audioDetection` |
-| `een.t4AlarmAudioDetectionEvent.v1` | `audioDetection` |
+| `een.lprPlateReadEvent.v1` | objectDetection, lprDetection, vehicleAttributes, lprAccessType, userData, userTags, croppedFrameImageUrl, fullFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay, vehicleListInfo, resourceDetails, vspInsightsSummary |
+| `een.fleetCodeRecognitionEvent.v1` | objectDetection, dotNumberRecognition, truckNumberRecognition, trailerNumberRecognition, croppedFrameImageUrl, fullFrameImageUrl, recognizedText, resourceDetails |
 
 ### POS (Point of Sale) Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.posTransactionEvent.v1` | `posTransactionStart`, `posTransactionEnd`, `posTransactionItem`, `posTransactionPayment`, `posTransactionCartChangeTrail`, `posTransactionCardLoadSummary`, `posTransactionFlag`, `posTransactionLabel`, `rawData`, `displayLocationSummary`, `fullFrameImageUrl` |
+| `een.posTransactionEvent.v1` | posTransactionStart, posTransactionEnd, posTransactionItem, posTransactionPayment, posTransactionCartChangeTrail, posTransactionCardLoadSummary, posTransactionFlag, posTransactionLabel, rawData, displayLocationSummary, fullFrameImageUrl |
 
 ### Device & System Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.deviceCloudStatusUpdateEvent.v1` | `deviceCloudStatusUpdate`, `deviceCloudPreviousStatus` |
-| `een.deviceCloudConnectionStatusUpdateEvent.v1` | `deviceCloudConnectionStatusUpdate`, `deviceCloudConnectionPreviousStatus` |
-| `een.edgeReportedDeviceStatusEvent.v1` | `deviceCommonStatusUpdate`, `deviceErrorStatusUpdate` |
-| `een.deviceIOEvent.v1` | `deviceIO` |
-| `een.deviceOperationEvent.v1` | `resourceDetails`, `deviceOperationDetails`, `deviceOperationSubStep`, `deviceOperationUpdate` |
-| `een.ptzPositionUpdateEvent.v1` | `ptzPositionUpdate` |
+| `een.deviceCloudStatusUpdateEvent.v1` | deviceCloudStatusUpdate, deviceCloudPreviousStatus |
+| `een.deviceCloudConnectionStatusUpdateEvent.v1` | deviceCloudConnectionStatusUpdate, deviceCloudConnectionPreviousStatus |
+| `een.deviceIOEvent.v1` | deviceIO |
+| `een.deviceOperationEvent.v1` | resourceDetails, deviceOperationDetails, deviceOperationSubStep, deviceOperationUpdate |
+| `een.ptzPositionUpdateEvent.v1` | ptzPositionUpdate |
+| `een.deviceCreationEvent.v1` | resourceDetails |
+| `een.deviceUpdateEvent.v1` | resourceDetails |
+| `een.deviceDeletionEvent.v1` | resourceDetails |
 
 ### Sensor Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.doorStatusEvent.v1` | `measurementStringValueUpdate` |
-| `een.batteryLevelUpdateEvent.v1` | `batteryLevelUpdate` |
-| `een.measurementThresholdStatusEvent.v1` | `measurementThresholdStatus`, `measurementValueUpdate`, `measurementStringValueUpdate` |
-| `een.thermalCameraThresholdStatusEvent.v1` | `thermalCameraValueUpdate`, `thermalMonitoredArea` |
+| `een.doorStatusEvent.v1` | measurementStringValueUpdate |
+| `een.batteryLevelUpdateEvent.v1` | batteryLevelUpdate |
+| `een.measurementThresholdStatusEvent.v1` | measurementThresholdStatus, measurementValueUpdate, measurementStringValueUpdate |
+| `een.thermalCameraThresholdStatusEvent.v1` | thermalCameraValueUpdate, thermalMonitoredArea |
 
 ### Resource Management Events
 
-All resource management events use `resourceDetails.v1`:
-
-- `een.layoutCreationEvent.v1`, `een.layoutUpdateEvent.v1`, `een.layoutDeletionEvent.v1`
-- `een.deviceCreationEvent.v1`, `een.deviceUpdateEvent.v1`, `een.deviceDeletionEvent.v1`
-- `een.userCreationEvent.v1`, `een.userUpdateEvent.v1`, `een.userDeletionEvent.v1`
-- `een.accountCreationEvent.v1`, `een.accountUpdateEvent.v1`, `een.accountDeletionEvent.v1`
-
-### Job Events
-
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.jobCreationEvent.v1` | `jobDetails`, `ownerDetails` |
-| `een.jobUpdateEvent.v1` | `jobDetails`, `ownerDetails` |
-| `een.jobDeletionEvent.v1` | `ownerDetails` |
+| `een.layoutCreationEvent.v1` | resourceDetails |
+| `een.layoutUpdateEvent.v1` | resourceDetails |
+| `een.layoutDeletionEvent.v1` | resourceDetails |
+| `een.userCreationEvent.v1` | resourceDetails |
+| `een.userUpdateEvent.v1` | resourceDetails |
+| `een.userDeletionEvent.v1` | resourceDetails |
+| `een.accountCreationEvent.v1` | resourceDetails |
+| `een.accountUpdateEvent.v1` | resourceDetails |
+| `een.accountDeletionEvent.v1` | resourceDetails |
+| `een.jobCreationEvent.v1` | jobDetails, ownerDetails |
+| `een.jobUpdateEvent.v1` | jobDetails, ownerDetails |
+| `een.jobDeletionEvent.v1` | ownerDetails |
 
 ### Safety & Protocol Events
 
 | Event Type | Data Schemas |
 |------------|--------------|
-| `een.panicButtonEvent.v1` | `geoLocation` |
+| `een.panicButtonEvent.v1` | geoLocation |
 | `een.evacuateProtocolEvent.v1` | *(none)* |
 | `een.holdProtocolEvent.v1` | *(none)* |
 | `een.lockdownProtocolEvent.v1` | *(none)* |
 | `een.secureProtocolEvent.v1` | *(none)* |
 | `een.shelterProtocolEvent.v1` | *(none)* |
-
-### Behavioral Events
-
-These events have no associated data schemas:
-
-- `een.violenceDetectionEvent.v1`
-- `een.fightDetectionEvent.v1`
-- `een.handsUpDetectionEvent.v1`
-- `een.vapeDetectionEvent.v1`
 
 ---
 
@@ -321,8 +320,11 @@ This mapping is derived from the Eagle Eye Networks API v3.0 specification (`eve
 
 ## Maintenance
 
-When new event types are added to the EEN API:
-1. Check the API specification for the new event type
-2. Find the `dataSchemas` array in the event schema
-3. Add the mapping to `src/events/dataSchemas.ts`
-4. Update the `KnownEventType` and `DataSchema` types as needed
+This file is auto-generated from `src/events/dataSchemas.ts` by `scripts/generate-event-data-schemas-doc.ts`.
+
+To update:
+1. Modify `src/events/dataSchemas.ts` with new event types or data schemas
+2. Run `npm run docs:ai-context` to regenerate this file
+3. The script automatically extracts types, mappings, and generates tables
+
+Do not edit this file manually - changes will be overwritten on next generation.

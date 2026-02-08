@@ -76,6 +76,16 @@ This example demonstrates how to use the Event Subscriptions API from the EEN AP
 - `connectToEventSubscription(sseUrl, options)` - Connect to SSE stream
 - `getCameras()` - List cameras for filter selection
 - `listEventTypes()` - List event types for filter selection
+- `getCurrentUser()` - Get current user profile
+- `initMediaSession()` - Initialize media session for image access
+- `listMedia()` - Get media intervals
+- `formatTimestamp()` - Format timestamps for display
+- `useAuthStore()` - Authentication state management
+- `getAuthUrl()` - Generate OAuth login URL
+- `handleAuthCallback()` - Process OAuth callback
+- `initEenToolkit()` - Toolkit initialization
+- `getStorageStrategy()` - Get the current storage strategy
+- `STORAGE_STRATEGY_DESCRIPTIONS` - Human-readable storage strategy descriptions
 
 ## Event Subscription Lifecycle
 

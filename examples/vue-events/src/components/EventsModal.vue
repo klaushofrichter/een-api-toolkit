@@ -715,6 +715,7 @@ watch([timeRange, selectedEventTypes], () => {
                   class="json-button"
                   @click="openJsonViewer(event.id)"
                   title="View JSON data"
+                  aria-label="View event JSON data"
                   data-testid="json-button"
                 >{ }</button>
               </div>
