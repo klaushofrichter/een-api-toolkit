@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.66**](../README.md)
+[**EEN API Toolkit v0.3.67**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **isStatusObject**(`status?`): `status is { connectionStatus?: CameraStatus }`
 
-Defined in: [src/utils/camera.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/camera.ts#L70)
+Defined in: [src/utils/camera.ts:75](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/camera.ts#L75)
 
 TypeScript type guard to check if a status value is an object with connectionStatus.
 
@@ -30,6 +30,11 @@ True if status is an object (not a string), false otherwise
 
 Use this type guard to help TypeScript narrow the camera status type when
 you need to handle both string and object formats differently.
+
+**Implementation Note:** This function returns true for ANY non-null object to match
+the EEN API's flexible response format. The API may return different object structures
+depending on the `include` parameters, so we intentionally use a broad check rather than
+validating specific properties like `'connectionStatus' in status`.
 
 ## Example
 

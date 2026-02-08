@@ -47,6 +47,11 @@ export function getCameraStatusString(
  * Use this type guard to help TypeScript narrow the camera status type when
  * you need to handle both string and object formats differently.
  *
+ * **Implementation Note:** This function returns true for ANY non-null object to match
+ * the EEN API's flexible response format. The API may return different object structures
+ * depending on the `include` parameters, so we intentionally use a broad check rather than
+ * validating specific properties like `'connectionStatus' in status`.
+ *
  * @param status - The camera status field value
  * @returns True if status is an object (not a string), false otherwise
  *
