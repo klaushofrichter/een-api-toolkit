@@ -13,6 +13,7 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { fileURLToPath } from 'url'
+import { execSync } from 'child_process'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = path.dirname(__dirname)
@@ -3405,31 +3406,20 @@ ${filesVue}
 // =============================================================================
 
 /**
- * Updates the version number in manually maintained documentation files.
- * These files are not fully regenerated, only the version line is updated.
+ * Generates documentation files from source code analysis.
+ * These files are fully auto-generated and should not be manually edited.
  */
-function updateVersionInManualDocs(version: string): void {
-  const manualDocs = ['AI-EVENT-DATA-SCHEMAS.md']
-
-  for (const docName of manualDocs) {
-    const docPath = path.join(AI_REF_DIR, docName)
-
-    if (!fs.existsSync(docPath)) {
-      console.log(`Skipping ${docName} (file not found)`)
-      continue
-    }
-
-    const content = fs.readFileSync(docPath, 'utf-8')
-
-    // Update version line: > **Version:** X.Y.Z
-    const versionPattern = /^> \*\*Version:\*\* [\d.]+$/m
-    if (versionPattern.test(content)) {
-      const updatedContent = content.replace(versionPattern, `> **Version:** ${version}`)
-      fs.writeFileSync(docPath, updatedContent)
-      console.log(`Updated version in ${docPath}`)
-    } else {
-      console.log(`Warning: Version pattern not found in ${docName}`)
-    }
+function generateSourceBasedDocs(): void {
+  // Generate event data schemas documentation from source
+  try {
+    console.log('\nGenerating source-based documentation...')
+    execSync('npx tsx scripts/generate-event-data-schemas-doc.ts', {
+      cwd: ROOT_DIR,
+      stdio: 'inherit'
+    })
+  } catch (error) {
+    console.error('Error generating event data schemas documentation:', error)
+    throw error
   }
 }
 
@@ -3487,8 +3477,8 @@ function main() {
       console.log(`Generated ${docPath}`)
     }
 
-    // Update version in manually maintained docs
-    updateVersionInManualDocs(config.version)
+    // Generate source-based documentation
+    generateSourceBasedDocs()
   }
 
   console.log(`\nVersion: ${config.version}`)

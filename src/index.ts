@@ -182,7 +182,7 @@ export type {
 export { success, failure } from './types'
 
 // Utilities
-export { formatTimestamp } from './utils'
+export { formatTimestamp, getCameraStatusString, isStatusObject } from './utils'
 
 // Auth
 export {
