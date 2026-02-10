@@ -586,7 +586,7 @@ describe('Media service functions', () => {
       authStore.setBaseUrl('https://api.example.com')
 
       const mockResponse = {
-        url: 'https://media.example.com/session/abc123'
+        url: 'https://media.eagleeyenetworks.com/session/abc123'
       }
 
       mockFetch.mockResolvedValueOnce({
@@ -597,7 +597,7 @@ describe('Media service functions', () => {
       const result = await getMediaSession()
 
       expect(result.error).toBeNull()
-      expect(result.data?.url).toBe('https://media.example.com/session/abc123')
+      expect(result.data?.url).toBe('https://media.eagleeyenetworks.com/session/abc123')
       expect(mockFetch).toHaveBeenCalledWith(
         'https://api.example.com/api/v3.0/media/session',
         expect.objectContaining({
@@ -668,6 +668,43 @@ describe('Media service functions', () => {
       expect(mockFetch).not.toHaveBeenCalled()
     })
 
+    it('should reject session URL from untrusted domain', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ url: 'https://evil.example.com/session/abc123' })
+      })
+
+      const result = await initMediaSession()
+
+      expect(result.error?.code).toBe('VALIDATION_ERROR')
+      expect(result.error?.message).toContain('Session URL domain not allowed')
+    })
+
+    it('should accept session URL from een.cloud domain', async () => {
+      const authStore = useAuthStore()
+      authStore.setToken('test-token', 3600)
+      authStore.setBaseUrl('https://api.example.com')
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: () => Promise.resolve({ url: 'https://media.een.cloud/session/abc123' })
+      })
+
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200
+      })
+
+      const result = await initMediaSession()
+
+      expect(result.error).toBeNull()
+      expect(result.data?.success).toBe(true)
+    })
+
     it('should complete two-step initialization successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
@@ -676,7 +713,7 @@ describe('Media service functions', () => {
       // First call: get session URL
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+        json: () => Promise.resolve({ url: 'https://media.eagleeyenetworks.com/session/abc123' })
       })
 
       // Second call: set the cookie
@@ -689,7 +726,7 @@ describe('Media service functions', () => {
 
       expect(result.error).toBeNull()
       expect(result.data?.success).toBe(true)
-      expect(result.data?.sessionUrl).toBe('https://media.example.com/session/abc123')
+      expect(result.data?.sessionUrl).toBe('https://media.eagleeyenetworks.com/session/abc123')
 
       // Verify both calls were made
       expect(mockFetch).toHaveBeenCalledTimes(2)
@@ -698,7 +735,7 @@ describe('Media service functions', () => {
       expect(mockFetch.mock.calls[0]![0]).toBe('https://api.example.com/api/v3.0/media/session')
 
       // Second call should be to the session URL with credentials
-      expect(mockFetch.mock.calls[1]![0]).toBe('https://media.example.com/session/abc123')
+      expect(mockFetch.mock.calls[1]![0]).toBe('https://media.eagleeyenetworks.com/session/abc123')
       expect(mockFetch.mock.calls[1]![1]).toMatchObject({
         credentials: 'include'
       })
@@ -711,7 +748,7 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+        json: () => Promise.resolve({ url: 'https://media.eagleeyenetworks.com/session/abc123' })
       })
 
       // 204 No Content is a valid success response
@@ -751,7 +788,7 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+        json: () => Promise.resolve({ url: 'https://media.eagleeyenetworks.com/session/abc123' })
       })
 
       mockFetch.mockResolvedValueOnce({
@@ -790,7 +827,7 @@ describe('Media service functions', () => {
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: () => Promise.resolve({ url: 'https://media.example.com/session/abc123' })
+        json: () => Promise.resolve({ url: 'https://media.eagleeyenetworks.com/session/abc123' })
       })
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
