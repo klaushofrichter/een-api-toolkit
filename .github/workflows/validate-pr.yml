@@ -151,24 +151,31 @@ jobs:
           fi
           echo "Documentation is up to date"
 
+  discover-examples:
+    name: Discover Example Apps
+    runs-on: ubuntu-latest
+    outputs:
+      examples: ${{ steps.find.outputs.examples }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Find examples with E2E tests
+        id: find
+        run: |
+          examples=$(find examples -name playwright.config.ts -maxdepth 2 -exec dirname {} \; | xargs -I{} basename {} | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "examples=$examples" >> $GITHUB_OUTPUT
+          echo "Found example apps: $examples"
+
   example-e2e-tests:
     name: E2E Tests (${{ matrix.example }})
+    needs: discover-examples
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 4
       matrix:
-        example:
-          - vue-users
-          - vue-automations
-          - vue-cameras
-          - vue-bridges
-          - vue-events
-          - vue-feeds
-          - vue-layouts
-          - vue-media
-          - vue-event-subscriptions
-          - vue-alerts-metrics
+        example: ${{ fromJson(needs.discover-examples.outputs.examples) }}
 
     steps:
       - name: Checkout repository
