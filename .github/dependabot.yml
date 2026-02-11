@@ -38,10 +38,11 @@ updates:
         patterns:
           - "*"
     open-pull-requests-limit: 5
-    # Ignore major version updates for pinned TypeScript version
+    # TypeScript pinned to ~5.8.x (allows patch updates within 5.8.x range)
+    # Block major updates only; minor is already constrained by ~ in package.json
     ignore:
       - dependency-name: "typescript"
-        update-types: ["version-update:semver-major", "version-update:semver-minor"]
+        update-types: ["version-update:semver-major"]
       # eslint 10 not yet supported by @typescript-eslint/eslint-plugin 8.x
       - dependency-name: "eslint"
         update-types: ["version-update:semver-major"]

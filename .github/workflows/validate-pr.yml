@@ -166,6 +166,13 @@ jobs:
           examples=$(find examples -name playwright.config.ts -maxdepth 2 -exec dirname {} \; | xargs -I{} basename {} | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
           echo "examples=$examples" >> $GITHUB_OUTPUT
           echo "Found example apps: $examples"
+          # Fail if no examples found (prevents silent skip of all E2E tests)
+          count=$(echo "$examples" | jq 'length')
+          if [ "$count" -eq 0 ]; then
+            echo "ERROR: No example apps with playwright.config.ts found"
+            exit 1
+          fi
+          echo "Discovered $count example apps for E2E testing"
 
   example-e2e-tests:
     name: E2E Tests (${{ matrix.example }})
