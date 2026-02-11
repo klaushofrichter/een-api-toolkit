@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventFieldValues
 
-Defined in: [src/types/event.ts:270](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L270)
+Defined in: [types/event.ts:270](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L270)
 
 Available event field values for an actor.
 
@@ -21,6 +21,6 @@ to know which event types can be filtered for when listing events.
 
 > **type**: `string`[]
 
-Defined in: [src/types/event.ts:272](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L272)
+Defined in: [types/event.ts:272](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L272)
 
 Available event types for the actor

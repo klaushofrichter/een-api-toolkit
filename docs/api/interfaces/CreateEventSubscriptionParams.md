@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CreateEventSubscriptionParams
 
-Defined in: [src/types/eventSubscription.ts:250](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L250)
+Defined in: [types/eventSubscription.ts:250](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L250)
 
 Parameters for creating an event subscription.
 
@@ -44,7 +44,7 @@ if (data) {
 
 > **deliveryConfig**: [`DeliveryConfigCreate`](../type-aliases/DeliveryConfigCreate.md)
 
-Defined in: [src/types/eventSubscription.ts:252](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L252)
+Defined in: [types/eventSubscription.ts:252](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L252)
 
 Delivery configuration
 
@@ -54,6 +54,6 @@ Delivery configuration
 
 > **filters**: [`FilterCreate`](FilterCreate.md)[]
 
-Defined in: [src/types/eventSubscription.ts:254](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L254)
+Defined in: [types/eventSubscription.ts:254](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L254)
 
 List of filters for the subscription

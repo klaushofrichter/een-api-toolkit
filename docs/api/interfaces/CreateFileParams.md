@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CreateFileParams
 
-Defined in: [src/types/file.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L203)
+Defined in: [types/file.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L203)
 
 Parameters for adding/uploading a file.
 
@@ -33,7 +33,7 @@ const { data, error } = await addFile({
 
 > **name**: `string`
 
-Defined in: [src/types/file.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L205)
+Defined in: [types/file.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L205)
 
 Display name for the file
 
@@ -43,7 +43,7 @@ Display name for the file
 
 > `optional` **type**: [`FileType`](../type-aliases/FileType.md)
 
-Defined in: [src/types/file.ts:207](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L207)
+Defined in: [types/file.ts:207](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L207)
 
 Type/category of the file
 
@@ -53,7 +53,7 @@ Type/category of the file
 
 > `optional` **filename**: `string`
 
-Defined in: [src/types/file.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L209)
+Defined in: [types/file.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L209)
 
 Original filename
 
@@ -63,7 +63,7 @@ Original filename
 
 > `optional` **description**: `string`
 
-Defined in: [src/types/file.ts:211](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L211)
+Defined in: [types/file.ts:211](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L211)
 
 Description or notes about the file
 
@@ -73,7 +73,7 @@ Description or notes about the file
 
 > `optional` **tags**: `string`[]
 
-Defined in: [src/types/file.ts:213](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L213)
+Defined in: [types/file.ts:213](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L213)
 
 Tags for categorization
 
@@ -83,6 +83,6 @@ Tags for categorization
 
 > `optional` **cameraId**: `string`
 
-Defined in: [src/types/file.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L215)
+Defined in: [types/file.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L215)
 
 Related camera ID

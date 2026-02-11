@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: FilterCreate
 
-Defined in: [src/types/eventSubscription.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L137)
+Defined in: [types/eventSubscription.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L137)
 
 Filter creation parameters.
 
@@ -29,7 +29,7 @@ const filter: FilterCreate = {
 
 > **actors**: `string`[]
 
-Defined in: [src/types/eventSubscription.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L139)
+Defined in: [types/eventSubscription.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L139)
 
 List of actors to filter (format: "type:id", e.g., "camera:100d4c41")
 
@@ -39,6 +39,6 @@ List of actors to filter (format: "type:id", e.g., "camera:100d4c41")
 
 > **types**: [`EventTypeFilter`](EventTypeFilter.md)[]
 
-Defined in: [src/types/eventSubscription.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L141)
+Defined in: [types/eventSubscription.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L141)
 
 List of event types to filter

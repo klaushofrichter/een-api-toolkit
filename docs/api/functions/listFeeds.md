@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listFeeds**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`ListFeedsResult`](../interfaces/ListFeedsResult.md)\>\>
 
-Defined in: [src/feeds/service.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/feeds/service.ts#L60)
+Defined in: [feeds/service.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/feeds/service.ts#L60)
 
 List feeds with optional filtering and pagination.
 

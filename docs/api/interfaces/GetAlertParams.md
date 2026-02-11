@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetAlertParams
 
-Defined in: [src/types/alert.ts:253](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L253)
+Defined in: [types/alert.ts:253](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L253)
 
 Parameters for getting a single alert by ID.
 
@@ -30,6 +30,6 @@ const { data } = await getAlert('alert-123', {
 
 > `optional` **include**: [`AlertInclude`](../type-aliases/AlertInclude.md)[]
 
-Defined in: [src/types/alert.ts:255](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L255)
+Defined in: [types/alert.ts:255](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L255)
 
 Fields to include in response

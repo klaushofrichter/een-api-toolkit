@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetBridgeParams
 
-Defined in: [src/types/bridge.ts:243](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L243)
+Defined in: [types/bridge.ts:243](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L243)
 
 Parameters for getting a single bridge.
 
@@ -32,7 +32,7 @@ const { data } = await getBridge('bridge-123', {
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/bridge.ts:250](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L250)
+Defined in: [types/bridge.ts:250](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L250)
 
 Additional fields to include in the response.
 Valid values: account, status, locationSummary, deviceAddress,

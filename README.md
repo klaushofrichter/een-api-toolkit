@@ -215,6 +215,8 @@ The `examples/` directory contains complete Vue 3 applications demonstrating too
 | **[vue-events](./examples/vue-events/)** | Event listing with bounding box overlays | `listEvents()`, `listEventTypes()`, `listEventFieldValues()`, `getRecordedImage()` |
 | **[vue-alerts-metrics](./examples/vue-alerts-metrics/)** | Event metrics, alerts, and notifications dashboard | `getEventMetrics()`, `listAlerts()`, `listAlertTypes()`, `listNotifications()` |
 | **[vue-event-subscriptions](./examples/vue-event-subscriptions/)** | Real-time event streaming with SSE | `listEventSubscriptions()`, `createEventSubscription()`, `deleteEventSubscription()`, `connectToEventSubscription()` |
+| **[vue-automations](./examples/vue-automations/)** | Automation rules and alert actions | `listEventAlertConditionRules()`, `listAlertConditionRules()`, `listAlertActionRules()`, `listAlertActions()` |
+| **[vue-jobs](./examples/vue-jobs/)** | Job management, exports, and file downloads | `listJobs()`, `getJob()`, `createExportJob()`, `listFiles()`, `downloadFile()` |
 
 Each example includes:
 - Complete OAuth authentication flow

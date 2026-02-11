@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getEventMetrics**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EventMetric`](../interfaces/EventMetric.md)[]\>\>
 
-Defined in: [src/eventMetrics/service.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventMetrics/service.ts#L55)
+Defined in: [eventMetrics/service.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventMetrics/service.ts#L55)
 
 Get event metrics (time-series data) for a specific actor and event type.
 

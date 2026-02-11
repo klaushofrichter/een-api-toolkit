@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getFile**(`fileId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EenFile`](../interfaces/EenFile.md)\>\>
 
-Defined in: [src/files/service.ts:168](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L168)
+Defined in: [files/service.ts:168](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L168)
 
 Get a specific file by ID.
 

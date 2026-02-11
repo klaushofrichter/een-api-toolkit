@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **MetricActorType** = `"bridge"` \| `"camera"` \| `"speaker"` \| `"account"` \| `"user"` \| `"layout"` \| `"job"`
 
-Defined in: [src/types/eventMetric.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L10)
+Defined in: [types/eventMetric.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L10)
 
 Actor types for event metrics in the EEN API v3.0.
 

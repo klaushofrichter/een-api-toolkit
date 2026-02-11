@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: WebhookSettings
 
-Defined in: [src/types/automation.ts:344](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L344)
+Defined in: [types/automation.ts:344](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L344)
 
 Webhook settings.
 
@@ -16,7 +16,7 @@ Webhook settings.
 
 > **url**: `string`
 
-Defined in: [src/types/automation.ts:346](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L346)
+Defined in: [types/automation.ts:346](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L346)
 
 Webhook URL
 
@@ -26,7 +26,7 @@ Webhook URL
 
 > `optional` **method**: `"GET"` \| `"POST"` \| `"PUT"`
 
-Defined in: [src/types/automation.ts:348](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L348)
+Defined in: [types/automation.ts:348](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L348)
 
 HTTP method
 
@@ -36,6 +36,6 @@ HTTP method
 
 > `optional` **headers**: `Record`\<`string`, `string`\>
 
-Defined in: [src/types/automation.ts:350](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L350)
+Defined in: [types/automation.ts:350](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L350)
 
 Custom headers

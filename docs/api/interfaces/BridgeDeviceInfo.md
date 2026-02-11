@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: BridgeDeviceInfo
 
-Defined in: [src/types/bridge.ts:26](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L26)
+Defined in: [types/bridge.ts:26](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L26)
 
 Device information for a bridge.
 
@@ -20,7 +20,7 @@ Contains hardware and firmware details about the physical bridge device.
 
 > `optional` **make**: `string`
 
-Defined in: [src/types/bridge.ts:28](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L28)
+Defined in: [types/bridge.ts:28](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L28)
 
 Bridge manufacturer
 
@@ -30,7 +30,7 @@ Bridge manufacturer
 
 > `optional` **model**: `string`
 
-Defined in: [src/types/bridge.ts:30](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L30)
+Defined in: [types/bridge.ts:30](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L30)
 
 Bridge model
 
@@ -40,7 +40,7 @@ Bridge model
 
 > `optional` **firmwareVersion**: `string`
 
-Defined in: [src/types/bridge.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L32)
+Defined in: [types/bridge.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L32)
 
 Firmware version
 
@@ -50,7 +50,7 @@ Firmware version
 
 > `optional` **serialNumber**: `string`
 
-Defined in: [src/types/bridge.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L34)
+Defined in: [types/bridge.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L34)
 
 Serial number
 
@@ -60,6 +60,6 @@ Serial number
 
 > `optional` **hardwareVersion**: `string`
 
-Defined in: [src/types/bridge.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L36)
+Defined in: [types/bridge.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L36)
 
 Hardware version

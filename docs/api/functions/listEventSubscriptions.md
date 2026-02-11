@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listEventSubscriptions**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`EventSubscription`](../interfaces/EventSubscription.md)\>\>\>
 
-Defined in: [src/eventSubscriptions/service.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L43)
+Defined in: [eventSubscriptions/service.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L43)
 
 List all event subscriptions for the current account.
 

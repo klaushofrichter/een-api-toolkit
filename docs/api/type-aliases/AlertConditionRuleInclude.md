@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,6 +8,6 @@
 
 > **AlertConditionRuleInclude** = `"actions"` \| `"insights"`
 
-Defined in: [src/types/automation.ts:491](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L491)
+Defined in: [types/automation.ts:491](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L491)
 
 Fields that can be included in alert condition rule responses.

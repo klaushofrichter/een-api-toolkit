@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListEventFieldValuesParams
 
-Defined in: [src/types/event.ts:256](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L256)
+Defined in: [types/event.ts:256](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L256)
 
 Parameters for listing available event field values.
 
@@ -32,6 +32,6 @@ if (data) {
 
 > **actor**: `string`
 
-Defined in: [src/types/event.ts:258](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L258)
+Defined in: [types/event.ts:258](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L258)
 
 Actor to get field values for (format: "type:id", e.g., "camera:100d4c41")

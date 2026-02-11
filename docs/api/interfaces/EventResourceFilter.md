@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventResourceFilter
 
-Defined in: [src/types/automation.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L32)
+Defined in: [types/automation.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L32)
 
 Resource filter for event filtering.
 
@@ -16,7 +16,7 @@ Resource filter for event filtering.
 
 > `optional` **accountIds**: `string`[]
 
-Defined in: [src/types/automation.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L34)
+Defined in: [types/automation.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L34)
 
 Filter by specific account IDs
 
@@ -26,7 +26,7 @@ Filter by specific account IDs
 
 > `optional` **actorIds**: `string`[]
 
-Defined in: [src/types/automation.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L36)
+Defined in: [types/automation.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L36)
 
 Filter by specific actor IDs
 
@@ -36,7 +36,7 @@ Filter by specific actor IDs
 
 > `optional` **actorTags\_\_contains**: `string`[]
 
-Defined in: [src/types/automation.ts:38](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L38)
+Defined in: [types/automation.ts:38](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L38)
 
 Filter by actor tags (all must match)
 
@@ -46,6 +46,6 @@ Filter by actor tags (all must match)
 
 > `optional` **actorTags\_\_any**: `string`[]
 
-Defined in: [src/types/automation.ts:40](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L40)
+Defined in: [types/automation.ts:40](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L40)
 
 Filter by actor tags (any must match)

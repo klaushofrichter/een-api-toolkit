@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listEvents**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Event`](../interfaces/Event.md)\>\>\>
 
-Defined in: [src/events/service.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L66)
+Defined in: [events/service.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L66)
 
 List events with required filters and optional pagination.
 

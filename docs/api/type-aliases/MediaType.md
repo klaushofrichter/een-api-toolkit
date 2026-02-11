@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **MediaType** = `"video"` \| `"image"`
 
-Defined in: [src/types/media.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L9)
+Defined in: [types/media.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L9)
 
 Media type values from EEN API v3.0.
 

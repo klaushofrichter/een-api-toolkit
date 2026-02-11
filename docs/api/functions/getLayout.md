@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getLayout**(`layoutId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Layout`](../interfaces/Layout.md)\>\>
 
-Defined in: [src/layouts/service.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L177)
+Defined in: [layouts/service.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L177)
 
 Get a specific layout by ID.
 

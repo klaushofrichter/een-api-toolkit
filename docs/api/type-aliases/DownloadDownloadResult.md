@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **DownloadDownloadResult** = [`DownloadFileResult`](../interfaces/DownloadFileResult.md)
 
-Defined in: [src/types/download.ts:128](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L128)
+Defined in: [types/download.ts:128](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L128)
 
 Result from downloading via the downloads endpoint.
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: AlertAction
 
-Defined in: [src/types/alert.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L10)
+Defined in: [types/alert.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L10)
 
 Action taken for an alert.
 
@@ -21,7 +21,7 @@ notification or executing a webhook.
 
 > **name**: `string`
 
-Defined in: [src/types/alert.ts:12](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L12)
+Defined in: [types/alert.ts:12](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L12)
 
 Name of the action
 
@@ -31,7 +31,7 @@ Name of the action
 
 > **type**: `string`
 
-Defined in: [src/types/alert.ts:14](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L14)
+Defined in: [types/alert.ts:14](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L14)
 
 Type of action (e.g., "email", "webhook", "push")
 
@@ -41,7 +41,7 @@ Type of action (e.g., "email", "webhook", "push")
 
 > **success**: `boolean`
 
-Defined in: [src/types/alert.ts:16](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L16)
+Defined in: [types/alert.ts:16](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L16)
 
 Whether the action executed successfully
 
@@ -51,7 +51,7 @@ Whether the action executed successfully
 
 > **timestamp**: `string`
 
-Defined in: [src/types/alert.ts:18](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L18)
+Defined in: [types/alert.ts:18](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L18)
 
 ISO 8601 timestamp when the action was executed
 
@@ -61,6 +61,6 @@ ISO 8601 timestamp when the action was executed
 
 > `optional` **status**: [`AlertActionStatus`](../type-aliases/AlertActionStatus.md)
 
-Defined in: [src/types/alert.ts:20](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L20)
+Defined in: [types/alert.ts:20](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L20)
 
 Current status of the action

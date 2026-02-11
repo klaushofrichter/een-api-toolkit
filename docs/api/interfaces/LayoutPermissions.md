@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: LayoutPermissions
 
-Defined in: [src/types/layout.ts:28](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L28)
+Defined in: [types/layout.ts:28](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L28)
 
 Permissions for layout operations.
 
@@ -20,7 +20,7 @@ Indicates what actions the current user can perform on a layout.
 
 > `optional` **read**: `boolean`
 
-Defined in: [src/types/layout.ts:30](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L30)
+Defined in: [types/layout.ts:30](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L30)
 
 Whether the user can read the layout
 
@@ -30,7 +30,7 @@ Whether the user can read the layout
 
 > `optional` **edit**: `boolean`
 
-Defined in: [src/types/layout.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L32)
+Defined in: [types/layout.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L32)
 
 Whether the user can edit the layout
 
@@ -40,6 +40,6 @@ Whether the user can edit the layout
 
 > `optional` **delete**: `boolean`
 
-Defined in: [src/types/layout.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L34)
+Defined in: [types/layout.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L34)
 
 Whether the user can delete the layout

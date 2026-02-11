@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listAlertActionRules**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`AlertActionRule`](../interfaces/AlertActionRule.md)\>\>\>
 
-Defined in: [src/automations/service.ts:480](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L480)
+Defined in: [automations/service.ts:480](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L480)
 
 List alert action rules with optional filters and pagination.
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventTypeFilter
 
-Defined in: [src/types/eventSubscription.ts:97](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L97)
+Defined in: [types/eventSubscription.ts:97](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L97)
 
 Event type filter for subscriptions.
 
@@ -29,6 +29,6 @@ const typeFilter: EventTypeFilter = {
 
 > **id**: `string`
 
-Defined in: [src/types/eventSubscription.ts:99](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L99)
+Defined in: [types/eventSubscription.ts:99](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L99)
 
 Event type identifier (e.g., "een.motionDetectionEvent.v1")

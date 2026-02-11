@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listAlertActions**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`AutomationAlertAction`](../interfaces/AutomationAlertAction.md)\>\>\>
 
-Defined in: [src/automations/service.ts:649](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L649)
+Defined in: [automations/service.ts:649](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L649)
 
 List alert actions with optional filters and pagination.
 

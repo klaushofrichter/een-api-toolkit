@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Job
 
-Defined in: [src/types/job.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L127)
+Defined in: [types/job.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L127)
 
 Job entity from EEN API v3.0.
 
@@ -41,7 +41,7 @@ if (data) {
 
 > **id**: `string`
 
-Defined in: [src/types/job.ts:129](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L129)
+Defined in: [types/job.ts:129](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L129)
 
 Unique identifier for the job
 
@@ -51,7 +51,7 @@ Unique identifier for the job
 
 > `optional` **namespace**: `string`
 
-Defined in: [src/types/job.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L131)
+Defined in: [types/job.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L131)
 
 Namespace of the job (e.g., 'media')
 
@@ -61,7 +61,7 @@ Namespace of the job (e.g., 'media')
 
 > **type**: `string`
 
-Defined in: [src/types/job.ts:133](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L133)
+Defined in: [types/job.ts:133](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L133)
 
 Type of job (e.g., 'media.export')
 
@@ -71,7 +71,7 @@ Type of job (e.g., 'media.export')
 
 > **userId**: `string`
 
-Defined in: [src/types/job.ts:135](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L135)
+Defined in: [types/job.ts:135](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L135)
 
 ID of the user who created the job
 
@@ -81,7 +81,7 @@ ID of the user who created the job
 
 > **state**: [`JobState`](../type-aliases/JobState.md)
 
-Defined in: [src/types/job.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L137)
+Defined in: [types/job.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L137)
 
 Current state of the job
 
@@ -91,7 +91,7 @@ Current state of the job
 
 > `optional` **detailedState**: `string` \| `null`
 
-Defined in: [src/types/job.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L139)
+Defined in: [types/job.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L139)
 
 Detailed state information
 
@@ -101,7 +101,7 @@ Detailed state information
 
 > `optional` **progress**: `number`
 
-Defined in: [src/types/job.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L141)
+Defined in: [types/job.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L141)
 
 Progress as a decimal (0-1). Multiply by 100 for percentage.
 
@@ -111,7 +111,7 @@ Progress as a decimal (0-1). Multiply by 100 for percentage.
 
 > `optional` **error**: `string` \| `null`
 
-Defined in: [src/types/job.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L143)
+Defined in: [types/job.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L143)
 
 Error details if the job failed
 
@@ -121,7 +121,7 @@ Error details if the job failed
 
 > `optional` **arguments**: `JobArguments`
 
-Defined in: [src/types/job.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L145)
+Defined in: [types/job.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L145)
 
 Job arguments including the original request
 
@@ -131,7 +131,7 @@ Job arguments including the original request
 
 > `optional` **result**: `JobResult`
 
-Defined in: [src/types/job.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L147)
+Defined in: [types/job.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L147)
 
 Job result including output files
 
@@ -141,7 +141,7 @@ Job result including output files
 
 > **createTimestamp**: `string`
 
-Defined in: [src/types/job.ts:149](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L149)
+Defined in: [types/job.ts:149](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L149)
 
 ISO 8601 timestamp when the job was created
 
@@ -151,7 +151,7 @@ ISO 8601 timestamp when the job was created
 
 > `optional` **updateTimestamp**: `string`
 
-Defined in: [src/types/job.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L151)
+Defined in: [types/job.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L151)
 
 ISO 8601 timestamp when the job was last updated
 
@@ -161,7 +161,7 @@ ISO 8601 timestamp when the job was last updated
 
 > `optional` **expireTimestamp**: `string`
 
-Defined in: [src/types/job.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L153)
+Defined in: [types/job.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L153)
 
 ISO 8601 timestamp when the job is scheduled to expire
 
@@ -171,6 +171,6 @@ ISO 8601 timestamp when the job is scheduled to expire
 
 > `optional` **scheduleTimestamp**: `string` \| `null`
 
-Defined in: [src/types/job.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L155)
+Defined in: [types/job.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L155)
 
 ISO 8601 timestamp when the job is scheduled to run

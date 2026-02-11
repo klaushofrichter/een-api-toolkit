@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetDownloadParams
 
-Defined in: [src/types/download.ts:115](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L115)
+Defined in: [types/download.ts:115](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L115)
 
 Parameters for getting a single download.
 
@@ -20,6 +20,6 @@ Use to fetch download metadata and URL before downloading.
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/download.ts:117](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L117)
+Defined in: [types/download.ts:117](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L117)
 
 Additional fields to include in the response

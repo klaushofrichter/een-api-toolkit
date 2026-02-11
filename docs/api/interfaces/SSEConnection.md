@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: SSEConnection
 
-Defined in: [src/types/eventSubscription.ts:317](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L317)
+Defined in: [types/eventSubscription.ts:317](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L317)
 
 SSE connection handle.
 
@@ -35,7 +35,7 @@ if (connection) {
 
 > **close**: () => `void`
 
-Defined in: [src/types/eventSubscription.ts:319](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L319)
+Defined in: [types/eventSubscription.ts:319](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L319)
 
 Close the SSE connection
 
@@ -49,6 +49,6 @@ Close the SSE connection
 
 > **status**: [`SSEConnectionStatus`](../type-aliases/SSEConnectionStatus.md)
 
-Defined in: [src/types/eventSubscription.ts:321](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L321)
+Defined in: [types/eventSubscription.ts:321](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L321)
 
 Current connection status

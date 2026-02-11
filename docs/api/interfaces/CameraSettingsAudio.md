@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettingsAudio
 
-Defined in: [src/types/camera.ts:455](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L455)
+Defined in: [types/camera.ts:455](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L455)
 
 Camera audio settings.
 
@@ -20,7 +20,7 @@ Controls microphone and audio input configuration.
 
 > `optional` **microphoneEnabled**: `boolean`
 
-Defined in: [src/types/camera.ts:457](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L457)
+Defined in: [types/camera.ts:457](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L457)
 
 Whether the microphone is enabled
 
@@ -30,6 +30,6 @@ Whether the microphone is enabled
 
 > `optional` **inputSourceId**: `string`
 
-Defined in: [src/types/camera.ts:459](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L459)
+Defined in: [types/camera.ts:459](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L459)
 
 Audio input source identifier

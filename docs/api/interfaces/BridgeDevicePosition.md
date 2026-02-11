@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: BridgeDevicePosition
 
-Defined in: [src/types/bridge.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L70)
+Defined in: [types/bridge.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L70)
 
 Bridge position/location data.
 
@@ -20,7 +20,7 @@ Physical location of the bridge.
 
 > `optional` **latitude**: `number`
 
-Defined in: [src/types/bridge.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L72)
+Defined in: [types/bridge.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L72)
 
 Latitude coordinate
 
@@ -30,7 +30,7 @@ Latitude coordinate
 
 > `optional` **longitude**: `number`
 
-Defined in: [src/types/bridge.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L74)
+Defined in: [types/bridge.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L74)
 
 Longitude coordinate
 
@@ -40,7 +40,7 @@ Longitude coordinate
 
 > `optional` **altitude**: `number`
 
-Defined in: [src/types/bridge.ts:76](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L76)
+Defined in: [types/bridge.ts:76](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L76)
 
 Altitude in meters
 
@@ -50,7 +50,7 @@ Altitude in meters
 
 > `optional` **floor**: `number`
 
-Defined in: [src/types/bridge.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L78)
+Defined in: [types/bridge.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L78)
 
 Floor level
 
@@ -60,6 +60,6 @@ Floor level
 
 > `optional` **azimuth**: `number`
 
-Defined in: [src/types/bridge.ts:80](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L80)
+Defined in: [types/bridge.ts:80](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L80)
 
 Direction bridge is facing (0-360 degrees)

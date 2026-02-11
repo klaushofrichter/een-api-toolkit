@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventSubscription
 
-Defined in: [src/types/eventSubscription.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L171)
+Defined in: [types/eventSubscription.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L171)
 
 Event subscription entity from EEN API v3.0.
 
@@ -40,7 +40,7 @@ if (data) {
 
 > **id**: `string`
 
-Defined in: [src/types/eventSubscription.ts:173](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L173)
+Defined in: [types/eventSubscription.ts:173](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L173)
 
 Unique identifier for the subscription
 
@@ -50,7 +50,7 @@ Unique identifier for the subscription
 
 > `optional` **subscriptionConfig**: [`EventSubscriptionConfig`](EventSubscriptionConfig.md)
 
-Defined in: [src/types/eventSubscription.ts:175](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L175)
+Defined in: [types/eventSubscription.ts:175](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L175)
 
 Subscription configuration (lifecycle, TTL)
 
@@ -60,6 +60,6 @@ Subscription configuration (lifecycle, TTL)
 
 > **deliveryConfig**: [`DeliveryConfig`](../type-aliases/DeliveryConfig.md)
 
-Defined in: [src/types/eventSubscription.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L177)
+Defined in: [types/eventSubscription.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L177)
 
 Delivery configuration (SSE or webhook)

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: SSEDeliveryConfig
 
-Defined in: [src/types/eventSubscription.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L48)
+Defined in: [types/eventSubscription.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L48)
 
 SSE delivery configuration.
 
@@ -21,7 +21,7 @@ The `sseUrl` is provided by the server after subscription creation.
 
 > **type**: `"serverSentEvents.v1"`
 
-Defined in: [src/types/eventSubscription.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L50)
+Defined in: [types/eventSubscription.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L50)
 
 Delivery type identifier
 
@@ -31,6 +31,6 @@ Delivery type identifier
 
 > `optional` **sseUrl**: `string`
 
-Defined in: [src/types/eventSubscription.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L52)
+Defined in: [types/eventSubscription.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L52)
 
 URL to connect for receiving SSE events (read-only, provided by server)

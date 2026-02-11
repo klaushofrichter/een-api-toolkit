@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EenFile
 
-Defined in: [src/types/file.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L60)
+Defined in: [types/file.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L60)
 
 File entity from EEN API v3.0.
 
@@ -34,7 +34,7 @@ if (data) {
 
 > **id**: `string`
 
-Defined in: [src/types/file.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L62)
+Defined in: [types/file.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L62)
 
 Unique identifier for the file
 
@@ -44,7 +44,7 @@ Unique identifier for the file
 
 > **name**: `string`
 
-Defined in: [src/types/file.ts:64](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L64)
+Defined in: [types/file.ts:64](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L64)
 
 Display name of the file
 
@@ -54,7 +54,7 @@ Display name of the file
 
 > `optional` **mimeType**: `string`
 
-Defined in: [src/types/file.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L66)
+Defined in: [types/file.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L66)
 
 MIME type from API (e.g., 'video/mp4', 'application/directory')
 
@@ -64,7 +64,7 @@ MIME type from API (e.g., 'video/mp4', 'application/directory')
 
 > `optional` **directory**: `string`
 
-Defined in: [src/types/file.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L68)
+Defined in: [types/file.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L68)
 
 Directory path
 
@@ -74,7 +74,7 @@ Directory path
 
 > `optional` **accountId**: `string`
 
-Defined in: [src/types/file.ts:73](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L73)
+Defined in: [types/file.ts:73](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L73)
 
 ID of the account this file belongs to (requires include=accountId)
 
@@ -84,7 +84,7 @@ ID of the account this file belongs to (requires include=accountId)
 
 > `optional` **publicShare**: `unknown`
 
-Defined in: [src/types/file.ts:75](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L75)
+Defined in: [types/file.ts:75](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L75)
 
 Public share information (requires include=publicShare)
 
@@ -94,7 +94,7 @@ Public share information (requires include=publicShare)
 
 > `optional` **notes**: `string`
 
-Defined in: [src/types/file.ts:77](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L77)
+Defined in: [types/file.ts:77](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L77)
 
 File notes/description (requires include=notes)
 
@@ -104,7 +104,7 @@ File notes/description (requires include=notes)
 
 > `optional` **createTimestamp**: `string`
 
-Defined in: [src/types/file.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L79)
+Defined in: [types/file.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L79)
 
 ISO 8601 timestamp when the file was created (requires include=createTimestamp)
 
@@ -114,7 +114,7 @@ ISO 8601 timestamp when the file was created (requires include=createTimestamp)
 
 > `optional` **updateTimestamp**: `string`
 
-Defined in: [src/types/file.ts:81](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L81)
+Defined in: [types/file.ts:81](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L81)
 
 ISO 8601 timestamp when the file was last updated (requires include=updateTimestamp)
 
@@ -124,7 +124,7 @@ ISO 8601 timestamp when the file was last updated (requires include=updateTimest
 
 > `optional` **size**: `number`
 
-Defined in: [src/types/file.ts:83](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L83)
+Defined in: [types/file.ts:83](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L83)
 
 File size in bytes (requires include=size)
 
@@ -134,7 +134,7 @@ File size in bytes (requires include=size)
 
 > `optional` **metadata**: `Record`\<`string`, `unknown`\>
 
-Defined in: [src/types/file.ts:85](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L85)
+Defined in: [types/file.ts:85](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L85)
 
 Additional metadata (requires include=metadata)
 
@@ -144,7 +144,7 @@ Additional metadata (requires include=metadata)
 
 > `optional` **tags**: `string`[]
 
-Defined in: [src/types/file.ts:87](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L87)
+Defined in: [types/file.ts:87](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L87)
 
 Tags for categorization (requires include=tags)
 
@@ -154,7 +154,7 @@ Tags for categorization (requires include=tags)
 
 > `optional` **childCount**: `number`
 
-Defined in: [src/types/file.ts:89](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L89)
+Defined in: [types/file.ts:89](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L89)
 
 Number of child files for directories (requires include=childCount)
 
@@ -164,7 +164,7 @@ Number of child files for directories (requires include=childCount)
 
 > `optional` **details**: `Record`\<`string`, `unknown`\>
 
-Defined in: [src/types/file.ts:91](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L91)
+Defined in: [types/file.ts:91](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L91)
 
 Additional file details (requires include=details)
 
@@ -174,7 +174,7 @@ Additional file details (requires include=details)
 
 > `optional` **filename**: `string`
 
-Defined in: [src/types/file.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L96)
+Defined in: [types/file.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L96)
 
 Original filename
 
@@ -184,7 +184,7 @@ Original filename
 
 > `optional` **contentType**: `string`
 
-Defined in: [src/types/file.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L98)
+Defined in: [types/file.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L98)
 
 MIME content type (e.g., 'video/mp4', 'image/jpeg')
 
@@ -194,7 +194,7 @@ MIME content type (e.g., 'video/mp4', 'image/jpeg')
 
 > `optional` **type**: [`FileType`](../type-aliases/FileType.md)
 
-Defined in: [src/types/file.ts:100](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L100)
+Defined in: [types/file.ts:100](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L100)
 
 Type/category of the file
 
@@ -204,7 +204,7 @@ Type/category of the file
 
 > `optional` **jobId**: `string`
 
-Defined in: [src/types/file.ts:102](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L102)
+Defined in: [types/file.ts:102](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L102)
 
 ID of the job that created this file (for exports)
 
@@ -214,7 +214,7 @@ ID of the job that created this file (for exports)
 
 > `optional` **cameraId**: `string`
 
-Defined in: [src/types/file.ts:104](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L104)
+Defined in: [types/file.ts:104](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L104)
 
 ID of the camera this file relates to
 
@@ -224,7 +224,7 @@ ID of the camera this file relates to
 
 > `optional` **description**: `string`
 
-Defined in: [src/types/file.ts:106](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L106)
+Defined in: [types/file.ts:106](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L106)
 
 Description or notes about the file
 
@@ -234,6 +234,6 @@ Description or notes about the file
 
 > `optional` **expirationTimestamp**: `string`
 
-Defined in: [src/types/file.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L108)
+Defined in: [types/file.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L108)
 
 ISO 8601 timestamp when the file expires (if applicable)

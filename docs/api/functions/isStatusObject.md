@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **isStatusObject**(`status?`): `status is { connectionStatus?: CameraStatus }`
 
-Defined in: [src/utils/camera.ts:75](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/camera.ts#L75)
+Defined in: [utils/camera.ts:75](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/camera.ts#L75)
 
 TypeScript type guard to check if a status value is an object with connectionStatus.
 

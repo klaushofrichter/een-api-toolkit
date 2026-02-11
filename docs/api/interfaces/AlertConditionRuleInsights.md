@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: AlertConditionRuleInsights
 
-Defined in: [src/types/automation.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L153)
+Defined in: [types/automation.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L153)
 
 Insights data for alert condition rules.
 
@@ -16,7 +16,7 @@ Insights data for alert condition rules.
 
 > `optional` **totalAlerts**: `number`
 
-Defined in: [src/types/automation.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L155)
+Defined in: [types/automation.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L155)
 
 Total number of alerts triggered
 
@@ -26,7 +26,7 @@ Total number of alerts triggered
 
 > `optional` **lastTriggered**: `string`
 
-Defined in: [src/types/automation.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L157)
+Defined in: [types/automation.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L157)
 
 ISO 8601 timestamp of last triggered alert
 
@@ -36,7 +36,7 @@ ISO 8601 timestamp of last triggered alert
 
 > `optional` **alertCounts**: `object`
 
-Defined in: [src/types/automation.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L159)
+Defined in: [types/automation.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L159)
 
 Count of alerts by time period
 

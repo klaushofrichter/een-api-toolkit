@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **FeedIncludeOption** = `"flvUrl"` \| `"rtspUrl"` \| `"rtspsUrl"` \| `"localRtspUrl"` \| `"hlsUrl"` \| `"multipartUrl"` \| `"webRtcUrl"` \| `"audioPushHttpsUrl"`
 
-Defined in: [src/types/feeds.ts:59](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L59)
+Defined in: [types/feeds.ts:59](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L59)
 
 URL fields that can be included in feed responses.
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getCameraStatusString**(`status?`): [`CameraStatus`](../type-aliases/CameraStatus.md) \| `undefined`
 
-Defined in: [src/utils/camera.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/camera.ts#L35)
+Defined in: [utils/camera.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/camera.ts#L35)
 
 Extract the status string from a Camera's status field.
 

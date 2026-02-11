@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getLiveImage**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`LiveImageResult`](../interfaces/LiveImageResult.md)\>\>
 
-Defined in: [src/media/service.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L234)
+Defined in: [media/service.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L234)
 
 Get a live image from a camera.
 

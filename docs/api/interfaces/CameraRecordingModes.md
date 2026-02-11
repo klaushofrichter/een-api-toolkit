@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraRecordingModes
 
-Defined in: [src/types/camera.ts:132](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L132)
+Defined in: [types/camera.ts:132](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L132)
 
 Recording modes for a camera.
 
@@ -20,7 +20,7 @@ Indicates which recording modes are enabled for the camera.
 
 > `optional` **continuous**: `boolean`
 
-Defined in: [src/types/camera.ts:134](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L134)
+Defined in: [types/camera.ts:134](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L134)
 
 Whether continuous recording is enabled
 
@@ -30,7 +30,7 @@ Whether continuous recording is enabled
 
 > `optional` **motion**: `boolean`
 
-Defined in: [src/types/camera.ts:136](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L136)
+Defined in: [types/camera.ts:136](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L136)
 
 Whether motion-triggered recording is enabled
 
@@ -40,6 +40,6 @@ Whether motion-triggered recording is enabled
 
 > `optional` **scheduled**: `boolean`
 
-Defined in: [src/types/camera.ts:138](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L138)
+Defined in: [types/camera.ts:138](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L138)
 
 Whether scheduled recording is enabled

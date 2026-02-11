@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **JobState** = `"pending"` \| `"started"` \| `"success"` \| `"failure"` \| `"revoked"`
 
-Defined in: [src/types/job.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L9)
+Defined in: [types/job.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L9)
 
 Job states from EEN API v3.0.
 

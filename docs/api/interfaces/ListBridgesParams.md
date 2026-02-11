@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListBridgesParams
 
-Defined in: [src/types/bridge.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L174)
+Defined in: [types/bridge.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L174)
 
 Parameters for listing bridges.
 
@@ -42,7 +42,7 @@ const { data: filtered } = await getBridges({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/bridge.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L177)
+Defined in: [types/bridge.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L177)
 
 Number of results per page (default: 100, max: 1000)
 
@@ -52,7 +52,7 @@ Number of results per page (default: 100, max: 1000)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/bridge.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L179)
+Defined in: [types/bridge.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L179)
 
 Token for fetching a specific page
 
@@ -62,7 +62,7 @@ Token for fetching a specific page
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/bridge.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L183)
+Defined in: [types/bridge.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L183)
 
 Additional fields to include in the response
 
@@ -72,7 +72,7 @@ Additional fields to include in the response
 
 > `optional` **sort**: `string`[]
 
-Defined in: [src/types/bridge.ts:185](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L185)
+Defined in: [types/bridge.ts:185](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L185)
 
 Fields to sort by (prefix with - for descending)
 
@@ -82,7 +82,7 @@ Fields to sort by (prefix with - for descending)
 
 > `optional` **locationId\_\_in**: `string`[]
 
-Defined in: [src/types/bridge.ts:189](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L189)
+Defined in: [types/bridge.ts:189](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L189)
 
 Filter by location IDs
 
@@ -92,7 +92,7 @@ Filter by location IDs
 
 > `optional` **tags\_\_contains**: `string`[]
 
-Defined in: [src/types/bridge.ts:193](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L193)
+Defined in: [types/bridge.ts:193](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L193)
 
 Filter by tags (all tags must be present)
 
@@ -102,7 +102,7 @@ Filter by tags (all tags must be present)
 
 > `optional` **tags\_\_any**: `string`[]
 
-Defined in: [src/types/bridge.ts:195](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L195)
+Defined in: [types/bridge.ts:195](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L195)
 
 Filter by tags (any tag must be present)
 
@@ -112,7 +112,7 @@ Filter by tags (any tag must be present)
 
 > `optional` **name**: `string`
 
-Defined in: [src/types/bridge.ts:199](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L199)
+Defined in: [types/bridge.ts:199](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L199)
 
 Filter by exact name
 
@@ -122,7 +122,7 @@ Filter by exact name
 
 > `optional` **name\_\_contains**: `string`
 
-Defined in: [src/types/bridge.ts:201](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L201)
+Defined in: [types/bridge.ts:201](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L201)
 
 Filter by name containing substring (case-insensitive)
 
@@ -132,7 +132,7 @@ Filter by name containing substring (case-insensitive)
 
 > `optional` **name\_\_in**: `string`[]
 
-Defined in: [src/types/bridge.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L203)
+Defined in: [types/bridge.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L203)
 
 Filter by exact names (any match)
 
@@ -142,7 +142,7 @@ Filter by exact names (any match)
 
 > `optional` **id\_\_in**: `string`[]
 
-Defined in: [src/types/bridge.ts:207](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L207)
+Defined in: [types/bridge.ts:207](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L207)
 
 Filter by bridge IDs
 
@@ -152,7 +152,7 @@ Filter by bridge IDs
 
 > `optional` **id\_\_notIn**: `string`[]
 
-Defined in: [src/types/bridge.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L209)
+Defined in: [types/bridge.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L209)
 
 Exclude bridge IDs
 
@@ -162,7 +162,7 @@ Exclude bridge IDs
 
 > `optional` **q**: `string`
 
-Defined in: [src/types/bridge.ts:213](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L213)
+Defined in: [types/bridge.ts:213](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L213)
 
 Full-text search query
 
@@ -172,7 +172,7 @@ Full-text search query
 
 > `optional` **qRelevance\_\_gte**: `number`
 
-Defined in: [src/types/bridge.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L215)
+Defined in: [types/bridge.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L215)
 
 Minimum search relevance score
 
@@ -182,7 +182,7 @@ Minimum search relevance score
 
 > `optional` **status\_\_in**: [`BridgeStatus`](../type-aliases/BridgeStatus.md)[]
 
-Defined in: [src/types/bridge.ts:219](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L219)
+Defined in: [types/bridge.ts:219](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L219)
 
 Filter by status values (any match)
 
@@ -192,6 +192,6 @@ Filter by status values (any match)
 
 > `optional` **status\_\_ne**: [`BridgeStatus`](../type-aliases/BridgeStatus.md)
 
-Defined in: [src/types/bridge.ts:221](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L221)
+Defined in: [types/bridge.ts:221](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L221)
 
 Filter by status not equal to

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettingsCredentials
 
-Defined in: [src/types/camera.ts:578](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L578)
+Defined in: [types/camera.ts:578](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L578)
 
 Camera credentials settings.
 
@@ -20,7 +20,7 @@ Credentials used to authenticate with the camera device.
 
 > `optional` **username**: `string`
 
-Defined in: [src/types/camera.ts:580](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L580)
+Defined in: [types/camera.ts:580](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L580)
 
 Username for camera authentication
 
@@ -30,6 +30,6 @@ Username for camera authentication
 
 > `optional` **password**: `string`
 
-Defined in: [src/types/camera.ts:582](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L582)
+Defined in: [types/camera.ts:582](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L582)
 
 Password for camera authentication (write-only, may not be returned)

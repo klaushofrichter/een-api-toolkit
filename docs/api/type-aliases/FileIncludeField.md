@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **FileIncludeField** = `"accountId"` \| `"publicShare"` \| `"notes"` \| `"createTimestamp"` \| `"updateTimestamp"` \| `"size"` \| `"metadata"` \| `"tags"` \| `"childCount"` \| `"details"`
 
-Defined in: [src/types/file.ts:27](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L27)
+Defined in: [types/file.ts:27](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L27)
 
 Valid include field names for the Files API.
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettingsData
 
-Defined in: [src/types/camera.ts:605](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L605)
+Defined in: [types/camera.ts:605](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L605)
 
 Aggregated camera settings data.
 
@@ -33,7 +33,7 @@ if (data) {
 
 > `optional` **timeZone**: `string`
 
-Defined in: [src/types/camera.ts:607](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L607)
+Defined in: [types/camera.ts:607](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L607)
 
 Camera timezone (IANA timezone name)
 
@@ -43,7 +43,7 @@ Camera timezone (IANA timezone name)
 
 > `optional` **rtsp**: [`CameraRtspConnectionSettings`](CameraRtspConnectionSettings.md)
 
-Defined in: [src/types/camera.ts:609](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L609)
+Defined in: [types/camera.ts:609](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L609)
 
 RTSP connection settings
 
@@ -53,7 +53,7 @@ RTSP connection settings
 
 > `optional` **credentials**: [`CameraSettingsCredentials`](CameraSettingsCredentials.md)
 
-Defined in: [src/types/camera.ts:611](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L611)
+Defined in: [types/camera.ts:611](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L611)
 
 Camera device credentials
 
@@ -63,7 +63,7 @@ Camera device credentials
 
 > `optional` **retention**: [`CameraSettingsRetention`](CameraSettingsRetention.md)
 
-Defined in: [src/types/camera.ts:613](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L613)
+Defined in: [types/camera.ts:613](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L613)
 
 Retention settings
 
@@ -73,7 +73,7 @@ Retention settings
 
 > `optional` **audio**: [`CameraSettingsAudio`](CameraSettingsAudio.md)
 
-Defined in: [src/types/camera.ts:615](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L615)
+Defined in: [types/camera.ts:615](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L615)
 
 Audio settings
 
@@ -83,7 +83,7 @@ Audio settings
 
 > `optional` **previewVideo**: [`CameraSettingsPreviewVideo`](CameraSettingsPreviewVideo.md)
 
-Defined in: [src/types/camera.ts:617](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L617)
+Defined in: [types/camera.ts:617](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L617)
 
 Preview video stream settings
 
@@ -93,7 +93,7 @@ Preview video stream settings
 
 > `optional` **mainVideo**: [`CameraSettingsMainVideo`](CameraSettingsMainVideo.md)
 
-Defined in: [src/types/camera.ts:619](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L619)
+Defined in: [types/camera.ts:619](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L619)
 
 Main video stream settings
 
@@ -103,7 +103,7 @@ Main video stream settings
 
 > `optional` **analog**: [`CameraSettingsAnalog`](CameraSettingsAnalog.md)
 
-Defined in: [src/types/camera.ts:621](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L621)
+Defined in: [types/camera.ts:621](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L621)
 
 Analog video settings
 
@@ -113,7 +113,7 @@ Analog video settings
 
 > `optional` **operatingSettings**: [`CameraSettingsOperating`](CameraSettingsOperating.md)
 
-Defined in: [src/types/camera.ts:623](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L623)
+Defined in: [types/camera.ts:623](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L623)
 
 Operating on/off settings
 
@@ -123,6 +123,6 @@ Operating on/off settings
 
 > `optional` **talkdown**: [`CameraSettingsTalkdown`](CameraSettingsTalkdown.md)
 
-Defined in: [src/types/camera.ts:625](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L625)
+Defined in: [types/camera.ts:625](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L625)
 
 Talkdown (two-way audio) settings

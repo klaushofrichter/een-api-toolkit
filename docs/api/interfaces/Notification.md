@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Notification
 
-Defined in: [src/types/notification.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L62)
+Defined in: [types/notification.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L62)
 
 Notification entity from EEN API v3.0.
 
@@ -41,7 +41,7 @@ if (data) {
 
 > **id**: `string`
 
-Defined in: [src/types/notification.ts:64](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L64)
+Defined in: [types/notification.ts:64](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L64)
 
 Unique identifier for the notification
 
@@ -51,7 +51,7 @@ Unique identifier for the notification
 
 > **timestamp**: `string`
 
-Defined in: [src/types/notification.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L66)
+Defined in: [types/notification.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L66)
 
 ISO 8601 timestamp of the notification event
 
@@ -61,7 +61,7 @@ ISO 8601 timestamp of the notification event
 
 > **createTimestamp**: `string`
 
-Defined in: [src/types/notification.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L68)
+Defined in: [types/notification.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L68)
 
 ISO 8601 timestamp when the notification was created in the system
 
@@ -71,7 +71,7 @@ ISO 8601 timestamp when the notification was created in the system
 
 > `optional` **sentTimestamp**: `string`
 
-Defined in: [src/types/notification.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L70)
+Defined in: [types/notification.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L70)
 
 ISO 8601 timestamp when the notification was sent
 
@@ -81,7 +81,7 @@ ISO 8601 timestamp when the notification was sent
 
 > `optional` **alertId**: `string` \| `null`
 
-Defined in: [src/types/notification.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L72)
+Defined in: [types/notification.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L72)
 
 ID of the alert that triggered this notification (null if not alert-based)
 
@@ -91,7 +91,7 @@ ID of the alert that triggered this notification (null if not alert-based)
 
 > `optional` **alertType**: `string`
 
-Defined in: [src/types/notification.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L74)
+Defined in: [types/notification.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L74)
 
 Type of alert that triggered this notification
 
@@ -101,7 +101,7 @@ Type of alert that triggered this notification
 
 > **actorId**: `string`
 
-Defined in: [src/types/notification.ts:76](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L76)
+Defined in: [types/notification.ts:76](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L76)
 
 ID of the actor (device/entity) associated with this notification
 
@@ -111,7 +111,7 @@ ID of the actor (device/entity) associated with this notification
 
 > `optional` **actorName**: `string`
 
-Defined in: [src/types/notification.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L78)
+Defined in: [types/notification.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L78)
 
 Human-readable name of the actor
 
@@ -121,7 +121,7 @@ Human-readable name of the actor
 
 > **actorType**: `string`
 
-Defined in: [src/types/notification.ts:80](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L80)
+Defined in: [types/notification.ts:80](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L80)
 
 Type of actor associated with this notification
 
@@ -131,7 +131,7 @@ Type of actor associated with this notification
 
 > **actorAccountId**: `string`
 
-Defined in: [src/types/notification.ts:82](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L82)
+Defined in: [types/notification.ts:82](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L82)
 
 Account ID of the actor
 
@@ -141,7 +141,7 @@ Account ID of the actor
 
 > **userId**: `string`
 
-Defined in: [src/types/notification.ts:84](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L84)
+Defined in: [types/notification.ts:84](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L84)
 
 ID of the user this notification was sent to
 
@@ -151,7 +151,7 @@ ID of the user this notification was sent to
 
 > **accountId**: `string`
 
-Defined in: [src/types/notification.ts:86](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L86)
+Defined in: [types/notification.ts:86](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L86)
 
 ID of the account this notification belongs to
 
@@ -161,7 +161,7 @@ ID of the account this notification belongs to
 
 > **read**: `boolean`
 
-Defined in: [src/types/notification.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L88)
+Defined in: [types/notification.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L88)
 
 Whether the notification has been read by the user
 
@@ -171,7 +171,7 @@ Whether the notification has been read by the user
 
 > **status**: [`NotificationStatus`](../type-aliases/NotificationStatus.md)
 
-Defined in: [src/types/notification.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L90)
+Defined in: [types/notification.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L90)
 
 Current delivery status of the notification
 
@@ -181,7 +181,7 @@ Current delivery status of the notification
 
 > **category**: [`NotificationCategory`](../type-aliases/NotificationCategory.md)
 
-Defined in: [src/types/notification.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L92)
+Defined in: [types/notification.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L92)
 
 Category of the notification
 
@@ -191,7 +191,7 @@ Category of the notification
 
 > `optional` **description**: `string`
 
-Defined in: [src/types/notification.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L94)
+Defined in: [types/notification.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L94)
 
 Human-readable description of the notification
 
@@ -201,7 +201,7 @@ Human-readable description of the notification
 
 > **notificationActions**: `string`[]
 
-Defined in: [src/types/notification.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L96)
+Defined in: [types/notification.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L96)
 
 Actions that were taken for this notification
 
@@ -211,7 +211,7 @@ Actions that were taken for this notification
 
 > **dataSchemas**: `string`[]
 
-Defined in: [src/types/notification.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L98)
+Defined in: [types/notification.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L98)
 
 List of data schema types included in this notification
 
@@ -221,6 +221,6 @@ List of data schema types included in this notification
 
 > **data**: `Record`\<`string`, `unknown`\>
 
-Defined in: [src/types/notification.ts:100](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L100)
+Defined in: [types/notification.ts:100](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L100)
 
 Notification data objects (varies by notification type)

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getEvent**(`eventId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Event`](../interfaces/Event.md)\>\>
 
-Defined in: [src/events/service.ts:189](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L189)
+Defined in: [events/service.ts:189](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L189)
 
 Get a specific event by ID.
 

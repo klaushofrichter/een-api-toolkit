@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,6 +8,6 @@
 
 > **GetLayoutInclude** = `"effectivePermissions"` \| `"resourceCounts"` \| `"resourceStatusCounts"`
 
-Defined in: [src/types/layout.ts:264](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L264)
+Defined in: [types/layout.ts:264](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L264)
 
 Valid include options for getting a single layout.

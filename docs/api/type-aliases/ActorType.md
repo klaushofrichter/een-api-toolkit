@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **ActorType** = `"bridge"` \| `"camera"` \| `"speaker"` \| `"account"` \| `"user"` \| `"layout"` \| `"job"` \| `"measurement"` \| `"sensor"` \| `"gateway"`
 
-Defined in: [src/types/event.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L10)
+Defined in: [types/event.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L10)
 
 Actor types for events in the EEN API v3.0.
 

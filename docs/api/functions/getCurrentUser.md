@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getCurrentUser**(): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`UserProfile`](../interfaces/UserProfile.md)\>\>
 
-Defined in: [src/users/service.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/service.ts#L33)
+Defined in: [users/service.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/users/service.ts#L33)
 
 Get the current authenticated user's profile.
 

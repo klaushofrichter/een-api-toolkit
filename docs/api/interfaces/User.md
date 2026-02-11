@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: User
 
-Defined in: [src/types/user.ts:13](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L13)
+Defined in: [types/user.ts:13](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L13)
 
 User entity from EEN API v3.0.
 
@@ -24,7 +24,7 @@ For more details on user management, see the
 
 > **id**: `string`
 
-Defined in: [src/types/user.ts:15](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L15)
+Defined in: [types/user.ts:15](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L15)
 
 Unique identifier for the user
 
@@ -34,7 +34,7 @@ Unique identifier for the user
 
 > **email**: `string`
 
-Defined in: [src/types/user.ts:17](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L17)
+Defined in: [types/user.ts:17](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L17)
 
 User's email address (used for login)
 
@@ -44,7 +44,7 @@ User's email address (used for login)
 
 > **firstName**: `string`
 
-Defined in: [src/types/user.ts:19](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L19)
+Defined in: [types/user.ts:19](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L19)
 
 User's first name
 
@@ -54,7 +54,7 @@ User's first name
 
 > **lastName**: `string`
 
-Defined in: [src/types/user.ts:21](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L21)
+Defined in: [types/user.ts:21](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L21)
 
 User's last name
 
@@ -64,7 +64,7 @@ User's last name
 
 > `optional` **accountId**: `string`
 
-Defined in: [src/types/user.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L23)
+Defined in: [types/user.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L23)
 
 ID of the account this user belongs to
 
@@ -74,7 +74,7 @@ ID of the account this user belongs to
 
 > `optional` **timeZone**: `string`
 
-Defined in: [src/types/user.ts:25](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L25)
+Defined in: [types/user.ts:25](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L25)
 
 User's timezone (IANA timezone name, e.g., "America/Los_Angeles")
 
@@ -84,7 +84,7 @@ User's timezone (IANA timezone name, e.g., "America/Los_Angeles")
 
 > `optional` **language**: `string`
 
-Defined in: [src/types/user.ts:27](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L27)
+Defined in: [types/user.ts:27](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L27)
 
 User's preferred language (ISO 639-1 code, e.g., "en")
 
@@ -94,7 +94,7 @@ User's preferred language (ISO 639-1 code, e.g., "en")
 
 > `optional` **phone**: `string`
 
-Defined in: [src/types/user.ts:29](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L29)
+Defined in: [types/user.ts:29](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L29)
 
 User's phone number
 
@@ -104,7 +104,7 @@ User's phone number
 
 > `optional` **mobilePhone**: `string`
 
-Defined in: [src/types/user.ts:31](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L31)
+Defined in: [types/user.ts:31](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L31)
 
 User's mobile phone number
 
@@ -114,7 +114,7 @@ User's mobile phone number
 
 > `optional` **permissions**: `string`[]
 
-Defined in: [src/types/user.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L33)
+Defined in: [types/user.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L33)
 
 List of permission strings assigned to this user
 
@@ -124,7 +124,7 @@ List of permission strings assigned to this user
 
 > `optional` **lastLogin**: `string`
 
-Defined in: [src/types/user.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L35)
+Defined in: [types/user.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L35)
 
 ISO 8601 timestamp of the user's last login
 
@@ -134,7 +134,7 @@ ISO 8601 timestamp of the user's last login
 
 > `optional` **isActive**: `boolean`
 
-Defined in: [src/types/user.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L37)
+Defined in: [types/user.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L37)
 
 Whether the user account is active
 
@@ -144,7 +144,7 @@ Whether the user account is active
 
 > `optional` **createdAt**: `string`
 
-Defined in: [src/types/user.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L39)
+Defined in: [types/user.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L39)
 
 ISO 8601 timestamp when the user was created
 
@@ -154,6 +154,6 @@ ISO 8601 timestamp when the user was created
 
 > `optional` **updatedAt**: `string`
 
-Defined in: [src/types/user.ts:41](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L41)
+Defined in: [types/user.ts:41](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L41)
 
 ISO 8601 timestamp when the user was last updated

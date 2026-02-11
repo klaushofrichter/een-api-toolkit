@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **createExportJob**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Job`](../interfaces/Job.md)\>\>
 
-Defined in: [src/exports/service.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/exports/service.ts#L62)
+Defined in: [exports/service.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/exports/service.ts#L62)
 
 Create a new export job.
 

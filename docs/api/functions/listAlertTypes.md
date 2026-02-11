@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listAlertTypes**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`AlertType`](../interfaces/AlertType.md)\>\>\>
 
-Defined in: [src/alerts/service.ts:295](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/alerts/service.ts#L295)
+Defined in: [alerts/service.ts:295](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/alerts/service.ts#L295)
 
 List all available alert types.
 

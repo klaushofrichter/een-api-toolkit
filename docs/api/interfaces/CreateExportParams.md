@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CreateExportParams
 
-Defined in: [src/types/export.ts:47](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L47)
+Defined in: [types/export.ts:47](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L47)
 
 Parameters for creating an export job.
 
@@ -43,7 +43,7 @@ if (data) {
 
 > `optional` **name**: `string`
 
-Defined in: [src/types/export.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L49)
+Defined in: [types/export.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L49)
 
 Display name for the export job
 
@@ -53,7 +53,7 @@ Display name for the export job
 
 > **type**: [`ExportType`](../type-aliases/ExportType.md)
 
-Defined in: [src/types/export.ts:51](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L51)
+Defined in: [types/export.ts:51](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L51)
 
 Type of export to create
 
@@ -63,7 +63,7 @@ Type of export to create
 
 > **cameraId**: `string`
 
-Defined in: [src/types/export.ts:53](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L53)
+Defined in: [types/export.ts:53](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L53)
 
 Camera ID to export from
 
@@ -73,7 +73,7 @@ Camera ID to export from
 
 > **startTimestamp**: `string`
 
-Defined in: [src/types/export.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L55)
+Defined in: [types/export.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L55)
 
 Start timestamp for the export (ISO 8601 format with +00:00 timezone)
 
@@ -83,7 +83,7 @@ Start timestamp for the export (ISO 8601 format with +00:00 timezone)
 
 > **endTimestamp**: `string`
 
-Defined in: [src/types/export.ts:57](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L57)
+Defined in: [types/export.ts:57](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L57)
 
 End timestamp for the export (ISO 8601 format with +00:00 timezone)
 
@@ -93,7 +93,7 @@ End timestamp for the export (ISO 8601 format with +00:00 timezone)
 
 > `optional` **playbackMultiplier**: `number`
 
-Defined in: [src/types/export.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L63)
+Defined in: [types/export.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L63)
 
 Playback multiplier for time lapse video (required for timeLapse and bundle types).
 Value must be between 1 and 48.
@@ -105,7 +105,7 @@ For example, a value of 10 means 10 minutes of recording becomes 1 minute of pla
 
 > `optional` **autoDelete**: `boolean`
 
-Defined in: [src/types/export.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L65)
+Defined in: [types/export.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L65)
 
 If true, export is auto-deleted after 2 weeks (default: false)
 
@@ -115,7 +115,7 @@ If true, export is auto-deleted after 2 weeks (default: false)
 
 > `optional` **directory**: `string`
 
-Defined in: [src/types/export.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L67)
+Defined in: [types/export.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L67)
 
 Directory path in archive to save the export (default: '/')
 
@@ -125,7 +125,7 @@ Directory path in archive to save the export (default: '/')
 
 > `optional` **notes**: `string`
 
-Defined in: [src/types/export.ts:69](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L69)
+Defined in: [types/export.ts:69](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L69)
 
 Notes/description for the export
 
@@ -135,6 +135,6 @@ Notes/description for the export
 
 > `optional` **tags**: `string`[]
 
-Defined in: [src/types/export.ts:71](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L71)
+Defined in: [types/export.ts:71](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L71)
 
 Tags for categorization

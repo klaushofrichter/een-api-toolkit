@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: BridgeNetworkInfo
 
-Defined in: [src/types/bridge.ts:47](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L47)
+Defined in: [types/bridge.ts:47](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L47)
 
 Network information for a bridge.
 
@@ -20,7 +20,7 @@ Contains network connectivity details for the bridge.
 
 > `optional` **localIpAddress**: `string`
 
-Defined in: [src/types/bridge.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L49)
+Defined in: [types/bridge.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L49)
 
 Local IP address of the bridge
 
@@ -30,7 +30,7 @@ Local IP address of the bridge
 
 > `optional` **publicIpAddress**: `string`
 
-Defined in: [src/types/bridge.ts:51](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L51)
+Defined in: [types/bridge.ts:51](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L51)
 
 Public IP address of the bridge
 
@@ -40,7 +40,7 @@ Public IP address of the bridge
 
 > `optional` **macAddress**: `string`
 
-Defined in: [src/types/bridge.ts:53](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L53)
+Defined in: [types/bridge.ts:53](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L53)
 
 MAC address
 
@@ -50,7 +50,7 @@ MAC address
 
 > `optional` **subnetMask**: `string`
 
-Defined in: [src/types/bridge.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L55)
+Defined in: [types/bridge.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L55)
 
 Subnet mask
 
@@ -60,7 +60,7 @@ Subnet mask
 
 > `optional` **gateway**: `string`
 
-Defined in: [src/types/bridge.ts:57](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L57)
+Defined in: [types/bridge.ts:57](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L57)
 
 Default gateway
 
@@ -70,6 +70,6 @@ Default gateway
 
 > `optional` **dnsServers**: `string`[]
 
-Defined in: [src/types/bridge.ts:59](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L59)
+Defined in: [types/bridge.ts:59](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L59)
 
 DNS servers

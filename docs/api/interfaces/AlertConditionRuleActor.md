@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: AlertConditionRuleActor
 
-Defined in: [src/types/automation.ts:125](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L125)
+Defined in: [types/automation.ts:125](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L125)
 
 Actor configuration for alert condition rules.
 
@@ -16,7 +16,7 @@ Actor configuration for alert condition rules.
 
 > **id**: `string`
 
-Defined in: [src/types/automation.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L127)
+Defined in: [types/automation.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L127)
 
 Actor ID
 
@@ -26,7 +26,7 @@ Actor ID
 
 > **type**: `string`
 
-Defined in: [src/types/automation.ts:129](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L129)
+Defined in: [types/automation.ts:129](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L129)
 
 Actor type
 
@@ -36,6 +36,6 @@ Actor type
 
 > `optional` **accountId**: `string`
 
-Defined in: [src/types/automation.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L131)
+Defined in: [types/automation.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L131)
 
 Actor account ID

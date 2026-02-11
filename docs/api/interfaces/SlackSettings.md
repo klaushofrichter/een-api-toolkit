@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: SlackSettings
 
-Defined in: [src/types/automation.ts:330](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L330)
+Defined in: [types/automation.ts:330](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L330)
 
 Slack integration settings.
 
@@ -16,7 +16,7 @@ Slack integration settings.
 
 > **webhookUrl**: `string`
 
-Defined in: [src/types/automation.ts:332](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L332)
+Defined in: [types/automation.ts:332](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L332)
 
 Slack webhook URL
 
@@ -26,7 +26,7 @@ Slack webhook URL
 
 > `optional` **channel**: `string`
 
-Defined in: [src/types/automation.ts:334](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L334)
+Defined in: [types/automation.ts:334](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L334)
 
 Channel to post to
 
@@ -36,6 +36,6 @@ Channel to post to
 
 > `optional` **username**: `string`
 
-Defined in: [src/types/automation.ts:336](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L336)
+Defined in: [types/automation.ts:336](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L336)
 
 Bot username

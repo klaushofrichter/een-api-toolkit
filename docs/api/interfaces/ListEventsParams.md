@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListEventsParams
 
-Defined in: [src/types/event.ts:154](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L154)
+Defined in: [types/event.ts:154](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L154)
 
 Parameters for listing events.
 
@@ -49,7 +49,7 @@ if (data?.nextPageToken) {
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/event.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L157)
+Defined in: [types/event.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L157)
 
 Number of results per page (default: 100)
 
@@ -59,7 +59,7 @@ Number of results per page (default: 100)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/event.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L159)
+Defined in: [types/event.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L159)
 
 Token for fetching a specific page
 
@@ -69,7 +69,7 @@ Token for fetching a specific page
 
 > **actor**: `string`
 
-Defined in: [src/types/event.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L163)
+Defined in: [types/event.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L163)
 
 Actor to filter by (format: "type:id", e.g., "camera:100d4c41")
 
@@ -79,7 +79,7 @@ Actor to filter by (format: "type:id", e.g., "camera:100d4c41")
 
 > **type\_\_in**: `string`[]
 
-Defined in: [src/types/event.ts:165](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L165)
+Defined in: [types/event.ts:165](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L165)
 
 Event types to include (e.g., ["een.motionDetectionEvent.v1"])
 
@@ -89,7 +89,7 @@ Event types to include (e.g., ["een.motionDetectionEvent.v1"])
 
 > **startTimestamp\_\_gte**: `string`
 
-Defined in: [src/types/event.ts:167](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L167)
+Defined in: [types/event.ts:167](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L167)
 
 ISO 8601 timestamp - events starting at or after this time
 
@@ -99,7 +99,7 @@ ISO 8601 timestamp - events starting at or after this time
 
 > `optional` **startTimestamp\_\_lte**: `string`
 
-Defined in: [src/types/event.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L171)
+Defined in: [types/event.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L171)
 
 ISO 8601 timestamp - events starting before this time
 
@@ -109,7 +109,7 @@ ISO 8601 timestamp - events starting before this time
 
 > `optional` **endTimestamp\_\_gte**: `string`
 
-Defined in: [src/types/event.ts:173](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L173)
+Defined in: [types/event.ts:173](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L173)
 
 ISO 8601 timestamp - events ending at or after this time
 
@@ -119,7 +119,7 @@ ISO 8601 timestamp - events ending at or after this time
 
 > `optional` **endTimestamp\_\_lte**: `string`
 
-Defined in: [src/types/event.ts:175](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L175)
+Defined in: [types/event.ts:175](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L175)
 
 ISO 8601 timestamp - events ending before this time
 
@@ -129,7 +129,7 @@ ISO 8601 timestamp - events ending before this time
 
 > `optional` **sort**: `"+startTimestamp"` \| `"-startTimestamp"`
 
-Defined in: [src/types/event.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L179)
+Defined in: [types/event.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L179)
 
 Sort order for results
 
@@ -139,6 +139,6 @@ Sort order for results
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/event.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L183)
+Defined in: [types/event.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L183)
 
 Data schemas to include (e.g., ["data.een.objectDetection.v1"])

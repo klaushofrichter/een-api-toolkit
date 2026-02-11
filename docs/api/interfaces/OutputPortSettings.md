@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: OutputPortSettings
 
-Defined in: [src/types/automation.ts:358](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L358)
+Defined in: [types/automation.ts:358](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L358)
 
 Output port settings for triggering physical outputs.
 
@@ -16,7 +16,7 @@ Output port settings for triggering physical outputs.
 
 > **deviceId**: `string`
 
-Defined in: [src/types/automation.ts:360](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L360)
+Defined in: [types/automation.ts:360](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L360)
 
 Device ID
 
@@ -26,7 +26,7 @@ Device ID
 
 > **outputPort**: `number`
 
-Defined in: [src/types/automation.ts:362](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L362)
+Defined in: [types/automation.ts:362](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L362)
 
 Output port index
 
@@ -36,6 +36,6 @@ Output port index
 
 > `optional` **durationMs**: `number`
 
-Defined in: [src/types/automation.ts:364](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L364)
+Defined in: [types/automation.ts:364](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L364)
 
 Duration in milliseconds

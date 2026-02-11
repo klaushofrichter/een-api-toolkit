@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **FileType** = `"export"` \| `"upload"` \| `"snapshot"` \| `"other"`
 
-Defined in: [src/types/file.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L9)
+Defined in: [types/file.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L9)
 
 File type/category from EEN API v3.0.
 

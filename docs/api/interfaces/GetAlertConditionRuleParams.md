@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetAlertConditionRuleParams
 
-Defined in: [src/types/automation.ts:532](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L532)
+Defined in: [types/automation.ts:532](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L532)
 
 Parameters for getting a single alert condition rule.
 
@@ -16,6 +16,6 @@ Parameters for getting a single alert condition rule.
 
 > `optional` **include**: [`AlertConditionRuleInclude`](../type-aliases/AlertConditionRuleInclude.md)[]
 
-Defined in: [src/types/automation.ts:534](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L534)
+Defined in: [types/automation.ts:534](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L534)
 
 Fields to include in response

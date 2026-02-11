@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **handleAuthCallback**(`code`, `state`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`TokenResponse`](../interfaces/TokenResponse.md)\>\>
 
-Defined in: [src/auth/service.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L181)
+Defined in: [auth/service.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L181)
 
 Handle OAuth callback - validates state and exchanges code for token
 

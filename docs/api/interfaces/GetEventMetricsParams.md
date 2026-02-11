@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetEventMetricsParams
 
-Defined in: [src/types/eventMetric.ts:116](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L116)
+Defined in: [types/eventMetric.ts:116](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L116)
 
 Parameters for fetching event metrics.
 
@@ -46,7 +46,7 @@ const { data: weekData } = await getEventMetrics({
 
 > **actor**: `string`
 
-Defined in: [src/types/eventMetric.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L118)
+Defined in: [types/eventMetric.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L118)
 
 Actor to get metrics for (format: "type:id", e.g., "camera:100d4c41")
 
@@ -56,7 +56,7 @@ Actor to get metrics for (format: "type:id", e.g., "camera:100d4c41")
 
 > **eventType**: `string`
 
-Defined in: [src/types/eventMetric.ts:120](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L120)
+Defined in: [types/eventMetric.ts:120](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L120)
 
 Event type to get metrics for (e.g., "een.motionDetectionEvent.v1")
 
@@ -66,7 +66,7 @@ Event type to get metrics for (e.g., "een.motionDetectionEvent.v1")
 
 > `optional` **timestamp\_\_gte**: `string`
 
-Defined in: [src/types/eventMetric.ts:122](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L122)
+Defined in: [types/eventMetric.ts:122](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L122)
 
 ISO 8601 timestamp - metrics starting at or after this time (defaults to 7 days ago)
 
@@ -76,7 +76,7 @@ ISO 8601 timestamp - metrics starting at or after this time (defaults to 7 days 
 
 > `optional` **timestamp\_\_lte**: `string`
 
-Defined in: [src/types/eventMetric.ts:124](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L124)
+Defined in: [types/eventMetric.ts:124](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L124)
 
 ISO 8601 timestamp - metrics ending before this time (defaults to now)
 
@@ -86,6 +86,6 @@ ISO 8601 timestamp - metrics ending before this time (defaults to now)
 
 > `optional` **aggregateByMinutes**: `number`
 
-Defined in: [src/types/eventMetric.ts:126](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L126)
+Defined in: [types/eventMetric.ts:126](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L126)
 
 Aggregation bucket size in minutes (default: 60)

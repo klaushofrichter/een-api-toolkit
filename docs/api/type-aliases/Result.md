@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **Result**\<`T`\> = \{ `data`: `T`; `error`: `null`; \} \| \{ `data`: `null`; `error`: [`EenError`](../interfaces/EenError.md); \}
 
-Defined in: [src/types/common.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L79)
+Defined in: [types/common.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L79)
 
 Result type for all API operations - functions never throw exceptions.
 

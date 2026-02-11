@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getAlertAction**(`actionId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`AutomationAlertAction`](../interfaces/AutomationAlertAction.md)\>\>
 
-Defined in: [src/automations/service.ts:732](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L732)
+Defined in: [automations/service.ts:732](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L732)
 
 Get a specific alert action by ID.
 

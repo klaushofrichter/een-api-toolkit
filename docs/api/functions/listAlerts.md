@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listAlerts**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Alert`](../interfaces/Alert.md)\>\>\>
 
-Defined in: [src/alerts/service.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/alerts/service.ts#L63)
+Defined in: [alerts/service.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/alerts/service.ts#L63)
 
 List alerts with optional filters and pagination.
 

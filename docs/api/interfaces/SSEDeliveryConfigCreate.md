@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: SSEDeliveryConfigCreate
 
-Defined in: [src/types/eventSubscription.ts:188](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L188)
+Defined in: [types/eventSubscription.ts:188](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L188)
 
 SSE delivery configuration for creation.
 
@@ -20,6 +20,6 @@ Used when creating a subscription with SSE delivery.
 
 > **type**: `"serverSentEvents.v1"`
 
-Defined in: [src/types/eventSubscription.ts:190](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L190)
+Defined in: [types/eventSubscription.ts:190](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L190)
 
 Delivery type identifier

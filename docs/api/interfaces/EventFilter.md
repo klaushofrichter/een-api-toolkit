@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventFilter
 
-Defined in: [src/types/automation.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L48)
+Defined in: [types/automation.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L48)
 
 Event filter configuration for event alert condition rules.
 
@@ -16,7 +16,7 @@ Event filter configuration for event alert condition rules.
 
 > **types**: `string`[]
 
-Defined in: [src/types/automation.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L50)
+Defined in: [types/automation.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L50)
 
 Event types to include
 
@@ -26,6 +26,6 @@ Event types to include
 
 > `optional` **resourceFilter**: [`EventResourceFilter`](EventResourceFilter.md)
 
-Defined in: [src/types/automation.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L52)
+Defined in: [types/automation.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L52)
 
 Resource filter configuration

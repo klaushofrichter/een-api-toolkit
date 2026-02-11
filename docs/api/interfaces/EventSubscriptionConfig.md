@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventSubscriptionConfig
 
-Defined in: [src/types/eventSubscription.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L32)
+Defined in: [types/eventSubscription.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L32)
 
 Event subscription configuration.
 
@@ -21,7 +21,7 @@ This is read-only and set by the server based on delivery type.
 
 > **lifeCycle**: [`EventSubscriptionLifecycle`](../type-aliases/EventSubscriptionLifecycle.md)
 
-Defined in: [src/types/eventSubscription.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L34)
+Defined in: [types/eventSubscription.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L34)
 
 Subscription lifecycle type
 
@@ -31,6 +31,6 @@ Subscription lifecycle type
 
 > `optional` **timeToLiveSeconds**: `number`
 
-Defined in: [src/types/eventSubscription.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L36)
+Defined in: [types/eventSubscription.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L36)
 
 Time-to-live in seconds for temporary subscriptions
