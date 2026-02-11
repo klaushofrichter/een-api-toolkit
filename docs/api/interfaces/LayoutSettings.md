@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: LayoutSettings
 
-Defined in: [src/types/layout.ts:106](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L106)
+Defined in: [types/layout.ts:106](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L106)
 
 Layout display settings.
 
@@ -20,7 +20,7 @@ Controls how cameras are displayed within the layout.
 
 > **showCameraBorder**: `boolean`
 
-Defined in: [src/types/layout.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L108)
+Defined in: [types/layout.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L108)
 
 Whether to show borders around camera panes
 
@@ -30,7 +30,7 @@ Whether to show borders around camera panes
 
 > **showCameraName**: `boolean`
 
-Defined in: [src/types/layout.ts:110](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L110)
+Defined in: [types/layout.ts:110](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L110)
 
 Whether to show camera names as overlays
 
@@ -40,7 +40,7 @@ Whether to show camera names as overlays
 
 > **cameraAspectRatio**: [`CameraAspectRatio`](../type-aliases/CameraAspectRatio.md)
 
-Defined in: [src/types/layout.ts:112](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L112)
+Defined in: [types/layout.ts:112](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L112)
 
 Aspect ratio for camera displays
 
@@ -50,6 +50,6 @@ Aspect ratio for camera displays
 
 > **paneColumns**: `number`
 
-Defined in: [src/types/layout.ts:114](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L114)
+Defined in: [types/layout.ts:114](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L114)
 
 Number of columns in the layout grid (1-6)

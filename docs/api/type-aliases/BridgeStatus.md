@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **BridgeStatus** = `"online"` \| `"offline"` \| `"error"` \| `"idle"` \| `"registered"` \| `"attaching"` \| `"initializing"`
 
-Defined in: [src/types/bridge.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L9)
+Defined in: [types/bridge.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L9)
 
 Bridge status values from EEN API v3.0.
 

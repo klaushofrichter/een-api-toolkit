@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > `const` **STORAGE\_STRATEGY\_DESCRIPTIONS**: `Record`\<[`StorageStrategy`](../type-aliases/StorageStrategy.md), `string`\>
 
-Defined in: [src/utils/storage.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/storage.ts#L23)
+Defined in: [utils/storage.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/storage.ts#L23)
 
 Human-readable descriptions for each storage strategy.
 Useful for displaying storage information in UI components.

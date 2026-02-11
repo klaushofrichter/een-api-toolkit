@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Download
 
-Defined in: [src/types/download.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L34)
+Defined in: [types/download.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L34)
 
 Download entity from EEN API v3.0.
 
@@ -34,7 +34,7 @@ if (data) {
 
 > **id**: `string`
 
-Defined in: [src/types/download.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L36)
+Defined in: [types/download.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L36)
 
 Unique identifier for the download
 
@@ -44,7 +44,7 @@ Unique identifier for the download
 
 > **accountId**: `string`
 
-Defined in: [src/types/download.ts:38](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L38)
+Defined in: [types/download.ts:38](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L38)
 
 ID of the account this download belongs to
 
@@ -54,7 +54,7 @@ ID of the account this download belongs to
 
 > **name**: `string`
 
-Defined in: [src/types/download.ts:40](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L40)
+Defined in: [types/download.ts:40](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L40)
 
 Display name of the download
 
@@ -64,7 +64,7 @@ Display name of the download
 
 > **status**: [`DownloadStatus`](../type-aliases/DownloadStatus.md)
 
-Defined in: [src/types/download.ts:42](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L42)
+Defined in: [types/download.ts:42](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L42)
 
 Current status of the download
 
@@ -74,7 +74,7 @@ Current status of the download
 
 > `optional` **contentType**: `string`
 
-Defined in: [src/types/download.ts:44](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L44)
+Defined in: [types/download.ts:44](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L44)
 
 MIME content type (e.g., 'video/mp4')
 
@@ -84,7 +84,7 @@ MIME content type (e.g., 'video/mp4')
 
 > `optional` **sizeBytes**: `number`
 
-Defined in: [src/types/download.ts:46](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L46)
+Defined in: [types/download.ts:46](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L46)
 
 File size in bytes
 
@@ -94,7 +94,7 @@ File size in bytes
 
 > `optional` **fileId**: `string`
 
-Defined in: [src/types/download.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L48)
+Defined in: [types/download.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L48)
 
 ID of the related file
 
@@ -104,7 +104,7 @@ ID of the related file
 
 > `optional` **jobId**: `string`
 
-Defined in: [src/types/download.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L50)
+Defined in: [types/download.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L50)
 
 ID of the job that created this download
 
@@ -114,7 +114,7 @@ ID of the job that created this download
 
 > `optional` **cameraId**: `string`
 
-Defined in: [src/types/download.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L52)
+Defined in: [types/download.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L52)
 
 ID of the camera this download relates to
 
@@ -124,7 +124,7 @@ ID of the camera this download relates to
 
 > `optional` **description**: `string`
 
-Defined in: [src/types/download.ts:54](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L54)
+Defined in: [types/download.ts:54](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L54)
 
 Description or notes
 
@@ -134,7 +134,7 @@ Description or notes
 
 > **createTimestamp**: `string`
 
-Defined in: [src/types/download.ts:56](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L56)
+Defined in: [types/download.ts:56](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L56)
 
 ISO 8601 timestamp when the download was created
 
@@ -144,7 +144,7 @@ ISO 8601 timestamp when the download was created
 
 > `optional` **expirationTimestamp**: `string`
 
-Defined in: [src/types/download.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L58)
+Defined in: [types/download.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L58)
 
 ISO 8601 timestamp when the download expires
 
@@ -154,6 +154,6 @@ ISO 8601 timestamp when the download expires
 
 > `optional` **downloadUrl**: `string`
 
-Defined in: [src/types/download.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L60)
+Defined in: [types/download.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L60)
 
 Download URL (may be pre-signed)

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **MetricDataPoint** = \[`number`, `number`\]
 
-Defined in: [src/types/eventMetric.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L35)
+Defined in: [types/eventMetric.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L35)
 
 A single metric data point as [timestamp_ms, value].
 

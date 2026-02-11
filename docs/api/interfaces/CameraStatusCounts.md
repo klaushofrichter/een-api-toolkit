@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraStatusCounts
 
-Defined in: [src/types/layout.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L9)
+Defined in: [types/layout.ts:9](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L9)
 
 Camera status counts for layout resource summaries.
 
@@ -20,7 +20,7 @@ Used in resourceStatusCounts to show aggregated camera statuses.
 
 > `optional` **online**: `number`
 
-Defined in: [src/types/layout.ts:11](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L11)
+Defined in: [types/layout.ts:11](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L11)
 
 Number of online cameras
 
@@ -30,7 +30,7 @@ Number of online cameras
 
 > `optional` **offline**: `number`
 
-Defined in: [src/types/layout.ts:13](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L13)
+Defined in: [types/layout.ts:13](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L13)
 
 Number of offline cameras
 
@@ -40,7 +40,7 @@ Number of offline cameras
 
 > `optional` **error**: `number`
 
-Defined in: [src/types/layout.ts:15](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L15)
+Defined in: [types/layout.ts:15](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L15)
 
 Number of cameras in error state
 
@@ -50,6 +50,6 @@ Number of cameras in error state
 
 > `optional` **other**: `number`
 
-Defined in: [src/types/layout.ts:17](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L17)
+Defined in: [types/layout.ts:17](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L17)
 
 Number of cameras with other statuses

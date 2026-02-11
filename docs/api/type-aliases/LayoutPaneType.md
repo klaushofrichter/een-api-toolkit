@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **LayoutPaneType** = `"preview"` \| `"compositePreview"`
 
-Defined in: [src/types/layout.ts:45](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L45)
+Defined in: [types/layout.ts:45](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L45)
 
 Layout pane type values.
 

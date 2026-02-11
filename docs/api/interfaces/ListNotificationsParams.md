@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListNotificationsParams
 
-Defined in: [src/types/notification.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L143)
+Defined in: [types/notification.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L143)
 
 Parameters for listing notifications.
 
@@ -53,7 +53,7 @@ if (data?.nextPageToken) {
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/notification.ts:146](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L146)
+Defined in: [types/notification.ts:146](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L146)
 
 Number of results per page (default: 100)
 
@@ -63,7 +63,7 @@ Number of results per page (default: 100)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/notification.ts:148](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L148)
+Defined in: [types/notification.ts:148](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L148)
 
 Token for fetching a specific page
 
@@ -73,7 +73,7 @@ Token for fetching a specific page
 
 > `optional` **timestamp\_\_lte**: `string`
 
-Defined in: [src/types/notification.ts:152](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L152)
+Defined in: [types/notification.ts:152](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L152)
 
 ISO 8601 timestamp - notifications at or before this time
 
@@ -83,7 +83,7 @@ ISO 8601 timestamp - notifications at or before this time
 
 > `optional` **timestamp\_\_gte**: `string`
 
-Defined in: [src/types/notification.ts:154](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L154)
+Defined in: [types/notification.ts:154](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L154)
 
 ISO 8601 timestamp - notifications at or after this time
 
@@ -93,7 +93,7 @@ ISO 8601 timestamp - notifications at or after this time
 
 > `optional` **alertId**: `string`
 
-Defined in: [src/types/notification.ts:158](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L158)
+Defined in: [types/notification.ts:158](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L158)
 
 Filter by alert ID
 
@@ -103,7 +103,7 @@ Filter by alert ID
 
 > `optional` **alertType**: `string`
 
-Defined in: [src/types/notification.ts:160](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L160)
+Defined in: [types/notification.ts:160](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L160)
 
 Filter by alert type
 
@@ -113,7 +113,7 @@ Filter by alert type
 
 > `optional` **actorId**: `string`
 
-Defined in: [src/types/notification.ts:162](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L162)
+Defined in: [types/notification.ts:162](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L162)
 
 Filter by actor ID
 
@@ -123,7 +123,7 @@ Filter by actor ID
 
 > `optional` **actorType**: `string`
 
-Defined in: [src/types/notification.ts:164](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L164)
+Defined in: [types/notification.ts:164](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L164)
 
 Filter by actor type
 
@@ -133,7 +133,7 @@ Filter by actor type
 
 > `optional` **actorAccountId**: `string`
 
-Defined in: [src/types/notification.ts:166](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L166)
+Defined in: [types/notification.ts:166](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L166)
 
 Filter by actor account ID
 
@@ -143,7 +143,7 @@ Filter by actor account ID
 
 > `optional` **category**: [`NotificationCategory`](../type-aliases/NotificationCategory.md)
 
-Defined in: [src/types/notification.ts:170](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L170)
+Defined in: [types/notification.ts:170](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L170)
 
 Filter by notification category
 
@@ -153,7 +153,7 @@ Filter by notification category
 
 > `optional` **userId**: `string`
 
-Defined in: [src/types/notification.ts:172](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L172)
+Defined in: [types/notification.ts:172](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L172)
 
 Filter by user ID
 
@@ -163,7 +163,7 @@ Filter by user ID
 
 > `optional` **read**: `boolean`
 
-Defined in: [src/types/notification.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L174)
+Defined in: [types/notification.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L174)
 
 Filter by read status
 
@@ -173,7 +173,7 @@ Filter by read status
 
 > `optional` **status**: [`NotificationStatus`](../type-aliases/NotificationStatus.md)
 
-Defined in: [src/types/notification.ts:176](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L176)
+Defined in: [types/notification.ts:176](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L176)
 
 Filter by delivery status
 
@@ -183,7 +183,7 @@ Filter by delivery status
 
 > `optional` **includeV1Notifications**: `boolean`
 
-Defined in: [src/types/notification.ts:180](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L180)
+Defined in: [types/notification.ts:180](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L180)
 
 Include legacy v1 notifications
 
@@ -193,7 +193,7 @@ Include legacy v1 notifications
 
 > `optional` **sort**: (`"+timestamp"` \| `"-timestamp"`)[]
 
-Defined in: [src/types/notification.ts:184](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L184)
+Defined in: [types/notification.ts:184](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L184)
 
 Sort order for results
 
@@ -203,6 +203,6 @@ Sort order for results
 
 > `optional` **language**: `string`
 
-Defined in: [src/types/notification.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L186)
+Defined in: [types/notification.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L186)
 
 Language code for localized descriptions

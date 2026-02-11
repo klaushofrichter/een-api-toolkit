@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: MediaSessionResult
 
-Defined in: [src/types/media.ts:260](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L260)
+Defined in: [types/media.ts:260](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L260)
 
 Result of initializing a media session.
 
@@ -22,7 +22,7 @@ allows media playback without explicit authorization headers.
 
 > **success**: `boolean`
 
-Defined in: [src/types/media.ts:262](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L262)
+Defined in: [types/media.ts:262](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L262)
 
 Whether the session was successfully initialized
 
@@ -32,6 +32,6 @@ Whether the session was successfully initialized
 
 > **sessionUrl**: `string`
 
-Defined in: [src/types/media.ts:264](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L264)
+Defined in: [types/media.ts:264](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L264)
 
 The session URL that was called (for debugging)

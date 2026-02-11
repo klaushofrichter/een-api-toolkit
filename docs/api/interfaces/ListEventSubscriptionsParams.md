@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListEventSubscriptionsParams
 
-Defined in: [src/types/eventSubscription.ts:281](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L281)
+Defined in: [types/eventSubscription.ts:281](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L281)
 
 Parameters for listing event subscriptions.
 
@@ -37,7 +37,7 @@ if (data?.nextPageToken) {
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/eventSubscription.ts:283](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L283)
+Defined in: [types/eventSubscription.ts:283](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L283)
 
 Number of results per page
 
@@ -47,6 +47,6 @@ Number of results per page
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/eventSubscription.ts:285](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L285)
+Defined in: [types/eventSubscription.ts:285](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L285)
 
 Token for fetching a specific page

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: DownloadFileResult
 
-Defined in: [src/types/file.ts:243](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L243)
+Defined in: [types/file.ts:243](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L243)
 
 Result from downloading a file.
 
@@ -38,7 +38,7 @@ if (data) {
 
 > **blob**: `Blob`
 
-Defined in: [src/types/file.ts:245](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L245)
+Defined in: [types/file.ts:245](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L245)
 
 Binary file data
 
@@ -48,7 +48,7 @@ Binary file data
 
 > **filename**: `string`
 
-Defined in: [src/types/file.ts:247](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L247)
+Defined in: [types/file.ts:247](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L247)
 
 Filename from Content-Disposition header
 
@@ -58,7 +58,7 @@ Filename from Content-Disposition header
 
 > **contentType**: `string`
 
-Defined in: [src/types/file.ts:249](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L249)
+Defined in: [types/file.ts:249](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L249)
 
 MIME content type from Content-Type header
 
@@ -68,6 +68,6 @@ MIME content type from Content-Type header
 
 > **size**: `number`
 
-Defined in: [src/types/file.ts:251](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L251)
+Defined in: [types/file.ts:251](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L251)
 
 File size in bytes

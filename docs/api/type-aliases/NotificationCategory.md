@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,6 +8,6 @@
 
 > **NotificationCategory** = `"health"` \| `"video"` \| `"operational"` \| `"audit"` \| `"job"` \| `"security"` \| `"sharing"`
 
-Defined in: [src/types/notification.ts:6](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L6)
+Defined in: [types/notification.ts:6](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L6)
 
 Categories of notifications in the EEN platform.

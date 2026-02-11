@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListFilesParams
 
-Defined in: [src/types/file.ts:135](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L135)
+Defined in: [types/file.ts:135](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L135)
 
 Parameters for listing files.
 
@@ -37,7 +37,7 @@ const { data: cameraFiles } = await listFiles({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/file.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L137)
+Defined in: [types/file.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L137)
 
 Number of results per page (default: 100, max: 1000)
 
@@ -47,7 +47,7 @@ Number of results per page (default: 100, max: 1000)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/file.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L139)
+Defined in: [types/file.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L139)
 
 Token for fetching a specific page
 
@@ -57,7 +57,7 @@ Token for fetching a specific page
 
 > `optional` **include**: [`FileIncludeField`](../type-aliases/FileIncludeField.md)[]
 
-Defined in: [src/types/file.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L145)
+Defined in: [types/file.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L145)
 
 Additional fields to include in the response.
 Valid values: accountId, publicShare, notes, createTimestamp,
@@ -69,7 +69,7 @@ updateTimestamp, size, metadata, tags, childCount, details
 
 > `optional` **type\_\_in**: [`FileType`](../type-aliases/FileType.md)[]
 
-Defined in: [src/types/file.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L147)
+Defined in: [types/file.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L147)
 
 Filter by file types (any match)
 
@@ -79,7 +79,7 @@ Filter by file types (any match)
 
 > `optional` **cameraId**: `string`
 
-Defined in: [src/types/file.ts:149](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L149)
+Defined in: [types/file.ts:149](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L149)
 
 Filter by camera ID
 
@@ -89,7 +89,7 @@ Filter by camera ID
 
 > `optional` **cameraId\_\_in**: `string`[]
 
-Defined in: [src/types/file.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L151)
+Defined in: [types/file.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L151)
 
 Filter by camera IDs (any match)
 
@@ -99,7 +99,7 @@ Filter by camera IDs (any match)
 
 > `optional` **jobId**: `string`
 
-Defined in: [src/types/file.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L153)
+Defined in: [types/file.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L153)
 
 Filter by job ID
 
@@ -109,7 +109,7 @@ Filter by job ID
 
 > `optional` **createTimestamp\_\_gte**: `string`
 
-Defined in: [src/types/file.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L155)
+Defined in: [types/file.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L155)
 
 Filter by files created after this timestamp (ISO 8601)
 
@@ -119,7 +119,7 @@ Filter by files created after this timestamp (ISO 8601)
 
 > `optional` **createTimestamp\_\_lte**: `string`
 
-Defined in: [src/types/file.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L157)
+Defined in: [types/file.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L157)
 
 Filter by files created before this timestamp (ISO 8601)
 
@@ -129,7 +129,7 @@ Filter by files created before this timestamp (ISO 8601)
 
 > `optional` **tags\_\_contains**: `string`[]
 
-Defined in: [src/types/file.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L159)
+Defined in: [types/file.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L159)
 
 Filter by tags (all must match)
 
@@ -139,7 +139,7 @@ Filter by tags (all must match)
 
 > `optional` **q**: `string`
 
-Defined in: [src/types/file.ts:161](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L161)
+Defined in: [types/file.ts:161](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L161)
 
 Full-text search query
 
@@ -149,6 +149,6 @@ Full-text search query
 
 > `optional` **sort**: `string`[]
 
-Defined in: [src/types/file.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L163)
+Defined in: [types/file.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L163)
 
 Fields to sort by (prefix with - for descending)

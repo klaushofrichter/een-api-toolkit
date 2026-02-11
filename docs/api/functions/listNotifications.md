@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listNotifications**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Notification`](../interfaces/Notification.md)\>\>\>
 
-Defined in: [src/notifications/service.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/notifications/service.ts#L65)
+Defined in: [notifications/service.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/notifications/service.ts#L65)
 
 List notifications with optional filters and pagination.
 

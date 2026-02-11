@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: MediaSessionResponse
 
-Defined in: [src/types/media.ts:245](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L245)
+Defined in: [types/media.ts:245](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L245)
 
 Response from the media session endpoint.
 
@@ -25,6 +25,6 @@ For more details, see the
 
 > **url**: `string`
 
-Defined in: [src/types/media.ts:247](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L247)
+Defined in: [types/media.ts:247](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L247)
 
 URL to call to set the media session cookie

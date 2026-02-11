@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getDownload**(`downloadId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Download`](../interfaces/Download.md)\>\>
 
-Defined in: [src/downloads/service.ts:161](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/downloads/service.ts#L161)
+Defined in: [downloads/service.ts:161](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/downloads/service.ts#L161)
 
 Get a specific download by ID.
 

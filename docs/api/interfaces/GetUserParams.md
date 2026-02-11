@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetUserParams
 
-Defined in: [src/types/user.ts:109](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L109)
+Defined in: [types/user.ts:109](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L109)
 
 Parameters for getting a single user.
 
@@ -24,6 +24,6 @@ const { data } = await getUser('user-id', {
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/user.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L111)
+Defined in: [types/user.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L111)
 
 Additional fields to include in the response

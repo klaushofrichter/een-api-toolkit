@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getLayouts**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Layout`](../interfaces/Layout.md)\>\>\>
 
-Defined in: [src/layouts/service.ts:56](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L56)
+Defined in: [layouts/service.ts:56](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L56)
 
 List layouts with optional pagination and filtering.
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListAlertActionsParams
 
-Defined in: [src/types/automation.ts:582](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L582)
+Defined in: [types/automation.ts:582](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L582)
 
 Parameters for listing alert actions.
 
@@ -25,7 +25,7 @@ const { data } = await listAlertActions({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/automation.ts:584](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L584)
+Defined in: [types/automation.ts:584](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L584)
 
 Number of results per page
 
@@ -35,7 +35,7 @@ Number of results per page
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/automation.ts:586](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L586)
+Defined in: [types/automation.ts:586](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L586)
 
 Token for fetching a specific page
 
@@ -45,7 +45,7 @@ Token for fetching a specific page
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [src/types/automation.ts:588](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L588)
+Defined in: [types/automation.ts:588](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L588)
 
 Filter by enabled status
 
@@ -55,7 +55,7 @@ Filter by enabled status
 
 > `optional` **id\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:590](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L590)
+Defined in: [types/automation.ts:590](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L590)
 
 Filter by action IDs
 
@@ -65,6 +65,6 @@ Filter by action IDs
 
 > `optional` **type\_\_in**: [`AlertActionType`](../type-aliases/AlertActionType.md)[]
 
-Defined in: [src/types/automation.ts:592](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L592)
+Defined in: [types/automation.ts:592](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L592)
 
 Filter by action types

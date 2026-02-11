@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,6 +8,6 @@
 
 > **ListLayoutsInclude** = `"effectivePermissions"` \| `"resourceCounts"` \| `"resourceStatusCounts"` \| `"qRelevance"`
 
-Defined in: [src/types/layout.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L171)
+Defined in: [types/layout.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L171)
 
 Valid include options for listing layouts.

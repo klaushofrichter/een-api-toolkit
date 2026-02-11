@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **EventSubscriptionDeliveryType** = `"serverSentEvents.v1"` \| `"webhook.v1"`
 
-Defined in: [src/types/eventSubscription.ts:21](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L21)
+Defined in: [types/eventSubscription.ts:21](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L21)
 
 Delivery type for event subscriptions.
 

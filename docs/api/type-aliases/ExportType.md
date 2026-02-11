@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **ExportType** = `"bundle"` \| `"timeLapse"` \| `"video"`
 
-Defined in: [src/types/export.ts:15](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L15)
+Defined in: [types/export.ts:15](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L15)
 
 Export types supported by the EEN API v3.0.
 

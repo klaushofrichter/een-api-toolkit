@@ -30,6 +30,10 @@ The `docs/AI-CONTEXT.md` file is the entry point for AI assistants. It links to 
 - `AI-DEVICES.md` - Cameras & Bridges API
 - `AI-MEDIA.md` - Media, Feeds, Live Video, HLS
 - `AI-EVENTS.md` - Events, Alerts, Metrics, SSE
+- `AI-GROUPING.md` - Layouts (camera groupings) API
+- `AI-AUTOMATIONS.md` - Automation rules and actions
+- `AI-JOBS.md` - Jobs, Exports, Files, Downloads
+- `AI-EVENT-DATA-SCHEMAS.md` - Event type to data schema mappings
 
 ### Specialized Agents
 Domain-specific agents are available in `.claude/agents/`:
@@ -42,6 +46,8 @@ Domain-specific agents are available in `.claude/agents/`:
 | `een-media-agent` | Live video, previews, HLS, recorded images |
 | `een-events-agent` | Events, alerts, metrics, SSE subscriptions |
 | `een-grouping-agent` | Layouts, camera groupings, pane management |
+| `een-automations-agent` | Alert rules, action rules, event conditions |
+| `een-jobs-agent` | Jobs, exports, files, downloads |
 
 **Using Agents in Your Project:**
 
@@ -66,7 +72,7 @@ Organized by resource (mirrors EEN API structure):
 src/
 ├── auth/           # Authentication: Pinia store + auth service
 ├── users/          # User API: service functions
-├── bridges/        # Bridge API: service functions (future)
+├── bridges/        # Bridge API: service functions
 ├── cameras/        # Camera API: service functions
 ├── types/          # TypeScript types
 ├── utils/          # Utility functions (debug, etc.)
@@ -313,10 +319,6 @@ Located in `.github/workflows/`.
 - Reviews code quality, bugs, performance, security
 - Posts review as PR comment
 
-### Interactive Claude (`claude.yml`)
-- Triggers when @claude is mentioned in issues/PRs
-- Responds to requests in comments and reviews
-
 ### Branch Sync (`sync-develop.yml`)
 - Triggers when PR is merged to production
 - Automatically merges production into develop
@@ -336,10 +338,20 @@ Located in `.github/workflows/`.
 - Sends Slack notifications on success (with links to npm, GitHub Release, and Release Notes) or on failure
 - Supports dry-run mode for testing
 
-### Future Workflows (to be added)
-Reference `../een-oauth-proxy/.github/workflows/` for examples:
-- `validate-branch-protection.yml` - Enforce branch rules
-- `test-pr.yml` - Run tests on PRs
+### Validate PR (`validate-pr.yml`)
+- Triggers on PRs to production
+- Validates version consistency, runs lint/tests/build
+- Dynamically discovers and runs E2E tests for all example apps (requires `playwright.config.ts` in the example directory)
+
+### CodeQL Analysis (`codeql.yml`)
+- Triggers on PRs to production and manually
+- Runs GitHub CodeQL security analysis for JavaScript/TypeScript
+
+### GitHub Actions SHA Pinning
+All actions are pinned to immutable commit SHAs to prevent supply chain attacks. When Dependabot proposes an action update:
+1. Verify the new SHA matches the expected release tag
+2. Update the version comment (e.g., `# v6.0.2`) to match the new version
+3. Review the action's release notes for breaking changes
 
 ## Code Review
 
@@ -366,7 +378,15 @@ Required fields in `package.json`:
       "types": "./dist/index.d.ts"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist",
+    "examples",
+    "docs/AI-CONTEXT.md",
+    "docs/ai-reference",
+    ".claude/agents",
+    "scripts/setup-agents.ts",
+    "CHANGELOG.md"
+  ],
   "peerDependencies": {
     "pinia": "^3.0.0",
     "vue": "^3.3.0"
@@ -467,7 +487,7 @@ docs/
 ├── guides/              # In-depth guides
 └── getting-started/     # Setup guides
 examples/
-└── vue-users/           # Complete Vue 3 example application
+└── vue-*/               # 11 complete Vue 3 example applications
 ```
 
 ### Generation

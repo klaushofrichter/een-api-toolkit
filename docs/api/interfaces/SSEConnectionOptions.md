@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: SSEConnectionOptions
 
-Defined in: [src/types/eventSubscription.ts:329](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L329)
+Defined in: [types/eventSubscription.ts:329](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L329)
 
 Options for connecting to an SSE event subscription.
 
@@ -16,7 +16,7 @@ Options for connecting to an SSE event subscription.
 
 > **onEvent**: (`event`) => `void`
 
-Defined in: [src/types/eventSubscription.ts:331](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L331)
+Defined in: [types/eventSubscription.ts:331](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L331)
 
 Callback when an event is received
 
@@ -36,7 +36,7 @@ Callback when an event is received
 
 > `optional` **onError**: (`error`) => `void`
 
-Defined in: [src/types/eventSubscription.ts:333](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L333)
+Defined in: [types/eventSubscription.ts:333](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L333)
 
 Callback when an error occurs
 
@@ -56,7 +56,7 @@ Callback when an error occurs
 
 > `optional` **onStatusChange**: (`status`) => `void`
 
-Defined in: [src/types/eventSubscription.ts:335](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L335)
+Defined in: [types/eventSubscription.ts:335](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L335)
 
 Callback when connection status changes
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventAlertConditionRuleFieldValues
 
-Defined in: [src/types/automation.ts:109](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L109)
+Defined in: [types/automation.ts:109](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L109)
 
 Field values available for filtering event alert condition rules.
 
@@ -16,7 +16,7 @@ Field values available for filtering event alert condition rules.
 
 > `optional` **eventTypes**: `string`[]
 
-Defined in: [src/types/automation.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L111)
+Defined in: [types/automation.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L111)
 
 Available event types
 
@@ -26,6 +26,6 @@ Available event types
 
 > `optional` **outputAlertTypes**: `string`[]
 
-Defined in: [src/types/automation.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L113)
+Defined in: [types/automation.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L113)
 
 Available output alert types

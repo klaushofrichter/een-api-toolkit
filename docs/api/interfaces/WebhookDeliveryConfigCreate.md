@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: WebhookDeliveryConfigCreate
 
-Defined in: [src/types/eventSubscription.ts:201](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L201)
+Defined in: [types/eventSubscription.ts:201](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L201)
 
 Webhook delivery configuration for creation.
 
@@ -20,7 +20,7 @@ Used when creating a subscription with webhook delivery.
 
 > **type**: `"webhook.v1"`
 
-Defined in: [src/types/eventSubscription.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L203)
+Defined in: [types/eventSubscription.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L203)
 
 Delivery type identifier
 
@@ -30,7 +30,7 @@ Delivery type identifier
 
 > **webhookUrl**: `string`
 
-Defined in: [src/types/eventSubscription.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L205)
+Defined in: [types/eventSubscription.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L205)
 
 HTTPS URL where webhook events will be sent
 
@@ -40,7 +40,7 @@ HTTPS URL where webhook events will be sent
 
 > **technicalContactEmail**: `string`
 
-Defined in: [src/types/eventSubscription.ts:207](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L207)
+Defined in: [types/eventSubscription.ts:207](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L207)
 
 Email address of technical contact
 
@@ -50,6 +50,6 @@ Email address of technical contact
 
 > **technicalContactName**: `string`
 
-Defined in: [src/types/eventSubscription.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L209)
+Defined in: [types/eventSubscription.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L209)
 
 Name of technical contact

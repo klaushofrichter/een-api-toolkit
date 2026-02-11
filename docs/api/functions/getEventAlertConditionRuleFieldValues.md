@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getEventAlertConditionRuleFieldValues**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EventAlertConditionRuleFieldValues`](../interfaces/EventAlertConditionRuleFieldValues.md)\>\>
 
-Defined in: [src/automations/service.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L147)
+Defined in: [automations/service.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L147)
 
 Get available field values for event alert condition rules.
 

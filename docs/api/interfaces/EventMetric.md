@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventMetric
 
-Defined in: [src/types/eventMetric.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L68)
+Defined in: [types/eventMetric.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L68)
 
 Event metric entity from EEN API v3.0.
 
@@ -50,7 +50,7 @@ Additional properties that may be included
 
 > **eventType**: `string`
 
-Defined in: [src/types/eventMetric.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L70)
+Defined in: [types/eventMetric.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L70)
 
 Event type identifier (e.g., "een.motionDetectionEvent.v1")
 
@@ -60,7 +60,7 @@ Event type identifier (e.g., "een.motionDetectionEvent.v1")
 
 > **actorId**: `string`
 
-Defined in: [src/types/eventMetric.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L72)
+Defined in: [types/eventMetric.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L72)
 
 ID of the actor (device/entity) for this metric
 
@@ -70,7 +70,7 @@ ID of the actor (device/entity) for this metric
 
 > **actorType**: [`MetricActorType`](../type-aliases/MetricActorType.md)
 
-Defined in: [src/types/eventMetric.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L74)
+Defined in: [types/eventMetric.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L74)
 
 Type of actor for this metric
 
@@ -80,7 +80,7 @@ Type of actor for this metric
 
 > **target**: `string`
 
-Defined in: [src/types/eventMetric.ts:76](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L76)
+Defined in: [types/eventMetric.ts:76](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L76)
 
 Metric target (typically "count")
 
@@ -90,6 +90,6 @@ Metric target (typically "count")
 
 > **dataPoints**: [`MetricDataPoint`](../type-aliases/MetricDataPoint.md)[]
 
-Defined in: [src/types/eventMetric.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L78)
+Defined in: [types/eventMetric.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L78)
 
 Array of [timestamp_ms, value] data points

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getBridges**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Bridge`](../interfaces/Bridge.md)\>\>\>
 
-Defined in: [src/bridges/service.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/bridges/service.ts#L49)
+Defined in: [bridges/service.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/bridges/service.ts#L49)
 
 List bridges with optional pagination and filtering.
 

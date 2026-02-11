@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **EventSubscriptionLifecycle** = `"temporary"` \| `"persistent"`
 
-Defined in: [src/types/eventSubscription.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L10)
+Defined in: [types/eventSubscription.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L10)
 
 Subscription lifecycle type.
 

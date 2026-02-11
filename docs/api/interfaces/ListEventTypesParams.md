@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListEventTypesParams
 
-Defined in: [src/types/event.ts:228](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L228)
+Defined in: [types/event.ts:228](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L228)
 
 Parameters for listing event types.
 
@@ -33,7 +33,7 @@ if (data) {
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/event.ts:230](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L230)
+Defined in: [types/event.ts:230](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L230)
 
 Number of results per page
 
@@ -43,7 +43,7 @@ Number of results per page
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/event.ts:232](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L232)
+Defined in: [types/event.ts:232](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L232)
 
 Token for fetching a specific page
 
@@ -53,6 +53,6 @@ Token for fetching a specific page
 
 > `optional` **language**: `string`
 
-Defined in: [src/types/event.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L234)
+Defined in: [types/event.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L234)
 
 Language code for localized names/descriptions (e.g., "en", "de")

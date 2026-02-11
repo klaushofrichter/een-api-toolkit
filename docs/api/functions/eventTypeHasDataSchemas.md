@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **eventTypeHasDataSchemas**(`eventType`): `boolean`
 
-Defined in: [src/events/dataSchemas.ts:664](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L664)
+Defined in: [events/dataSchemas.ts:664](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L664)
 
 Check if an event type has any associated data schemas.
 

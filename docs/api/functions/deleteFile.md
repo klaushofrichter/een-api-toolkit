@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **deleteFile**(`fileId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<`void`\>\>
 
-Defined in: [src/files/service.ts:446](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L446)
+Defined in: [files/service.ts:446](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L446)
 
 Delete (recycle) a file by ID.
 

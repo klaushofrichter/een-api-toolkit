@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListAlertActionRulesParams
 
-Defined in: [src/types/automation.ts:550](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L550)
+Defined in: [types/automation.ts:550](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L550)
 
 Parameters for listing alert action rules.
 
@@ -25,7 +25,7 @@ const { data } = await listAlertActionRules({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/automation.ts:552](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L552)
+Defined in: [types/automation.ts:552](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L552)
 
 Number of results per page
 
@@ -35,7 +35,7 @@ Number of results per page
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/automation.ts:554](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L554)
+Defined in: [types/automation.ts:554](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L554)
 
 Token for fetching a specific page
 
@@ -45,7 +45,7 @@ Token for fetching a specific page
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [src/types/automation.ts:556](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L556)
+Defined in: [types/automation.ts:556](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L556)
 
 Filter by enabled status
 
@@ -55,7 +55,7 @@ Filter by enabled status
 
 > `optional` **id\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:558](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L558)
+Defined in: [types/automation.ts:558](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L558)
 
 Filter by rule IDs
 
@@ -65,7 +65,7 @@ Filter by rule IDs
 
 > `optional` **alertType\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:560](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L560)
+Defined in: [types/automation.ts:560](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L560)
 
 Filter by alert types
 
@@ -75,7 +75,7 @@ Filter by alert types
 
 > `optional` **actorId\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:562](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L562)
+Defined in: [types/automation.ts:562](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L562)
 
 Filter by actor IDs
 
@@ -85,7 +85,7 @@ Filter by actor IDs
 
 > `optional` **alertActionId\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:564](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L564)
+Defined in: [types/automation.ts:564](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L564)
 
 Filter by alert action IDs
 
@@ -95,6 +95,6 @@ Filter by alert action IDs
 
 > `optional` **ruleId\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:566](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L566)
+Defined in: [types/automation.ts:566](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L566)
 
 Filter by alert condition rule IDs

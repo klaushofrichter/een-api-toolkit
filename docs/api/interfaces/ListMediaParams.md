@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListMediaParams
 
-Defined in: [src/types/media.ts:82](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L82)
+Defined in: [types/media.ts:82](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L82)
 
 Parameters for listing media intervals.
 
@@ -37,7 +37,7 @@ const { data } = await listMedia({
 
 > **deviceId**: `string`
 
-Defined in: [src/types/media.ts:84](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L84)
+Defined in: [types/media.ts:84](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L84)
 
 The ID of the device (camera) - required
 
@@ -47,7 +47,7 @@ The ID of the device (camera) - required
 
 > **type**: [`MediaStreamType`](../type-aliases/MediaStreamType.md)
 
-Defined in: [src/types/media.ts:86](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L86)
+Defined in: [types/media.ts:86](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L86)
 
 Stream type (preview or main) - required
 
@@ -57,7 +57,7 @@ Stream type (preview or main) - required
 
 > **mediaType**: [`MediaType`](../type-aliases/MediaType.md)
 
-Defined in: [src/types/media.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L88)
+Defined in: [types/media.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L88)
 
 Media type (video or image) - required
 
@@ -67,7 +67,7 @@ Media type (video or image) - required
 
 > **startTimestamp**: `string`
 
-Defined in: [src/types/media.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L90)
+Defined in: [types/media.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L90)
 
 Minimum timestamp from which to list recordings (ISO 8601) - required
 
@@ -77,7 +77,7 @@ Minimum timestamp from which to list recordings (ISO 8601) - required
 
 > `optional` **endTimestamp**: `string`
 
-Defined in: [src/types/media.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L92)
+Defined in: [types/media.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L92)
 
 Maximum timestamp until which to list recordings (ISO 8601)
 
@@ -87,7 +87,7 @@ Maximum timestamp until which to list recordings (ISO 8601)
 
 > `optional` **coalesce**: `boolean`
 
-Defined in: [src/types/media.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L94)
+Defined in: [types/media.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L94)
 
 If true, coalesce connected intervals into a single interval (default: true)
 
@@ -97,7 +97,7 @@ If true, coalesce connected intervals into a single interval (default: true)
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/media.ts:99](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L99)
+Defined in: [types/media.ts:99](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L99)
 
 Additional fields to include in the response.
 Valid values: flvUrl, rtspUrl, rtspsUrl, hlsUrl, multipartUrl, mp4Url, wsLiveUrl
@@ -108,7 +108,7 @@ Valid values: flvUrl, rtspUrl, rtspsUrl, hlsUrl, multipartUrl, mp4Url, wsLiveUrl
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/media.ts:101](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L101)
+Defined in: [types/media.ts:101](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L101)
 
 Token for fetching a specific page
 
@@ -118,6 +118,6 @@ Token for fetching a specific page
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/media.ts:103](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L103)
+Defined in: [types/media.ts:103](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L103)
 
 Number of results per page

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListAlertConditionRulesParams
 
-Defined in: [src/types/automation.ts:506](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L506)
+Defined in: [types/automation.ts:506](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L506)
 
 Parameters for listing alert condition rules.
 
@@ -25,7 +25,7 @@ const { data } = await listAlertConditionRules({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/automation.ts:508](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L508)
+Defined in: [types/automation.ts:508](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L508)
 
 Number of results per page
 
@@ -35,7 +35,7 @@ Number of results per page
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/automation.ts:510](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L510)
+Defined in: [types/automation.ts:510](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L510)
 
 Token for fetching a specific page
 
@@ -45,7 +45,7 @@ Token for fetching a specific page
 
 > `optional` **enabled**: `boolean`
 
-Defined in: [src/types/automation.ts:512](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L512)
+Defined in: [types/automation.ts:512](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L512)
 
 Filter by enabled status
 
@@ -55,7 +55,7 @@ Filter by enabled status
 
 > `optional` **id\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:514](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L514)
+Defined in: [types/automation.ts:514](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L514)
 
 Filter by rule IDs
 
@@ -65,7 +65,7 @@ Filter by rule IDs
 
 > `optional` **actorId\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:516](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L516)
+Defined in: [types/automation.ts:516](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L516)
 
 Filter by actor IDs
 
@@ -75,7 +75,7 @@ Filter by actor IDs
 
 > `optional` **inputEventType\_\_in**: `string`[]
 
-Defined in: [src/types/automation.ts:518](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L518)
+Defined in: [types/automation.ts:518](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L518)
 
 Filter by input event types
 
@@ -85,7 +85,7 @@ Filter by input event types
 
 > `optional` **outputAlertType**: `string`
 
-Defined in: [src/types/automation.ts:520](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L520)
+Defined in: [types/automation.ts:520](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L520)
 
 Filter by output alert type
 
@@ -95,7 +95,7 @@ Filter by output alert type
 
 > `optional` **type**: `string`
 
-Defined in: [src/types/automation.ts:522](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L522)
+Defined in: [types/automation.ts:522](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L522)
 
 Filter by rule type
 
@@ -105,6 +105,6 @@ Filter by rule type
 
 > `optional` **include**: [`AlertConditionRuleInclude`](../type-aliases/AlertConditionRuleInclude.md)[]
 
-Defined in: [src/types/automation.ts:524](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L524)
+Defined in: [types/automation.ts:524](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L524)
 
 Fields to include in response

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EventData
 
-Defined in: [src/types/event.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L35)
+Defined in: [types/event.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L35)
 
 Event data object within an event.
 
@@ -31,7 +31,7 @@ Additional properties vary by event type
 
 > **type**: `string`
 
-Defined in: [src/types/event.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L37)
+Defined in: [types/event.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L37)
 
 Data schema type (e.g., "een.objectDetection.v1")
 
@@ -41,6 +41,6 @@ Data schema type (e.g., "een.objectDetection.v1")
 
 > **creatorId**: `string`
 
-Defined in: [src/types/event.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L39)
+Defined in: [types/event.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L39)
 
 ID of the entity that created this data

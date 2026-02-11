@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListDownloadsParams
 
-Defined in: [src/types/download.ts:82](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L82)
+Defined in: [types/download.ts:82](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L82)
 
 Parameters for listing downloads.
 
@@ -32,7 +32,7 @@ const { data } = await listDownloads({
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/download.ts:84](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L84)
+Defined in: [types/download.ts:84](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L84)
 
 Number of results per page (default: 100, max: 1000)
 
@@ -42,7 +42,7 @@ Number of results per page (default: 100, max: 1000)
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/download.ts:86](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L86)
+Defined in: [types/download.ts:86](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L86)
 
 Token for fetching a specific page
 
@@ -52,7 +52,7 @@ Token for fetching a specific page
 
 > `optional` **status\_\_in**: [`DownloadStatus`](../type-aliases/DownloadStatus.md)[]
 
-Defined in: [src/types/download.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L88)
+Defined in: [types/download.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L88)
 
 Filter by download status (any match)
 
@@ -62,7 +62,7 @@ Filter by download status (any match)
 
 > `optional` **cameraId**: `string`
 
-Defined in: [src/types/download.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L90)
+Defined in: [types/download.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L90)
 
 Filter by camera ID
 
@@ -72,7 +72,7 @@ Filter by camera ID
 
 > `optional` **cameraId\_\_in**: `string`[]
 
-Defined in: [src/types/download.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L92)
+Defined in: [types/download.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L92)
 
 Filter by camera IDs (any match)
 
@@ -82,7 +82,7 @@ Filter by camera IDs (any match)
 
 > `optional` **jobId**: `string`
 
-Defined in: [src/types/download.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L94)
+Defined in: [types/download.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L94)
 
 Filter by job ID
 
@@ -92,7 +92,7 @@ Filter by job ID
 
 > `optional` **fileId**: `string`
 
-Defined in: [src/types/download.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L96)
+Defined in: [types/download.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L96)
 
 Filter by file ID
 
@@ -102,7 +102,7 @@ Filter by file ID
 
 > `optional` **createTimestamp\_\_gte**: `string`
 
-Defined in: [src/types/download.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L98)
+Defined in: [types/download.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L98)
 
 Filter by downloads created after this timestamp (ISO 8601)
 
@@ -112,7 +112,7 @@ Filter by downloads created after this timestamp (ISO 8601)
 
 > `optional` **createTimestamp\_\_lte**: `string`
 
-Defined in: [src/types/download.ts:100](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L100)
+Defined in: [types/download.ts:100](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L100)
 
 Filter by downloads created before this timestamp (ISO 8601)
 
@@ -122,7 +122,7 @@ Filter by downloads created before this timestamp (ISO 8601)
 
 > `optional` **q**: `string`
 
-Defined in: [src/types/download.ts:102](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L102)
+Defined in: [types/download.ts:102](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L102)
 
 Full-text search query
 
@@ -132,6 +132,6 @@ Full-text search query
 
 > `optional` **sort**: `string`[]
 
-Defined in: [src/types/download.ts:104](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L104)
+Defined in: [types/download.ts:104](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L104)
 
 Fields to sort by (prefix with - for descending)

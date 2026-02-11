@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: ListAlertTypesParams
 
-Defined in: [src/types/alert.ts:278](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L278)
+Defined in: [types/alert.ts:278](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L278)
 
 Parameters for listing alert types.
 
@@ -33,7 +33,7 @@ if (data) {
 
 > `optional` **pageSize**: `number`
 
-Defined in: [src/types/alert.ts:280](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L280)
+Defined in: [types/alert.ts:280](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L280)
 
 Number of results per page
 
@@ -43,6 +43,6 @@ Number of results per page
 
 > `optional` **pageToken**: `string`
 
-Defined in: [src/types/alert.ts:282](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L282)
+Defined in: [types/alert.ts:282](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L282)
 
 Token for fetching a specific page

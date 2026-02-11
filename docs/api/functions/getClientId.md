@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getClientId**(): `string` \| `undefined`
 
-Defined in: [src/config.ts:69](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L69)
+Defined in: [config.ts:69](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L69)
 
 Get the client ID
 

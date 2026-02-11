@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listJobs**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Job`](../interfaces/Job.md)\>\>\>
 
-Defined in: [src/jobs/service.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/jobs/service.ts#L43)
+Defined in: [jobs/service.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/jobs/service.ts#L43)
 
 List jobs with optional pagination and filtering.
 

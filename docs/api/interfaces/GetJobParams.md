@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetJobParams
 
-Defined in: [src/types/job.ts:224](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L224)
+Defined in: [types/job.ts:224](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L224)
 
 Parameters for getting a single job.
 
@@ -34,6 +34,6 @@ if (data?.state === 'success') {
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/job.ts:226](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L226)
+Defined in: [types/job.ts:226](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L226)
 
 Additional fields to include in the response

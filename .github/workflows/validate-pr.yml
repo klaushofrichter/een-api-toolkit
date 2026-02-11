@@ -13,10 +13,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '20'
 
@@ -115,10 +115,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '20'
           cache: 'npm'
@@ -151,31 +151,45 @@ jobs:
           fi
           echo "Documentation is up to date"
 
+  discover-examples:
+    name: Discover Example Apps
+    runs-on: ubuntu-latest
+    outputs:
+      examples: ${{ steps.find.outputs.examples }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+
+      - name: Find examples with E2E tests
+        id: find
+        run: |
+          examples=$(find examples -name playwright.config.ts -maxdepth 2 -exec dirname {} \; | xargs -I{} basename {} | sort | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          echo "examples=$examples" >> $GITHUB_OUTPUT
+          echo "Found example apps: $examples"
+          # Fail if no examples found (prevents silent skip of all E2E tests)
+          count=$(echo "$examples" | jq 'length')
+          if [ "$count" -eq 0 ]; then
+            echo "ERROR: No example apps with playwright.config.ts found"
+            exit 1
+          fi
+          echo "Discovered $count example apps for E2E testing"
+
   example-e2e-tests:
     name: E2E Tests (${{ matrix.example }})
+    needs: discover-examples
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       max-parallel: 4
       matrix:
-        example:
-          - vue-users
-          - vue-automations
-          - vue-cameras
-          - vue-bridges
-          - vue-events
-          - vue-feeds
-          - vue-layouts
-          - vue-media
-          - vue-event-subscriptions
-          - vue-alerts-metrics
+        example: ${{ fromJson(needs.discover-examples.outputs.examples) }}
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@6044e13b5dc448c55e2357c09f80417699197238 # v6.2.0
         with:
           node-version: '20'
           cache: 'npm'
@@ -253,7 +267,7 @@ jobs:
           TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
 
       - name: Upload Playwright report on failure
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         if: failure()
         with:
           name: playwright-report-${{ matrix.example }}

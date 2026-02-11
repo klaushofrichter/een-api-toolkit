@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetEventParams
 
-Defined in: [src/types/event.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L203)
+Defined in: [types/event.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L203)
 
 Parameters for getting a single event by ID.
 
@@ -30,6 +30,6 @@ const { data } = await getEvent('event-123', {
 
 > `optional` **include**: `string`[]
 
-Defined in: [src/types/event.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L205)
+Defined in: [types/event.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L205)
 
 Data schemas to include in the response

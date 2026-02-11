@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getRecordedImage**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`RecordedImageResult`](../interfaces/RecordedImageResult.md)\>\>
 
-Defined in: [src/media/service.ts:345](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L345)
+Defined in: [media/service.ts:345](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L345)
 
 Get a recorded image from a camera.
 

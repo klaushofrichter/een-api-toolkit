@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **revokeToken**(): `Promise`\<[`Result`](../type-aliases/Result.md)\<`void`\>\>
 
-Defined in: [src/auth/service.ts:138](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L138)
+Defined in: [auth/service.ts:138](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/auth/service.ts#L138)
 
 Revoke the current token and logout
 

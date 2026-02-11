@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CreateLayoutParams
 
-Defined in: [src/types/layout.ts:319](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L319)
+Defined in: [types/layout.ts:319](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L319)
 
 Parameters for creating a new layout.
 
@@ -41,7 +41,7 @@ const { data, error } = await createLayout({
 
 > **name**: `string`
 
-Defined in: [src/types/layout.ts:321](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L321)
+Defined in: [types/layout.ts:321](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L321)
 
 Display name for the layout (required)
 
@@ -51,7 +51,7 @@ Display name for the layout (required)
 
 > **settings**: [`LayoutSettings`](LayoutSettings.md)
 
-Defined in: [src/types/layout.ts:323](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L323)
+Defined in: [types/layout.ts:323](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L323)
 
 Display settings for the layout (required)
 
@@ -61,6 +61,6 @@ Display settings for the layout (required)
 
 > `optional` **panes**: [`LayoutPane`](LayoutPane.md)[]
 
-Defined in: [src/types/layout.ts:325](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L325)
+Defined in: [types/layout.ts:325](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L325)
 
 Initial panes to add to the layout (optional)

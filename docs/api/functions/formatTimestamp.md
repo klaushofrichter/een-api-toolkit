@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **formatTimestamp**(`timestamp`): `string`
 
-Defined in: [src/utils/timestamp.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/timestamp.ts#L23)
+Defined in: [utils/timestamp.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/utils/timestamp.ts#L23)
 
 Convert ISO 8601 timestamp from Z format to +00:00 format.
 

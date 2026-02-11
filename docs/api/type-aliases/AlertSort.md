@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,6 +8,6 @@
 
 > **AlertSort** = `"+timestamp"` \| `"-timestamp"`
 
-Defined in: [src/types/alert.ts:126](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L126)
+Defined in: [types/alert.ts:126](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L126)
 
 Sort options for alert listing.

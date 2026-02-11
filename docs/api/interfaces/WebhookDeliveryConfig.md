@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: WebhookDeliveryConfig
 
-Defined in: [src/types/eventSubscription.ts:64](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L64)
+Defined in: [types/eventSubscription.ts:64](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L64)
 
 Webhook delivery configuration.
 
@@ -21,7 +21,7 @@ The `secret` is provided by the server for signature verification.
 
 > **type**: `"webhook.v1"`
 
-Defined in: [src/types/eventSubscription.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L66)
+Defined in: [types/eventSubscription.ts:66](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L66)
 
 Delivery type identifier
 
@@ -31,6 +31,6 @@ Delivery type identifier
 
 > `optional` **secret**: `string`
 
-Defined in: [src/types/eventSubscription.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L68)
+Defined in: [types/eventSubscription.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L68)
 
 Base64 encoded secret for signature verification (read-only)

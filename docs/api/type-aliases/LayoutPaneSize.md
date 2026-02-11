@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **LayoutPaneSize** = `1` \| `2` \| `3`
 
-Defined in: [src/types/layout.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L58)
+Defined in: [types/layout.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L58)
 
 Layout pane size values.
 

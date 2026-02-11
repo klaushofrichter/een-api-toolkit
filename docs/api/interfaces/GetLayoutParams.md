@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetLayoutParams
 
-Defined in: [src/types/layout.ts:286](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L286)
+Defined in: [types/layout.ts:286](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L286)
 
 Parameters for getting a single layout.
 
@@ -30,6 +30,6 @@ const { data } = await getLayout('layout-123', {
 
 > `optional` **include**: [`GetLayoutInclude`](../type-aliases/GetLayoutInclude.md)[]
 
-Defined in: [src/types/layout.ts:288](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L288)
+Defined in: [types/layout.ts:288](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L288)
 
 Additional fields to include in the response

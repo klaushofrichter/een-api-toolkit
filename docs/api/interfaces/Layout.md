@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Layout
 
-Defined in: [src/types/layout.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L141)
+Defined in: [types/layout.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L141)
 
 Layout entity from EEN API v3.0.
 
@@ -37,7 +37,7 @@ if (data) {
 
 > **id**: `string`
 
-Defined in: [src/types/layout.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L143)
+Defined in: [types/layout.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L143)
 
 Unique identifier for the layout
 
@@ -47,7 +47,7 @@ Unique identifier for the layout
 
 > **name**: `string`
 
-Defined in: [src/types/layout.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L145)
+Defined in: [types/layout.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L145)
 
 Display name of the layout
 
@@ -57,7 +57,7 @@ Display name of the layout
 
 > **accountId**: `string`
 
-Defined in: [src/types/layout.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L147)
+Defined in: [types/layout.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L147)
 
 ID of the account this layout belongs to
 
@@ -67,7 +67,7 @@ ID of the account this layout belongs to
 
 > **panes**: [`LayoutPane`](LayoutPane.md)[]
 
-Defined in: [src/types/layout.ts:149](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L149)
+Defined in: [types/layout.ts:149](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L149)
 
 Array of panes (camera positions) in the layout
 
@@ -77,7 +77,7 @@ Array of panes (camera positions) in the layout
 
 > **settings**: [`LayoutSettings`](LayoutSettings.md)
 
-Defined in: [src/types/layout.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L151)
+Defined in: [types/layout.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L151)
 
 Display settings for the layout
 
@@ -87,7 +87,7 @@ Display settings for the layout
 
 > `optional` **effectivePermissions**: [`LayoutPermissions`](LayoutPermissions.md)
 
-Defined in: [src/types/layout.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L153)
+Defined in: [types/layout.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L153)
 
 Permissions the current user has on this layout (optional, via include)
 
@@ -97,7 +97,7 @@ Permissions the current user has on this layout (optional, via include)
 
 > `optional` **resourceCounts**: `object`
 
-Defined in: [src/types/layout.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L155)
+Defined in: [types/layout.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L155)
 
 Count of resources in the layout (optional, via include)
 
@@ -111,7 +111,7 @@ Count of resources in the layout (optional, via include)
 
 > `optional` **resourceStatusCounts**: `object`
 
-Defined in: [src/types/layout.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L159)
+Defined in: [types/layout.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L159)
 
 Status counts of cameras in the layout (optional, via include)
 
@@ -125,6 +125,6 @@ Status counts of cameras in the layout (optional, via include)
 
 > `optional` **qRelevance**: `number`
 
-Defined in: [src/types/layout.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L163)
+Defined in: [types/layout.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L163)
 
 Search relevance score when using q parameter

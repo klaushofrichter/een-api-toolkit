@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: EenToolkitConfig
 
-Defined in: [src/types/common.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L177)
+Defined in: [types/common.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L177)
 
 Configuration for initializing the toolkit.
 
@@ -36,7 +36,7 @@ initEenToolkit({
 
 > `optional` **proxyUrl**: `string`
 
-Defined in: [src/types/common.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L179)
+Defined in: [types/common.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L179)
 
 URL of the OAuth proxy server (required for API calls)
 
@@ -46,7 +46,7 @@ URL of the OAuth proxy server (required for API calls)
 
 > `optional` **clientId**: `string`
 
-Defined in: [src/types/common.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L181)
+Defined in: [types/common.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L181)
 
 EEN OAuth client ID (required for authentication)
 
@@ -56,7 +56,7 @@ EEN OAuth client ID (required for authentication)
 
 > `optional` **redirectUri**: `string`
 
-Defined in: [src/types/common.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L183)
+Defined in: [types/common.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L183)
 
 OAuth redirect URI (default: http://127.0.0.1:3333)
 
@@ -66,7 +66,7 @@ OAuth redirect URI (default: http://127.0.0.1:3333)
 
 > `optional` **storageStrategy**: [`StorageStrategy`](../type-aliases/StorageStrategy.md)
 
-Defined in: [src/types/common.ts:192](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L192)
+Defined in: [types/common.ts:192](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L192)
 
 Storage strategy for token persistence (default: 'localStorage').
 
@@ -81,6 +81,6 @@ Security vs convenience tradeoffs:
 
 > `optional` **debug**: `boolean`
 
-Defined in: [src/types/common.ts:194](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L194)
+Defined in: [types/common.ts:194](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L194)
 
 Enable debug logging to console

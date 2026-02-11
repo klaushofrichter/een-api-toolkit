@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **StorageStrategy** = `"localStorage"` \| `"sessionStorage"` \| `"memory"`
 
-Defined in: [src/types/common.ts:152](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L152)
+Defined in: [types/common.ts:152](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L152)
 
 Storage strategy options for token persistence.
 

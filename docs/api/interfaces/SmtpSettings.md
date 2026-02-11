@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: SmtpSettings
 
-Defined in: [src/types/automation.ts:316](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L316)
+Defined in: [types/automation.ts:316](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L316)
 
 Email (SMTP) notification settings.
 
@@ -16,7 +16,7 @@ Email (SMTP) notification settings.
 
 > **recipients**: `string`[]
 
-Defined in: [src/types/automation.ts:318](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L318)
+Defined in: [types/automation.ts:318](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L318)
 
 Email addresses to send to
 
@@ -26,7 +26,7 @@ Email addresses to send to
 
 > `optional` **subject**: `string`
 
-Defined in: [src/types/automation.ts:320](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L320)
+Defined in: [types/automation.ts:320](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L320)
 
 Email subject template
 
@@ -36,6 +36,6 @@ Email subject template
 
 > `optional` **body**: `string`
 
-Defined in: [src/types/automation.ts:322](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L322)
+Defined in: [types/automation.ts:322](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L322)
 
 Email body template

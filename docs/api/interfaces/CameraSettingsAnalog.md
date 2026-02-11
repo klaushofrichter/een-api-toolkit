@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettingsAnalog
 
-Defined in: [src/types/camera.ts:514](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L514)
+Defined in: [types/camera.ts:514](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L514)
 
 Camera analog video settings.
 
@@ -20,7 +20,7 @@ Settings specific to analog cameras connected via encoders.
 
 > `optional` **videoStandard**: `string`
 
-Defined in: [src/types/camera.ts:516](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L516)
+Defined in: [types/camera.ts:516](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L516)
 
 Video standard (e.g., "NTSC", "PAL")
 
@@ -30,7 +30,7 @@ Video standard (e.g., "NTSC", "PAL")
 
 > `optional` **badSignalProtection**: `boolean`
 
-Defined in: [src/types/camera.ts:518](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L518)
+Defined in: [types/camera.ts:518](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L518)
 
 Whether bad signal protection is enabled
 
@@ -40,6 +40,6 @@ Whether bad signal protection is enabled
 
 > `optional` **badSignalDetected**: `boolean`
 
-Defined in: [src/types/camera.ts:520](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L520)
+Defined in: [types/camera.ts:520](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L520)
 
 Whether a bad signal has been detected

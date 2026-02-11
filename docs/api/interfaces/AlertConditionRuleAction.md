@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: AlertConditionRuleAction
 
-Defined in: [src/types/automation.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L139)
+Defined in: [types/automation.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L139)
 
 Action reference in alert condition rules.
 
@@ -16,7 +16,7 @@ Action reference in alert condition rules.
 
 > **id**: `string`
 
-Defined in: [src/types/automation.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L141)
+Defined in: [types/automation.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L141)
 
 Action ID
 
@@ -26,7 +26,7 @@ Action ID
 
 > `optional` **name**: `string`
 
-Defined in: [src/types/automation.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L143)
+Defined in: [types/automation.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L143)
 
 Action name
 
@@ -36,6 +36,6 @@ Action name
 
 > `optional` **type**: `string`
 
-Defined in: [src/types/automation.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L145)
+Defined in: [types/automation.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L145)
 
 Action type

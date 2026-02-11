@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.69**](../README.md)
+[**EEN API Toolkit v0.3.70**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: NotificationSettings
 
-Defined in: [src/types/automation.ts:296](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L296)
+Defined in: [types/automation.ts:296](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L296)
 
 Push notification settings.
 
@@ -16,6 +16,6 @@ Push notification settings.
 
 > **userIds**: `string`[]
 
-Defined in: [src/types/automation.ts:298](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L298)
+Defined in: [types/automation.ts:298](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L298)
 
 User IDs to notify
