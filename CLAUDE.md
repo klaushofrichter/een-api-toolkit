@@ -341,7 +341,17 @@ Located in `.github/workflows/`.
 ### Validate PR (`validate-pr.yml`)
 - Triggers on PRs to production
 - Validates version consistency, runs lint/tests/build
-- Dynamically discovers and runs E2E tests for all example apps
+- Dynamically discovers and runs E2E tests for all example apps (requires `playwright.config.ts` in the example directory)
+
+### CodeQL Analysis (`codeql.yml`)
+- Triggers on PRs to production and manually
+- Runs GitHub CodeQL security analysis for JavaScript/TypeScript
+
+### GitHub Actions SHA Pinning
+All actions are pinned to immutable commit SHAs to prevent supply chain attacks. When Dependabot proposes an action update:
+1. Verify the new SHA matches the expected release tag
+2. Update the version comment (e.g., `# v6.0.2`) to match the new version
+3. Review the action's release notes for breaking changes
 
 ## Code Review
 

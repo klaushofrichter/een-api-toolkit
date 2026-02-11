@@ -14,8 +14,7 @@ updates:
     labels:
       - "dependencies"
       - "github-actions"
-    # Auto-merge patch updates for trusted actions
-    # Major/minor updates will still require manual review
+    # All updates require manual review and merge
     open-pull-requests-limit: 5
 
   # npm dependencies
