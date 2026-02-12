@@ -47,7 +47,7 @@ describe('EventSubscriptions service functions', () => {
     it('should fetch event subscriptions successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -59,7 +59,7 @@ describe('EventSubscriptions service functions', () => {
             },
             deliveryConfig: {
               type: 'serverSentEvents.v1',
-              sseUrl: 'https://api.example.com/sse/v3.0/eventSubscriptions/sub-1'
+              sseUrl: 'https://api.c001.eagleeyenetworks.com/sse/v3.0/eventSubscriptions/sub-1'
             }
           },
           {
@@ -70,7 +70,7 @@ describe('EventSubscriptions service functions', () => {
             },
             deliveryConfig: {
               type: 'serverSentEvents.v1',
-              sseUrl: 'https://api.example.com/sse/v3.0/eventSubscriptions/sub-2'
+              sseUrl: 'https://api.c001.eagleeyenetworks.com/sse/v3.0/eventSubscriptions/sub-2'
             }
           }
         ],
@@ -90,7 +90,7 @@ describe('EventSubscriptions service functions', () => {
       expect(result.data?.nextPageToken).toBe('next-token-456')
       expect(result.data?.totalSize).toBe(10)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/eventSubscriptions',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/eventSubscriptions',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -104,7 +104,7 @@ describe('EventSubscriptions service functions', () => {
     it('should include pagination parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -123,7 +123,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -141,7 +141,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -174,7 +174,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR when subscriptionId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getEventSubscription('')
 
@@ -186,7 +186,7 @@ describe('EventSubscriptions service functions', () => {
     it('should fetch event subscription by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockSubscription = {
         id: 'sub-123',
@@ -196,7 +196,7 @@ describe('EventSubscriptions service functions', () => {
         },
         deliveryConfig: {
           type: 'serverSentEvents.v1',
-          sseUrl: 'https://api.example.com/sse/v3.0/eventSubscriptions/sub-123'
+          sseUrl: 'https://api.c001.eagleeyenetworks.com/sse/v3.0/eventSubscriptions/sub-123'
         }
       }
 
@@ -210,7 +210,7 @@ describe('EventSubscriptions service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockSubscription)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/eventSubscriptions/sub-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -224,7 +224,7 @@ describe('EventSubscriptions service functions', () => {
     it('should encode subscriptionId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -234,7 +234,7 @@ describe('EventSubscriptions service functions', () => {
       await getEventSubscription('sub/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/eventSubscriptions/sub%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/eventSubscriptions/sub%2F123',
         expect.any(Object)
       )
     })
@@ -242,7 +242,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -260,7 +260,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -278,7 +278,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('DNS resolution failed'))
 
@@ -319,7 +319,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR when deliveryConfig is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createEventSubscription({
         deliveryConfig: undefined as unknown as { type: 'serverSentEvents.v1' },
@@ -334,7 +334,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR when filters is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createEventSubscription({
         deliveryConfig: validParams.deliveryConfig,
@@ -349,7 +349,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR when filter has no actors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createEventSubscription({
         deliveryConfig: validParams.deliveryConfig,
@@ -367,7 +367,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR when filter has no types', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createEventSubscription({
         deliveryConfig: validParams.deliveryConfig,
@@ -385,7 +385,7 @@ describe('EventSubscriptions service functions', () => {
     it('should create event subscription successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockSubscription = {
         id: 'new-sub-123',
@@ -395,7 +395,7 @@ describe('EventSubscriptions service functions', () => {
         },
         deliveryConfig: {
           type: 'serverSentEvents.v1',
-          sseUrl: 'https://api.example.com/sse/v3.0/eventSubscriptions/new-sub-123'
+          sseUrl: 'https://api.c001.eagleeyenetworks.com/sse/v3.0/eventSubscriptions/new-sub-123'
         }
       }
 
@@ -409,7 +409,7 @@ describe('EventSubscriptions service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockSubscription)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/eventSubscriptions',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/eventSubscriptions',
         expect.objectContaining({
           method: 'POST',
           headers: {
@@ -425,7 +425,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle 400 validation error from server', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -443,7 +443,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Network timeout'))
 
@@ -476,7 +476,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR when subscriptionId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await deleteEventSubscription('')
 
@@ -488,7 +488,7 @@ describe('EventSubscriptions service functions', () => {
     it('should delete event subscription successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true
@@ -499,7 +499,7 @@ describe('EventSubscriptions service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toBeUndefined()
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/eventSubscriptions/sub-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/eventSubscriptions/sub-123',
         expect.objectContaining({
           method: 'DELETE',
           headers: {
@@ -513,7 +513,7 @@ describe('EventSubscriptions service functions', () => {
     it('should encode subscriptionId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true
@@ -522,7 +522,7 @@ describe('EventSubscriptions service functions', () => {
       await deleteEventSubscription('sub/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/eventSubscriptions/sub%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/eventSubscriptions/sub%2F123',
         expect.any(Object)
       )
     })
@@ -530,7 +530,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -548,7 +548,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection reset'))
 
@@ -572,7 +572,7 @@ describe('EventSubscriptions service functions', () => {
 
     it('should return AUTH_REQUIRED when token is not available', () => {
       const authStore = useAuthStore()
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
       // token not set
 
       const result = connectToEventSubscription(
@@ -586,7 +586,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR when sseUrl is empty', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = connectToEventSubscription('', { onEvent: vi.fn() })
 
@@ -597,7 +597,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR for invalid URL format', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = connectToEventSubscription('not-a-valid-url', { onEvent: vi.fn() })
 
@@ -608,7 +608,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return VALIDATION_ERROR for untrusted SSE URL domain', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = connectToEventSubscription(
         'https://malicious-site.com/sse/events',
@@ -622,7 +622,7 @@ describe('EventSubscriptions service functions', () => {
     it('should accept exact domain match (no subdomain)', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       // Mock successful fetch that never resolves (simulating SSE connection)
       mockFetch.mockReturnValueOnce(new Promise(() => {}))
@@ -644,7 +644,7 @@ describe('EventSubscriptions service functions', () => {
     it('should accept een.cloud domain', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       // Mock successful fetch that never resolves (simulating SSE connection)
       mockFetch.mockReturnValueOnce(new Promise(() => {}))
@@ -664,7 +664,7 @@ describe('EventSubscriptions service functions', () => {
     it('should return SSE connection object on success', () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       // Mock successful fetch that never resolves (simulating SSE connection)
       mockFetch.mockReturnValueOnce(new Promise(() => {}))
@@ -686,7 +686,7 @@ describe('EventSubscriptions service functions', () => {
     it('should call onStatusChange callback', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const onStatusChange = vi.fn()
 
@@ -711,7 +711,7 @@ describe('EventSubscriptions service functions', () => {
     it('should use correct headers for SSE request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       // Mock successful fetch that never resolves
       mockFetch.mockReturnValueOnce(new Promise(() => {}))
@@ -739,7 +739,7 @@ describe('EventSubscriptions service functions', () => {
     it('should handle connection errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const onError = vi.fn()
       const onStatusChange = vi.fn()

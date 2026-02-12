@@ -41,7 +41,7 @@ describe('Jobs service functions', () => {
     it('should fetch jobs successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -63,7 +63,7 @@ describe('Jobs service functions', () => {
       expect(result.data?.results).toHaveLength(2)
       expect(result.data?.nextPageToken).toBe('next-token-456')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/jobs',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/jobs',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -77,7 +77,7 @@ describe('Jobs service functions', () => {
     it('should include pagination parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -87,7 +87,7 @@ describe('Jobs service functions', () => {
       await listJobs({ pageSize: 100, pageToken: 'page-xyz' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/jobs?pageSize=100&pageToken=page-xyz',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/jobs?pageSize=100&pageToken=page-xyz',
         expect.any(Object)
       )
     })
@@ -95,7 +95,7 @@ describe('Jobs service functions', () => {
     it('should include state filter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -113,7 +113,7 @@ describe('Jobs service functions', () => {
     it('should include type filter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -131,7 +131,7 @@ describe('Jobs service functions', () => {
     it('should include timestamp filters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -153,7 +153,7 @@ describe('Jobs service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -171,7 +171,7 @@ describe('Jobs service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -204,7 +204,7 @@ describe('Jobs service functions', () => {
     it('should return VALIDATION_ERROR when jobId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getJob('')
 
@@ -216,7 +216,7 @@ describe('Jobs service functions', () => {
     it('should fetch job by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockJob = {
         id: 'job-123',
@@ -240,7 +240,7 @@ describe('Jobs service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockJob)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/jobs/job-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/jobs/job-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -254,7 +254,7 @@ describe('Jobs service functions', () => {
     it('should encode jobId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -264,7 +264,7 @@ describe('Jobs service functions', () => {
       await getJob('job/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/jobs/job%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/jobs/job%2F123',
         expect.any(Object)
       )
     })
@@ -272,7 +272,7 @@ describe('Jobs service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -282,7 +282,7 @@ describe('Jobs service functions', () => {
       await getJob('job-123', { include: ['details'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/jobs/job-123?include=details',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/jobs/job-123?include=details',
         expect.any(Object)
       )
     })
@@ -290,7 +290,7 @@ describe('Jobs service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -308,7 +308,7 @@ describe('Jobs service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -326,7 +326,7 @@ describe('Jobs service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('DNS resolution failed'))
 
@@ -359,7 +359,7 @@ describe('Jobs service functions', () => {
     it('should return VALIDATION_ERROR when jobId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await deleteJob('')
 
@@ -371,7 +371,7 @@ describe('Jobs service functions', () => {
     it('should delete job successfully with 204 response', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -382,7 +382,7 @@ describe('Jobs service functions', () => {
 
       expect(result.error).toBeNull()
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/jobs/job-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/jobs/job-123',
         expect.objectContaining({
           method: 'DELETE',
           headers: {
@@ -395,7 +395,7 @@ describe('Jobs service functions', () => {
     it('should encode jobId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -405,7 +405,7 @@ describe('Jobs service functions', () => {
       await deleteJob('job/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/jobs/job%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/jobs/job%2F123',
         expect.any(Object)
       )
     })
@@ -413,7 +413,7 @@ describe('Jobs service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -431,7 +431,7 @@ describe('Jobs service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -449,7 +449,7 @@ describe('Jobs service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection reset'))
 

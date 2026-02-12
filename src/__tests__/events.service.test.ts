@@ -47,7 +47,7 @@ describe('Events service functions', () => {
     it('should return VALIDATION_ERROR when actor is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listEvents({
         actor: '',
@@ -63,7 +63,7 @@ describe('Events service functions', () => {
     it('should return VALIDATION_ERROR when type__in is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listEvents({
         actor: 'camera:100d4c41',
@@ -79,7 +79,7 @@ describe('Events service functions', () => {
     it('should return VALIDATION_ERROR when startTimestamp__gte is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listEvents({
         actor: 'camera:100d4c41',
@@ -95,7 +95,7 @@ describe('Events service functions', () => {
     it('should fetch events successfully with required params', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -156,7 +156,7 @@ describe('Events service functions', () => {
     it('should include required params in URL', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -177,7 +177,7 @@ describe('Events service functions', () => {
     it('should include pagination parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -196,7 +196,7 @@ describe('Events service functions', () => {
     it('should include optional time filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -221,7 +221,7 @@ describe('Events service functions', () => {
     it('should include sort parameter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -239,7 +239,7 @@ describe('Events service functions', () => {
     it('should include include parameter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -260,7 +260,7 @@ describe('Events service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -278,7 +278,7 @@ describe('Events service functions', () => {
     it('should handle 429 rate limit error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -296,7 +296,7 @@ describe('Events service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -329,7 +329,7 @@ describe('Events service functions', () => {
     it('should return VALIDATION_ERROR when eventId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getEvent('')
 
@@ -341,7 +341,7 @@ describe('Events service functions', () => {
     it('should fetch event by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockEvent = {
         id: 'event-123',
@@ -367,7 +367,7 @@ describe('Events service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockEvent)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/events/event-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/events/event-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -381,7 +381,7 @@ describe('Events service functions', () => {
     it('should encode eventId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -391,7 +391,7 @@ describe('Events service functions', () => {
       await getEvent('event/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/events/event%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/events/event%2F123',
         expect.any(Object)
       )
     })
@@ -399,7 +399,7 @@ describe('Events service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -411,7 +411,7 @@ describe('Events service functions', () => {
       })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/events/event-123?include=data.een.objectDetection.v1%2Cdata.een.fullFrameImageUrl.v1',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/events/event-123?include=data.een.objectDetection.v1%2Cdata.een.fullFrameImageUrl.v1',
         expect.any(Object)
       )
     })
@@ -419,7 +419,7 @@ describe('Events service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -437,7 +437,7 @@ describe('Events service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -455,7 +455,7 @@ describe('Events service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('DNS resolution failed'))
 
@@ -488,7 +488,7 @@ describe('Events service functions', () => {
     it('should fetch event types successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -518,7 +518,7 @@ describe('Events service functions', () => {
       expect(result.data?.results).toHaveLength(2)
       expect(result.data?.nextPageToken).toBe('next-token')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/eventTypes',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/eventTypes',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -532,7 +532,7 @@ describe('Events service functions', () => {
     it('should include pagination parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -551,7 +551,7 @@ describe('Events service functions', () => {
     it('should include language parameter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -569,7 +569,7 @@ describe('Events service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
@@ -602,7 +602,7 @@ describe('Events service functions', () => {
     it('should return VALIDATION_ERROR when actor is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listEventFieldValues({ actor: '' })
 
@@ -614,7 +614,7 @@ describe('Events service functions', () => {
     it('should fetch field values successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         type: ['een.motionDetectionEvent.v1', 'een.objectDetectionEvent.v1']
@@ -631,7 +631,7 @@ describe('Events service functions', () => {
       expect(result.data?.type).toHaveLength(2)
       expect(result.data?.type).toContain('een.motionDetectionEvent.v1')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/events:listFieldValues?actor=camera%3A100d4c41',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/events:listFieldValues?actor=camera%3A100d4c41',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -645,7 +645,7 @@ describe('Events service functions', () => {
     it('should handle 404 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -663,7 +663,7 @@ describe('Events service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection timeout'))
 

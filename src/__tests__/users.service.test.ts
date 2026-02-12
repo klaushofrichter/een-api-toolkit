@@ -41,7 +41,7 @@ describe('User service functions', () => {
     it('should fetch current user successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockUserProfile = {
         id: 'user-123',
@@ -60,7 +60,7 @@ describe('User service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockUserProfile)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/users/self',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/users/self',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -74,7 +74,7 @@ describe('User service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -92,7 +92,7 @@ describe('User service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Network failure'))
 
@@ -114,7 +114,7 @@ describe('User service functions', () => {
     it('should fetch users successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -140,7 +140,7 @@ describe('User service functions', () => {
     it('should include pagination parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -150,7 +150,7 @@ describe('User service functions', () => {
       await getUsers({ pageSize: 50, pageToken: 'page-token-xyz' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/users?pageSize=50&pageToken=page-token-xyz',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/users?pageSize=50&pageToken=page-token-xyz',
         expect.any(Object)
       )
     })
@@ -158,7 +158,7 @@ describe('User service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -168,7 +168,7 @@ describe('User service functions', () => {
       await getUsers({ include: ['permissions', 'roles'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/users?include=permissions%2Croles',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/users?include=permissions%2Croles',
         expect.any(Object)
       )
     })
@@ -176,7 +176,7 @@ describe('User service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -194,7 +194,7 @@ describe('User service functions', () => {
     it('should handle 429 rate limit error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -221,7 +221,7 @@ describe('User service functions', () => {
     it('should return VALIDATION_ERROR when userId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getUser('')
 
@@ -233,7 +233,7 @@ describe('User service functions', () => {
     it('should fetch user by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockUser = {
         id: 'user-123',
@@ -252,7 +252,7 @@ describe('User service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockUser)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/users/user-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/users/user-123',
         expect.any(Object)
       )
     })
@@ -260,7 +260,7 @@ describe('User service functions', () => {
     it('should encode userId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -270,7 +270,7 @@ describe('User service functions', () => {
       await getUser('user/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/users/user%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/users/user%2F123',
         expect.any(Object)
       )
     })
@@ -278,7 +278,7 @@ describe('User service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -288,7 +288,7 @@ describe('User service functions', () => {
       await getUser('user-123', { include: ['permissions'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/users/user-123?include=permissions',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/users/user-123?include=permissions',
         expect.any(Object)
       )
     })
@@ -296,7 +296,7 @@ describe('User service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -314,7 +314,7 @@ describe('User service functions', () => {
     it('should handle generic API error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -332,7 +332,7 @@ describe('User service functions', () => {
     it('should handle non-JSON error response', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,

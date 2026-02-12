@@ -41,7 +41,7 @@ describe('Feeds service functions', () => {
     it('should fetch feeds successfully with no params', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -64,7 +64,7 @@ describe('Feeds service functions', () => {
       expect(result.data?.nextPageToken).toBe('next-token-123')
       expect(result.data?.totalSize).toBe(50)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/feeds',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/feeds',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -78,7 +78,7 @@ describe('Feeds service functions', () => {
     it('should include pagination parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -88,7 +88,7 @@ describe('Feeds service functions', () => {
       await listFeeds({ pageSize: 100, pageToken: 'page-xyz' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/feeds?pageSize=100&pageToken=page-xyz',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/feeds?pageSize=100&pageToken=page-xyz',
         expect.any(Object)
       )
     })
@@ -96,7 +96,7 @@ describe('Feeds service functions', () => {
     it('should include deviceId filter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -106,7 +106,7 @@ describe('Feeds service functions', () => {
       await listFeeds({ deviceId: 'cam-123' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/feeds?deviceId=cam-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/feeds?deviceId=cam-123',
         expect.any(Object)
       )
     })
@@ -114,7 +114,7 @@ describe('Feeds service functions', () => {
     it('should include deviceId__in filter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -132,7 +132,7 @@ describe('Feeds service functions', () => {
     it('should include type filter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -142,7 +142,7 @@ describe('Feeds service functions', () => {
       await listFeeds({ type: 'preview' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/feeds?type=preview',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/feeds?type=preview',
         expect.any(Object)
       )
     })
@@ -150,7 +150,7 @@ describe('Feeds service functions', () => {
     it('should include multiple URL fields in include parameter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -168,7 +168,7 @@ describe('Feeds service functions', () => {
     it('should combine multiple filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -194,7 +194,7 @@ describe('Feeds service functions', () => {
     it('should not include empty arrays in query string', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -204,7 +204,7 @@ describe('Feeds service functions', () => {
       await listFeeds({ deviceId__in: [], include: [] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/feeds',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/feeds',
         expect.any(Object)
       )
     })
@@ -212,7 +212,7 @@ describe('Feeds service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -230,7 +230,7 @@ describe('Feeds service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -248,7 +248,7 @@ describe('Feeds service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -266,7 +266,7 @@ describe('Feeds service functions', () => {
     it('should handle 429 rate limit error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -284,7 +284,7 @@ describe('Feeds service functions', () => {
     it('should handle 503 service unavailable error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -302,7 +302,7 @@ describe('Feeds service functions', () => {
     it('should handle generic API error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -320,7 +320,7 @@ describe('Feeds service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -333,7 +333,7 @@ describe('Feeds service functions', () => {
     it('should handle JSON parse error in error response', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -351,7 +351,7 @@ describe('Feeds service functions', () => {
     it('should include pageSize as 0 when explicitly set', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -362,7 +362,7 @@ describe('Feeds service functions', () => {
 
       // pageSize: 0 is included because typeof 0 === 'number'
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/feeds?pageSize=0',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/feeds?pageSize=0',
         expect.any(Object)
       )
     })
@@ -370,7 +370,7 @@ describe('Feeds service functions', () => {
     it('should return feed data with URLs when requested', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [

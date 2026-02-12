@@ -12,6 +12,7 @@ import type {
   SSEEvent
 } from '../types'
 import { debug } from '../utils'
+import { isAllowedEenHostname } from '../utils/hostname'
 
 /**
  * List all event subscriptions for the current account.
@@ -397,12 +398,7 @@ export function connectToEventSubscription(
   // SSE URLs should only come from trusted EEN domains
   try {
     const sseUrlObj = new URL(sseUrl)
-    const allowedDomains = ['.eagleeyenetworks.com', '.een.cloud']
-    // Allow both exact domain match (e.g., eagleeyenetworks.com) and subdomain match (e.g., api.eagleeyenetworks.com)
-    const isAllowedDomain = allowedDomains.some(domain =>
-      sseUrlObj.hostname === domain.substring(1) || sseUrlObj.hostname.endsWith(domain)
-    )
-    if (!isAllowedDomain) {
+    if (!isAllowedEenHostname(sseUrlObj.hostname)) {
       return failure('VALIDATION_ERROR', `SSE URL domain not allowed: ${sseUrlObj.hostname}`)
     }
   } catch {

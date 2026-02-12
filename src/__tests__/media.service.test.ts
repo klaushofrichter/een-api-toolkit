@@ -73,7 +73,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when deviceId is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listMedia({ ...validParams, deviceId: '' })
 
@@ -84,7 +84,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when type is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listMedia({ ...validParams, type: '' as 'preview' })
 
@@ -95,7 +95,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when mediaType is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listMedia({ ...validParams, mediaType: '' as 'video' })
 
@@ -106,7 +106,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when startTimestamp is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await listMedia({ ...validParams, startTimestamp: '' })
 
@@ -117,7 +117,7 @@ describe('Media service functions', () => {
     it('should fetch media intervals successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -147,7 +147,7 @@ describe('Media service functions', () => {
     it('should include all parameters in request URL', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -179,7 +179,7 @@ describe('Media service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -197,7 +197,7 @@ describe('Media service functions', () => {
     it('should handle 404 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -215,7 +215,7 @@ describe('Media service functions', () => {
     it('should handle network error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
@@ -249,7 +249,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when deviceId is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getLiveImage({ deviceId: '' })
 
@@ -264,7 +264,7 @@ describe('Media service functions', () => {
 
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       // Valid: type is optional and defaults to 'preview'
       mockFetch.mockResolvedValueOnce({
@@ -287,7 +287,7 @@ describe('Media service functions', () => {
     it('should fetch live image successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -303,7 +303,7 @@ describe('Media service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data?.imageData).toMatch(/^data:image\/jpeg;base64,/)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/media/liveImage.jpeg?deviceId=camera-123&type=preview',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/media/liveImage.jpeg?deviceId=camera-123&type=preview',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -317,7 +317,7 @@ describe('Media service functions', () => {
     it('should handle 403 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -336,7 +336,7 @@ describe('Media service functions', () => {
     it('should handle 503 service unavailable', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -366,7 +366,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when neither deviceId nor pageToken provided', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getRecordedImage({})
 
@@ -377,7 +377,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when no timestamp provided without pageToken', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getRecordedImage({ deviceId: 'camera-123' })
 
@@ -388,7 +388,7 @@ describe('Media service functions', () => {
     it('should return VALIDATION_ERROR when overlay requested without overlayId', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getRecordedImage({
         deviceId: 'camera-123',
@@ -403,7 +403,7 @@ describe('Media service functions', () => {
     it('should fetch recorded image with timestamp__gte', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -434,7 +434,7 @@ describe('Media service functions', () => {
     it('should fetch recorded image with pageToken only', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -458,7 +458,7 @@ describe('Media service functions', () => {
     it('should include all timestamp parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -479,7 +479,7 @@ describe('Media service functions', () => {
     it('should include size parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -503,7 +503,7 @@ describe('Media service functions', () => {
     it('should handle 404 error for missing recording', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -525,7 +525,7 @@ describe('Media service functions', () => {
     it('should handle 429 rate limit', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -548,7 +548,7 @@ describe('Media service functions', () => {
     it('should handle network error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -583,7 +583,7 @@ describe('Media service functions', () => {
     it('should fetch media session URL successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         url: 'https://media.eagleeyenetworks.com/session/abc123'
@@ -599,7 +599,7 @@ describe('Media service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data?.url).toBe('https://media.eagleeyenetworks.com/session/abc123')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/media/session',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/media/session',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -613,7 +613,7 @@ describe('Media service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -631,7 +631,7 @@ describe('Media service functions', () => {
     it('should handle 403 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -649,7 +649,7 @@ describe('Media service functions', () => {
     it('should handle network error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 
@@ -671,7 +671,7 @@ describe('Media service functions', () => {
     it('should reject session URL from untrusted domain', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -687,7 +687,7 @@ describe('Media service functions', () => {
     it('should accept session URL from een.cloud domain', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -708,7 +708,7 @@ describe('Media service functions', () => {
     it('should complete two-step initialization successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       // First call: get session URL
       mockFetch.mockResolvedValueOnce({
@@ -732,7 +732,7 @@ describe('Media service functions', () => {
       expect(mockFetch).toHaveBeenCalledTimes(2)
 
       // First call should be to media/session
-      expect(mockFetch.mock.calls[0]![0]).toBe('https://api.example.com/api/v3.0/media/session')
+      expect(mockFetch.mock.calls[0]![0]).toBe('https://api.c001.eagleeyenetworks.com/api/v3.0/media/session')
 
       // Second call should be to the session URL with credentials
       expect(mockFetch.mock.calls[1]![0]).toBe('https://media.eagleeyenetworks.com/session/abc123')
@@ -744,7 +744,7 @@ describe('Media service functions', () => {
     it('should handle 204 No Content response from session URL', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -766,7 +766,7 @@ describe('Media service functions', () => {
     it('should propagate error from getMediaSession', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -784,7 +784,7 @@ describe('Media service functions', () => {
     it('should handle error when setting cookie', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -807,7 +807,7 @@ describe('Media service functions', () => {
     it('should handle missing URL in session response', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -823,7 +823,7 @@ describe('Media service functions', () => {
     it('should handle network error when setting cookie', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,

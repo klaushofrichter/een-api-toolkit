@@ -1,6 +1,6 @@
 # Authentication - EEN API Toolkit
 
-> **Version:** 0.3.70
+> **Version:** 0.3.71
 >
 > OAuth flow implementation, token management, and session handling.
 > Load this document when implementing login, logout, or auth guards.

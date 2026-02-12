@@ -3,6 +3,7 @@ import { ref, computed } from 'vue'
 import type { UserProfile } from '../types'
 import type { Result } from '../types'
 import { debug } from '../utils/debug'
+import { isAllowedEenHostname } from '../utils/hostname'
 import { getStorageAdapter } from '../utils/storage'
 
 // Lazy-loaded reference to refreshToken to avoid circular dependency at import time
@@ -74,22 +75,34 @@ export const useAuthStore = defineStore('een-auth', () => {
   }
 
   function setBaseUrl(data: string | { hostname: string; port?: number }) {
+    let newHostname: string
+    let newPort: number = 443
+
     if (typeof data === 'string') {
       // Parse URL string
       try {
         const url = new URL(data.startsWith('http') ? data : `https://${data}`)
-        hostname.value = url.hostname
-        port.value = url.port ? parseInt(url.port, 10) : 443
+        newHostname = url.hostname
+        newPort = url.port ? parseInt(url.port, 10) : 443
       } catch (err: unknown) {
         // Invalid URL format, use as hostname directly
         debug('Failed to parse URL, using as hostname:', err instanceof Error ? err.message : String(err))
-        hostname.value = data
-        port.value = 443
+        newHostname = data
+        newPort = 443
       }
     } else {
-      hostname.value = data.hostname
-      port.value = data.port ?? 443
+      newHostname = data.hostname
+      newPort = data.port ?? 443
     }
+
+    // Validate hostname against allowed EEN domains to prevent token exfiltration
+    if (!isAllowedEenHostname(newHostname)) {
+      debug('Rejected hostname - not an allowed EEN domain:', newHostname)
+      return
+    }
+
+    hostname.value = newHostname
+    port.value = newPort
     saveToStorage()
     debug('Base URL set:', baseUrl.value)
   }
@@ -230,9 +243,19 @@ export const useAuthStore = defineStore('een-auth', () => {
       tokenExpiration.value = expStr ? parseInt(expStr, 10) : null
       refreshTokenMarker.value = storage.getItem('een_refreshTokenMarker')
       sessionId.value = storage.getItem('een_sessionId')
-      hostname.value = storage.getItem('een_hostname')
-      const portStr = storage.getItem('een_port')
-      port.value = portStr ? parseInt(portStr, 10) : 443
+      const storedHostname = storage.getItem('een_hostname')
+      if (storedHostname && !isAllowedEenHostname(storedHostname)) {
+        debug('Rejected stored hostname - not an allowed EEN domain:', storedHostname)
+        // Clear the poisoned hostname from storage
+        storage.removeItem('een_hostname')
+        storage.removeItem('een_port')
+        hostname.value = null
+        port.value = 443
+      } else {
+        hostname.value = storedHostname
+        const portStr = storage.getItem('een_port')
+        port.value = portStr ? parseInt(portStr, 10) : 443
+      }
       const profileStr = storage.getItem('een_userProfile')
       userProfile.value = profileStr ? JSON.parse(profileStr) : null
     } catch (err: unknown) {

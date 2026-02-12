@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.70**](../README.md)
+[**EEN API Toolkit v0.3.71**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **connectToEventSubscription**(`sseUrl`, `options`): [`Result`](../type-aliases/Result.md)\<[`SSEConnection`](../interfaces/SSEConnection.md)\>
 
-Defined in: [eventSubscriptions/service.ts:378](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L378)
+Defined in: [eventSubscriptions/service.ts:379](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L379)
 
 Connect to an SSE event subscription to receive real-time events.
 
