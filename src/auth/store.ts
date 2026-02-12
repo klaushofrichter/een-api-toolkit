@@ -97,7 +97,7 @@ export const useAuthStore = defineStore('een-auth', () => {
 
     // Validate hostname against allowed EEN domains to prevent token exfiltration
     if (!isAllowedEenHostname(newHostname)) {
-      debug('Rejected hostname - not an allowed EEN domain:', newHostname)
+      console.warn(`[EEN API Toolkit] Rejected hostname - not an allowed EEN domain: ${newHostname}`)
       return
     }
 
@@ -245,7 +245,7 @@ export const useAuthStore = defineStore('een-auth', () => {
       sessionId.value = storage.getItem('een_sessionId')
       const storedHostname = storage.getItem('een_hostname')
       if (storedHostname && !isAllowedEenHostname(storedHostname)) {
-        debug('Rejected stored hostname - not an allowed EEN domain:', storedHostname)
+        console.warn(`[EEN API Toolkit] Rejected stored hostname - not an allowed EEN domain: ${storedHostname}`)
         // Clear the poisoned hostname from storage
         storage.removeItem('een_hostname')
         storage.removeItem('een_port')
