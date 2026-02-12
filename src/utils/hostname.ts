@@ -21,6 +21,9 @@ const ALLOWED_DOMAINS = ['.eagleeyenetworks.com', '.een.cloud']
  * @category Utilities
  */
 export function isAllowedEenHostname(hostname: string): boolean {
+  if (!hostname) {
+    return false
+  }
   return ALLOWED_DOMAINS.some(domain =>
     hostname === domain.substring(1) || hostname.endsWith(domain)
   )
