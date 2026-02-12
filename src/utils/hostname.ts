@@ -1,6 +1,8 @@
 /**
  * Allowed domains for EEN API requests.
  * All API hostnames must match one of these domains (exact or subdomain).
+ *
+ * @internal
  */
 const ALLOWED_DOMAINS = ['.eagleeyenetworks.com', '.een.cloud']
 
