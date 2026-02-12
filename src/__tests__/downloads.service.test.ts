@@ -41,7 +41,7 @@ describe('Downloads service functions', () => {
     it('should fetch downloads successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -63,7 +63,7 @@ describe('Downloads service functions', () => {
       expect(result.data?.results).toHaveLength(2)
       expect(result.data?.nextPageToken).toBe('next-token-456')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/downloads',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/downloads',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -77,7 +77,7 @@ describe('Downloads service functions', () => {
     it('should include pagination parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -87,7 +87,7 @@ describe('Downloads service functions', () => {
       await listDownloads({ pageSize: 100, pageToken: 'page-xyz' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/downloads?pageSize=100&pageToken=page-xyz',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/downloads?pageSize=100&pageToken=page-xyz',
         expect.any(Object)
       )
     })
@@ -95,7 +95,7 @@ describe('Downloads service functions', () => {
     it('should include status filter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -113,7 +113,7 @@ describe('Downloads service functions', () => {
     it('should include camera filter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -131,7 +131,7 @@ describe('Downloads service functions', () => {
     it('should include job and file filters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -150,7 +150,7 @@ describe('Downloads service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -168,7 +168,7 @@ describe('Downloads service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -201,7 +201,7 @@ describe('Downloads service functions', () => {
     it('should return VALIDATION_ERROR when downloadId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getDownload('')
 
@@ -213,7 +213,7 @@ describe('Downloads service functions', () => {
     it('should fetch download by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockDownload = {
         id: 'dl-123',
@@ -235,7 +235,7 @@ describe('Downloads service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockDownload)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/downloads/dl-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/downloads/dl-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -249,7 +249,7 @@ describe('Downloads service functions', () => {
     it('should encode downloadId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -259,7 +259,7 @@ describe('Downloads service functions', () => {
       await getDownload('dl/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/downloads/dl%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/downloads/dl%2F123',
         expect.any(Object)
       )
     })
@@ -267,7 +267,7 @@ describe('Downloads service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -277,7 +277,7 @@ describe('Downloads service functions', () => {
       await getDownload('dl-123', { include: ['details'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/downloads/dl-123?include=details',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/downloads/dl-123?include=details',
         expect.any(Object)
       )
     })
@@ -285,7 +285,7 @@ describe('Downloads service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -303,7 +303,7 @@ describe('Downloads service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -330,7 +330,7 @@ describe('Downloads service functions', () => {
     it('should return VALIDATION_ERROR when downloadId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await downloadDownload('')
 
@@ -342,7 +342,7 @@ describe('Downloads service functions', () => {
     it('should download file successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockBlob = new Blob(['test content'], { type: 'video/mp4' })
 
@@ -362,7 +362,7 @@ describe('Downloads service functions', () => {
       expect(result.data?.filename).toBe('export.mp4')
       expect(result.data?.contentType).toBe('video/mp4')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/downloads/dl-123:download',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/downloads/dl-123:download',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -375,7 +375,7 @@ describe('Downloads service functions', () => {
     it('should use default filename when Content-Disposition is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockBlob = new Blob(['test content'])
 
@@ -396,7 +396,7 @@ describe('Downloads service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -414,7 +414,7 @@ describe('Downloads service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Download failed'))
 

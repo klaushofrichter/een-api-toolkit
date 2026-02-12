@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.70**](../README.md)
+[**EEN API Toolkit v0.3.76**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **deleteEventSubscription**(`subscriptionId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<`void`\>\>
 
-Defined in: [eventSubscriptions/service.ts:283](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L283)
+Defined in: [eventSubscriptions/service.ts:284](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L284)
 
 Delete an event subscription.
 

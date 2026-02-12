@@ -41,7 +41,7 @@ describe('Alerts service functions', () => {
     it('should fetch alerts successfully without params', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -71,7 +71,7 @@ describe('Alerts service functions', () => {
       expect(result.data?.results).toHaveLength(1)
       expect(result.data?.nextPageToken).toBe('next-token-123')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/alerts',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/alerts',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -85,7 +85,7 @@ describe('Alerts service functions', () => {
     it('should include pagination parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -104,7 +104,7 @@ describe('Alerts service functions', () => {
     it('should include time filter parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -126,7 +126,7 @@ describe('Alerts service functions', () => {
     it('should include entity filter parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -150,7 +150,7 @@ describe('Alerts service functions', () => {
     it('should include priority filter parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -172,7 +172,7 @@ describe('Alerts service functions', () => {
     it('should include include and sort parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -194,7 +194,7 @@ describe('Alerts service functions', () => {
     it('should include alertActionStatus filter', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -214,7 +214,7 @@ describe('Alerts service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -232,7 +232,7 @@ describe('Alerts service functions', () => {
     it('should handle 429 rate limit error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -250,7 +250,7 @@ describe('Alerts service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -283,7 +283,7 @@ describe('Alerts service functions', () => {
     it('should return VALIDATION_ERROR when alertId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getAlert('')
 
@@ -295,7 +295,7 @@ describe('Alerts service functions', () => {
     it('should fetch alert by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockAlert = {
         id: 'alert-123',
@@ -318,7 +318,7 @@ describe('Alerts service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockAlert)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/alerts/alert-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/alerts/alert-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -332,7 +332,7 @@ describe('Alerts service functions', () => {
     it('should encode alertId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -342,7 +342,7 @@ describe('Alerts service functions', () => {
       await getAlert('alert/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/alerts/alert%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/alerts/alert%2F123',
         expect.any(Object)
       )
     })
@@ -350,7 +350,7 @@ describe('Alerts service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -362,7 +362,7 @@ describe('Alerts service functions', () => {
       })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/alerts/alert-123?include=data%2Cactions%2Cdescription',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/alerts/alert-123?include=data%2Cactions%2Cdescription',
         expect.any(Object)
       )
     })
@@ -370,7 +370,7 @@ describe('Alerts service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -388,7 +388,7 @@ describe('Alerts service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -406,7 +406,7 @@ describe('Alerts service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('DNS resolution failed'))
 
@@ -439,7 +439,7 @@ describe('Alerts service functions', () => {
     it('should fetch alert types successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -467,7 +467,7 @@ describe('Alerts service functions', () => {
       expect(result.data?.results).toHaveLength(2)
       expect(result.data?.nextPageToken).toBe('next-token')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/alertTypes',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/alertTypes',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -481,7 +481,7 @@ describe('Alerts service functions', () => {
     it('should include pagination parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -500,7 +500,7 @@ describe('Alerts service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Network error'))
 

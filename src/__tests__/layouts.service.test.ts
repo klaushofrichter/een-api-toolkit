@@ -41,7 +41,7 @@ describe('Layout service functions', () => {
     it('should fetch layouts successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -89,7 +89,7 @@ describe('Layout service functions', () => {
     it('should include pagination parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -99,7 +99,7 @@ describe('Layout service functions', () => {
       await getLayouts({ pageSize: 50, pageToken: 'page-token-xyz' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts?pageSize=50&pageToken=page-token-xyz',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts?pageSize=50&pageToken=page-token-xyz',
         expect.any(Object)
       )
     })
@@ -107,7 +107,7 @@ describe('Layout service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -117,7 +117,7 @@ describe('Layout service functions', () => {
       await getLayouts({ include: ['effectivePermissions', 'resourceCounts'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts?include=effectivePermissions%2CresourceCounts',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts?include=effectivePermissions%2CresourceCounts',
         expect.any(Object)
       )
     })
@@ -125,7 +125,7 @@ describe('Layout service functions', () => {
     it('should include filter parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -135,7 +135,7 @@ describe('Layout service functions', () => {
       await getLayouts({ name__contains: 'lobby', q: 'entrance' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts?name__contains=lobby&q=entrance',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts?name__contains=lobby&q=entrance',
         expect.any(Object)
       )
     })
@@ -143,7 +143,7 @@ describe('Layout service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -161,7 +161,7 @@ describe('Layout service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -179,7 +179,7 @@ describe('Layout service functions', () => {
     it('should handle 429 rate limit error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -197,7 +197,7 @@ describe('Layout service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Network failure'))
 
@@ -219,7 +219,7 @@ describe('Layout service functions', () => {
     it('should return VALIDATION_ERROR when layoutId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getLayout('')
 
@@ -231,7 +231,7 @@ describe('Layout service functions', () => {
     it('should fetch layout by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockLayout = {
         id: 'layout-123',
@@ -258,7 +258,7 @@ describe('Layout service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockLayout)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts/layout-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts/layout-123',
         expect.any(Object)
       )
     })
@@ -266,7 +266,7 @@ describe('Layout service functions', () => {
     it('should encode layoutId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -276,7 +276,7 @@ describe('Layout service functions', () => {
       await getLayout('layout/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts/layout%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts/layout%2F123',
         expect.any(Object)
       )
     })
@@ -284,7 +284,7 @@ describe('Layout service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -294,7 +294,7 @@ describe('Layout service functions', () => {
       await getLayout('layout-123', { include: ['effectivePermissions'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts/layout-123?include=effectivePermissions',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts/layout-123?include=effectivePermissions',
         expect.any(Object)
       )
     })
@@ -302,7 +302,7 @@ describe('Layout service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -339,7 +339,7 @@ describe('Layout service functions', () => {
     it('should return VALIDATION_ERROR when name is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createLayout({ name: '', settings: validParams.settings })
 
@@ -350,7 +350,7 @@ describe('Layout service functions', () => {
     it('should return VALIDATION_ERROR when settings is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createLayout({ name: 'Test', settings: undefined as unknown as typeof validParams.settings })
 
@@ -361,7 +361,7 @@ describe('Layout service functions', () => {
     it('should create layout successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const createdLayout = {
         id: 'layout-new',
@@ -382,7 +382,7 @@ describe('Layout service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(createdLayout)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts',
         expect.objectContaining({
           method: 'POST',
           headers: {
@@ -401,7 +401,7 @@ describe('Layout service functions', () => {
     it('should create layout with panes', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const paramsWithPanes = {
         ...validParams,
@@ -418,7 +418,7 @@ describe('Layout service functions', () => {
       await createLayout(paramsWithPanes)
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts',
         expect.objectContaining({
           body: JSON.stringify({
             name: paramsWithPanes.name,
@@ -432,7 +432,7 @@ describe('Layout service functions', () => {
     it('should handle 400 bad request error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -450,7 +450,7 @@ describe('Layout service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -477,7 +477,7 @@ describe('Layout service functions', () => {
     it('should return VALIDATION_ERROR when layoutId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await updateLayout('', { name: 'Updated' })
 
@@ -488,7 +488,7 @@ describe('Layout service functions', () => {
     it('should return VALIDATION_ERROR when no fields are provided', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await updateLayout('layout-123', {})
 
@@ -500,7 +500,7 @@ describe('Layout service functions', () => {
     it('should update layout name successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -512,7 +512,7 @@ describe('Layout service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toBeUndefined()
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts/layout-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts/layout-123',
         expect.objectContaining({
           method: 'PATCH',
           body: JSON.stringify({ name: 'Updated Name' })
@@ -523,7 +523,7 @@ describe('Layout service functions', () => {
     it('should update layout settings', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -533,7 +533,7 @@ describe('Layout service functions', () => {
       await updateLayout('layout-123', { settings: { paneColumns: 4 } })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts/layout-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts/layout-123',
         expect.objectContaining({
           method: 'PATCH',
           body: JSON.stringify({ settings: { paneColumns: 4 } })
@@ -544,7 +544,7 @@ describe('Layout service functions', () => {
     it('should update layout panes', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const newPanes = [
         { id: 1, name: 'New Pane', type: 'preview' as const, size: 1 as const, cameraId: 'cam-new' }
@@ -558,7 +558,7 @@ describe('Layout service functions', () => {
       await updateLayout('layout-123', { panes: newPanes })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts/layout-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts/layout-123',
         expect.objectContaining({
           method: 'PATCH',
           body: JSON.stringify({ panes: newPanes })
@@ -569,7 +569,7 @@ describe('Layout service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -596,7 +596,7 @@ describe('Layout service functions', () => {
     it('should return VALIDATION_ERROR when layoutId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await deleteLayout('')
 
@@ -607,7 +607,7 @@ describe('Layout service functions', () => {
     it('should delete layout successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -619,7 +619,7 @@ describe('Layout service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toBeUndefined()
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/layouts/layout-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/layouts/layout-123',
         expect.objectContaining({
           method: 'DELETE',
           headers: {
@@ -633,7 +633,7 @@ describe('Layout service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -651,7 +651,7 @@ describe('Layout service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -669,7 +669,7 @@ describe('Layout service functions', () => {
     it('should handle generic API error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -687,7 +687,7 @@ describe('Layout service functions', () => {
     it('should handle non-JSON error response', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,

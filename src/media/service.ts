@@ -13,6 +13,7 @@ import type {
   MediaSessionResult
 } from '../types'
 import { debug } from '../utils/debug'
+import { isAllowedEenHostname } from '../utils/hostname'
 
 /** Default timeout for media requests in milliseconds */
 const DEFAULT_TIMEOUT_MS = 30000
@@ -652,12 +653,7 @@ export async function initMediaSession(): Promise<Result<MediaSessionResult>> {
   // Session URLs should only come from trusted EEN domains
   try {
     const sessionUrlObj = new URL(sessionUrl)
-    const allowedDomains = ['.eagleeyenetworks.com', '.een.cloud']
-    // Allow both exact domain match (e.g., eagleeyenetworks.com) and subdomain match (e.g., api.eagleeyenetworks.com)
-    const isAllowedDomain = allowedDomains.some(domain =>
-      sessionUrlObj.hostname === domain.substring(1) || sessionUrlObj.hostname.endsWith(domain)
-    )
-    if (!isAllowedDomain) {
+    if (!isAllowedEenHostname(sessionUrlObj.hostname)) {
       return failure('VALIDATION_ERROR', `Session URL domain not allowed: ${sessionUrlObj.hostname}`)
     }
   } catch {
