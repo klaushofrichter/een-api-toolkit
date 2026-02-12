@@ -664,4 +664,101 @@ describe('Auth Store Session Persistence', () => {
       expect(tab2StoreRefreshed.token).toBeNull()
     })
   })
+
+  describe('hostname validation', () => {
+    beforeEach(() => {
+      setStorageStrategy('localStorage')
+    })
+
+    it('should reject malicious hostname in setBaseUrl (string)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('https://attacker.com')
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should reject malicious hostname in setBaseUrl (object)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'evil.com', port: 443 })
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should not save rejected hostname to storage', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('https://attacker.com')
+      expect(mockLocalStorage['een_hostname']).toBeUndefined()
+    })
+
+    it('should reject poisoned hostname from storage on initialize', () => {
+      const futureExpiration = Date.now() + 3600000
+      mockLocalStorage['een_hostname'] = 'evil.com'
+      mockLocalStorage['een_token'] = 'test-token'
+      mockLocalStorage['een_tokenExpiration'] = String(futureExpiration)
+
+      const authStore = useAuthStore()
+      authStore.initialize()
+
+      // Poisoned hostname should be rejected and cleared from storage
+      expect(authStore.hostname).toBeNull()
+      expect(mockLocalStorage['een_hostname']).toBeUndefined()
+      expect(mockLocalStorage['een_port']).toBeUndefined()
+    })
+
+    it('should accept valid eagleeyenetworks.com hostnames', () => {
+      const authStore = useAuthStore()
+
+      authStore.setBaseUrl('https://c001.eagleeyenetworks.com')
+      expect(authStore.hostname).toBe('c001.eagleeyenetworks.com')
+      expect(authStore.baseUrl).toBe('https://c001.eagleeyenetworks.com')
+
+      authStore.setBaseUrl('https://api.c002.eagleeyenetworks.com')
+      expect(authStore.hostname).toBe('api.c002.eagleeyenetworks.com')
+    })
+
+    it('should accept valid een.cloud hostnames', () => {
+      const authStore = useAuthStore()
+
+      authStore.setBaseUrl('https://api.een.cloud')
+      expect(authStore.hostname).toBe('api.een.cloud')
+      expect(authStore.baseUrl).toBe('https://api.een.cloud')
+    })
+
+    it('should accept exact domain match (eagleeyenetworks.com)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('https://eagleeyenetworks.com')
+      expect(authStore.hostname).toBe('eagleeyenetworks.com')
+    })
+
+    it('should accept exact domain match (een.cloud)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('https://een.cloud')
+      expect(authStore.hostname).toBe('een.cloud')
+    })
+
+    it('should reject domains that contain but do not end with allowed domains', () => {
+      const authStore = useAuthStore()
+
+      // e.g., eagleeyenetworks.com.evil.com should be rejected
+      authStore.setBaseUrl('https://eagleeyenetworks.com.evil.com')
+      expect(authStore.hostname).toBeNull()
+
+      authStore.setBaseUrl('https://een.cloud.evil.com')
+      expect(authStore.hostname).toBeNull()
+    })
+
+    it('should restore valid hostname from storage on initialize', () => {
+      const futureExpiration = Date.now() + 3600000
+      mockLocalStorage['een_hostname'] = 'c001.eagleeyenetworks.com'
+      mockLocalStorage['een_token'] = 'test-token'
+      mockLocalStorage['een_tokenExpiration'] = String(futureExpiration)
+
+      const authStore = useAuthStore()
+      authStore.initialize()
+
+      expect(authStore.hostname).toBe('c001.eagleeyenetworks.com')
+      expect(authStore.baseUrl).toBe('https://c001.eagleeyenetworks.com')
+      expect(authStore.isAuthenticated).toBe(true)
+    })
+  })
 })
