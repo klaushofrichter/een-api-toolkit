@@ -79,20 +79,25 @@ export const useAuthStore = defineStore('een-auth', () => {
     let newPort: number = 443
 
     if (typeof data === 'string') {
-      // Parse URL string
+      // Parse URL string - reject entirely if URL parsing fails
       try {
         const url = new URL(data.startsWith('http') ? data : `https://${data}`)
         newHostname = url.hostname
         newPort = url.port ? parseInt(url.port, 10) : 443
       } catch (err: unknown) {
-        // Invalid URL format, use as hostname directly
-        debug('Failed to parse URL, using as hostname:', err instanceof Error ? err.message : String(err))
-        newHostname = data
-        newPort = 443
+        console.warn(`[EEN API Toolkit] Rejected invalid URL: ${data}`)
+        debug('Failed to parse URL:', err instanceof Error ? err.message : String(err))
+        return
       }
     } else {
-      newHostname = data.hostname
+      newHostname = data.hostname?.toLowerCase().trim()
       newPort = data.port ?? 443
+    }
+
+    // Validate port is in valid range
+    if (typeof newPort !== 'number' || !Number.isInteger(newPort) || newPort < 1 || newPort > 65535) {
+      console.warn(`[EEN API Toolkit] Rejected invalid port: ${newPort}`)
+      return
     }
 
     // Validate hostname against allowed EEN domains to prevent token exfiltration
@@ -245,17 +250,34 @@ export const useAuthStore = defineStore('een-auth', () => {
       sessionId.value = storage.getItem('een_sessionId')
       const storedHostname = storage.getItem('een_hostname')
       if (storedHostname && !isAllowedEenHostname(storedHostname)) {
-        console.warn(`[EEN API Toolkit] Rejected stored hostname - not an allowed EEN domain: ${storedHostname}`)
-        // Clear the poisoned hostname from storage
-        storage.removeItem('een_hostname')
-        storage.removeItem('een_port')
+        console.warn(`[EEN API Toolkit] Rejected stored hostname - clearing all auth data: ${storedHostname}`)
+        // If hostname is poisoned, the entire session is compromised - clear everything
+        token.value = null
+        tokenExpiration.value = null
+        refreshTokenMarker.value = null
+        sessionId.value = null
         hostname.value = null
         port.value = 443
-      } else {
-        hostname.value = storedHostname
-        const portStr = storage.getItem('een_port')
-        port.value = portStr ? parseInt(portStr, 10) : 443
+        userProfile.value = null
+        clearStorage()
+        return
       }
+      hostname.value = storedHostname
+      const portStr = storage.getItem('een_port')
+      const storedPort = portStr ? parseInt(portStr, 10) : 443
+      if (!Number.isInteger(storedPort) || storedPort < 1 || storedPort > 65535) {
+        console.warn(`[EEN API Toolkit] Rejected stored port - clearing all auth data: ${portStr}`)
+        token.value = null
+        tokenExpiration.value = null
+        refreshTokenMarker.value = null
+        sessionId.value = null
+        hostname.value = null
+        port.value = 443
+        userProfile.value = null
+        clearStorage()
+        return
+      }
+      port.value = storedPort
       const profileStr = storage.getItem('een_userProfile')
       userProfile.value = profileStr ? JSON.parse(profileStr) : null
     } catch (err: unknown) {

@@ -760,5 +760,95 @@ describe('Auth Store Session Persistence', () => {
       expect(authStore.baseUrl).toBe('https://c001.eagleeyenetworks.com')
       expect(authStore.isAuthenticated).toBe(true)
     })
+
+    it('should reject malformed protocol URLs (protocol bypass attack)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('ht!tp://attacker.com')
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should accept uppercase hostnames via case-insensitive validation', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('https://C001.EAGLEEYENETWORKS.COM')
+      expect(authStore.hostname).toBe('c001.eagleeyenetworks.com')
+    })
+
+    it('should accept mixed-case hostnames via case-insensitive validation', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('https://C001.EagleEyeNetworks.Com')
+      expect(authStore.hostname).toBe('c001.eagleeyenetworks.com')
+    })
+
+    it('should handle uppercase hostname in object form', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'C001.EAGLEEYENETWORKS.COM', port: 443 })
+      expect(authStore.hostname).toBe('c001.eagleeyenetworks.com')
+    })
+
+    it('should reject invalid port 0', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'c001.eagleeyenetworks.com', port: 0 })
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should reject negative port', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'c001.eagleeyenetworks.com', port: -1 })
+      expect(authStore.hostname).toBeNull()
+    })
+
+    it('should reject out-of-range port', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'c001.eagleeyenetworks.com', port: 99999 })
+      expect(authStore.hostname).toBeNull()
+    })
+
+    it('should accept valid port', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'c001.eagleeyenetworks.com', port: 8443 })
+      expect(authStore.hostname).toBe('c001.eagleeyenetworks.com')
+      expect(authStore.port).toBe(8443)
+    })
+
+    it('should clear ALL auth data when poisoned hostname found in storage', () => {
+      const futureExpiration = Date.now() + 3600000
+      mockLocalStorage['een_hostname'] = 'evil.com'
+      mockLocalStorage['een_token'] = 'stolen-token'
+      mockLocalStorage['een_tokenExpiration'] = String(futureExpiration)
+      mockLocalStorage['een_sessionId'] = 'compromised-session'
+      mockLocalStorage['een_refreshTokenMarker'] = 'present'
+
+      const authStore = useAuthStore()
+      authStore.initialize()
+
+      // ALL auth data should be cleared, not just hostname
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.token).toBeNull()
+      expect(authStore.sessionId).toBeNull()
+      expect(authStore.isAuthenticated).toBe(false)
+      expect(mockLocalStorage['een_token']).toBeUndefined()
+      expect(mockLocalStorage['een_hostname']).toBeUndefined()
+      expect(mockLocalStorage['een_sessionId']).toBeUndefined()
+      expect(mockLocalStorage['een_refreshTokenMarker']).toBeUndefined()
+    })
+
+    it('should clear ALL auth data when invalid port found in storage', () => {
+      const futureExpiration = Date.now() + 3600000
+      mockLocalStorage['een_hostname'] = 'c001.eagleeyenetworks.com'
+      mockLocalStorage['een_port'] = '99999'
+      mockLocalStorage['een_token'] = 'test-token'
+      mockLocalStorage['een_tokenExpiration'] = String(futureExpiration)
+
+      const authStore = useAuthStore()
+      authStore.initialize()
+
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.token).toBeNull()
+      expect(authStore.isAuthenticated).toBe(false)
+      expect(mockLocalStorage['een_token']).toBeUndefined()
+      expect(mockLocalStorage['een_port']).toBeUndefined()
+    })
   })
 })

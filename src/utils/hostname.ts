@@ -21,10 +21,14 @@ const ALLOWED_DOMAINS = ['.eagleeyenetworks.com', '.een.cloud']
  * @category Utilities
  */
 export function isAllowedEenHostname(hostname: string): boolean {
-  if (!hostname) {
+  if (!hostname || typeof hostname !== 'string') {
+    return false
+  }
+  const normalized = hostname.toLowerCase().trim()
+  if (!normalized) {
     return false
   }
   return ALLOWED_DOMAINS.some(domain =>
-    hostname === domain.substring(1) || hostname.endsWith(domain)
+    normalized === domain.substring(1) || normalized.endsWith(domain)
   )
 }
