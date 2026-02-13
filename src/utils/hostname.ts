@@ -24,10 +24,17 @@ const ALLOWED_DOMAINS = ['.eagleeyenetworks.com', '.een.cloud']
  *
  * isAllowedEenHostname('c001.eagleeyenetworks.com') // true
  * isAllowedEenHostname('evil.example.com')           // false
+ * @returns `true` if the hostname is a trusted EEN domain
+ *
+ * @example
+ * ```typescript
+ * import { isAllowedEenHostname } from '../utils/hostname'
+ *
+ * isAllowedEenHostname('c001.eagleeyenetworks.com') // true
+ * isAllowedEenHostname('evil.example.com')           // false
  * ```
  *
  * @category Utilities
- */
 export function isAllowedEenHostname(hostname: string): boolean {
   if (!hostname || typeof hostname !== 'string') {
     return false
