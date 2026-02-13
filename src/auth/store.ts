@@ -90,7 +90,7 @@ export const useAuthStore = defineStore('een-auth', () => {
         return
       }
     } else {
-      newHostname = data.hostname?.toLowerCase().trim()
+      newHostname = data.hostname.toLowerCase().trim()
       newPort = data.port ?? 443
     }
 
@@ -189,14 +189,11 @@ export const useAuthStore = defineStore('een-auth', () => {
     refreshFailedMessage.value = null
   }
 
-  function logout() {
-    // Clear timer
+  function _clearAllAuthData() {
     if (refreshTimerId.value) {
       clearTimeout(refreshTimerId.value)
       refreshTimerId.value = null
     }
-
-    // Clear state
     token.value = null
     tokenExpiration.value = null
     refreshTokenMarker.value = null
@@ -206,9 +203,11 @@ export const useAuthStore = defineStore('een-auth', () => {
     userProfile.value = null
     refreshFailed.value = false
     refreshFailedMessage.value = null
-
-    // Clear storage
     clearStorage()
+  }
+
+  function logout() {
+    _clearAllAuthData()
     debug('Logged out')
   }
 
@@ -251,15 +250,7 @@ export const useAuthStore = defineStore('een-auth', () => {
       const storedHostname = storage.getItem('een_hostname')
       if (storedHostname && !isAllowedEenHostname(storedHostname)) {
         console.warn(`[EEN API Toolkit] Rejected stored hostname - clearing all auth data: ${storedHostname}`)
-        // If hostname is poisoned, the entire session is compromised - clear everything
-        token.value = null
-        tokenExpiration.value = null
-        refreshTokenMarker.value = null
-        sessionId.value = null
-        hostname.value = null
-        port.value = 443
-        userProfile.value = null
-        clearStorage()
+        _clearAllAuthData()
         return
       }
       hostname.value = storedHostname
@@ -267,14 +258,7 @@ export const useAuthStore = defineStore('een-auth', () => {
       const storedPort = portStr ? parseInt(portStr, 10) : 443
       if (!Number.isInteger(storedPort) || storedPort < 1 || storedPort > 65535) {
         console.warn(`[EEN API Toolkit] Rejected stored port - clearing all auth data: ${portStr}`)
-        token.value = null
-        tokenExpiration.value = null
-        refreshTokenMarker.value = null
-        sessionId.value = null
-        hostname.value = null
-        port.value = 443
-        userProfile.value = null
-        clearStorage()
+        _clearAllAuthData()
         return
       }
       port.value = storedPort

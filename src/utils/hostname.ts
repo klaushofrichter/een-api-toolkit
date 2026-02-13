@@ -18,6 +18,14 @@ const ALLOWED_DOMAINS = ['.eagleeyenetworks.com', '.een.cloud']
  * @param hostname - The hostname to validate (without protocol or port)
  * @returns `true` if the hostname is a trusted EEN domain
  *
+ * @example
+ * ```typescript
+ * import { isAllowedEenHostname } from 'een-api-toolkit'
+ *
+ * isAllowedEenHostname('c001.eagleeyenetworks.com') // true
+ * isAllowedEenHostname('evil.example.com')           // false
+ * ```
+ *
  * @category Utilities
  */
 export function isAllowedEenHostname(hostname: string): boolean {
