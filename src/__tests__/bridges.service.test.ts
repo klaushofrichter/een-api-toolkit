@@ -41,7 +41,7 @@ describe('Bridge service functions', () => {
     it('should fetch bridges successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -64,7 +64,7 @@ describe('Bridge service functions', () => {
       expect(result.data?.nextPageToken).toBe('next-token-456')
       expect(result.data?.totalSize).toBe(10)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/bridges',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/bridges',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -78,7 +78,7 @@ describe('Bridge service functions', () => {
     it('should include pagination parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -88,7 +88,7 @@ describe('Bridge service functions', () => {
       await getBridges({ pageSize: 100, pageToken: 'page-xyz' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/bridges?pageSize=100&pageToken=page-xyz',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/bridges?pageSize=100&pageToken=page-xyz',
         expect.any(Object)
       )
     })
@@ -96,7 +96,7 @@ describe('Bridge service functions', () => {
     it('should include include and sort parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -115,7 +115,7 @@ describe('Bridge service functions', () => {
     it('should include location filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -133,7 +133,7 @@ describe('Bridge service functions', () => {
     it('should include status filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -152,7 +152,7 @@ describe('Bridge service functions', () => {
     it('should include tag filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -171,7 +171,7 @@ describe('Bridge service functions', () => {
     it('should include name filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -190,7 +190,7 @@ describe('Bridge service functions', () => {
     it('should include ID filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -209,7 +209,7 @@ describe('Bridge service functions', () => {
     it('should include search parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -228,7 +228,7 @@ describe('Bridge service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -246,7 +246,7 @@ describe('Bridge service functions', () => {
     it('should handle 429 rate limit error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -264,7 +264,7 @@ describe('Bridge service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -297,7 +297,7 @@ describe('Bridge service functions', () => {
     it('should return VALIDATION_ERROR when bridgeId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getBridge('')
 
@@ -309,7 +309,7 @@ describe('Bridge service functions', () => {
     it('should fetch bridge by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockBridge = {
         id: 'bridge-123',
@@ -328,7 +328,7 @@ describe('Bridge service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockBridge)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/bridges/bridge-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/bridges/bridge-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -342,7 +342,7 @@ describe('Bridge service functions', () => {
     it('should encode bridgeId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -352,7 +352,7 @@ describe('Bridge service functions', () => {
       await getBridge('bridge/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/bridges/bridge%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/bridges/bridge%2F123',
         expect.any(Object)
       )
     })
@@ -360,7 +360,7 @@ describe('Bridge service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -370,7 +370,7 @@ describe('Bridge service functions', () => {
       await getBridge('bridge-123', { include: ['deviceInfo', 'networkInfo', 'status'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/bridges/bridge-123?include=deviceInfo%2CnetworkInfo%2Cstatus',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/bridges/bridge-123?include=deviceInfo%2CnetworkInfo%2Cstatus',
         expect.any(Object)
       )
     })
@@ -378,7 +378,7 @@ describe('Bridge service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -396,7 +396,7 @@ describe('Bridge service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -414,7 +414,7 @@ describe('Bridge service functions', () => {
     it('should handle generic API error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -433,7 +433,7 @@ describe('Bridge service functions', () => {
     it('should handle non-JSON error response', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -451,7 +451,7 @@ describe('Bridge service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('DNS resolution failed'))
 

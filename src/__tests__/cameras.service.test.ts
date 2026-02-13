@@ -41,7 +41,7 @@ describe('Camera service functions', () => {
     it('should fetch cameras successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         results: [
@@ -64,7 +64,7 @@ describe('Camera service functions', () => {
       expect(result.data?.nextPageToken).toBe('next-token-456')
       expect(result.data?.totalSize).toBe(50)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/cameras',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/cameras',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -78,7 +78,7 @@ describe('Camera service functions', () => {
     it('should include pagination parameters in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -88,7 +88,7 @@ describe('Camera service functions', () => {
       await getCameras({ pageSize: 100, pageToken: 'page-xyz' })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/cameras?pageSize=100&pageToken=page-xyz',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/cameras?pageSize=100&pageToken=page-xyz',
         expect.any(Object)
       )
     })
@@ -96,7 +96,7 @@ describe('Camera service functions', () => {
     it('should include include and sort parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -115,7 +115,7 @@ describe('Camera service functions', () => {
     it('should include location and bridge filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -134,7 +134,7 @@ describe('Camera service functions', () => {
     it('should include status filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -153,7 +153,7 @@ describe('Camera service functions', () => {
     it('should include tag filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -172,7 +172,7 @@ describe('Camera service functions', () => {
     it('should include name filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -191,7 +191,7 @@ describe('Camera service functions', () => {
     it('should include share detail filters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -211,7 +211,7 @@ describe('Camera service functions', () => {
     it('should include search parameters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -230,7 +230,7 @@ describe('Camera service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -248,7 +248,7 @@ describe('Camera service functions', () => {
     it('should handle 429 rate limit error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -266,7 +266,7 @@ describe('Camera service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 
@@ -299,7 +299,7 @@ describe('Camera service functions', () => {
     it('should return VALIDATION_ERROR when cameraId is empty', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await getCamera('')
 
@@ -311,7 +311,7 @@ describe('Camera service functions', () => {
     it('should fetch camera by ID successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockCamera = {
         id: 'cam-123',
@@ -330,7 +330,7 @@ describe('Camera service functions', () => {
       expect(result.error).toBeNull()
       expect(result.data).toEqual(mockCamera)
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/cameras/cam-123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/cameras/cam-123',
         expect.objectContaining({
           method: 'GET',
           headers: {
@@ -344,7 +344,7 @@ describe('Camera service functions', () => {
     it('should encode cameraId with special characters', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -354,7 +354,7 @@ describe('Camera service functions', () => {
       await getCamera('cam/123')
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/cameras/cam%2F123',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/cameras/cam%2F123',
         expect.any(Object)
       )
     })
@@ -362,7 +362,7 @@ describe('Camera service functions', () => {
     it('should include include parameter in request', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -372,7 +372,7 @@ describe('Camera service functions', () => {
       await getCamera('cam-123', { include: ['deviceInfo', 'streamUrls', 'shareDetails'] })
 
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/cameras/cam-123?include=deviceInfo%2CstreamUrls%2CshareDetails',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/cameras/cam-123?include=deviceInfo%2CstreamUrls%2CshareDetails',
         expect.any(Object)
       )
     })
@@ -380,7 +380,7 @@ describe('Camera service functions', () => {
     it('should handle 404 not found error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -398,7 +398,7 @@ describe('Camera service functions', () => {
     it('should handle 403 forbidden error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -416,7 +416,7 @@ describe('Camera service functions', () => {
     it('should handle generic API error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -435,7 +435,7 @@ describe('Camera service functions', () => {
     it('should handle non-JSON error response', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -453,7 +453,7 @@ describe('Camera service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('DNS resolution failed'))
 

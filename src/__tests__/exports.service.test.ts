@@ -48,7 +48,7 @@ describe('Export service functions', () => {
     it('should return VALIDATION_ERROR when cameraId is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createExportJob({
         ...validParams,
@@ -63,7 +63,7 @@ describe('Export service functions', () => {
     it('should return VALIDATION_ERROR when type is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createExportJob({
         ...validParams,
@@ -77,7 +77,7 @@ describe('Export service functions', () => {
     it('should return VALIDATION_ERROR when startTimestamp is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createExportJob({
         ...validParams,
@@ -91,7 +91,7 @@ describe('Export service functions', () => {
     it('should return VALIDATION_ERROR when endTimestamp is missing', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createExportJob({
         ...validParams,
@@ -105,7 +105,7 @@ describe('Export service functions', () => {
     it('should return VALIDATION_ERROR when timeLapse export missing playbackMultiplier', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createExportJob({
         ...validParams,
@@ -119,7 +119,7 @@ describe('Export service functions', () => {
     it('should return VALIDATION_ERROR when bundle export missing playbackMultiplier', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createExportJob({
         ...validParams,
@@ -133,7 +133,7 @@ describe('Export service functions', () => {
     it('should return VALIDATION_ERROR when playbackMultiplier is out of range', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const result = await createExportJob({
         ...validParams,
@@ -148,7 +148,7 @@ describe('Export service functions', () => {
     it('should create export job successfully', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       const mockResponse = {
         id: 'job-123',
@@ -171,7 +171,7 @@ describe('Export service functions', () => {
       expect(result.data?.id).toBe('job-123')
       expect(result.data?.state).toBe('pending')
       expect(mockFetch).toHaveBeenCalledWith(
-        'https://api.example.com/api/v3.0/exports',
+        'https://api.c001.eagleeyenetworks.com/api/v3.0/exports',
         expect.objectContaining({
           method: 'POST',
           headers: {
@@ -187,7 +187,7 @@ describe('Export service functions', () => {
     it('should include optional parameters in request body', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: true,
@@ -220,7 +220,7 @@ describe('Export service functions', () => {
     it('should handle 401 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -238,7 +238,7 @@ describe('Export service functions', () => {
     it('should handle 403 error', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockResolvedValueOnce({
         ok: false,
@@ -256,7 +256,7 @@ describe('Export service functions', () => {
     it('should handle network errors', async () => {
       const authStore = useAuthStore()
       authStore.setToken('test-token', 3600)
-      authStore.setBaseUrl('https://api.example.com')
+      authStore.setBaseUrl('https://api.c001.eagleeyenetworks.com')
 
       mockFetch.mockRejectedValueOnce(new Error('Connection refused'))
 

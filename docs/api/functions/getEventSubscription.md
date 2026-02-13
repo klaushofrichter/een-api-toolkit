@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.70**](../README.md)
+[**EEN API Toolkit v0.3.78**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getEventSubscription**(`subscriptionId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EventSubscription`](../interfaces/EventSubscription.md)\>\>
 
-Defined in: [eventSubscriptions/service.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L118)
+Defined in: [eventSubscriptions/service.ts:119](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L119)
 
 Get a specific event subscription by ID.
 
