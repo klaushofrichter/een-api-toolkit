@@ -381,22 +381,31 @@ async function fetchNotifications() {
 4. **Cleanup** - Delete subscription when done (or it auto-expires after 15 min of inactivity)
 
 ### createEventSubscription()
+
+**CRITICAL: The subscription API uses nested `deliveryConfig` and `filters` structures, NOT flat params.**
+
 ```typescript
 import {
   createEventSubscription,
   connectToEventSubscription,
   deleteEventSubscription,
-  type CreateEventSubscriptionParams
+  type SSEEvent,
+  type SSEConnection,
+  type SSEConnectionStatus
 } from 'een-api-toolkit'
 
-const subscriptionId = ref<string | null>(null)
-const sseConnection = ref<EventSource | null>(null)
+let sseConnection: SSEConnection | null = null
+let subscriptionId: string | null = null
 
-async function startRealTimeEvents(cameraId: string) {
+async function startRealTimeEvents(cameraId: string, eventTypes: string[]) {
   // Step 1: Create subscription
+  // IMPORTANT: types must be objects with { id: string }, not plain strings
   const result = await createEventSubscription({
-    actors: [`camera:${cameraId}`],
-    types: ['een.motionDetectionEvent.v1', 'een.objectDetectionEvent.v1']
+    deliveryConfig: { type: 'serverSentEvents.v1' },
+    filters: [{
+      actors: [`camera:${cameraId}`],
+      types: eventTypes.map(t => ({ id: t }))
+    }]
   })
 
   if (result.error) {
@@ -404,36 +413,56 @@ async function startRealTimeEvents(cameraId: string) {
     return
   }
 
-  subscriptionId.value = result.data.id
+  subscriptionId = result.data.id
 
-  // Step 2: Connect to SSE stream
-  const connection = connectToEventSubscription(result.data.sseUrl, {
-    onEvent: (event) => {
-      console.log('Real-time event:', event)
-      // Add to events list, show notification, etc.
+  // Step 2: Extract SSE URL from deliveryConfig (NOT from result.data.sseUrl)
+  const sseUrl = result.data.deliveryConfig.type === 'serverSentEvents.v1'
+    ? result.data.deliveryConfig.sseUrl
+    : undefined
+
+  if (!sseUrl) return
+
+  // Step 3: Connect to SSE stream
+  // IMPORTANT: Returns a Result type { data, error }, NOT the connection directly
+  const connectionResult = connectToEventSubscription(sseUrl, {
+    onEvent: (event: SSEEvent) => {
+      console.log('Real-time event:', event.type, event.startTimestamp)
     },
-    onError: (error) => {
-      console.error('SSE error:', error)
+    onError: (err: Error) => {
+      console.error('SSE error:', err.message)
     },
-    onOpen: () => {
-      console.log('SSE connection opened')
+    onStatusChange: (status: SSEConnectionStatus) => {
+      // status: 'connected' | 'connecting' | 'disconnected' | 'error'
+      console.log('SSE status:', status)
     }
   })
 
-  sseConnection.value = connection
+  if (connectionResult.error) {
+    console.error('Failed to connect:', connectionResult.error.message)
+    return
+  }
+
+  sseConnection = connectionResult.data
 }
 
-// Cleanup when component unmounts
-onUnmounted(async () => {
-  // Close SSE connection
-  if (sseConnection.value) {
-    sseConnection.value.close()
+// Cleanup when component unmounts or camera changes
+async function cleanupSSE() {
+  if (sseConnection) {
+    sseConnection.close()
+    sseConnection = null
   }
+  if (subscriptionId) {
+    try {
+      await deleteEventSubscription(subscriptionId)
+    } catch {
+      // Ignore cleanup errors
+    }
+    subscriptionId = null
+  }
+}
 
-  // Delete subscription
-  if (subscriptionId.value) {
-    await deleteEventSubscription(subscriptionId.value)
-  }
+onUnmounted(() => {
+  cleanupSSE()
 })
 ```
 
@@ -568,9 +597,21 @@ async function createMetricsChart(canvas: HTMLCanvasElement, cameraId: string) {
 | SUBSCRIPTION_LIMIT | Too many subscriptions | Delete old subscriptions |
 | SSE_CONNECTION_FAILED | Can't connect to stream | Retry with backoff |
 
+## Common SSE Mistakes
+
+| Mistake | Correct Approach |
+|---------|-----------------|
+| `createEventSubscription({ actors, types })` flat params | Use `{ deliveryConfig: { type: 'serverSentEvents.v1' }, filters: [{ actors, types }] }` |
+| `types: ['een.motionDetectionEvent.v1']` as strings | Use `types: [{ id: 'een.motionDetectionEvent.v1' }]` as objects |
+| `result.data.sseUrl` for the SSE URL | Use `result.data.deliveryConfig.sseUrl` |
+| Treating `connectToEventSubscription()` return as the connection | Returns `{ data: SSEConnection, error }` Result type |
+| Using `onOpen` callback | Use `onStatusChange` with `SSEConnectionStatus` type |
+| Forgetting to clean up when subscribed resource changes | Always clean up existing subscription before starting a new one |
+
 ## Constraints
 - Always use actor format: `camera:{cameraId}` or `account:{accountId}`
-- Always clean up SSE subscriptions on component unmount
+- Always clean up SSE subscriptions on component unmount and when the subscribed resource changes
 - Use formatTimestamp() for all timestamp parameters
 - Include 'data.overlays' in include[] to get bounding box SVGs
 - Handle SSE reconnection for long-running streams
+- Use `listEventFieldValues()` to discover available event types before subscribing
