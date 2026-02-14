@@ -385,6 +385,7 @@ async function fetchNotifications() {
 **CRITICAL: The subscription API uses nested `deliveryConfig` and `filters` structures, NOT flat params.**
 
 ```typescript
+import { ref, onUnmounted } from 'vue'
 import {
   createEventSubscription,
   connectToEventSubscription,
@@ -394,8 +395,8 @@ import {
   type SSEConnectionStatus
 } from 'een-api-toolkit'
 
-let sseConnection: SSEConnection | null = null
-let subscriptionId: string | null = null
+const sseConnection = ref<SSEConnection | null>(null)
+const subscriptionId = ref<string | null>(null)
 
 async function startRealTimeEvents(cameraId: string, eventTypes: string[]) {
   // Step 1: Create subscription
@@ -413,7 +414,7 @@ async function startRealTimeEvents(cameraId: string, eventTypes: string[]) {
     return
   }
 
-  subscriptionId = result.data.id
+  subscriptionId.value = result.data.id
 
   // Step 2: Extract SSE URL from deliveryConfig (NOT from result.data.sseUrl)
   const sseUrl = result.data.deliveryConfig.type === 'serverSentEvents.v1'
@@ -442,22 +443,22 @@ async function startRealTimeEvents(cameraId: string, eventTypes: string[]) {
     return
   }
 
-  sseConnection = connectionResult.data
+  sseConnection.value = connectionResult.data
 }
 
 // Cleanup when component unmounts or camera changes
 async function cleanupSSE() {
-  if (sseConnection) {
-    sseConnection.close()
-    sseConnection = null
+  if (sseConnection.value) {
+    sseConnection.value.close()
+    sseConnection.value = null
   }
-  if (subscriptionId) {
+  if (subscriptionId.value) {
     try {
-      await deleteEventSubscription(subscriptionId)
+      await deleteEventSubscription(subscriptionId.value)
     } catch {
       // Ignore cleanup errors
     }
-    subscriptionId = null
+    subscriptionId.value = null
   }
 }
 
