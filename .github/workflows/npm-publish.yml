@@ -16,9 +16,11 @@ on:
 
 jobs:
   publish:
-    # Run if: test workflow succeeded, OR manually triggered
+    # Run if: test workflow succeeded on production branch, OR manually triggered
     if: >
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success') ||
+      (github.event_name == 'workflow_run' &&
+       github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.head_branch == 'production') ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     permissions:
