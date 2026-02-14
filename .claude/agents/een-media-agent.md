@@ -67,13 +67,17 @@ assistant: "I'll use the een-media-agent to diagnose the HLS configuration and a
 - Check authentication before media operations
 - Pass config to LivePlayer's `start()` method, NOT the constructor
 
-## Choosing the Right Preview Method
+## Choosing the Right Video Method
+
+**IMPORTANT DECISION RULE:** When the user asks for "HD video", "main video", "full quality",
+or "live video feed", you MUST use the **Live Video SDK** (`@een/live-video-web-sdk`).
+Only use `multipartUrl` when explicitly asked for "preview", "thumbnail", or "low bandwidth" options.
 
 | Use Case | Method | Why |
 |----------|--------|-----|
 | Grid of 20+ cameras | `getLiveImage()` | Lower bandwidth, manual refresh |
 | Auto-updating preview | `multipartUrl` + `initMediaSession()` | Automatic updates, higher bandwidth |
-| Full-quality live video | Live Video SDK | Full resolution, lowest latency |
+| **Full-quality live video** | **Live Video SDK** | **Full resolution, lowest latency** |
 | Recorded video playback | HLS via `listMedia()` | Seek capability, standard player |
 
 **CRITICAL: Main feeds do NOT support multipartUrl**
@@ -83,7 +87,8 @@ The EEN API only returns `multipartUrl` for **preview feeds** (`type: 'preview'`
 - **Preview feeds** → Use `multipartUrl` (MJPEG in `<img>` element)
 - **Main feeds** → Use **Live Video SDK** (full HD in `<video>` element)
 
-If you need HD quality video, you MUST use the Live Video SDK. Do not attempt to use `multipartUrl` with main feeds - it won't work.
+If you need HD quality video, you MUST use the Live Video SDK (`npm install @een/live-video-web-sdk`).
+Do not attempt to use `multipartUrl` with main feeds - it won't work.
 
 ## Key Functions
 
@@ -312,6 +317,52 @@ The video element MUST be rendered in the DOM before calling `player.start()`.
 </style>
 ```
 
+## CRITICAL: Camera Switching with LivePlayer
+
+The LivePlayer SDK does **NOT cleanly release** the `<video>` element when `stop()` is called.
+Reusing the same `<video>` element for a new LivePlayer instance will result in the video feed
+**not updating** when the user switches cameras.
+
+**Solution:** Use a Vue `:key` to force a fresh `<video>` element on each camera switch:
+
+```vue
+<script setup lang="ts">
+const videoRef = ref<HTMLVideoElement | null>(null)
+const videoKey = ref(0)
+let livePlayer: LivePlayer | null = null
+
+async function startStream(cameraId: string) {
+  // Stop previous player
+  if (livePlayer) {
+    livePlayer.stop()
+    livePlayer = null
+  }
+
+  // CRITICAL: Increment key to force Vue to create a new <video> element
+  videoKey.value++
+  await nextTick()  // Wait for new element to be in DOM
+
+  livePlayer = new LivePlayer()
+  await livePlayer.start({
+    videoElement: videoRef.value!,
+    cameraId,
+    baseUrl: authStore.baseUrl ?? '',
+    jwt: authStore.token ?? ''
+  })
+}
+</script>
+
+<template>
+  <!-- :key forces a fresh DOM element when videoKey changes -->
+  <video :key="videoKey" ref="videoRef" autoplay muted playsinline />
+</template>
+```
+
+**Why this is needed:** After `livePlayer.stop()`, the old `<video>` element retains stale
+MediaSource/WebSocket state. Creating a new LivePlayer on the same element fails silently —
+the video appears frozen on the previous camera's last frame. The `:key` trick makes Vue
+destroy and recreate the DOM element, giving the new LivePlayer a clean slate.
+
 ## Error Handling
 
 | Error Code | Meaning | Action |
@@ -332,3 +383,5 @@ The video element MUST be rendered in the DOM before calling `player.start()`.
 | "Video Stream is done" immediately | Config passed to LivePlayer constructor | MUST use `new LivePlayer()` with no args, then `player.start(config)` |
 | "Video element not found" | Video element not in DOM | Ensure video element is rendered (not hidden by v-if) before SDK init |
 | Black video, no errors (LivePlayer) | Video element hidden by v-if | Use CSS visibility/opacity instead of v-if for conditional video display |
+| Video doesn't change on camera switch | LivePlayer doesn't release video element cleanly | Use Vue `:key` on `<video>` element, increment on each switch (see Camera Switching section) |
+| Used multipartUrl for "HD video" request | multipartUrl only supports preview feeds | Use Live Video SDK (`@een/live-video-web-sdk`) for HD/main feed video |

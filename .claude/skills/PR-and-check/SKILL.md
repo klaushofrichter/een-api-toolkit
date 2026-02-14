@@ -45,6 +45,9 @@ description: Use this skill when you are requested to create a PR for a feature 
   - invoke the `/security-review` skill to analyze code changes for security vulnerabilities
   - if any HIGH severity vulnerabilities are found with confidence >= 8, report findings and stop
   - include security review summary in the PR body
+- Scan for confidential data leakage in documentation:
+  - use the `docs-accuracy-reviewer` agent to scan all changed `.md` files for secrets, credentials, API keys, internal hostnames, email addresses, account IDs, or other confidential information that should not be in a public npm package
+  - if any confidential data is found, report findings and stop
 
 ## 4. Create PR
 - Get version number for the PR body:
