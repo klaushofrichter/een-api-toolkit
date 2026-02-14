@@ -36,6 +36,12 @@ export function isAllowedEenHostname(hostname: string): boolean {
   if (!normalized) {
     return false
   }
+  // Reject hostnames containing URL-structural characters to prevent
+  // bypass attacks like "evil.com/.eagleeyenetworks.com"
+  const VALID_HOSTNAME_RE = /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*$/
+  if (!VALID_HOSTNAME_RE.test(normalized)) {
+    return false
+  }
   return ALLOWED_DOMAINS.some(domain =>
     normalized === domain.substring(1) || normalized.endsWith(domain)
   )

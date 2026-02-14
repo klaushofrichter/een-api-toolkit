@@ -834,6 +834,41 @@ describe('Auth Store Session Persistence', () => {
       expect(mockLocalStorage['een_refreshTokenMarker']).toBeUndefined()
     })
 
+    it('should reject hostname with path traversal (object form)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'evil.com/.eagleeyenetworks.com', port: 443 })
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should reject hostname with fragment (object form)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'evil.com#.eagleeyenetworks.com', port: 443 })
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should reject hostname with query string (object form)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'evil.com?.eagleeyenetworks.com', port: 443 })
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should reject hostname with @ (object form)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl({ hostname: 'evil.com@.eagleeyenetworks.com', port: 443 })
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
+    it('should reject hostname with path traversal (string form)', () => {
+      const authStore = useAuthStore()
+      authStore.setBaseUrl('https://evil.com/.eagleeyenetworks.com')
+      expect(authStore.hostname).toBeNull()
+      expect(authStore.baseUrl).toBeNull()
+    })
+
     it('should clear ALL auth data when invalid port found in storage', () => {
       const futureExpiration = Date.now() + 3600000
       mockLocalStorage['een_hostname'] = 'c001.eagleeyenetworks.com'

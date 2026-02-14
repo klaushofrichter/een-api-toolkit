@@ -67,17 +67,21 @@ jobs:
           echo "examples=$EXAMPLES_JSON" >> $GITHUB_OUTPUT
 
       - name: Install example dependencies
+        env:
+          EXAMPLES: ${{ steps.discover.outputs.examples }}
         run: |
-          for example in $(echo '${{ steps.discover.outputs.examples }}' | jq -r '.[]'); do
+          for example in $(echo "$EXAMPLES" | jq -r '.[]'); do
             echo "Installing dependencies for $example..."
             (cd "$example" && npm ci)
           done
 
       - name: Install Playwright browsers
+        env:
+          EXAMPLES: ${{ steps.discover.outputs.examples }}
         run: |
           # Install Playwright browsers from first example
           # All examples use the same pinned version (1.58.0)
-          FIRST_EXAMPLE=$(echo '${{ steps.discover.outputs.examples }}' | jq -r '.[0]')
+          FIRST_EXAMPLE=$(echo "$EXAMPLES" | jq -r '.[0]')
           echo "Installing Playwright browsers from $FIRST_EXAMPLE..."
           (cd "$FIRST_EXAMPLE" && npm exec playwright install -- --with-deps chromium)
 
@@ -144,9 +148,15 @@ jobs:
           fi
 
       - name: Run example e2e tests
+        env:
+          EXAMPLES: ${{ steps.discover.outputs.examples }}
+          VITE_PROXY_URL: http://127.0.0.1:8787
+          VITE_EEN_CLIENT_ID: ${{ secrets.VITE_EEN_CLIENT_ID }}
+          TEST_USER: ${{ secrets.TEST_USER }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
         run: |
           FAILED_EXAMPLES=""
-          for example in $(echo '${{ steps.discover.outputs.examples }}' | jq -r '.[]'); do
+          for example in $(echo "$EXAMPLES" | jq -r '.[]'); do
             echo ""
             echo "=========================================="
             echo "Running E2E tests for $example"
@@ -168,11 +178,6 @@ jobs:
           fi
           echo ""
           echo "All example E2E tests passed!"
-        env:
-          VITE_PROXY_URL: http://127.0.0.1:8787
-          VITE_EEN_CLIENT_ID: ${{ secrets.VITE_EEN_CLIENT_ID }}
-          TEST_USER: ${{ secrets.TEST_USER }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
 
       - name: Upload Playwright reports on failure
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
