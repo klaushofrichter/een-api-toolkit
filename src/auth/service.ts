@@ -210,10 +210,15 @@ export async function handleAuthCallback(code: string, state: string): Promise<R
   const authStore = useAuthStore()
   const data = result.data
 
+  // Validate hostname BEFORE persisting token to prevent storing credentials
+  // when the base URL is rejected (e.g., attacker-controlled domain)
+  if (!authStore.setBaseUrl(data.httpsBaseUrl)) {
+    return failure('AUTH_FAILED', 'OAuth response contained an invalid or disallowed hostname')
+  }
+
   authStore.setToken(data.accessToken, data.expiresIn)
   authStore.setRefreshTokenMarker('present')
   authStore.setSessionId(data.sessionId)
-  authStore.setBaseUrl(data.httpsBaseUrl)
 
   debug('Auth callback complete, user:', data.userEmail)
 

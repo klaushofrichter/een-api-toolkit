@@ -208,8 +208,13 @@ jobs:
         run: npm exec playwright install -- --with-deps chromium
         working-directory: examples/${{ matrix.example }}
 
-      - name: Clone OAuth proxy
-        run: git clone --depth 1 https://github.com/klaushofrichter/een-oauth-proxy.git ../een-oauth-proxy
+      - name: Clone OAuth proxy (pinned to known-good commit)
+        env:
+          # 4e8f45f: "Validate hostname against EEN domain allowlist" (2026-02-13)
+          EEN_OAUTH_PROXY_SHA: '4e8f45f0ae15395f94c48e7b65c284f3c5edabd9'
+        run: |
+          git clone https://github.com/klaushofrichter/een-oauth-proxy.git ../een-oauth-proxy
+          cd ../een-oauth-proxy && git checkout "$EEN_OAUTH_PROXY_SHA"
 
       - name: Install proxy dependencies
         run: npm ci

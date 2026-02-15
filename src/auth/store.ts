@@ -74,7 +74,7 @@ export const useAuthStore = defineStore('een-auth', () => {
     saveToStorage()
   }
 
-  function setBaseUrl(data: string | { hostname: string; port?: number }) {
+  function setBaseUrl(data: string | { hostname: string; port?: number }): boolean {
     let newHostname: string
     let newPort: number = 443
 
@@ -87,7 +87,7 @@ export const useAuthStore = defineStore('een-auth', () => {
       } catch (err: unknown) {
         console.warn(`[EEN API Toolkit] Rejected invalid URL: ${data}`)
         debug('Failed to parse URL:', err instanceof Error ? err.message : String(err))
-        return
+        return false
       }
     } else {
       newHostname = data.hostname.toLowerCase().trim()
@@ -97,19 +97,20 @@ export const useAuthStore = defineStore('een-auth', () => {
     // Validate port is in valid range
     if (typeof newPort !== 'number' || !Number.isInteger(newPort) || newPort < 1 || newPort > 65535) {
       console.warn(`[EEN API Toolkit] Rejected invalid port: ${newPort}`)
-      return
+      return false
     }
 
     // Validate hostname against allowed EEN domains to prevent token exfiltration
     if (!isAllowedEenHostname(newHostname)) {
       console.warn(`[EEN API Toolkit] Rejected hostname - not an allowed EEN domain: ${newHostname}`)
-      return
+      return false
     }
 
     hostname.value = newHostname
     port.value = newPort
     saveToStorage()
     debug('Base URL set:', baseUrl.value)
+    return true
   }
 
   function setUserProfile(profile: UserProfile) {
