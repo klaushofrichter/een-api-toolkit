@@ -16,10 +16,11 @@ on:
 
 jobs:
   publish:
-    # Run if: test workflow succeeded, OR manually triggered
-    # Note: test-release.yml only runs on PRs merged to production (or workflow_dispatch),
-    # so a successful workflow_run already implies a production-targeted merge.
-    # head_branch is the PR *source* branch (e.g. 'develop'), not the target.
+    # Run if: test workflow succeeded, OR manually triggered.
+    # test-release.yml restricts workflow_dispatch to production branch only,
+    # so a successful workflow_run implies either a PR merge to production or
+    # a manual dispatch on production. head_branch is the branch the triggering
+    # workflow ran on (PR source branch or dispatch branch).
     if: >
       (github.event_name == 'workflow_run' &&
        github.event.workflow_run.conclusion == 'success') ||
