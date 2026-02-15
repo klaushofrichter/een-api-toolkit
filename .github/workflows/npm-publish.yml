@@ -16,15 +16,15 @@ on:
 
 jobs:
   publish:
-    # Run if: test workflow succeeded, OR manually triggered.
-    # test-release.yml restricts workflow_dispatch to production branch only,
+    # Run if: test workflow succeeded, OR manually triggered on production only.
+    # test-release.yml also restricts workflow_dispatch to production branch,
     # so a successful workflow_run implies either a PR merge to production or
-    # a manual dispatch on production. head_branch is the branch the triggering
-    # workflow ran on (PR source branch or dispatch branch).
+    # a manual dispatch on production. The production check on workflow_dispatch
+    # here is defense-in-depth to prevent direct manual publish from other branches.
     if: >
       (github.event_name == 'workflow_run' &&
        github.event.workflow_run.conclusion == 'success') ||
-      github.event_name == 'workflow_dispatch'
+      (github.event_name == 'workflow_dispatch' && github.ref_name == 'production')
     runs-on: ubuntu-latest
     permissions:
       contents: write  # Required for creating GitHub releases
