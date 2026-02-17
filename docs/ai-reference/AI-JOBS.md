@@ -1,6 +1,6 @@
 # Jobs, Exports, Files & Downloads - EEN API Toolkit
 
-> **Version:** 0.3.82
+> **Version:** 0.3.85
 >
 > Complete reference for async jobs, video exports, and file management.
 > Load this document when implementing export workflows or file downloads.
