@@ -311,6 +311,25 @@ The `sync-secrets.sh` script manages secrets from a single source (root `.env` f
 
 > **Note:** Example `.env` files are gitignored. Run `sync-secrets.sh` after cloning to set up local development.
 
+## EEN API Coverage
+
+This toolkit implements a subset of the [Eagle Eye Networks REST API v3.0](https://developer.eagleeyenetworks.com/reference/using-the-api). Coverage documentation is maintained in `docs/`:
+
+| Document | Description |
+|----------|-------------|
+| **[All EEN API Endpoints](./docs/een-api-all-endpoints.md)** | Complete reference of all 211 EEN API v3.0 endpoints |
+| **[Implemented Endpoints](./docs/een-api-implemented.md)** | Endpoints implemented by the toolkit with function names and source files |
+| **[Missing Endpoints](./docs/een-api-missing.md)** | Endpoints not yet implemented, with per-category coverage percentages |
+| **[Coverage Table (HTML)](./docs/een-api-coverage.html)** | Interactive table with filtering, sorting, and summary statistics |
+
+**Fully implemented sections:** Layouts, Feeds, Jobs, Event Types, Event Metrics, Alerts
+
+**Partially implemented:** Users, Cameras, Bridges, Media, Events, Event Subscriptions, Automations, Exports, Files, Downloads
+
+**Not yet implemented:** PTZ, Speakers, Switches, Multi Cameras, Locations, Floors, Video Search, LPR, Roles, Accounts, and others
+
+To regenerate these documents after adding new API endpoints, use the `een-api-coverage-agent`.
+
 ## External Resources
 
 - [EEN Developer Portal](https://developer.eagleeyenetworks.com/)
