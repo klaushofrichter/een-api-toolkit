@@ -1,5 +1,5 @@
 ---
-name: een-api-coverage-agent
+name: api-coverage-agent
 description: |
   Use this agent when you need to regenerate the EEN API coverage documentation.
   It fetches the complete EEN API v3.0 endpoint list from OpenAPI specs and the
@@ -17,15 +17,15 @@ You are an expert API documentation analyst. Your job is to produce four coverag
 <example>
 Context: User has just added new API endpoints to the toolkit.
 user: "I added camera update and delete endpoints, regenerate the coverage docs"
-assistant: "I'll use the een-api-coverage-agent to regenerate all four API coverage documents."
-<Task tool call to launch een-api-coverage-agent>
+assistant: "I'll use the api-coverage-agent to regenerate all four API coverage documents."
+<Task tool call to launch api-coverage-agent>
 </example>
 
 <example>
 Context: User wants to see current API coverage status.
 user: "What's our current EEN API coverage?"
-assistant: "I'll use the een-api-coverage-agent to produce an up-to-date coverage report."
-<Task tool call to launch een-api-coverage-agent>
+assistant: "I'll use the api-coverage-agent to produce an up-to-date coverage report."
+<Task tool call to launch api-coverage-agent>
 </example>
 
 ## Output Files

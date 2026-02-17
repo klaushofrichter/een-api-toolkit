@@ -182,7 +182,7 @@ The toolkit includes specialized [Claude Code](https://docs.anthropic.com/en/doc
 
 > **Note:** These agents use Claude Code's specific format. To use with other AI assistants (Gemini CLI, Copilot, etc.), the agent specs would need conversion.
 
-**Available agents:**
+**Available agents (installed via `npx een-setup-agents`):**
 - `een-setup-agent` - Project scaffolding, Pinia setup, Vite configuration
 - `een-auth-agent` - OAuth flows, route guards, token management
 - `een-users-agent` - User listing and profile APIs
@@ -192,7 +192,8 @@ The toolkit includes specialized [Claude Code](https://docs.anthropic.com/en/doc
 - `een-grouping-agent` - Layouts CRUD operations, camera pane management
 - `een-automations-agent` - Alert rules, action rules, event conditions
 - `een-jobs-agent` - Jobs, exports, files, downloads
-- `een-api-coverage-agent` - Regenerate EEN API coverage documentation
+
+The `setup-agents` script (`scripts/setup-agents.ts`) installs only agents matching the `een-*-agent.md` pattern. Other agents in `.claude/agents/` (such as `api-coverage-agent`, `docs-accuracy-reviewer`, `test-runner`) are for this repository only and are not distributed to consuming projects.
 
 **Installation:**
 ```bash
@@ -331,7 +332,7 @@ This toolkit implements a subset of the [Eagle Eye Networks REST API v3.0](https
 
 **Not yet implemented:** PTZ, Speakers, Switches, Multi Cameras, Locations, Floors, Video Search, LPR, Roles, Accounts, and others
 
-To regenerate these documents after adding new API endpoints, use the `een-api-coverage-agent`.
+To regenerate these documents after adding new API endpoints, use the `api-coverage-agent`.
 
 ## External Resources
 
