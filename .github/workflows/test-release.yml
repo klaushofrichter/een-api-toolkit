@@ -10,8 +10,12 @@ on:
 
 jobs:
   test:
-    # Run if: PR was merged, OR manually triggered
-    if: github.event.pull_request.merged == true || github.event_name == 'workflow_dispatch'
+    # Run if: PR was merged to production, OR manually triggered on production only.
+    # The production branch restriction prevents workflow_dispatch on arbitrary branches
+    # from triggering npm publish via the workflow_run chain.
+    if: >
+      github.event.pull_request.merged == true ||
+      (github.event_name == 'workflow_dispatch' && github.ref_name == 'production')
     runs-on: ubuntu-latest
 
     steps:

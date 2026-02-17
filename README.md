@@ -182,7 +182,7 @@ The toolkit includes specialized [Claude Code](https://docs.anthropic.com/en/doc
 
 > **Note:** These agents use Claude Code's specific format. To use with other AI assistants (Gemini CLI, Copilot, etc.), the agent specs would need conversion.
 
-**Available agents:**
+**Available agents (installed via `npx een-setup-agents`):**
 - `een-setup-agent` - Project scaffolding, Pinia setup, Vite configuration
 - `een-auth-agent` - OAuth flows, route guards, token management
 - `een-users-agent` - User listing and profile APIs
@@ -190,6 +190,10 @@ The toolkit includes specialized [Claude Code](https://docs.anthropic.com/en/doc
 - `een-media-agent` - Live video, previews, HLS playback
 - `een-events-agent` - Events, alerts, metrics, SSE subscriptions
 - `een-grouping-agent` - Layouts CRUD operations, camera pane management
+- `een-automations-agent` - Alert rules, action rules, event conditions
+- `een-jobs-agent` - Jobs, exports, files, downloads
+
+The `setup-agents` script (`scripts/setup-agents.ts`) installs only agents matching the `een-*-agent.md` pattern. Other agents in `.claude/agents/` (such as `api-coverage-agent`, `docs-accuracy-reviewer`, `test-runner`) are for this repository only and are not distributed to consuming projects.
 
 **Installation:**
 ```bash
@@ -310,6 +314,25 @@ The `sync-secrets.sh` script manages secrets from a single source (root `.env` f
 3. Run `./scripts/sync-secrets.sh` to distribute secrets
 
 > **Note:** Example `.env` files are gitignored. Run `sync-secrets.sh` after cloning to set up local development.
+
+## EEN API Coverage
+
+This toolkit implements a subset of the [Eagle Eye Networks REST API v3.0](https://developer.eagleeyenetworks.com/reference/using-the-api). Coverage documentation is maintained in `docs/`:
+
+| Document | Description |
+|----------|-------------|
+| **[All EEN API Endpoints](./docs/een-api-all-endpoints.md)** | Complete reference of all 211 EEN API v3.0 endpoints |
+| **[Implemented Endpoints](./docs/een-api-implemented.md)** | Endpoints implemented by the toolkit with function names and source files |
+| **[Missing Endpoints](./docs/een-api-missing.md)** | Endpoints not yet implemented, with per-category coverage percentages |
+| **[Coverage Table (HTML)](./docs/een-api-coverage.html)** | Interactive table with filtering, sorting, and summary statistics |
+
+**Fully implemented sections:** Layouts, Feeds, Jobs, Event Types, Event Metrics, Alerts
+
+**Partially implemented:** Users, Cameras, Bridges, Media, Events, Event Subscriptions, Automations, Exports, Files, Downloads
+
+**Not yet implemented:** PTZ, Speakers, Switches, Multi Cameras, Locations, Floors, Video Search, LPR, Roles, Accounts, and others
+
+To regenerate these documents after adding new API endpoints, use the `api-coverage-agent`.
 
 ## External Resources
 

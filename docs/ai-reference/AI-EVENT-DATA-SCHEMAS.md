@@ -1,6 +1,6 @@
 # Event Type to Data Schemas Mapping - EEN API Toolkit
 
-> **Version:** 0.3.82
+> **Version:** 0.3.85
 >
 > Complete reference for event type to data schema mappings.
 > Load this document when building dynamic event queries with the `include` parameter.

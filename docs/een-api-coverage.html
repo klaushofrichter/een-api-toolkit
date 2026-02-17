@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EEN API v3.0 - Toolkit Coverage Report</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f5f7fa; color: #1a1a2e; padding: 24px; }
+    h1 { font-size: 1.6rem; margin-bottom: 8px; }
+    .subtitle { color: #666; margin-bottom: 24px; font-size: 0.9rem; }
+    .stats { display: flex; gap: 16px; margin-bottom: 24px; flex-wrap: wrap; }
+    .stat-card { background: #fff; border-radius: 8px; padding: 16px 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); min-width: 140px; }
+    .stat-card .number { font-size: 2rem; font-weight: 700; }
+    .stat-card .label { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 0.5px; }
+    .stat-card.green .number { color: #16a34a; }
+    .stat-card.red .number { color: #dc2626; }
+    .stat-card.blue .number { color: #2563eb; }
+    .filter-bar { margin-bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .filter-bar label { font-size: 0.85rem; font-weight: 600; }
+    .filter-bar select, .filter-bar input { padding: 6px 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.85rem; }
+    .filter-bar input { width: 220px; }
+    table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,0.1); font-size: 0.85rem; }
+    thead { background: #1e293b; color: #fff; }
+    th { padding: 10px 12px; text-align: left; font-weight: 600; cursor: pointer; user-select: none; white-space: nowrap; }
+    th:hover { background: #334155; }
+    td { padding: 8px 12px; border-bottom: 1px solid #f1f5f9; }
+    tr:hover td { background: #f8fafc; }
+    .method { display: inline-block; padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 0.75rem; min-width: 56px; text-align: center; }
+    .method-GET { background: #dbeafe; color: #1d4ed8; }
+    .method-POST { background: #dcfce7; color: #166534; }
+    .method-PATCH { background: #fef3c7; color: #92400e; }
+    .method-DELETE { background: #fee2e2; color: #991b1b; }
+    .method-PUT { background: #e0e7ff; color: #3730a3; }
+    .status-impl { color: #16a34a; font-weight: 600; }
+    .status-miss { color: #dc2626; font-weight: 600; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: 600; }
+    .badge-impl { background: #dcfce7; color: #166534; }
+    .badge-miss { background: #fee2e2; color: #991b1b; }
+    .func { font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.8rem; color: #6d28d9; }
+    .category { font-size: 0.8rem; color: #64748b; }
+    .progress-bar { width: 100%; height: 8px; background: #fee2e2; border-radius: 4px; overflow: hidden; margin-top: 8px; }
+    .progress-fill { height: 100%; background: #16a34a; border-radius: 4px; transition: width 0.3s; }
+    footer { margin-top: 24px; font-size: 0.8rem; color: #94a3b8; text-align: center; }
+  </style>
+</head>
+<body>
+
+<h1>Eagle Eye Networks API v3.0 - Toolkit Coverage</h1>
+<p class="subtitle">Generated: 2026-02-17 | een-api-toolkit implementation status</p>
+
+<div class="stats">
+  <div class="stat-card blue">
+    <div class="number">211</div>
+    <div class="label">Total Endpoints</div>
+  </div>
+  <div class="stat-card green">
+    <div class="number">51</div>
+    <div class="label">Implemented</div>
+  </div>
+  <div class="stat-card red">
+    <div class="number">160</div>
+    <div class="label">Missing</div>
+  </div>
+  <div class="stat-card">
+    <div class="number">24.2%</div>
+    <div class="label">Coverage</div>
+    <div class="progress-bar"><div class="progress-fill" style="width:24.2%"></div></div>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <label>Filter:</label>
+  <select id="statusFilter" onchange="filterTable()">
+    <option value="all">All Endpoints</option>
+    <option value="implemented">Implemented Only</option>
+    <option value="missing">Missing Only</option>
+  </select>
+  <select id="categoryFilter" onchange="filterTable()">
+    <option value="all">All Categories</option>
+    <option value="Devices">Devices</option>
+    <option value="Grouping">Grouping</option>
+    <option value="Media">Media</option>
+    <option value="Events">Events</option>
+    <option value="Automations">Automations</option>
+    <option value="Video Search">Video Search</option>
+    <option value="Vehicle Surveillance">Vehicle Surveillance</option>
+    <option value="User &amp; Accounts">User &amp; Accounts</option>
+    <option value="Resellers">Resellers</option>
+    <option value="Account Settings">Account Settings</option>
+    <option value="System">System</option>
+  </select>
+  <select id="methodFilter" onchange="filterTable()">
+    <option value="all">All Methods</option>
+    <option value="GET">GET</option>
+    <option value="POST">POST</option>
+    <option value="PATCH">PATCH</option>
+    <option value="DELETE">DELETE</option>
+    <option value="PUT">PUT</option>
+  </select>
+  <input type="text" id="searchFilter" placeholder="Search path or function..." oninput="filterTable()">
+</div>
+
+<table id="apiTable">
+  <thead>
+    <tr>
+      <th onclick="sortTable(0)">#</th>
+      <th onclick="sortTable(1)">Category</th>
+      <th onclick="sortTable(2)">Subcategory</th>
+      <th onclick="sortTable(3)">Method</th>
+      <th onclick="sortTable(4)">Path</th>
+      <th onclick="sortTable(5)">Description</th>
+      <th onclick="sortTable(6)">Status</th>
+      <th onclick="sortTable(7)">Toolkit Function</th>
+    </tr>
+  </thead>
+  <tbody id="tableBody">
+  </tbody>
+</table>
+
+<footer>
+  Source: <a href="https://developer.eagleeyenetworks.com/reference/using-the-api">EEN Developer Portal</a> |
+  <a href="https://github.com/EENCloud/VMS-Developer-Portal">OpenAPI Specs</a>
+</footer>
+
+<script>
+const endpoints = [
+  // DEVICES - Cameras (15)
+  {cat:"Devices",sub:"Cameras",method:"GET",path:"/cameras",desc:"List cameras",status:"impl",func:"getCameras()"},
+  {cat:"Devices",sub:"Cameras",method:"POST",path:"/cameras",desc:"Add a camera",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"POST",path:"/cameras:bulkUpdate",desc:"Bulk update cameras",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"GET",path:"/cameras/{cameraId}",desc:"Get camera by ID",status:"impl",func:"getCamera()"},
+  {cat:"Devices",sub:"Cameras",method:"PATCH",path:"/cameras/{cameraId}",desc:"Update a camera",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"DELETE",path:"/cameras/{cameraId}",desc:"Delete a camera",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"PUT",path:"/cameras/{cameraId}/tunnel",desc:"Create/update camera tunnel",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"DELETE",path:"/cameras/{cameraId}/tunnel",desc:"Delete camera tunnel",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"GET",path:"/cameras/{cameraId}/metrics",desc:"Get camera metrics",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"PATCH",path:"/cameras/{cameraId}:swap",desc:"Swap a camera",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"GET",path:"/cameras/{cameraId}/io/ports",desc:"List camera I/O ports",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"GET",path:"/cameras/{cameraId}/io/ports/{portId}",desc:"Get camera I/O port",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"PATCH",path:"/cameras/{cameraId}/io/ports/{portId}",desc:"Update camera I/O port",status:"miss",func:""},
+  {cat:"Devices",sub:"Cameras",method:"GET",path:"/cameras/{cameraId}/settings",desc:"Get camera settings",status:"impl",func:"getCameraSettings()"},
+  {cat:"Devices",sub:"Cameras",method:"PATCH",path:"/cameras/{cameraId}/settings",desc:"Update camera settings",status:"miss",func:""},
+  // DEVICES - Bridges (11)
+  {cat:"Devices",sub:"Bridges",method:"GET",path:"/bridges",desc:"List bridges",status:"impl",func:"getBridges()"},
+  {cat:"Devices",sub:"Bridges",method:"POST",path:"/bridges",desc:"Create a bridge",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"POST",path:"/bridges:bulkUpdate",desc:"Bulk update bridges",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"GET",path:"/bridges/{bridgeId}",desc:"Get bridge by ID",status:"impl",func:"getBridge()"},
+  {cat:"Devices",sub:"Bridges",method:"PATCH",path:"/bridges/{bridgeId}",desc:"Update a bridge",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"DELETE",path:"/bridges/{bridgeId}",desc:"Delete a bridge",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"GET",path:"/bridges/{bridgeId}/metrics",desc:"Get bridge metrics",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"PATCH",path:"/bridges/{bridgeId}:swap",desc:"Swap a bridge",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"POST",path:"/bridges/{bridgeId}/actions",desc:"Trigger bridge action",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"GET",path:"/bridges/{id}/settings",desc:"Get bridge settings",status:"miss",func:""},
+  {cat:"Devices",sub:"Bridges",method:"PATCH",path:"/bridges/{id}/settings",desc:"Update bridge settings",status:"miss",func:""},
+  // DEVICES - PTZ (4)
+  {cat:"Devices",sub:"PTZ",method:"GET",path:"/cameras/{cameraId}/ptz/position",desc:"Get current PTZ position",status:"miss",func:""},
+  {cat:"Devices",sub:"PTZ",method:"PUT",path:"/cameras/{cameraId}/ptz/position",desc:"Move PTZ to position",status:"miss",func:""},
+  {cat:"Devices",sub:"PTZ",method:"GET",path:"/cameras/{cameraId}/ptz/settings",desc:"Get PTZ settings",status:"miss",func:""},
+  {cat:"Devices",sub:"PTZ",method:"PATCH",path:"/cameras/{cameraId}/ptz/settings",desc:"Update PTZ settings",status:"miss",func:""},
+  // DEVICES - Speakers (7)
+  {cat:"Devices",sub:"Speakers",method:"GET",path:"/speakers",desc:"List speakers",status:"miss",func:""},
+  {cat:"Devices",sub:"Speakers",method:"POST",path:"/speakers",desc:"Add a speaker",status:"miss",func:""},
+  {cat:"Devices",sub:"Speakers",method:"GET",path:"/speakers/{speakerId}",desc:"Get speaker by ID",status:"miss",func:""},
+  {cat:"Devices",sub:"Speakers",method:"PATCH",path:"/speakers/{speakerId}",desc:"Update a speaker",status:"miss",func:""},
+  {cat:"Devices",sub:"Speakers",method:"DELETE",path:"/speakers/{speakerId}",desc:"Delete a speaker",status:"miss",func:""},
+  {cat:"Devices",sub:"Speakers",method:"GET",path:"/speakers/{speakerId}/settings",desc:"Get speaker settings",status:"miss",func:""},
+  {cat:"Devices",sub:"Speakers",method:"PATCH",path:"/speakers/{speakerId}/settings",desc:"Update speaker settings",status:"miss",func:""},
+  // DEVICES - Device I/O (6)
+  {cat:"Devices",sub:"Device I/O",method:"GET",path:"/devices/{deviceId}/io/ports",desc:"List device I/O ports",status:"miss",func:""},
+  {cat:"Devices",sub:"Device I/O",method:"GET",path:"/devices/{deviceId}/io/ports/{portId}",desc:"Get device I/O port",status:"miss",func:""},
+  {cat:"Devices",sub:"Device I/O",method:"PATCH",path:"/devices/{deviceId}/io/ports/{portId}",desc:"Update device I/O port",status:"miss",func:""},
+  {cat:"Devices",sub:"Device I/O",method:"GET",path:"/devices/{deviceId}/io/ports/{portId}/recordingActions",desc:"List port recording actions",status:"miss",func:""},
+  {cat:"Devices",sub:"Device I/O",method:"GET",path:"/devices/{deviceId}/io/ports/{portId}/recordingActions/{cameraId}",desc:"Get port recording action",status:"miss",func:""},
+  {cat:"Devices",sub:"Device I/O",method:"PATCH",path:"/devices/{deviceId}/io/ports/{portId}/recordingActions/{cameraId}",desc:"Update port recording action",status:"miss",func:""},
+  // DEVICES - Switches (5)
+  {cat:"Devices",sub:"Switches",method:"GET",path:"/switches",desc:"List switches",status:"miss",func:""},
+  {cat:"Devices",sub:"Switches",method:"GET",path:"/switches/{switchId}",desc:"Get switch by ID",status:"miss",func:""},
+  {cat:"Devices",sub:"Switches",method:"PATCH",path:"/switches/{switchId}",desc:"Update a switch",status:"miss",func:""},
+  {cat:"Devices",sub:"Switches",method:"POST",path:"/switches/{switchId}/ports/{portId}/actions",desc:"Trigger switch port action",status:"miss",func:""},
+  {cat:"Devices",sub:"Switches",method:"POST",path:"/switches/{switchId}/ports/all/actions",desc:"Trigger action on all switch ports",status:"miss",func:""},
+  // DEVICES - Multi Cameras (6)
+  {cat:"Devices",sub:"Multi Cameras",method:"GET",path:"/multiCameras",desc:"List multi-cameras",status:"miss",func:""},
+  {cat:"Devices",sub:"Multi Cameras",method:"POST",path:"/multiCameras",desc:"Add a multi-camera",status:"miss",func:""},
+  {cat:"Devices",sub:"Multi Cameras",method:"GET",path:"/multiCameras/{multiCameraId}",desc:"Get multi-camera by ID",status:"miss",func:""},
+  {cat:"Devices",sub:"Multi Cameras",method:"PATCH",path:"/multiCameras/{multiCameraId}",desc:"Update a multi-camera",status:"miss",func:""},
+  {cat:"Devices",sub:"Multi Cameras",method:"DELETE",path:"/multiCameras/{multiCameraId}",desc:"Delete a multi-camera",status:"miss",func:""},
+  {cat:"Devices",sub:"Multi Cameras",method:"GET",path:"/multiCameras/{multiCameraId}/channels",desc:"Get multi-camera channels",status:"miss",func:""},
+  // DEVICES - Available Devices (1)
+  {cat:"Devices",sub:"Available Devices",method:"GET",path:"/availableDevices",desc:"List available (unclaimed) devices",status:"miss",func:""},
+  // GROUPING - Layouts (5)
+  {cat:"Grouping",sub:"Layouts",method:"GET",path:"/layouts",desc:"List layouts",status:"impl",func:"getLayouts()"},
+  {cat:"Grouping",sub:"Layouts",method:"POST",path:"/layouts",desc:"Create a layout",status:"impl",func:"createLayout()"},
+  {cat:"Grouping",sub:"Layouts",method:"GET",path:"/layouts/{layoutId}",desc:"Get layout by ID",status:"impl",func:"getLayout()"},
+  {cat:"Grouping",sub:"Layouts",method:"PATCH",path:"/layouts/{layoutId}",desc:"Update a layout",status:"impl",func:"updateLayout()"},
+  {cat:"Grouping",sub:"Layouts",method:"DELETE",path:"/layouts/{layoutId}",desc:"Delete a layout",status:"impl",func:"deleteLayout()"},
+  // GROUPING - Tags (1)
+  {cat:"Grouping",sub:"Tags",method:"GET",path:"/tags",desc:"List tags",status:"miss",func:""},
+  // GROUPING - Locations (6)
+  {cat:"Grouping",sub:"Locations",method:"GET",path:"/locations",desc:"List locations",status:"miss",func:""},
+  {cat:"Grouping",sub:"Locations",method:"POST",path:"/locations",desc:"Create a location",status:"miss",func:""},
+  {cat:"Grouping",sub:"Locations",method:"GET",path:"/locations/{id}",desc:"Get location by ID",status:"miss",func:""},
+  {cat:"Grouping",sub:"Locations",method:"PATCH",path:"/locations/{id}",desc:"Update a location",status:"miss",func:""},
+  {cat:"Grouping",sub:"Locations",method:"DELETE",path:"/locations/{id}",desc:"Delete a location",status:"miss",func:""},
+  {cat:"Grouping",sub:"Locations",method:"GET",path:"/locations/{id}/locations",desc:"Get location descendants",status:"miss",func:""},
+  // GROUPING - Floors (6)
+  {cat:"Grouping",sub:"Floors",method:"GET",path:"/locations/{locationId}/floors",desc:"List floors",status:"miss",func:""},
+  {cat:"Grouping",sub:"Floors",method:"POST",path:"/locations/{locationId}/floors",desc:"Create a floor",status:"miss",func:""},
+  {cat:"Grouping",sub:"Floors",method:"GET",path:"/locations/{locationId}/floors/{id}",desc:"Get floor by ID",status:"miss",func:""},
+  {cat:"Grouping",sub:"Floors",method:"PATCH",path:"/locations/{locationId}/floors/{id}",desc:"Update a floor",status:"miss",func:""},
+  {cat:"Grouping",sub:"Floors",method:"DELETE",path:"/locations/{locationId}/floors/{id}",desc:"Delete a floor",status:"miss",func:""},
+  {cat:"Grouping",sub:"Floors",method:"GET",path:"/locations/{locationId}/floors/{id}.{type}",desc:"Get floor image",status:"miss",func:""},
+  // GROUPING - Floor Plans (3)
+  {cat:"Grouping",sub:"Floor Plans",method:"GET",path:"/locations/{locationId}/floors/{id}/plans",desc:"List floor plans",status:"miss",func:""},
+  {cat:"Grouping",sub:"Floor Plans",method:"POST",path:"/locations/{locationId}/floors/{id}/plans",desc:"Set a floor plan",status:"miss",func:""},
+  {cat:"Grouping",sub:"Floor Plans",method:"DELETE",path:"/locations/{locationId}/floors/{id}/plans/{planId}",desc:"Delete a floor plan",status:"miss",func:""},
+  // MEDIA - Media (5)
+  {cat:"Media",sub:"Media",method:"GET",path:"/media",desc:"List media (recording spans)",status:"impl",func:"listMedia()"},
+  {cat:"Media",sub:"Media",method:"GET",path:"/media/recordedImage.jpeg",desc:"Get recorded image",status:"impl",func:"getRecordedImage()"},
+  {cat:"Media",sub:"Media",method:"GET",path:"/media/recordedImage.jpeg:listFieldValues",desc:"List overlay field values",status:"miss",func:""},
+  {cat:"Media",sub:"Media",method:"GET",path:"/media/liveImage.jpeg",desc:"Get live image",status:"impl",func:"getLiveImage()"},
+  {cat:"Media",sub:"Media",method:"GET",path:"/media/session",desc:"Get media session URL",status:"impl",func:"getMediaSession()"},
+  // MEDIA - Feeds (1)
+  {cat:"Media",sub:"Feeds",method:"GET",path:"/feeds",desc:"List feeds",status:"impl",func:"listFeeds()"},
+  // MEDIA - Exports (2)
+  {cat:"Media",sub:"Exports",method:"POST",path:"/exports",desc:"Create an export job",status:"impl",func:"createExportJob()"},
+  {cat:"Media",sub:"Exports",method:"POST",path:"/exports/{jobId}:copy",desc:"Retry/copy an export",status:"miss",func:""},
+  // MEDIA - Jobs (3)
+  {cat:"Media",sub:"Jobs",method:"GET",path:"/jobs",desc:"List jobs",status:"impl",func:"listJobs()"},
+  {cat:"Media",sub:"Jobs",method:"GET",path:"/jobs/{jobId}",desc:"Get job by ID",status:"impl",func:"getJob()"},
+  {cat:"Media",sub:"Jobs",method:"DELETE",path:"/jobs/{jobId}",desc:"Delete a job",status:"impl",func:"deleteJob()"},
+  // MEDIA - Files (11)
+  {cat:"Media",sub:"Files",method:"GET",path:"/files",desc:"List files",status:"impl",func:"listFiles()"},
+  {cat:"Media",sub:"Files",method:"POST",path:"/files",desc:"Add a file",status:"impl",func:"addFile()"},
+  {cat:"Media",sub:"Files",method:"GET",path:"/files/{id}",desc:"Get file by ID",status:"impl",func:"getFile()"},
+  {cat:"Media",sub:"Files",method:"PATCH",path:"/files/{id}",desc:"Update a file",status:"miss",func:""},
+  {cat:"Media",sub:"Files",method:"DELETE",path:"/files/{id}",desc:"Delete a file",status:"impl",func:"deleteFile()"},
+  {cat:"Media",sub:"Files",method:"GET",path:"/files/{id}:download",desc:"Download a file",status:"impl",func:"downloadFile()"},
+  {cat:"Media",sub:"Files",method:"GET",path:"/deletedFiles",desc:"List trash",status:"miss",func:""},
+  {cat:"Media",sub:"Files",method:"GET",path:"/deletedFiles/{id}",desc:"Get deleted file",status:"miss",func:""},
+  {cat:"Media",sub:"Files",method:"DELETE",path:"/deletedFiles/{id}",desc:"Permanently delete trash file",status:"miss",func:""},
+  {cat:"Media",sub:"Files",method:"DELETE",path:"/deletedFiles/all",desc:"Empty trash",status:"miss",func:""},
+  {cat:"Media",sub:"Files",method:"POST",path:"/deletedFiles/{id}:restore",desc:"Restore deleted file",status:"miss",func:""},
+  // MEDIA - Downloads (4)
+  {cat:"Media",sub:"Downloads",method:"GET",path:"/downloads",desc:"List downloads",status:"impl",func:"listDownloads()"},
+  {cat:"Media",sub:"Downloads",method:"GET",path:"/downloads/{id}",desc:"Get download by ID",status:"impl",func:"getDownload()"},
+  {cat:"Media",sub:"Downloads",method:"PATCH",path:"/downloads/{id}",desc:"Update a download",status:"miss",func:""},
+  {cat:"Media",sub:"Downloads",method:"GET",path:"/downloads/{id}:download",desc:"Download a download file",status:"impl",func:"downloadDownload()"},
+  // EVENTS - Events (5)
+  {cat:"Events",sub:"Events",method:"GET",path:"/events",desc:"List events",status:"impl",func:"listEvents()"},
+  {cat:"Events",sub:"Events",method:"POST",path:"/events",desc:"Create an event",status:"miss",func:""},
+  {cat:"Events",sub:"Events",method:"GET",path:"/events/{id}",desc:"Get event by ID",status:"impl",func:"getEvent()"},
+  {cat:"Events",sub:"Events",method:"GET",path:"/events:listRecentByType",desc:"List recent events by type",status:"miss",func:""},
+  {cat:"Events",sub:"Events",method:"GET",path:"/events:listFieldValues",desc:"List event field values",status:"impl",func:"listEventFieldValues()"},
+  // EVENTS - Event Types (1)
+  {cat:"Events",sub:"Event Types",method:"GET",path:"/eventTypes",desc:"List event types",status:"impl",func:"listEventTypes()"},
+  // EVENTS - Event Metrics (1)
+  {cat:"Events",sub:"Event Metrics",method:"GET",path:"/eventMetrics",desc:"Get event metrics",status:"impl",func:"getEventMetrics()"},
+  // EVENTS - Event Subscriptions (8)
+  {cat:"Events",sub:"Event Subscriptions",method:"GET",path:"/eventSubscriptions",desc:"List event subscriptions",status:"impl",func:"listEventSubscriptions()"},
+  {cat:"Events",sub:"Event Subscriptions",method:"POST",path:"/eventSubscriptions",desc:"Create event subscription",status:"impl",func:"createEventSubscription()"},
+  {cat:"Events",sub:"Event Subscriptions",method:"GET",path:"/eventSubscriptions/{id}",desc:"Get event subscription",status:"impl",func:"getEventSubscription()"},
+  {cat:"Events",sub:"Event Subscriptions",method:"DELETE",path:"/eventSubscriptions/{id}",desc:"Delete event subscription",status:"impl",func:"deleteEventSubscription()"},
+  {cat:"Events",sub:"Event Subscriptions",method:"GET",path:"/eventSubscriptions/{id}/filters",desc:"List subscription filters",status:"miss",func:""},
+  {cat:"Events",sub:"Event Subscriptions",method:"POST",path:"/eventSubscriptions/{id}/filters",desc:"Create subscription filter",status:"miss",func:""},
+  {cat:"Events",sub:"Event Subscriptions",method:"GET",path:"/eventSubscriptions/{id}/filters/{filterId}",desc:"Get subscription filter",status:"miss",func:""},
+  {cat:"Events",sub:"Event Subscriptions",method:"DELETE",path:"/eventSubscriptions/{id}/filters/{filterId}",desc:"Delete subscription filter",status:"miss",func:""},
+  // EVENTS - Alerts (3)
+  {cat:"Events",sub:"Alerts",method:"GET",path:"/alerts",desc:"List alerts",status:"impl",func:"listAlerts()"},
+  {cat:"Events",sub:"Alerts",method:"GET",path:"/alerts/{id}",desc:"Get alert by ID",status:"impl",func:"getAlert()"},
+  {cat:"Events",sub:"Alerts",method:"GET",path:"/alertTypes",desc:"List alert types",status:"impl",func:"listAlertTypes()"},
+  // EVENTS - Notifications (3)
+  {cat:"Events",sub:"Notifications",method:"GET",path:"/notifications",desc:"List notifications",status:"impl",func:"listNotifications()"},
+  {cat:"Events",sub:"Notifications",method:"GET",path:"/notifications/{id}",desc:"Get notification by ID",status:"impl",func:"getNotification()"},
+  {cat:"Events",sub:"Notifications",method:"PATCH",path:"/notifications/{id}",desc:"Update a notification",status:"miss",func:""},
+  // AUTOMATIONS - Event Alert Condition Rules (6)
+  {cat:"Automations",sub:"Event Alert Condition Rules",method:"GET",path:"/eventAlertConditionRules",desc:"List rules",status:"impl",func:"listEventAlertConditionRules()"},
+  {cat:"Automations",sub:"Event Alert Condition Rules",method:"POST",path:"/eventAlertConditionRules",desc:"Create rule",status:"miss",func:""},
+  {cat:"Automations",sub:"Event Alert Condition Rules",method:"GET",path:"/eventAlertConditionRules:listFieldValues",desc:"List field values",status:"impl",func:"getEventAlertConditionRuleFieldValues()"},
+  {cat:"Automations",sub:"Event Alert Condition Rules",method:"GET",path:"/eventAlertConditionRules/{id}",desc:"Get rule by ID",status:"impl",func:"getEventAlertConditionRule()"},
+  {cat:"Automations",sub:"Event Alert Condition Rules",method:"PATCH",path:"/eventAlertConditionRules/{id}",desc:"Update rule",status:"miss",func:""},
+  {cat:"Automations",sub:"Event Alert Condition Rules",method:"DELETE",path:"/eventAlertConditionRules/{id}",desc:"Delete rule",status:"miss",func:""},
+  // AUTOMATIONS - Alert Action Rules (5)
+  {cat:"Automations",sub:"Alert Action Rules",method:"GET",path:"/alertActionRules",desc:"List alert action rules",status:"impl",func:"listAlertActionRules()"},
+  {cat:"Automations",sub:"Alert Action Rules",method:"POST",path:"/alertActionRules",desc:"Create alert action rule",status:"miss",func:""},
+  {cat:"Automations",sub:"Alert Action Rules",method:"GET",path:"/alertActionRules/{actionRuleId}",desc:"Get alert action rule",status:"impl",func:"getAlertActionRule()"},
+  {cat:"Automations",sub:"Alert Action Rules",method:"PATCH",path:"/alertActionRules/{actionRuleId}",desc:"Update alert action rule",status:"miss",func:""},
+  {cat:"Automations",sub:"Alert Action Rules",method:"DELETE",path:"/alertActionRules/{actionRuleId}",desc:"Delete alert action rule",status:"miss",func:""},
+  // AUTOMATIONS - Alert Actions (5)
+  {cat:"Automations",sub:"Alert Actions",method:"GET",path:"/alertActions",desc:"List alert actions",status:"impl",func:"listAlertActions()"},
+  {cat:"Automations",sub:"Alert Actions",method:"POST",path:"/alertActions",desc:"Create alert action",status:"miss",func:""},
+  {cat:"Automations",sub:"Alert Actions",method:"GET",path:"/alertActions/{actionId}",desc:"Get alert action",status:"impl",func:"getAlertAction()"},
+  {cat:"Automations",sub:"Alert Actions",method:"PATCH",path:"/alertActions/{actionId}",desc:"Update alert action",status:"miss",func:""},
+  {cat:"Automations",sub:"Alert Actions",method:"DELETE",path:"/alertActions/{actionId}",desc:"Delete alert action",status:"miss",func:""},
+  // VIDEO SEARCH (7)
+  {cat:"Video Search",sub:"Video Analytic Events",method:"POST",path:"/videoAnalyticEvents:parse",desc:"Parse video analytics query",status:"miss",func:""},
+  {cat:"Video Search",sub:"Video Analytic Events",method:"POST",path:"/videoAnalyticEvents:deepSearch",desc:"Deep search events",status:"miss",func:""},
+  {cat:"Video Search",sub:"Video Analytic Events",method:"POST",path:"/videoAnalyticEvents:deepSearchGroupByResource",desc:"Deep search by resource",status:"miss",func:""},
+  {cat:"Video Search",sub:"Video Analytic Events",method:"POST",path:"/videoAnalyticEvents:deepSearchGroupByTime",desc:"Deep search by time",status:"miss",func:""},
+  {cat:"Video Search",sub:"Video Analytic Events",method:"POST",path:"/videoAnalyticEvents:listFieldValues",desc:"List field values",status:"miss",func:""},
+  {cat:"Video Search",sub:"Video Analytic Events",method:"GET",path:"/videoAnalyticEvents:listObjectValues",desc:"List object values",status:"miss",func:""},
+  {cat:"Video Search",sub:"Video Analytic Events",method:"GET",path:"/videoAnalyticEvents/{id}",desc:"Get event by ID",status:"miss",func:""},
+  // VEHICLE SURVEILLANCE - LPR Events (4)
+  {cat:"Vehicle Surveillance",sub:"LPR Events",method:"GET",path:"/lprEvents",desc:"List LPR events",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Events",method:"GET",path:"/lprEvents/{id}",desc:"Get LPR event by ID",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Events",method:"GET",path:"/lprEvents:summary",desc:"Get LPR events summary",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Events",method:"GET",path:"/lprEvents:listFieldValues",desc:"List LPR field values",status:"miss",func:""},
+  // VEHICLE SURVEILLANCE - LPR Alert Condition Rules (6)
+  {cat:"Vehicle Surveillance",sub:"LPR Alert Condition Rules",method:"GET",path:"/lprAlertConditionRules",desc:"List LPR rules",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Alert Condition Rules",method:"POST",path:"/lprAlertConditionRules",desc:"Create LPR rule",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Alert Condition Rules",method:"GET",path:"/lprAlertConditionRules:listFieldValues",desc:"List LPR rule field values",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Alert Condition Rules",method:"GET",path:"/lprAlertConditionRules/{id}",desc:"Get LPR rule",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Alert Condition Rules",method:"PATCH",path:"/lprAlertConditionRules/{id}",desc:"Update LPR rule",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Alert Condition Rules",method:"DELETE",path:"/lprAlertConditionRules/{id}",desc:"Delete LPR rule",status:"miss",func:""},
+  // VEHICLE SURVEILLANCE - LPR Vehicle Lists (14)
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"GET",path:"/lprVehicleLists",desc:"List vehicle lists",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"POST",path:"/lprVehicleLists",desc:"Create vehicle list",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"GET",path:"/lprVehicleLists:listFields",desc:"List fields",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"GET",path:"/lprVehicleLists:listFieldValues",desc:"List field values",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"GET",path:"/lprVehicleLists/{id}",desc:"Get vehicle list",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"PATCH",path:"/lprVehicleLists/{id}",desc:"Update vehicle list",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"DELETE",path:"/lprVehicleLists/{id}",desc:"Delete vehicle list",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"GET",path:"/lprVehicleLists/{id}/vehicles",desc:"List vehicles",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"POST",path:"/lprVehicleLists/{id}/vehicles",desc:"Add vehicle",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"POST",path:"/lprVehicleLists/{id}/vehicles:bulkCreate",desc:"Bulk add vehicles",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"GET",path:"/lprVehicleLists/{id}/vehicles/{recordId}",desc:"Get vehicle",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"PATCH",path:"/lprVehicleLists/{id}/vehicles/{recordId}",desc:"Update vehicle",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"DELETE",path:"/lprVehicleLists/{id}/vehicles/{recordId}",desc:"Delete vehicle",status:"miss",func:""},
+  {cat:"Vehicle Surveillance",sub:"LPR Vehicle Lists",method:"GET",path:"/lprVehicleLists:search",desc:"Search vehicle lists",status:"miss",func:""},
+  // USER & ACCOUNTS - Users (9)
+  {cat:"User & Accounts",sub:"Users",method:"GET",path:"/users",desc:"List users",status:"impl",func:"getUsers()"},
+  {cat:"User & Accounts",sub:"Users",method:"POST",path:"/users",desc:"Create a user",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Users",method:"GET",path:"/users/{userId}",desc:"Get user by ID",status:"impl",func:"getUser()"},
+  {cat:"User & Accounts",sub:"Users",method:"PATCH",path:"/users/{userId}",desc:"Update a user",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Users",method:"DELETE",path:"/users/{userId}",desc:"Delete a user",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Users",method:"GET",path:"/users/self",desc:"Get current user",status:"impl",func:"getCurrentUser()"},
+  {cat:"User & Accounts",sub:"Users",method:"PATCH",path:"/users/self",desc:"Update current user",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Users",method:"GET",path:"/users/self/trustedClients",desc:"List trusted OAuth clients",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Users",method:"DELETE",path:"/users/self/trustedClients/{trustedClientId}",desc:"Delete trusted client",status:"miss",func:""},
+  // USER & ACCOUNTS - Accounts (2)
+  {cat:"User & Accounts",sub:"Accounts",method:"GET",path:"/accounts",desc:"List accounts",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Accounts",method:"DELETE",path:"/accounts/{id}/credentials/{credentialId}",desc:"Delete account credential",status:"miss",func:""},
+  // USER & ACCOUNTS - Roles (8)
+  {cat:"User & Accounts",sub:"Roles",method:"GET",path:"/roles",desc:"List roles",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Roles",method:"POST",path:"/roles",desc:"Create a role",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Roles",method:"GET",path:"/roles/{roleId}",desc:"Get role by ID",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Roles",method:"PATCH",path:"/roles/{roleId}",desc:"Update a role",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Roles",method:"DELETE",path:"/roles/{roleId}",desc:"Delete a role",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Roles",method:"GET",path:"/roleAssignments",desc:"List role assignments",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Roles",method:"POST",path:"/roleAssignments:bulkcreate",desc:"Bulk create role assignments",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Roles",method:"POST",path:"/roleAssignments:bulkdelete",desc:"Bulk delete role assignments",status:"miss",func:""},
+  // USER & ACCOUNTS - Audit Log (1)
+  {cat:"User & Accounts",sub:"Audit Log",method:"GET",path:"/auditLogs",desc:"List audit logs",status:"miss",func:""},
+  // USER & ACCOUNTS - Resource Grants (3)
+  {cat:"User & Accounts",sub:"Resource Grants",method:"GET",path:"/resourceGrants",desc:"List resource grants",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Resource Grants",method:"POST",path:"/resourceGrants:bulkCreate",desc:"Bulk create grants",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Resource Grants",method:"POST",path:"/resourceGrants:bulkDelete",desc:"Bulk delete grants",status:"miss",func:""},
+  // USER & ACCOUNTS - Editions (2)
+  {cat:"User & Accounts",sub:"Editions",method:"GET",path:"/editions",desc:"List editions",status:"miss",func:""},
+  {cat:"User & Accounts",sub:"Editions",method:"GET",path:"/editions/{id}",desc:"Get edition by ID",status:"miss",func:""},
+  // RESELLERS (1)
+  {cat:"Resellers",sub:"Authorization Tokens",method:"POST",path:"/authorizationTokens",desc:"Create authorization token",status:"miss",func:""},
+  // ACCOUNT SETTINGS (3)
+  {cat:"Account Settings",sub:"SSO",method:"GET",path:"/accounts/self/ssoAuthSettings",desc:"Get SSO auth settings",status:"miss",func:""},
+  {cat:"Account Settings",sub:"SSO",method:"PATCH",path:"/accounts/self/ssoAuthSettings",desc:"Update SSO auth settings",status:"miss",func:""},
+  {cat:"Account Settings",sub:"Client Settings",method:"GET",path:"/clientSettings",desc:"Get client settings",status:"miss",func:""},
+  // SYSTEM - Applications (5)
+  {cat:"System",sub:"Applications",method:"GET",path:"/applications",desc:"List applications",status:"miss",func:""},
+  {cat:"System",sub:"Applications",method:"POST",path:"/applications",desc:"Create application",status:"miss",func:""},
+  {cat:"System",sub:"Applications",method:"GET",path:"/applications/{applicationId}",desc:"Get application",status:"miss",func:""},
+  {cat:"System",sub:"Applications",method:"PATCH",path:"/applications/{applicationId}",desc:"Update application",status:"miss",func:""},
+  {cat:"System",sub:"Applications",method:"DELETE",path:"/applications/{applicationId}",desc:"Delete application",status:"miss",func:""},
+  // SYSTEM - OAuth Clients (5)
+  {cat:"System",sub:"OAuth Clients",method:"GET",path:"/applications/{appId}/oauthClients",desc:"List OAuth clients",status:"miss",func:""},
+  {cat:"System",sub:"OAuth Clients",method:"POST",path:"/applications/{appId}/oauthClients",desc:"Create OAuth client",status:"miss",func:""},
+  {cat:"System",sub:"OAuth Clients",method:"GET",path:"/applications/{appId}/oauthClients/{clientId}",desc:"Get OAuth client",status:"miss",func:""},
+  {cat:"System",sub:"OAuth Clients",method:"PATCH",path:"/applications/{appId}/oauthClients/{clientId}",desc:"Update OAuth client",status:"miss",func:""},
+  {cat:"System",sub:"OAuth Clients",method:"DELETE",path:"/applications/{appId}/oauthClients/{clientId}",desc:"Delete OAuth client",status:"miss",func:""},
+  // SYSTEM - Reference Data (2)
+  {cat:"System",sub:"Reference Data",method:"GET",path:"/languages",desc:"List supported languages",status:"miss",func:""},
+  {cat:"System",sub:"Reference Data",method:"GET",path:"/timeZones",desc:"List supported time zones",status:"miss",func:""},
+];
+
+function renderTable(data) {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  data.forEach((e, i) => {
+    const tr = document.createElement('tr');
+    tr.dataset.status = e.status;
+    tr.dataset.category = e.cat;
+    tr.dataset.method = e.method;
+    tr.innerHTML = `
+      <td>${i + 1}</td>
+      <td class="category">${e.cat}</td>
+      <td class="category">${e.sub}</td>
+      <td><span class="method method-${e.method}">${e.method}</span></td>
+      <td><code>${e.path}</code></td>
+      <td>${e.desc}</td>
+      <td><span class="badge ${e.status === 'impl' ? 'badge-impl' : 'badge-miss'}">${e.status === 'impl' ? 'Implemented' : 'Missing'}</span></td>
+      <td class="func">${e.func}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function filterTable() {
+  const status = document.getElementById('statusFilter').value;
+  const category = document.getElementById('categoryFilter').value;
+  const method = document.getElementById('methodFilter').value;
+  const search = document.getElementById('searchFilter').value.toLowerCase();
+
+  const filtered = endpoints.filter(e => {
+    if (status !== 'all' && ((status === 'implemented' && e.status !== 'impl') || (status === 'missing' && e.status !== 'miss'))) return false;
+    if (category !== 'all' && e.cat !== category) return false;
+    if (method !== 'all' && e.method !== method) return false;
+    if (search && !e.path.toLowerCase().includes(search) && !e.func.toLowerCase().includes(search) && !e.desc.toLowerCase().includes(search)) return false;
+    return true;
+  });
+
+  renderTable(filtered);
+}
+
+let sortDir = {};
+function sortTable(col) {
+  const keys = ['idx','cat','sub','method','path','desc','status','func'];
+  const key = keys[col];
+  sortDir[key] = !(sortDir[key] || false);
+  const dir = sortDir[key] ? 1 : -1;
+
+  endpoints.sort((a, b) => {
+    let va = key === 'idx' ? endpoints.indexOf(a) : a[key];
+    let vb = key === 'idx' ? endpoints.indexOf(b) : b[key];
+    return va < vb ? -dir : va > vb ? dir : 0;
+  });
+
+  filterTable();
+}
+
+renderTable(endpoints);
+</script>
+
+</body>
+</html>
