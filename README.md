@@ -190,6 +190,9 @@ The toolkit includes specialized [Claude Code](https://docs.anthropic.com/en/doc
 - `een-media-agent` - Live video, previews, HLS playback
 - `een-events-agent` - Events, alerts, metrics, SSE subscriptions
 - `een-grouping-agent` - Layouts CRUD operations, camera pane management
+- `een-automations-agent` - Alert rules, action rules, event conditions
+- `een-jobs-agent` - Jobs, exports, files, downloads
+- `een-api-coverage-agent` - Regenerate EEN API coverage documentation
 
 **Installation:**
 ```bash
