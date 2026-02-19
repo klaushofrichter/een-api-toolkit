@@ -353,6 +353,13 @@ All actions are pinned to immutable commit SHAs to prevent supply chain attacks.
 2. Update the version comment (e.g., `# v6.0.2`) to match the new version
 3. Review the action's release notes for breaking changes
 
+**Exception**: `anthropics/claude-code-action` uses the `@v1` floating tag instead of a pinned SHA. This is intentional because:
+- It is an official Anthropic action with trusted releases
+- SHA pinning triggers Dependabot PRs that fail CI, since Dependabot workflows cannot access repository secrets (`ANTHROPIC_API_KEY`)
+- The `@v1` tag auto-updates to the latest v1.x release
+
+The Claude Code Review workflow also skips Dependabot PRs (`if: github.actor != 'dependabot[bot]'`) because Dependabot cannot access the `ANTHROPIC_API_KEY` secret needed to run the review.
+
 ## Code Review
 
 - GitHub Actions workflow uses Claude for code review
