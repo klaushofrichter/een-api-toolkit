@@ -12,11 +12,8 @@ on:
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # Skip Dependabot PRs - they don't have access to repository secrets
+    if: github.actor != 'dependabot[bot]'
 
     runs-on: ubuntu-latest
     permissions:
@@ -33,7 +30,12 @@ jobs:
 
       - name: Run Claude Code Review
         id: claude-review
-        uses: anthropics/claude-code-action@23ed4cb53d6eacddbc22ec16652c98bcc54e0476 # v1.0.48
+        # Uses the v1 floating tag to auto-update with new releases.
+        # Unlike other actions which are SHA-pinned, claude-code-action uses a tag
+        # because: (1) it's an official Anthropic action with trusted releases,
+        # (2) SHA pinning triggers Dependabot PRs that fail CI since Dependabot
+        # workflows cannot access repository secrets (ANTHROPIC_API_KEY).
+        uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
