@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { getCameras, getCamera } from 'een-api-toolkit'
+import { getCameras } from 'een-api-toolkit'
 import type { Camera } from 'een-api-toolkit'
 
 const emit = defineEmits<{
@@ -15,28 +15,34 @@ async function loadPtzCameras() {
   loading.value = true
   error.value = null
 
-  const result = await getCameras({ pageSize: 100 })
-
-  if (result.error) {
-    error.value = result.error.message
-    loading.value = false
-    return
-  }
-
-  // Check each camera for PTZ capability
-  const allCameras = result.data?.results || []
+  // Fetch all cameras with capabilities included in a single request
   const ptzCameras: Camera[] = []
+  let pageToken: string | undefined
 
-  for (const cam of allCameras) {
-    const detailResult = await getCamera(cam.id, { include: ['capabilities'] })
-    if (detailResult.data) {
+  do {
+    const result = await getCameras({
+      pageSize: 100,
+      include: ['capabilities'],
+      pageToken
+    })
+
+    if (result.error) {
+      error.value = result.error.message
+      loading.value = false
+      return
+    }
+
+    const allCameras = result.data?.results || []
+    for (const cam of allCameras) {
       // PTZ capability is at capabilities.ptz.capable (nested object, not flat)
-      const capabilities = (detailResult.data as Camera & { capabilities?: { ptz?: { capable?: boolean } } }).capabilities
+      const capabilities = (cam as Camera & { capabilities?: { ptz?: { capable?: boolean } } }).capabilities
       if (capabilities?.ptz?.capable) {
-        ptzCameras.push(detailResult.data)
+        ptzCameras.push(cam)
       }
     }
-  }
+
+    pageToken = result.data?.nextPageToken ?? undefined
+  } while (pageToken)
 
   cameras.value = ptzCameras
   loading.value = false
