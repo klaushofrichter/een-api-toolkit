@@ -147,13 +147,16 @@ src/
 import { movePtz } from 'een-api-toolkit'
 
 // Move camera using relative direction
-const result = await movePtz(cameraId, {
-  direction: { horizontal: 1, vertical: 0 }  // pan right
+await movePtz(cameraId, {
+  moveType: 'direction',
+  direction: ['right'],
+  stepSize: 'medium'
 })
 
 // Move camera to absolute position
-const result = await movePtz(cameraId, {
-  position: { pan: 90, tilt: 15, zoom: 2.5 }
+await movePtz(cameraId, {
+  moveType: 'position',
+  x: 0.5, y: -0.3, z: 2.0
 })
 ```
 
@@ -162,28 +165,31 @@ const result = await movePtz(cameraId, {
 ```typescript
 import { movePtz } from 'een-api-toolkit'
 
-// Click coordinates on the video trigger centerOn move
-const result = await movePtz(cameraId, {
-  centerOn: { x: clickX, y: clickY, videoWidth, videoHeight }
-})
+// Click coordinates on the video trigger centerOn move (0.0 to 1.0)
+const relativeX = (event.clientX - rect.left) / rect.width
+const relativeY = (event.clientY - rect.top) / rect.height
+await movePtz(cameraId, { moveType: 'centerOn', relativeX, relativeY })
 ```
 
 ### Managing Presets (PresetManager.vue)
 
 ```typescript
-import { getPtzSettings, updatePtzSettings } from 'een-api-toolkit'
+import { getPtzSettings, updatePtzSettings, getPtzPosition } from 'een-api-toolkit'
 
 // List presets
 const result = await getPtzSettings(cameraId)
 const presets = result.data?.presets || []
 
 // Recall a preset (move to its saved position)
-await movePtz(cameraId, { position: preset.position })
+await movePtz(cameraId, { moveType: 'position', x: preset.position.x, y: preset.position.y, z: preset.position.z })
 
-// Create a new preset at the current position
-await updatePtzSettings(cameraId, {
-  presets: [...existingPresets, { name: 'New Preset' }]
-})
+// Save current position as a new preset (fetch existing presets first to avoid overwriting)
+const { data: pos } = await getPtzPosition(cameraId)
+if (pos && result.data) {
+  await updatePtzSettings(cameraId, {
+    presets: [...result.data.presets, { name: 'New Preset', position: pos, timeAtPreset: 10 }]
+  })
+}
 ```
 
 ### Reading Camera Position (PositionDisplay.vue)
@@ -193,21 +199,23 @@ import { getPtzPosition } from 'een-api-toolkit'
 
 const result = await getPtzPosition(cameraId)
 if (result.data) {
-  const { pan, tilt, zoom, fieldOfView } = result.data
+  const { x, y, z } = result.data  // pan, tilt, zoom
 }
 ```
 
 ### PTZ Camera Discovery (CameraSelector.vue)
 
 ```typescript
-import { getCameras, getCamera } from 'een-api-toolkit'
+import { getCameras } from 'een-api-toolkit'
 
-// Fetch all cameras, then check each for PTZ capability
-const result = await getCameras({ pageSize: 100 })
-for (const cam of result.data?.results || []) {
-  const detail = await getCamera(cam.id, { include: ['capabilities'] })
-  if (detail.data?.capabilities?.ptz?.capable) {
-    ptzCameras.push(detail.data)
+// Fetch all cameras with capabilities in a single paginated request
+const ptzCameras = []
+let pageToken: string | undefined
+do {
+  const result = await getCameras({ pageSize: 100, include: ['capabilities'], pageToken })
+  for (const cam of result.data?.results || []) {
+    if (cam.capabilities?.ptz?.capable) ptzCameras.push(cam)
   }
-}
+  pageToken = result.data?.nextPageToken ?? undefined
+} while (pageToken)
 ```

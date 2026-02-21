@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: PtzPreset
 
-Defined in: [types/ptz.ts:162](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L162)
+Defined in: [types/ptz.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L181)
 
 A saved PTZ preset position.
 
@@ -20,7 +20,7 @@ Presets allow quick navigation to saved camera positions.
 
 > **name**: `string`
 
-Defined in: [types/ptz.ts:164](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L164)
+Defined in: [types/ptz.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L183)
 
 Human-readable name for this preset
 
@@ -30,7 +30,7 @@ Human-readable name for this preset
 
 > **position**: [`PtzPosition`](PtzPosition.md)
 
-Defined in: [types/ptz.ts:166](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L166)
+Defined in: [types/ptz.ts:185](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L185)
 
 The saved position coordinates
 
@@ -40,6 +40,6 @@ The saved position coordinates
 
 > **timeAtPreset**: `number`
 
-Defined in: [types/ptz.ts:168](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L168)
+Defined in: [types/ptz.ts:187](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L187)
 
 Time the camera stays at this preset (in seconds) during tour mode

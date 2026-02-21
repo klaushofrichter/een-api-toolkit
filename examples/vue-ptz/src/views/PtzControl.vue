@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
-import type { Camera, PtzPreset, PtzPosition } from 'een-api-toolkit'
+import type { Camera, PtzPreset, PtzPositionResponse } from 'een-api-toolkit'
 import CameraSelector from '../components/CameraSelector.vue'
 import LiveVideoPlayer from '../components/LiveVideoPlayer.vue'
 import DirectionPad from '../components/DirectionPad.vue'
@@ -14,7 +14,7 @@ const { clear: clearApiLog } = useApiLog()
 const selectedCamera = ref<Camera | null>(null)
 const refreshTrigger = ref(0)
 const homePreset = ref<PtzPreset | null>(null)
-const currentPosition = ref<PtzPosition | null>(null)
+const currentPosition = ref<PtzPositionResponse | null>(null)
 const controlsRef = ref<HTMLElement | null>(null)
 const controlsHeight = ref<number | undefined>(undefined)
 

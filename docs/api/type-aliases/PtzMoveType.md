@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **PtzMoveType** = `"position"` \| `"direction"` \| `"centerOn"`
 
-Defined in: [types/ptz.ts:29](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L29)
+Defined in: [types/ptz.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L48)
 
 Types of PTZ movement commands.
 

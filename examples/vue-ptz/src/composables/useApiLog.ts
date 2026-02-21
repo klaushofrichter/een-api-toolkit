@@ -12,7 +12,7 @@ export interface ApiLogEntry {
 }
 
 const MAX_ENTRIES = 100
-const POSITION_TOLERANCE = 0.01
+export const POSITION_TOLERANCE = 0.01
 let nextId = 1
 
 const entries = ref<ApiLogEntry[]>([])

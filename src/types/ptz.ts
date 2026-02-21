@@ -1,8 +1,8 @@
 /**
- * Pan/Tilt/Zoom position coordinates.
+ * Pan/Tilt/Zoom position coordinates for movement commands.
  *
  * @remarks
- * Represents the current or target position of a PTZ camera.
+ * Used when specifying target positions in movement commands.
  * Values are optional since you may want to move only one axis at a time.
  *
  * @category PTZ
@@ -14,6 +14,25 @@ export interface PtzPosition {
   y?: number
   /** Zoom level */
   z?: number
+}
+
+/**
+ * PTZ position as returned by the API (all fields present).
+ *
+ * @remarks
+ * When reading the current camera position via `getPtzPosition()`, the API
+ * always returns all three coordinates. This type extends `PtzPosition` with
+ * required fields for type safety at response sites.
+ *
+ * @category PTZ
+ */
+export interface PtzPositionResponse {
+  /** Pan position (horizontal rotation) */
+  x: number
+  /** Tilt position (vertical rotation) */
+  y: number
+  /** Zoom level */
+  z: number
 }
 
 /**

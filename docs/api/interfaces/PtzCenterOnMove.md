@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: PtzCenterOnMove
 
-Defined in: [types/ptz.ts:121](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L121)
+Defined in: [types/ptz.ts:140](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L140)
 
 Center the camera on a point in the current frame.
 
@@ -33,7 +33,7 @@ const move: PtzCenterOnMove = {
 
 > **moveType**: `"centerOn"`
 
-Defined in: [types/ptz.ts:123](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L123)
+Defined in: [types/ptz.ts:142](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L142)
 
 Must be 'centerOn'
 
@@ -43,7 +43,7 @@ Must be 'centerOn'
 
 > **relativeX**: `number`
 
-Defined in: [types/ptz.ts:125](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L125)
+Defined in: [types/ptz.ts:144](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L144)
 
 Horizontal position in frame (0.0 = left, 1.0 = right)
 
@@ -53,6 +53,6 @@ Horizontal position in frame (0.0 = left, 1.0 = right)
 
 > **relativeY**: `number`
 
-Defined in: [types/ptz.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L127)
+Defined in: [types/ptz.ts:146](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L146)
 
 Vertical position in frame (0.0 = top, 1.0 = bottom)

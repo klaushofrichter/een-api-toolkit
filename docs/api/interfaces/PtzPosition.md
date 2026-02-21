@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -8,11 +8,11 @@
 
 Defined in: [types/ptz.ts:10](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L10)
 
-Pan/Tilt/Zoom position coordinates.
+Pan/Tilt/Zoom position coordinates for movement commands.
 
 ## Remarks
 
-Represents the current or target position of a PTZ camera.
+Used when specifying target positions in movement commands.
 Values are optional since you may want to move only one axis at a time.
 
 ## Properties

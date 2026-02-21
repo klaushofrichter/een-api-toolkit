@@ -178,6 +178,7 @@ export type {
   DownloadDownloadResult,
   // PTZ types
   PtzPosition,
+  PtzPositionResponse,
   PtzMoveType,
   PtzDirection,
   PtzStepSize,

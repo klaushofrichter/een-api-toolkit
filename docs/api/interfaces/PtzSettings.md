@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: PtzSettings
 
-Defined in: [types/ptz.ts:204](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L204)
+Defined in: [types/ptz.ts:223](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L223)
 
 PTZ camera settings including presets and automation mode.
 
@@ -34,7 +34,7 @@ if (data) {
 
 > **presets**: [`PtzPreset`](PtzPreset.md)[]
 
-Defined in: [types/ptz.ts:206](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L206)
+Defined in: [types/ptz.ts:225](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L225)
 
 Array of saved preset positions
 
@@ -44,7 +44,7 @@ Array of saved preset positions
 
 > **homePreset**: `string` \| `null`
 
-Defined in: [types/ptz.ts:208](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L208)
+Defined in: [types/ptz.ts:227](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L227)
 
 Name of the home preset, or null if none is set
 
@@ -54,7 +54,7 @@ Name of the home preset, or null if none is set
 
 > **mode**: [`PtzMode`](../type-aliases/PtzMode.md)
 
-Defined in: [types/ptz.ts:210](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L210)
+Defined in: [types/ptz.ts:229](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L229)
 
 Automation mode controlling automatic camera movement
 
@@ -64,6 +64,6 @@ Automation mode controlling automatic camera movement
 
 > **autoStartDelay**: `number`
 
-Defined in: [types/ptz.ts:212](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L212)
+Defined in: [types/ptz.ts:231](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L231)
 
 Seconds of inactivity before automatic movement begins

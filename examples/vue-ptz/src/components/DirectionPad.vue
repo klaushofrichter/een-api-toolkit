@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { movePtz } from 'een-api-toolkit'
-import type { PtzDirection, PtzStepSize, PtzPreset, PtzPosition } from 'een-api-toolkit'
+import type { PtzDirection, PtzStepSize, PtzPreset, PtzPositionResponse } from 'een-api-toolkit'
 import { useApiLog } from '../composables/useApiLog'
 
-const POSITION_TOLERANCE = 0.01
+import { POSITION_TOLERANCE } from '../composables/useApiLog'
 
 const props = defineProps<{
   cameraId: string | null
   homePreset: PtzPreset | null
-  currentPosition: PtzPosition | null
+  currentPosition: PtzPositionResponse | null
 }>()
 
 const isAtHome = computed(() => {
@@ -38,9 +38,9 @@ async function move(directions: PtzDirection[]) {
   moving.value = true
   error.value = null
 
-  const move = { moveType: 'direction' as const, direction: directions, stepSize: stepSize.value }
-  const result = await movePtz(props.cameraId, move)
-  apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
+  const moveCmd = { moveType: 'direction' as const, direction: directions, stepSize: stepSize.value }
+  const result = await movePtz(props.cameraId, moveCmd)
+  apiLog('movePtz', { cameraId: props.cameraId, move: moveCmd }, result.error ?? result.data, !!result.error)
 
   moving.value = false
 

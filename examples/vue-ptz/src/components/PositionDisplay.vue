@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch, onUnmounted } from 'vue'
 import { getPtzPosition } from 'een-api-toolkit'
-import type { PtzPosition } from 'een-api-toolkit'
+import type { PtzPositionResponse } from 'een-api-toolkit'
 import { useApiLog } from '../composables/useApiLog'
 
 const props = defineProps<{
@@ -10,11 +10,11 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'position-updated', position: PtzPosition | null): void
+  (e: 'position-updated', position: PtzPositionResponse | null): void
 }>()
 
 const { log: apiLog } = useApiLog()
-const position = ref<PtzPosition | null>(null)
+const position = ref<PtzPositionResponse | null>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
 const autoRefresh = ref(true)

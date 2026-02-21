@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: PtzPositionMove
 
-Defined in: [types/ptz.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L63)
+Defined in: [types/ptz.ts:82](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L82)
 
 Move to absolute PTZ coordinates.
 
@@ -31,7 +31,7 @@ const move: PtzPositionMove = {
 
 > **moveType**: `"position"`
 
-Defined in: [types/ptz.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L65)
+Defined in: [types/ptz.ts:84](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L84)
 
 Must be 'position'
 
@@ -41,7 +41,7 @@ Must be 'position'
 
 > `optional` **x**: `number`
 
-Defined in: [types/ptz.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L67)
+Defined in: [types/ptz.ts:86](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L86)
 
 Target pan position
 
@@ -51,7 +51,7 @@ Target pan position
 
 > `optional` **y**: `number`
 
-Defined in: [types/ptz.ts:69](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L69)
+Defined in: [types/ptz.ts:88](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L88)
 
 Target tilt position
 
@@ -61,6 +61,6 @@ Target tilt position
 
 > `optional` **z**: `number`
 
-Defined in: [types/ptz.ts:71](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L71)
+Defined in: [types/ptz.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L90)
 
 Target zoom level

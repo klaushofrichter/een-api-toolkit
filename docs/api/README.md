@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.89**
+**EEN API Toolkit v0.3.90**
 
 ***
 
-# EEN API Toolkit v0.3.89
+# EEN API Toolkit v0.3.90
 
 ## Interfaces
 
@@ -190,6 +190,7 @@
 ### PTZ
 
 - [PtzPosition](interfaces/PtzPosition.md)
+- [PtzPositionResponse](interfaces/PtzPositionResponse.md)
 - [PtzPositionMove](interfaces/PtzPositionMove.md)
 - [PtzDirectionMove](interfaces/PtzDirectionMove.md)
 - [PtzCenterOnMove](interfaces/PtzCenterOnMove.md)

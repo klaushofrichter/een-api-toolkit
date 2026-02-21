@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: PtzDirectionMove
 
-Defined in: [types/ptz.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L92)
+Defined in: [types/ptz.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L111)
 
 Move in a relative direction with optional step size.
 
@@ -31,7 +31,7 @@ const move: PtzDirectionMove = {
 
 > **moveType**: `"direction"`
 
-Defined in: [types/ptz.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L94)
+Defined in: [types/ptz.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L113)
 
 Must be 'direction'
 
@@ -41,7 +41,7 @@ Must be 'direction'
 
 > **direction**: [`PtzDirection`](../type-aliases/PtzDirection.md)[]
 
-Defined in: [types/ptz.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L96)
+Defined in: [types/ptz.ts:115](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L115)
 
 One or more directions to move
 
@@ -51,6 +51,6 @@ One or more directions to move
 
 > `optional` **stepSize**: [`PtzStepSize`](../type-aliases/PtzStepSize.md)
 
-Defined in: [types/ptz.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L98)
+Defined in: [types/ptz.ts:117](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L117)
 
 Size of each movement step (default: medium)

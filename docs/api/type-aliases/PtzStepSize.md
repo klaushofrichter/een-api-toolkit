@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -8,6 +8,6 @@
 
 > **PtzStepSize** = `"small"` \| `"medium"` \| `"large"`
 
-Defined in: [types/ptz.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L43)
+Defined in: [types/ptz.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L62)
 
 Step size for directional movements.

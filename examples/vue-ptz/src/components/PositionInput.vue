@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { movePtz } from 'een-api-toolkit'
-import type { PtzPosition } from 'een-api-toolkit'
+import type { PtzPositionResponse } from 'een-api-toolkit'
 import { useApiLog } from '../composables/useApiLog'
 
 const props = defineProps<{
   cameraId: string | null
-  currentPosition: PtzPosition | null
+  currentPosition: PtzPositionResponse | null
 }>()
 
 const emit = defineEmits<{

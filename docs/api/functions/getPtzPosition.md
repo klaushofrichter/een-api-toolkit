@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Function: getPtzPosition()
 
-> **getPtzPosition**(`cameraId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PtzPosition`](../interfaces/PtzPosition.md)\>\>
+> **getPtzPosition**(`cameraId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PtzPositionResponse`](../interfaces/PtzPositionResponse.md)\>\>
 
 Defined in: [ptz/service.ts:31](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/ptz/service.ts#L31)
 
@@ -22,7 +22,7 @@ The unique identifier of the PTZ camera
 
 ## Returns
 
-`Promise`\<[`Result`](../type-aliases/Result.md)\<[`PtzPosition`](../interfaces/PtzPosition.md)\>\>
+`Promise`\<[`Result`](../type-aliases/Result.md)\<[`PtzPositionResponse`](../interfaces/PtzPositionResponse.md)\>\>
 
 A Result containing the current PTZ position or an error
 

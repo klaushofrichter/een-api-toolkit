@@ -1,6 +1,6 @@
 import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
-import type { Result, PtzPosition, PtzMove, PtzSettings, PtzSettingsUpdate } from '../types'
+import type { Result, PtzPositionResponse, PtzMove, PtzSettings, PtzSettingsUpdate } from '../types'
 import { debug } from '../utils/debug'
 
 /**
@@ -28,7 +28,7 @@ import { debug } from '../utils/debug'
  *
  * @category PTZ
  */
-export async function getPtzPosition(cameraId: string): Promise<Result<PtzPosition>> {
+export async function getPtzPosition(cameraId: string): Promise<Result<PtzPositionResponse>> {
   const authStore = useAuthStore()
 
   if (!authStore.isAuthenticated) {
@@ -59,7 +59,7 @@ export async function getPtzPosition(cameraId: string): Promise<Result<PtzPositi
       return handleErrorResponse(response)
     }
 
-    const data = await response.json() as PtzPosition
+    const data = await response.json() as PtzPositionResponse
     debug('PTZ position fetched for:', cameraId)
 
     return success(data)

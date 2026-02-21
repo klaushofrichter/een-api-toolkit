@@ -162,11 +162,11 @@ import { updatePtzSettings } from 'een-api-toolkit'
 // Change mode
 await updatePtzSettings('camera-123', { mode: 'tour' })
 
-// Add preset
+// To add a preset, first fetch existing presets and append the new one
+const { data: settings } = await getPtzSettings('camera-123')
+const newPreset = { name: 'Entrance', position: { x: 0, y: 0, z: 1 }, timeAtPreset: 10 }
 await updatePtzSettings('camera-123', {
-  presets: [
-    { name: 'Entrance', position: { x: 0, y: 0, z: 1 }, timeAtPreset: 10 }
-  ],
+  presets: [...(settings?.presets ?? []), newPreset],
   homePreset: 'Entrance'
 })
 ```

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -8,6 +8,6 @@
 
 > **PtzDirection** = `"up"` \| `"down"` \| `"left"` \| `"right"` \| `"in"` \| `"out"`
 
-Defined in: [types/ptz.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L36)
+Defined in: [types/ptz.ts:55](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L55)
 
 Directional movement options for PTZ cameras.

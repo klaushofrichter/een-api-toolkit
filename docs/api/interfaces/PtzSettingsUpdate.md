@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.89**](../README.md)
+[**EEN API Toolkit v0.3.90**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: PtzSettingsUpdate
 
-Defined in: [types/ptz.ts:238](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L238)
+Defined in: [types/ptz.ts:257](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L257)
 
 Parameters for updating PTZ settings (all fields optional).
 
@@ -36,7 +36,7 @@ await updatePtzSettings('camera-id', {
 
 > `optional` **presets**: [`PtzPreset`](PtzPreset.md)[]
 
-Defined in: [types/ptz.ts:240](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L240)
+Defined in: [types/ptz.ts:259](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L259)
 
 Updated array of preset positions
 
@@ -46,7 +46,7 @@ Updated array of preset positions
 
 > `optional` **homePreset**: `string` \| `null`
 
-Defined in: [types/ptz.ts:242](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L242)
+Defined in: [types/ptz.ts:261](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L261)
 
 Updated home preset name
 
@@ -56,7 +56,7 @@ Updated home preset name
 
 > `optional` **mode**: [`PtzMode`](../type-aliases/PtzMode.md)
 
-Defined in: [types/ptz.ts:244](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L244)
+Defined in: [types/ptz.ts:263](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L263)
 
 Updated automation mode
 
@@ -66,6 +66,6 @@ Updated automation mode
 
 > `optional` **autoStartDelay**: `number`
 
-Defined in: [types/ptz.ts:246](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L246)
+Defined in: [types/ptz.ts:265](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L265)
 
 Updated auto-start delay in seconds
