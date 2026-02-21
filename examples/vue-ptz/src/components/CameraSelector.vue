@@ -34,9 +34,7 @@ async function loadPtzCameras() {
 
     const allCameras = result.data?.results || []
     for (const cam of allCameras) {
-      // PTZ capability is at capabilities.ptz.capable (nested object, not flat)
-      const capabilities = (cam as Camera & { capabilities?: { ptz?: { capable?: boolean } } }).capabilities
-      if (capabilities?.ptz?.capable) {
+      if (cam.capabilities?.ptz?.capable) {
         ptzCameras.push(cam)
       }
     }

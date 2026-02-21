@@ -22,7 +22,7 @@ const autoRefresh = ref(true)
 let pollTimer: ReturnType<typeof setInterval> | null = null
 
 async function fetchPosition() {
-  if (!props.cameraId) return
+  if (!props.cameraId || loading.value) return
 
   loading.value = true
   error.value = null

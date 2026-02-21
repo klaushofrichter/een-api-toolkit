@@ -224,6 +224,13 @@ export interface Camera {
   rtspConnectionSettings?: CameraRtspConnectionSettings
   /** Physical position of the camera */
   devicePosition?: CameraDevicePosition
+  /** Capabilities of the camera (returned when `include: ['capabilities']` is requested) */
+  capabilities?: {
+    ptz?: {
+      /** Whether this camera supports PTZ controls */
+      capable?: boolean
+    }
+  }
   /** List of enabled analytics on this camera */
   enabledAnalytics?: string[]
   /** Recording mode settings */

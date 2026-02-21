@@ -244,8 +244,10 @@ watch(() => props.cameraId, () => {
           @keyup.enter="setAutoStartDelay"
           :disabled="saving"
           min="0"
+          placeholder="Press Enter to save"
           data-testid="auto-start-delay"
         />
+        <span class="input-hint">Enter to save</span>
       </div>
 
       <!-- Home preset -->
@@ -390,6 +392,12 @@ watch(() => props.cameraId, () => {
 
 .setting-group input[type="number"] {
   max-width: 80px;
+}
+
+.input-hint {
+  font-size: 10px;
+  color: #999;
+  white-space: nowrap;
 }
 
 .presets-section {

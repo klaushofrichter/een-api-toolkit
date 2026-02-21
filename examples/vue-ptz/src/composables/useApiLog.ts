@@ -20,7 +20,13 @@ const presets = ref<PtzPreset[]>([])
 const homePresetName = ref<string | null>(null)
 
 function isSame(a: unknown, b: unknown): boolean {
-  return JSON.stringify(a) === JSON.stringify(b)
+  if (a === b) return true
+  if (a == null || b == null) return a === b
+  try {
+    return JSON.stringify(a) === JSON.stringify(b)
+  } catch {
+    return false
+  }
 }
 
 export function isHomePreset(name: string | null): boolean {
