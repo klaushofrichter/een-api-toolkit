@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.90**](../README.md)
+[**EEN API Toolkit v0.3.91**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **PtzMove** = [`PtzPositionMove`](../interfaces/PtzPositionMove.md) \| [`PtzDirectionMove`](../interfaces/PtzDirectionMove.md) \| [`PtzCenterOnMove`](../interfaces/PtzCenterOnMove.md)
 
-Defined in: [types/ptz.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L171)
+Defined in: [types/ptz.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L174)
 
 Discriminated union of all PTZ move types.
 

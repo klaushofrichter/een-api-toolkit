@@ -282,9 +282,9 @@ watch(() => props.cameraId, () => {
                 <span v-if="preset.name === settings.homePreset" class="home-badge">HOME</span>
               </span>
               <span class="preset-coords">
-                ({{ preset.position.x?.toFixed(1) ?? '?' }},
-                {{ preset.position.y?.toFixed(1) ?? '?' }},
-                {{ preset.position.z?.toFixed(1) ?? '?' }})
+                ({{ preset.position.x.toFixed(1) }},
+                {{ preset.position.y.toFixed(1) }},
+                {{ preset.position.z.toFixed(1) }})
               </span>
             </div>
             <div class="preset-actions">

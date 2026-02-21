@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.90**](../README.md)
+[**EEN API Toolkit v0.3.91**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **PtzMode** = `"homeReturn"` \| `"tour"` \| `"manualOnly"`
 
-Defined in: [types/ptz.ts:200](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L200)
+Defined in: [types/ptz.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L203)
 
 PTZ automation mode.
 

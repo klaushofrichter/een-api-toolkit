@@ -66,6 +66,7 @@ export type PtzStepSize = 'small' | 'medium' | 'large'
  *
  * @remarks
  * Moves the camera to specific x, y, z position values.
+ * At least one coordinate (x, y, or z) should be provided for a meaningful move.
  *
  * @example
  * ```typescript
@@ -121,9 +122,11 @@ export interface PtzDirectionMove {
  * Center the camera on a point in the current frame.
  *
  * @remarks
- * Uses relative coordinates (0.0 to 1.0) within the current video frame
+ * Uses relative coordinates within the current video frame
  * to center the camera on a specific point. Useful for click-to-center
  * functionality in video players.
+ * Both `relativeX` and `relativeY` must be in the range 0.0 to 1.0,
+ * where (0.0, 0.0) is the top-left corner and (1.0, 1.0) is the bottom-right.
  *
  * @example
  * ```typescript
@@ -181,8 +184,8 @@ export type PtzMove = PtzPositionMove | PtzDirectionMove | PtzCenterOnMove
 export interface PtzPreset {
   /** Human-readable name for this preset */
   name: string
-  /** The saved position coordinates */
-  position: PtzPosition
+  /** The saved position coordinates (always has x, y, z from the API) */
+  position: PtzPositionResponse
   /** Time the camera stays at this preset (in seconds) during tour mode */
   timeAtPreset: number
 }

@@ -17,9 +17,9 @@ const isAtHome = computed(() => {
   const home = props.homePreset.position
   const cur = props.currentPosition
   return (
-    Math.abs((cur.x ?? 0) - (home.x ?? 0)) < POSITION_TOLERANCE &&
-    Math.abs((cur.y ?? 0) - (home.y ?? 0)) < POSITION_TOLERANCE &&
-    Math.abs((cur.z ?? 0) - (home.z ?? 0)) < POSITION_TOLERANCE
+    Math.abs(cur.x - home.x) < POSITION_TOLERANCE &&
+    Math.abs(cur.y - home.y) < POSITION_TOLERANCE &&
+    Math.abs(cur.z - home.z) < POSITION_TOLERANCE
   )
 })
 

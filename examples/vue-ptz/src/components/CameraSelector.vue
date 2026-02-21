@@ -8,10 +8,11 @@ const emit = defineEmits<{
 }>()
 
 const cameras = ref<Camera[]>([])
-const loading = ref(true)
+const loading = ref(false)
 const error = ref<string | null>(null)
 
 async function loadPtzCameras() {
+  if (loading.value) return
   loading.value = true
   error.value = null
 

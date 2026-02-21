@@ -37,9 +37,9 @@ export function matchPresetName(pos: { x?: number; y?: number; z?: number }): st
   for (const preset of presets.value) {
     const hp = preset.position
     if (
-      Math.abs((pos.x ?? 0) - (hp.x ?? 0)) < POSITION_TOLERANCE &&
-      Math.abs((pos.y ?? 0) - (hp.y ?? 0)) < POSITION_TOLERANCE &&
-      Math.abs((pos.z ?? 0) - (hp.z ?? 0)) < POSITION_TOLERANCE
+      Math.abs((pos.x ?? 0) - hp.x) < POSITION_TOLERANCE &&
+      Math.abs((pos.y ?? 0) - hp.y) < POSITION_TOLERANCE &&
+      Math.abs((pos.z ?? 0) - hp.z) < POSITION_TOLERANCE
     ) {
       return preset.name
     }
