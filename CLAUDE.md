@@ -33,6 +33,7 @@ The `docs/AI-CONTEXT.md` file is the entry point for AI assistants. It links to 
 - `AI-GROUPING.md` - Layouts (camera groupings) API
 - `AI-AUTOMATIONS.md` - Automation rules and actions
 - `AI-JOBS.md` - Jobs, Exports, Files, Downloads
+- `AI-PTZ.md` - PTZ camera controls (pan/tilt/zoom, presets)
 - `AI-EVENT-DATA-SCHEMAS.md` - Event type to data schema mappings
 
 ### Specialized Agents
@@ -48,6 +49,7 @@ Domain-specific agents are available in `.claude/agents/`:
 | `een-grouping-agent` | Layouts, camera groupings, pane management |
 | `een-automations-agent` | Alert rules, action rules, event conditions |
 | `een-jobs-agent` | Jobs, exports, files, downloads |
+| `een-ptz-agent` | PTZ camera controls, presets, click-to-center |
 
 **Using Agents in Your Project:**
 
@@ -151,6 +153,10 @@ GET  /api/v3.0/bridges/{id}        # Get bridge by ID
 GET  /api/v3.0/cameras             # List cameras
 GET  /api/v3.0/cameras/{id}        # Get camera by ID
 POST /api/v3.0/cameras             # Create camera (later)
+GET  /api/v3.0/cameras/{id}/ptz/position   # Get PTZ position
+PUT  /api/v3.0/cameras/{id}/ptz/position   # Move PTZ camera
+GET  /api/v3.0/cameras/{id}/ptz/settings   # Get PTZ settings
+PATCH /api/v3.0/cameras/{id}/ptz/settings  # Update PTZ settings
 ```
 
 ### Pagination Pattern
@@ -353,6 +359,13 @@ All actions are pinned to immutable commit SHAs to prevent supply chain attacks.
 2. Update the version comment (e.g., `# v6.0.2`) to match the new version
 3. Review the action's release notes for breaking changes
 
+**Exception**: `anthropics/claude-code-action` uses the `@v1` floating tag instead of a pinned SHA. This is intentional because:
+- It is an official Anthropic action with trusted releases
+- SHA pinning triggers Dependabot PRs that fail CI, since Dependabot workflows cannot access repository secrets (`ANTHROPIC_API_KEY`)
+- The `@v1` tag auto-updates to the latest v1.x release
+
+The Claude Code Review workflow also skips Dependabot PRs (`if: github.actor != 'dependabot[bot]'`) because Dependabot cannot access the `ANTHROPIC_API_KEY` secret needed to run the review.
+
 ## Code Review
 
 - GitHub Actions workflow uses Claude for code review
@@ -517,6 +530,7 @@ The `generate-ai-context.ts` script handles two categories of AI documentation:
 - `docs/ai-reference/AI-EVENTS.md` - Events, Alerts, Metrics, SSE
 - `docs/ai-reference/AI-AUTOMATIONS.md` - Automation rules and actions
 - `docs/ai-reference/AI-JOBS.md` - Jobs, Exports, Files, Downloads
+- `docs/ai-reference/AI-PTZ.md` - PTZ camera controls (pan/tilt/zoom, presets)
 - `docs/ai-reference/AI-EVENT-DATA-SCHEMAS.md` - Event type to data schema mappings (generated from `src/events/dataSchemas.ts`)
 
 ### Source-Based Documentation Generation

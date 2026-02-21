@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.85**](../README.md)
+[**EEN API Toolkit v0.3.91**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettings
 
-Defined in: [types/camera.ts:652](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L652)
+Defined in: [types/camera.ts:659](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L659)
 
 Top-level camera settings response from EEN API v3.0.
 
@@ -37,7 +37,7 @@ if (data) {
 
 > **data**: [`CameraSettingsData`](CameraSettingsData.md)
 
-Defined in: [types/camera.ts:654](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L654)
+Defined in: [types/camera.ts:661](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L661)
 
 The camera settings data
 
@@ -47,7 +47,7 @@ The camera settings data
 
 > `optional` **schema**: `object`
 
-Defined in: [types/camera.ts:656](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L656)
+Defined in: [types/camera.ts:663](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L663)
 
 JSON Schema describing all settings fields (when include contains 'schema')
 
@@ -57,6 +57,6 @@ JSON Schema describing all settings fields (when include contains 'schema')
 
 > `optional` **proposedValues**: `object`
 
-Defined in: [types/camera.ts:658](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L658)
+Defined in: [types/camera.ts:665](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L665)
 
 Proposed/recommended values (when include contains 'proposedValues')

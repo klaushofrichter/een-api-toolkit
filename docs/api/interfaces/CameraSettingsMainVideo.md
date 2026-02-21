@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.85**](../README.md)
+[**EEN API Toolkit v0.3.91**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettingsMainVideo
 
-Defined in: [types/camera.ts:491](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L491)
+Defined in: [types/camera.ts:498](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L498)
 
 Camera main video settings.
 
@@ -20,7 +20,7 @@ Configuration for the full-resolution main stream.
 
 > `optional` **transmitMode**: `string`
 
-Defined in: [types/camera.ts:493](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L493)
+Defined in: [types/camera.ts:500](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L500)
 
 Transmit mode (e.g., "always", "event")
 
@@ -30,7 +30,7 @@ Transmit mode (e.g., "always", "event")
 
 > `optional` **resolution**: `string`
 
-Defined in: [types/camera.ts:495](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L495)
+Defined in: [types/camera.ts:502](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L502)
 
 Resolution of the main stream
 
@@ -40,7 +40,7 @@ Resolution of the main stream
 
 > `optional` **quality**: `string`
 
-Defined in: [types/camera.ts:497](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L497)
+Defined in: [types/camera.ts:504](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L504)
 
 Quality setting for main stream
 
@@ -50,7 +50,7 @@ Quality setting for main stream
 
 > `optional` **kbpsFactor**: `number`
 
-Defined in: [types/camera.ts:499](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L499)
+Defined in: [types/camera.ts:506](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L506)
 
 Bitrate factor in kbps
 
@@ -60,7 +60,7 @@ Bitrate factor in kbps
 
 > `optional` **captureMode**: `string`
 
-Defined in: [types/camera.ts:501](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L501)
+Defined in: [types/camera.ts:508](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L508)
 
 Capture mode
 
@@ -70,6 +70,6 @@ Capture mode
 
 > `optional` **supportedResolutions**: `string`[]
 
-Defined in: [types/camera.ts:503](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L503)
+Defined in: [types/camera.ts:510](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L510)
 
 List of supported resolutions
