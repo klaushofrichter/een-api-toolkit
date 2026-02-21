@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.85**](../README.md)
+[**EEN API Toolkit v0.3.89**](../README.md)
 
 ***
 
@@ -245,11 +245,31 @@ Physical position of the camera
 
 ***
 
+### capabilities?
+
+> `optional` **capabilities**: `object`
+
+Defined in: [types/camera.ts:228](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L228)
+
+Capabilities of the camera (returned when `include: ['capabilities']` is requested)
+
+#### ptz?
+
+> `optional` **ptz**: `object`
+
+##### ptz.capable?
+
+> `optional` **capable**: `boolean`
+
+Whether this camera supports PTZ controls
+
+***
+
 ### enabledAnalytics?
 
 > `optional` **enabledAnalytics**: `string`[]
 
-Defined in: [types/camera.ts:228](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L228)
+Defined in: [types/camera.ts:235](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L235)
 
 List of enabled analytics on this camera
 
@@ -259,7 +279,7 @@ List of enabled analytics on this camera
 
 > `optional` **recordingModes**: [`CameraRecordingModes`](CameraRecordingModes.md)
 
-Defined in: [types/camera.ts:230](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L230)
+Defined in: [types/camera.ts:237](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L237)
 
 Recording mode settings
 
@@ -269,7 +289,7 @@ Recording mode settings
 
 > `optional` **createdAt**: `string`
 
-Defined in: [types/camera.ts:232](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L232)
+Defined in: [types/camera.ts:239](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L239)
 
 ISO 8601 timestamp when the camera was created
 
@@ -279,6 +299,6 @@ ISO 8601 timestamp when the camera was created
 
 > `optional` **updatedAt**: `string`
 
-Defined in: [types/camera.ts:234](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L234)
+Defined in: [types/camera.ts:241](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L241)
 
 ISO 8601 timestamp when the camera was last updated

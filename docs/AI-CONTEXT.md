@@ -1,6 +1,6 @@
 # EEN API Toolkit - AI Reference
 
-> **Version:** 0.3.85
+> **Version:** 0.3.89
 >
 > This documentation is optimized for AI assistants. It provides focused, domain-specific
 > references to help you understand and use the een-api-toolkit efficiently.
@@ -22,6 +22,7 @@
 | Events, alerts, metrics, SSE | [AI-EVENTS.md](./ai-reference/AI-EVENTS.md) | ~3.5K |
 | Automation rules, alert actions | [AI-AUTOMATIONS.md](./ai-reference/AI-AUTOMATIONS.md) | ~4K |
 | Jobs, exports, files, downloads | [AI-JOBS.md](./ai-reference/AI-JOBS.md) | ~3.5K |
+| PTZ camera controls, presets | [AI-PTZ.md](./ai-reference/AI-PTZ.md) | ~2K |
 
 ## Specialized Agents
 
@@ -38,6 +39,7 @@ Specialized agents are available in `.claude/agents/` for domain-specific tasks:
 | `een-events-agent` | Events, alerts, metrics, real-time SSE subscriptions |
 | `een-automations-agent` | Automation rules, alert condition rules, alert actions |
 | `een-jobs-agent` | Jobs, exports, files, downloads, video export workflows |
+| `een-ptz-agent` | PTZ camera controls, presets, click-to-center |
 
 **How to Use Agents:**
 
