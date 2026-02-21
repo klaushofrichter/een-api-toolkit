@@ -59,7 +59,7 @@ function stopPolling() {
 watch(() => props.cameraId, () => {
   position.value = null
   startPolling()
-})
+}, { immediate: true })
 
 watch(() => props.refreshTrigger, () => {
   fetchPosition()

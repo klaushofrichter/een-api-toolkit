@@ -2,6 +2,10 @@
 import { ref } from 'vue'
 import { useApiLog, matchPresetName, isHomePreset, type ApiLogEntry } from '../composables/useApiLog'
 
+const props = defineProps<{
+  cameraId: string | null
+}>()
+
 const { entries, clear } = useApiLog()
 const selectedEntry = ref<ApiLogEntry | null>(null)
 
@@ -127,6 +131,10 @@ function entrySummary(entry: ApiLogEntry): string {
           <button @click="closeModal" class="modal-close" data-testid="close-modal">&times;</button>
         </div>
         <div class="modal-body">
+          <div v-if="props.cameraId" class="modal-section">
+            <h4>Camera</h4>
+            <pre><code>{{ props.cameraId }}</code></pre>
+          </div>
           <div class="modal-section">
             <h4>Time (last call)</h4>
             <pre>{{ selectedEntry.timestamp.toISOString() }}</pre>

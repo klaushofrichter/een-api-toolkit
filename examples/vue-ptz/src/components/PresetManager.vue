@@ -67,6 +67,12 @@ async function goToPreset(preset: PtzPreset) {
 async function saveCurrentAsPreset() {
   if (!props.cameraId || !settings.value || !newPresetName.value.trim()) return
 
+  const trimmedName = newPresetName.value.trim()
+  if (settings.value.presets.some(p => p.name === trimmedName)) {
+    error.value = `A preset named "${trimmedName}" already exists`
+    return
+  }
+
   saving.value = true
   error.value = null
 
@@ -80,7 +86,7 @@ async function saveCurrentAsPreset() {
   }
 
   const newPreset: PtzPreset = {
-    name: newPresetName.value.trim(),
+    name: trimmedName,
     position: posResult.data!,
     timeAtPreset: 10
   }
@@ -235,7 +241,7 @@ watch(() => props.cameraId, () => {
         <input
           type="number"
           :value="settings.autoStartDelay"
-          @change="setAutoStartDelay"
+          @keyup.enter="setAutoStartDelay"
           :disabled="saving"
           min="0"
           data-testid="auto-start-delay"

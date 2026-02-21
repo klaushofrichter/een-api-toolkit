@@ -8,7 +8,9 @@ import PositionDisplay from '../components/PositionDisplay.vue'
 import PositionInput from '../components/PositionInput.vue'
 import PresetManager from '../components/PresetManager.vue'
 import ApiLog from '../components/ApiLog.vue'
+import { useApiLog } from '../composables/useApiLog'
 
+const { clear: clearApiLog } = useApiLog()
 const selectedCamera = ref<Camera | null>(null)
 const refreshTrigger = ref(0)
 const homePreset = ref<PtzPreset | null>(null)
@@ -32,6 +34,7 @@ onUnmounted(() => {
 })
 
 function onCameraSelect(camera: Camera) {
+  clearApiLog()
   selectedCamera.value = camera
   refreshTrigger.value++
 }
@@ -59,7 +62,7 @@ function onMoveComplete() {
           :camera="selectedCamera"
           @move-complete="onMoveComplete"
         />
-        <ApiLog />
+        <ApiLog :camera-id="selectedCamera?.id ?? null" />
       </div>
 
       <div ref="controlsRef" class="controls-column">
