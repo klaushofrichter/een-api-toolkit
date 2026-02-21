@@ -175,7 +175,20 @@ export type {
   DownloadStatus,
   ListDownloadsParams,
   GetDownloadParams,
-  DownloadDownloadResult
+  DownloadDownloadResult,
+  // PTZ types
+  PtzPosition,
+  PtzMoveType,
+  PtzDirection,
+  PtzStepSize,
+  PtzPositionMove,
+  PtzDirectionMove,
+  PtzCenterOnMove,
+  PtzMove,
+  PtzPreset,
+  PtzMode,
+  PtzSettings,
+  PtzSettingsUpdate
 } from './types'
 
 // Type helpers
@@ -326,3 +339,11 @@ export {
   getDownload,
   downloadDownload
 } from './downloads'
+
+// PTZ - Plain functions
+export {
+  getPtzPosition,
+  movePtz,
+  getPtzSettings,
+  updatePtzSettings
+} from './ptz'

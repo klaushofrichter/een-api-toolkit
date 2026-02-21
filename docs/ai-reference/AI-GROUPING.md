@@ -1,6 +1,6 @@
 # Layouts API - EEN API Toolkit
 
-> **Version:** 0.3.85
+> **Version:** 0.3.86
 >
 > Complete reference for layout management (camera grouping).
 > Load this document when working with layouts.

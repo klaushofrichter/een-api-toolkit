@@ -1,8 +1,8 @@
-**EEN API Toolkit v0.3.85**
+**EEN API Toolkit v0.3.86**
 
 ***
 
-# EEN API Toolkit v0.3.85
+# EEN API Toolkit v0.3.86
 
 ## Interfaces
 
@@ -187,6 +187,16 @@
 - [Notification](interfaces/Notification.md)
 - [ListNotificationsParams](interfaces/ListNotificationsParams.md)
 
+### PTZ
+
+- [PtzPosition](interfaces/PtzPosition.md)
+- [PtzPositionMove](interfaces/PtzPositionMove.md)
+- [PtzDirectionMove](interfaces/PtzDirectionMove.md)
+- [PtzCenterOnMove](interfaces/PtzCenterOnMove.md)
+- [PtzPreset](interfaces/PtzPreset.md)
+- [PtzSettings](interfaces/PtzSettings.md)
+- [PtzSettingsUpdate](interfaces/PtzSettingsUpdate.md)
+
 ## Type Aliases
 
 ### Types
@@ -281,6 +291,14 @@
 
 - [NotificationCategory](type-aliases/NotificationCategory.md)
 - [NotificationStatus](type-aliases/NotificationStatus.md)
+
+### PTZ
+
+- [PtzMoveType](type-aliases/PtzMoveType.md)
+- [PtzDirection](type-aliases/PtzDirection.md)
+- [PtzStepSize](type-aliases/PtzStepSize.md)
+- [PtzMove](type-aliases/PtzMove.md)
+- [PtzMode](type-aliases/PtzMode.md)
 
 ## Variables
 
@@ -423,6 +441,13 @@
 - [getProxyUrl](functions/getProxyUrl.md)
 - [getClientId](functions/getClientId.md)
 - [getRedirectUri](functions/getRedirectUri.md)
+
+### PTZ
+
+- [getPtzPosition](functions/getPtzPosition.md)
+- [movePtz](functions/movePtz.md)
+- [getPtzSettings](functions/getPtzSettings.md)
+- [updatePtzSettings](functions/updatePtzSettings.md)
 
 ### Utilities
 

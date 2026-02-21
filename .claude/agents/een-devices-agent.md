@@ -403,6 +403,27 @@ if (isCameraOnline(camera.status)) {
 }
 ```
 
+## PTZ Camera Support
+
+When the user asks about PTZ (Pan/Tilt/Zoom) camera controls, presets, or camera movement,
+**delegate to the `een-ptz-agent`** which has specialized knowledge of:
+- `getPtzPosition()`, `movePtz()`, `getPtzSettings()`, `updatePtzSettings()`
+- Direction pad controls, click-to-center, preset management
+- PTZ automation modes (homeReturn, tour, manualOnly)
+
+To check if a camera supports PTZ, use `getCamera(id, { include: ['capabilities'] })` and check
+the nested `capabilities.ptz.capable` field:
+
+```typescript
+const result = await getCamera(cameraId, { include: ['capabilities'] })
+const capabilities = result.data?.capabilities as { ptz?: { capable?: boolean } } | undefined
+if (capabilities?.ptz?.capable) {
+  // This camera supports PTZ - use een-ptz-agent for PTZ-specific tasks
+}
+```
+
+**IMPORTANT:** The capability is at `capabilities.ptz.capable` (nested object), NOT `capabilities.ptzCapable`.
+
 ## Constraints
 - Always check authentication before API calls
 - Use appropriate status filters to reduce payload
