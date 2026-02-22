@@ -1,6 +1,6 @@
 # Cameras & Bridges API - EEN API Toolkit
 
-> **Version:** 0.3.92
+> **Version:** 0.3.93
 >
 > Complete reference for camera and bridge management.
 > Load this document when working with devices.
