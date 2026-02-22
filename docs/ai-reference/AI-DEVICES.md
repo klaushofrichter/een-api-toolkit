@@ -1,6 +1,6 @@
 # Cameras & Bridges API - EEN API Toolkit
 
-> **Version:** 0.3.94
+> **Version:** 0.3.95
 >
 > Complete reference for camera and bridge management.
 > Load this document when working with devices.
@@ -33,6 +33,17 @@ interface Camera {
   deviceInfo?: CameraDeviceInfo
   shareDetails?: CameraShareDetails
   devicePosition?: CameraDevicePosition
+  capabilities?: {
+    ptz?: {
+      capable?: boolean
+      fisheye?: boolean
+      panTilt?: boolean
+      zoom?: boolean
+      positionMove?: boolean
+      directionMove?: boolean
+      centerOnMove?: boolean
+    }
+  }
   createdAt?: string
   updatedAt?: string
 }

@@ -1,6 +1,6 @@
 # PTZ Camera Controls
 
-> **Version:** 0.3.94
+> **Version:** 0.3.95
 >
 > Pan/Tilt/Zoom camera control: position, movement, presets, and automation.
 
@@ -148,8 +148,10 @@ function handleVideoClick(event: MouseEvent) {
 Always exclude fisheye cameras when checking PTZ capability:
 
 ```typescript
+import { computed } from 'vue'
+
 const isPtzCapable = computed(() => {
-  const ptz = camera.capabilities?.ptz
+  const ptz = camera.value?.capabilities?.ptz
   return ptz?.capable === true && ptz?.fisheye !== true
 })
 ```

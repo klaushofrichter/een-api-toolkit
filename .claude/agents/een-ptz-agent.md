@@ -221,14 +221,14 @@ nested `capabilities.ptz.capable` field. The structure is:
 ```
 
 **IMPORTANT:** The PTZ capability is at `capabilities.ptz.capable` (nested under a `ptz` object),
-NOT at `capabilities.ptzCapable` (flat). Always use `capabilities?.ptz?.capable` to check.
-
-**IMPORTANT:** Fisheye cameras report `capabilities.ptz.capable: true` but are NOT true PTZ cameras.
-Always exclude fisheye cameras by checking `capabilities.ptz.fisheye !== true`:
+NOT at `capabilities.ptzCapable` (flat). Fisheye cameras report `capabilities.ptz.capable: true`
+but are NOT true PTZ cameras — always exclude them. Use this pattern:
 
 ```typescript
+import { computed } from 'vue'
+
 const isPtzCapable = computed(() => {
-  const ptz = camera.capabilities?.ptz
+  const ptz = camera.value?.capabilities?.ptz
   return ptz?.capable === true && ptz?.fisheye !== true
 })
 ```

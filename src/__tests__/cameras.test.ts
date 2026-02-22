@@ -102,6 +102,54 @@ describe('Camera types', () => {
       expect(camera.recordingModes?.continuous).toBe(true)
     })
 
+    it('should accept PTZ capability fields including fisheye', () => {
+      const ptzCamera: Camera = {
+        id: 'cam-ptz',
+        name: 'PTZ Camera',
+        accountId: 'acc-456',
+        capabilities: {
+          ptz: {
+            capable: true,
+            fisheye: false,
+            panTilt: true,
+            zoom: true,
+            positionMove: true,
+            directionMove: true,
+            centerOnMove: true
+          }
+        }
+      }
+
+      expect(ptzCamera.capabilities?.ptz?.capable).toBe(true)
+      expect(ptzCamera.capabilities?.ptz?.fisheye).toBe(false)
+      expect(ptzCamera.capabilities?.ptz?.panTilt).toBe(true)
+      expect(ptzCamera.capabilities?.ptz?.zoom).toBe(true)
+      expect(ptzCamera.capabilities?.ptz?.positionMove).toBe(true)
+      expect(ptzCamera.capabilities?.ptz?.directionMove).toBe(true)
+      expect(ptzCamera.capabilities?.ptz?.centerOnMove).toBe(true)
+    })
+
+    it('should identify fisheye cameras as non-PTZ', () => {
+      const fisheyeCamera: Camera = {
+        id: 'cam-fisheye',
+        name: 'Fisheye Camera',
+        accountId: 'acc-456',
+        capabilities: {
+          ptz: {
+            capable: true,
+            fisheye: true
+          }
+        }
+      }
+
+      const ptz = fisheyeCamera.capabilities?.ptz
+      const isPtzCapable = ptz?.capable === true && ptz?.fisheye !== true
+
+      expect(ptz?.capable).toBe(true)
+      expect(ptz?.fisheye).toBe(true)
+      expect(isPtzCapable).toBe(false)
+    })
+
     it('should accept null for bridgeId and locationId', () => {
       const camera: Camera = {
         id: 'cam-direct',

@@ -1092,6 +1092,17 @@ interface Camera {
   deviceInfo?: CameraDeviceInfo
   shareDetails?: CameraShareDetails
   devicePosition?: CameraDevicePosition
+  capabilities?: {
+    ptz?: {
+      capable?: boolean
+      fisheye?: boolean
+      panTilt?: boolean
+      zoom?: boolean
+      positionMove?: boolean
+      directionMove?: boolean
+      centerOnMove?: boolean
+    }
+  }
   createdAt?: string
   updatedAt?: string
 }
@@ -3561,8 +3572,10 @@ function handleVideoClick(event: MouseEvent) {
 Always exclude fisheye cameras when checking PTZ capability:
 
 \`\`\`typescript
+import { computed } from 'vue'
+
 const isPtzCapable = computed(() => {
-  const ptz = camera.capabilities?.ptz
+  const ptz = camera.value?.capabilities?.ptz
   return ptz?.capable === true && ptz?.fisheye !== true
 })
 \`\`\`
