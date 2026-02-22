@@ -214,7 +214,7 @@ let pageToken: string | undefined
 do {
   const result = await getCameras({ pageSize: 100, include: ['capabilities'], pageToken })
   for (const cam of result.data?.results || []) {
-    if (cam.capabilities?.ptz?.capable) ptzCameras.push(cam)
+    if (cam.capabilities?.ptz?.capable && !cam.capabilities?.ptz?.fisheye) ptzCameras.push(cam)
   }
   pageToken = result.data?.nextPageToken ?? undefined
 } while (pageToken)
