@@ -1,6 +1,6 @@
 {
   "name": "een-api-toolkit",
-  "version": "0.3.91",
+  "version": "0.3.92",
   "description": "EEN Video platform API v3.0 library for Vue 3",
   "type": "module",
   "main": "./dist/index.cjs",
