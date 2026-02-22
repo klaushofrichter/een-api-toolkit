@@ -35,7 +35,7 @@ async function loadPtzCameras() {
 
     const allCameras = result.data?.results || []
     for (const cam of allCameras) {
-      if (cam.capabilities?.ptz?.capable) {
+      if (cam.capabilities?.ptz?.capable && !cam.capabilities?.ptz?.fisheye) {
         ptzCameras.push(cam)
       }
     }

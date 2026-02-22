@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.92**](../README.md)
+[**EEN API Toolkit v0.3.96**](../README.md)
 
 ***
 
@@ -263,13 +263,49 @@ Capabilities of the camera (returned when `include: ['capabilities']` is request
 
 Whether this camera supports PTZ controls
 
+##### ptz.fisheye?
+
+> `optional` **fisheye**: `boolean`
+
+Whether this is a fisheye camera (not a true PTZ camera)
+
+##### ptz.panTilt?
+
+> `optional` **panTilt**: `boolean`
+
+Whether the camera supports pan/tilt movements
+
+##### ptz.zoom?
+
+> `optional` **zoom**: `boolean`
+
+Whether the camera supports zoom
+
+##### ptz.positionMove?
+
+> `optional` **positionMove**: `boolean`
+
+Whether the camera supports absolute position moves
+
+##### ptz.directionMove?
+
+> `optional` **directionMove**: `boolean`
+
+Whether the camera supports directional moves
+
+##### ptz.centerOnMove?
+
+> `optional` **centerOnMove**: `boolean`
+
+Whether the camera supports center-on moves
+
 ***
 
 ### enabledAnalytics?
 
 > `optional` **enabledAnalytics**: `string`[]
 
-Defined in: [types/camera.ts:235](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L235)
+Defined in: [types/camera.ts:247](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L247)
 
 List of enabled analytics on this camera
 
@@ -279,7 +315,7 @@ List of enabled analytics on this camera
 
 > `optional` **recordingModes**: [`CameraRecordingModes`](CameraRecordingModes.md)
 
-Defined in: [types/camera.ts:237](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L237)
+Defined in: [types/camera.ts:249](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L249)
 
 Recording mode settings
 
@@ -289,7 +325,7 @@ Recording mode settings
 
 > `optional` **createdAt**: `string`
 
-Defined in: [types/camera.ts:239](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L239)
+Defined in: [types/camera.ts:251](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L251)
 
 ISO 8601 timestamp when the camera was created
 
@@ -299,6 +335,6 @@ ISO 8601 timestamp when the camera was created
 
 > `optional` **updatedAt**: `string`
 
-Defined in: [types/camera.ts:241](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L241)
+Defined in: [types/camera.ts:253](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L253)
 
 ISO 8601 timestamp when the camera was last updated
