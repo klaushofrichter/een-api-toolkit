@@ -1,6 +1,6 @@
 # PTZ Camera Controls
 
-> **Version:** 0.3.93
+> **Version:** 0.3.94
 >
 > Pan/Tilt/Zoom camera control: position, movement, presets, and automation.
 
@@ -141,6 +141,20 @@ function handleVideoClick(event: MouseEvent) {
 | NOT_FOUND | Camera not found or no PTZ | Show message |
 | FORBIDDEN | No permission | Show access denied |
 | VALIDATION_ERROR | Empty camera ID | Fix input |
+
+## Fisheye Camera Exclusion
+
+**IMPORTANT:** Fisheye cameras report `capabilities.ptz.capable: true` but are NOT true PTZ cameras.
+Always exclude fisheye cameras when checking PTZ capability:
+
+```typescript
+const isPtzCapable = computed(() => {
+  const ptz = camera.capabilities?.ptz
+  return ptz?.capable === true && ptz?.fisheye !== true
+})
+```
+
+Also check `effectivePermissions.controlPTZ` to verify the user has permission to move the camera.
 
 ---
 

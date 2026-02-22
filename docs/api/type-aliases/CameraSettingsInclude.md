@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.93**](../README.md)
+[**EEN API Toolkit v0.3.94**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **CameraSettingsInclude** = `"schema"` \| `"proposedValues"`
 
-Defined in: [types/camera.ts:409](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L409)
+Defined in: [types/camera.ts:421](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L421)
 
 Valid include values for the camera settings endpoint.
 

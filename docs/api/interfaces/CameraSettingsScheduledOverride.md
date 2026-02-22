@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.93**](../README.md)
+[**EEN API Toolkit v0.3.94**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettingsScheduledOverride
 
-Defined in: [types/camera.ts:538](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L538)
+Defined in: [types/camera.ts:550](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L550)
 
 Scheduled override for camera operating settings.
 
@@ -20,7 +20,7 @@ Allows the camera to be turned on/off on a schedule.
 
 > `optional` **on**: `boolean`
 
-Defined in: [types/camera.ts:540](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L540)
+Defined in: [types/camera.ts:552](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L552)
 
 Whether the scheduled override is active
 
@@ -30,6 +30,6 @@ Whether the scheduled override is active
 
 > `optional` **schedule**: `string`
 
-Defined in: [types/camera.ts:542](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L542)
+Defined in: [types/camera.ts:554](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L554)
 
 Schedule definition

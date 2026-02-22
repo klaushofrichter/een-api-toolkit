@@ -224,12 +224,11 @@ nested `capabilities.ptz.capable` field. The structure is:
 NOT at `capabilities.ptzCapable` (flat). Always use `capabilities?.ptz?.capable` to check.
 
 **IMPORTANT:** Fisheye cameras report `capabilities.ptz.capable: true` but are NOT true PTZ cameras.
-Always exclude fisheye cameras by checking `capabilities.ptz.fisheye !== true`. The `fisheye` field
-is not in the toolkit's TypeScript type definitions, so cast when accessing it:
+Always exclude fisheye cameras by checking `capabilities.ptz.fisheye !== true`:
 
 ```typescript
 const isPtzCapable = computed(() => {
-  const ptz = camera.capabilities?.ptz as { capable?: boolean; fisheye?: boolean } | undefined
+  const ptz = camera.capabilities?.ptz
   return ptz?.capable === true && ptz?.fisheye !== true
 })
 ```

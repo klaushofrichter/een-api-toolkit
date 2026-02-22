@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.93**](../README.md)
+[**EEN API Toolkit v0.3.94**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: GetCameraSettingsParams
 
-Defined in: [types/camera.ts:428](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L428)
+Defined in: [types/camera.ts:440](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L440)
 
 Parameters for getting camera settings.
 
@@ -30,6 +30,6 @@ const { data } = await getCameraSettings('camera-123', {
 
 > `optional` **include**: [`CameraSettingsInclude`](../type-aliases/CameraSettingsInclude.md)[]
 
-Defined in: [types/camera.ts:430](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L430)
+Defined in: [types/camera.ts:442](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L442)
 
 Additional data to include: 'schema' and/or 'proposedValues'
