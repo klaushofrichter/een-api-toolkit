@@ -221,14 +221,24 @@ nested `capabilities.ptz.capable` field. The structure is:
 ```
 
 **IMPORTANT:** The PTZ capability is at `capabilities.ptz.capable` (nested under a `ptz` object),
-NOT at `capabilities.ptzCapable` (flat). Always use `capabilities?.ptz?.capable` to check.
+NOT at `capabilities.ptzCapable` (flat). Fisheye cameras report `capabilities.ptz.capable: true`
+but are NOT true PTZ cameras — always exclude them. Use this pattern:
+
+```typescript
+import { computed } from 'vue'
+
+const isPtzCapable = computed(() => {
+  const ptz = camera.value?.capabilities?.ptz
+  return ptz?.capable === true && ptz?.fisheye !== true
+})
+```
 
 Also check `effectivePermissions.controlPTZ` to verify the user has permission to move the camera,
 and `effectivePermissions.editPTZStations` for managing presets.
 
 ## Constraints
 - Always check authentication before API calls
-- Verify camera has PTZ capability (`capabilities.ptz.capable`) before showing controls
+- Verify camera has PTZ capability (`capabilities.ptz.capable`) and is not fisheye (`capabilities.ptz.fisheye !== true`) before showing controls
 - Check user permissions (`effectivePermissions.controlPTZ`) before enabling movement
 - Poll position periodically (every 5s) for position display
 - Handle 204 responses for PUT/PATCH (no response body)

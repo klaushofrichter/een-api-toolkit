@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.91**](../README.md)
+[**EEN API Toolkit v0.3.97**](../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: CameraSettingsPreviewVideo
 
-Defined in: [types/camera.ts:477](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L477)
+Defined in: [types/camera.ts:489](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L489)
 
 Camera preview video settings.
 
@@ -20,7 +20,7 @@ Configuration for the lower-resolution preview stream.
 
 > `optional` **transmitMode**: `string`
 
-Defined in: [types/camera.ts:479](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L479)
+Defined in: [types/camera.ts:491](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L491)
 
 Transmit mode (e.g., "always", "event")
 
@@ -30,7 +30,7 @@ Transmit mode (e.g., "always", "event")
 
 > `optional` **resolution**: `string`
 
-Defined in: [types/camera.ts:481](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L481)
+Defined in: [types/camera.ts:493](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L493)
 
 Resolution of the preview stream
 
@@ -40,7 +40,7 @@ Resolution of the preview stream
 
 > `optional` **intervalMs**: `number`
 
-Defined in: [types/camera.ts:483](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L483)
+Defined in: [types/camera.ts:495](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L495)
 
 Interval between preview frames in milliseconds
 
@@ -50,7 +50,7 @@ Interval between preview frames in milliseconds
 
 > `optional` **quality**: `string`
 
-Defined in: [types/camera.ts:485](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L485)
+Defined in: [types/camera.ts:497](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L497)
 
 Quality setting for preview stream
 
@@ -60,6 +60,6 @@ Quality setting for preview stream
 
 > `optional` **supportedResolutions**: `string`[]
 
-Defined in: [types/camera.ts:487](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L487)
+Defined in: [types/camera.ts:499](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L499)
 
 List of supported resolutions

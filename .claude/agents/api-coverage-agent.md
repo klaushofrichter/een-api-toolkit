@@ -205,40 +205,82 @@ Implemented: [brief list of what IS implemented]
 
 #### Document 4: `docs/een-api-coverage.html`
 
-Generate a self-contained HTML file with:
+Generate a self-contained HTML file matching this exact visual style:
 
-**Header section**:
-- Title: "Eagle Eye Networks API v3.0 - Toolkit Coverage"
-- Generation date
-- Summary stat cards: Total endpoints, Implemented, Missing, Coverage percentage with progress bar
+**Global reset and body**:
+- `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }`
+- Font: `-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, sans-serif`
+- Background: `#f5f7fa`, color: `#1a202c`
 
-**Filter bar**:
-- Status filter dropdown (All / Implemented / Missing)
-- Category filter dropdown (All + each category)
-- Method filter dropdown (All / GET / POST / PATCH / DELETE / PUT)
-- Text search input for path/function/description
+**Header** (`<header>`):
+- Dark navy background: `#1a365d`, white text
+- Padding: `24px 32px`
+- `<h1>` at `1.5rem` bold: "Eagle Eye Networks API v3.0 — Toolkit Coverage"
+- `<p>` at `0.875rem`, color `#bee3f8`: generation date and source info
 
-**Data table**:
-- Columns: #, Category, Subcategory, Method, Path, Description, Status, Toolkit Function
-- Sortable by clicking column headers
-- Color-coded method badges (GET=blue, POST=green, PATCH=yellow, DELETE=red, PUT=indigo)
-- Status badges (Implemented=green, Missing=red)
-- Monospace font for function names
+**Container**: `max-width: 100%` (use full page width), centered, padding `24px 32px`
 
-**Styling**:
-- Clean, modern CSS with system font stack
-- Light background (#f5f7fa)
-- White card-style table with subtle shadows
-- Responsive layout
-- All styles inline (self-contained, no external dependencies)
+**Stat cards** (`.stats` grid):
+- `grid-template-columns: repeat(auto-fit, minmax(180px, 1fr))`, gap `16px`
+- Each card: white background, `border-radius: 8px`, padding `20px`, `box-shadow: 0 1px 3px rgba(0,0,0,.08)`
+- Colored `border-top: 4px solid` — blue (`#4299e1`) for Total, green (`#48bb78`) for Implemented, red (`#fc8181`) for Missing, indigo (`#667eea`) for Coverage
+- Label: `0.75rem` uppercase, `letter-spacing: .05em`, color `#718096`
+- Value: `2rem` bold, color `#2d3748`
+- Sub text: `0.8rem`, color `#718096`
+
+**Progress bar** (`.progress-wrap`):
+- White card with same shadow/radius as stat cards
+- Label row: flex with `justify-content: space-between`, `0.875rem`, color `#4a5568`
+- Bar background: `#e2e8f0`, `border-radius: 9999px`, height `12px`
+- Fill: `linear-gradient(90deg, #48bb78, #38a169)`, same radius, `transition: width .4s ease`
+
+**Filter bar** (`.filter-bar`):
+- White card, flex with `flex-wrap: wrap`, gap `12px`
+- Labels: `0.8rem`, color `#718096`
+- Inputs/selects: border `1px solid #e2e8f0`, `border-radius: 6px`, padding `6px 10px`, `0.875rem`
+- Focus: `border-color: #4299e1`, `box-shadow: 0 0 0 3px rgba(66,153,225,.15)`
+- Text input width: `220px`
+- Filter count: `margin-left: auto`, `0.8rem`, color `#718096`
+- Dropdowns: Status (All/Implemented/Missing), Category (All + each category), Method (All/GET/POST/PATCH/DELETE/PUT)
+- Text search placeholder: "path, function, description..."
+
+**Table** (`.table-wrap`):
+- White card with `overflow-x: auto` for horizontal scrollbar on narrow viewports
+- The `<table>` element must have `min-width: 1200px` so content is never clipped — the scrollbar activates instead of truncating columns
+- `<thead>`: dark background `#2d3748`, white text, uppercase `0.75rem`, `letter-spacing: .05em`
+- Headers clickable (cursor pointer) with sort icon `⇅`, changing to `▲`/`▼` when sorted
+- `<tbody>` rows: `border-bottom: 1px solid #edf2f7`, hover `#f7fafc`
+- Cell padding: `10px 14px`
+- Column classes:
+  - `.td-num`: color `#a0aec0`, `0.75rem`, width `44px`
+  - `.td-cat`: color `#4a5568`, `font-weight: 500`
+  - `.td-sub`: color `#718096`
+  - `.td-path`: monospace (`'SFMono-Regular', Consolas, monospace`), `0.8rem`, color `#2d3748`
+  - `.td-desc`: color `#4a5568`, `max-width: 280px`
+  - `.td-func`: monospace, `0.78rem`, color `#553c9a`
+
+**Badges** (`.badge`):
+- `display: inline-flex`, padding `2px 8px`, `border-radius: 4px`, `0.72rem` bold uppercase
+- Method colors: GET (`#ebf8ff`/`#2b6cb0`), POST (`#f0fff4`/`#276749`), PATCH (`#fffff0`/`#975a16`), DELETE (`#fff5f5`/`#c53030`), PUT (`#f0e6ff`/`#553c9a`)
+- Status colors: Implemented (`#f0fff4`/`#276749`), Missing (`#fff5f5`/`#c53030`)
+
+**Empty state**: centered, padding `48px`, color `#a0aec0`, with a search SVG icon
+
+**Footer**: centered, padding `24px`, color `#a0aec0`, `0.8rem`
+
+**Columns**: #, Category, Subcategory, Method, Path, Description, Status, Toolkit Function (8 columns)
 
 **JavaScript**:
 - All endpoint data in a `const endpoints = [...]` array with objects: `{cat, sub, method, path, desc, status, func}`
+- Endpoints grouped by category/subcategory with `// ─── Category - Subcategory ───` comment dividers
 - `status` values: `"impl"` for implemented, `"miss"` for missing
 - `func` is empty string for missing endpoints
-- `renderTable(data)` function to populate tbody
-- `filterTable()` function combining all filter inputs
-- `sortTable(colIndex)` function with toggle direction
+- `methodBadge(m)` and `statusBadge(s)` helper functions
+- `renderTable(data)` function to populate tbody and update filter count
+- `filterTable()` function combining all four filter inputs (status, category, method, text search across path+func+desc+sub)
+- `sortTable(colIndex)` function with toggle direction, updating header sort icons
+- `sortCol`/`sortAsc` state variables
+- Initial call to `renderTable(endpoints)` at the end
 - All code inline (no external dependencies)
 
 ## Important Guidelines

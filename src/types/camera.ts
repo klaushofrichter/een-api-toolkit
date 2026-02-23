@@ -229,6 +229,18 @@ export interface Camera {
     ptz?: {
       /** Whether this camera supports PTZ controls */
       capable?: boolean
+      /** Whether this is a fisheye camera (not a true PTZ camera) */
+      fisheye?: boolean
+      /** Whether the camera supports pan/tilt movements */
+      panTilt?: boolean
+      /** Whether the camera supports zoom */
+      zoom?: boolean
+      /** Whether the camera supports absolute position moves */
+      positionMove?: boolean
+      /** Whether the camera supports directional moves */
+      directionMove?: boolean
+      /** Whether the camera supports center-on moves */
+      centerOnMove?: boolean
     }
   }
   /** List of enabled analytics on this camera */

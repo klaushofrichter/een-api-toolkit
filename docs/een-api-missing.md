@@ -1,462 +1,491 @@
 # een-api-toolkit - Missing EEN API Endpoints
 
-> Generated: 2026-02-17
-> Coverage: 51 of 211 endpoints implemented (24.2%)
-
-This document lists EEN API v3.0 endpoints that are **not yet implemented** by the `een-api-toolkit` library.
+> Generated: 2026-02-21
+> Coverage: 55 of 190 endpoints implemented (28.9%)
+> Missing: 135 endpoints
 
 ---
 
-## DEVICES - Cameras (12 of 15 missing)
+## Devices - Cameras (12 of 15 missing)
 
-Implemented: GET list, GET by ID, GET settings
+Implemented: `GET /cameras`, `GET /cameras/{cameraId}`, `GET /cameras/{cameraId}/settings`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/cameras` | Add a camera |
-| POST | `/cameras:bulkUpdate` | Bulk update cameras |
-| PATCH | `/cameras/{cameraId}` | Update a camera |
-| DELETE | `/cameras/{cameraId}` | Delete a camera |
-| PUT | `/cameras/{cameraId}/tunnel` | Create/update camera tunnel |
-| DELETE | `/cameras/{cameraId}/tunnel` | Delete camera tunnel |
-| GET | `/cameras/{cameraId}/metrics` | Get camera metrics |
-| PATCH | `/cameras/{cameraId}:swap` | Swap a camera |
+| POST | `/cameras` | Associate a camera with the account |
+| POST | `/cameras:bulkUpdate` | Update multiple cameras simultaneously |
+| DELETE | `/cameras/{cameraId}` | Remove camera from account |
+| PATCH | `/cameras/{cameraId}` | Update camera information |
+| PUT | `/cameras/{cameraId}/tunnel` | Open camera tunnel for UI access |
+| DELETE | `/cameras/{cameraId}/tunnel` | Close camera tunnel |
+| GET | `/cameras/{cameraId}/metrics` | Retrieve camera metrics data |
+| PATCH | `/cameras/{cameraId}:swap` | Replace camera with new device |
 | GET | `/cameras/{cameraId}/io/ports` | List camera I/O ports |
-| GET | `/cameras/{cameraId}/io/ports/{portId}` | Get camera I/O port |
-| PATCH | `/cameras/{cameraId}/io/ports/{portId}` | Update camera I/O port |
+| GET | `/cameras/{cameraId}/io/ports/{portId}` | Retrieve specific camera I/O port |
+| PATCH | `/cameras/{cameraId}/io/ports/{portId}` | Update camera port configuration |
 | PATCH | `/cameras/{cameraId}/settings` | Update camera settings |
 
-## DEVICES - Bridges (9 of 11 missing)
+## Devices - Bridges (9 of 11 missing)
 
-Implemented: GET list, GET by ID
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/bridges` | Create a bridge |
-| POST | `/bridges:bulkUpdate` | Bulk update bridges |
-| PATCH | `/bridges/{bridgeId}` | Update a bridge |
-| DELETE | `/bridges/{bridgeId}` | Delete a bridge |
-| GET | `/bridges/{bridgeId}/metrics` | Get bridge metrics |
-| PATCH | `/bridges/{bridgeId}:swap` | Swap a bridge |
-| POST | `/bridges/{bridgeId}/actions` | Trigger bridge action |
-| GET | `/bridges/{id}/settings` | Get bridge settings |
-| PATCH | `/bridges/{id}/settings` | Update bridge settings |
-
-## DEVICES - PTZ (4 of 4 missing - entire section)
+Implemented: `GET /bridges`, `GET /bridges/{bridgeId}`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/cameras/{cameraId}/ptz/position` | Get current PTZ position |
-| PUT | `/cameras/{cameraId}/ptz/position` | Move PTZ to position |
-| GET | `/cameras/{cameraId}/ptz/settings` | Get PTZ settings |
-| PATCH | `/cameras/{cameraId}/ptz/settings` | Update PTZ settings |
+| POST | `/bridges` | Create bridge for account |
+| POST | `/bridges:bulkUpdate` | Update multiple bridges simultaneously |
+| PATCH | `/bridges/{bridgeId}` | Update bridge information |
+| DELETE | `/bridges/{bridgeId}` | Remove bridge from account |
+| GET | `/bridges/{bridgeId}/metrics` | Retrieve bridge metrics |
+| PATCH | `/bridges/{bridgeId}:swap` | Replace bridge with new device |
+| POST | `/bridges/{bridgeId}/actions` | Execute bridge actions (e.g., reboot) |
+| GET | `/bridges/{bridgeId}/settings` | Retrieve bridge operational settings |
+| PATCH | `/bridges/{bridgeId}/settings` | Update bridge settings |
 
-## DEVICES - Speakers (7 of 7 missing - entire section)
+## Devices - Speakers (7 of 7 missing)
+
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/speakers` | List speakers |
-| POST | `/speakers` | Add a speaker |
-| GET | `/speakers/{speakerId}` | Get speaker by ID |
-| PATCH | `/speakers/{speakerId}` | Update a speaker |
-| DELETE | `/speakers/{speakerId}` | Delete a speaker |
-| GET | `/speakers/{speakerId}/settings` | Get speaker settings |
+| GET | `/speakers` | List speakers with filtering and pagination |
+| POST | `/speakers` | Create speaker device |
+| GET | `/speakers/{speakerId}` | Retrieve specific speaker |
+| PATCH | `/speakers/{speakerId}` | Update speaker information |
+| DELETE | `/speakers/{speakerId}` | Remove speaker from account |
+| GET | `/speakers/{speakerId}/settings` | Retrieve speaker settings |
 | PATCH | `/speakers/{speakerId}/settings` | Update speaker settings |
 
-## DEVICES - Device I/O (6 of 6 missing - entire section)
+## Devices - Device I/O (6 of 6 missing)
+
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
 | GET | `/devices/{deviceId}/io/ports` | List device I/O ports |
-| GET | `/devices/{deviceId}/io/ports/{portId}` | Get device I/O port |
-| PATCH | `/devices/{deviceId}/io/ports/{portId}` | Update device I/O port |
-| GET | `/devices/{deviceId}/io/ports/{portId}/recordingActions` | List port recording actions |
-| GET | `/devices/{deviceId}/io/ports/{portId}/recordingActions/{cameraId}` | Get port recording action |
-| PATCH | `/devices/{deviceId}/io/ports/{portId}/recordingActions/{cameraId}` | Update port recording action |
+| GET | `/devices/{deviceId}/io/ports/{portId}` | Retrieve specific I/O port |
+| PATCH | `/devices/{deviceId}/io/ports/{portId}` | Update port configuration |
+| GET | `/devices/{deviceId}/io/ports/{portId}/recordingActions` | List cameras recording on port trigger |
+| GET | `/devices/{deviceId}/io/ports/{portId}/recordingActions/{cameraId}` | Retrieve a recording action |
+| PATCH | `/devices/{deviceId}/io/ports/{portId}/recordingActions/{cameraId}` | Update a recording action |
 
-## DEVICES - Switches (5 of 5 missing - entire section)
+## Devices - Switches (5 of 5 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/switches` | List switches |
-| GET | `/switches/{switchId}` | Get switch by ID |
-| PATCH | `/switches/{switchId}` | Update a switch |
-| POST | `/switches/{switchId}/ports/{portId}/actions` | Trigger switch port action |
-| POST | `/switches/{switchId}/ports/all/actions` | Trigger action on all switch ports |
-
-## DEVICES - Multi Cameras (6 of 6 missing - entire section)
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/multiCameras` | List multi-cameras |
-| POST | `/multiCameras` | Add a multi-camera |
-| GET | `/multiCameras/{multiCameraId}` | Get multi-camera by ID |
-| PATCH | `/multiCameras/{multiCameraId}` | Update a multi-camera |
-| DELETE | `/multiCameras/{multiCameraId}` | Delete a multi-camera |
-| GET | `/multiCameras/{multiCameraId}/channels` | Get multi-camera channels |
+| GET | `/switches` | List switches with pagination |
+| GET | `/switches/{switchId}` | Retrieve specific switch |
+| PATCH | `/switches/{switchId}` | Update switch information |
+| POST | `/switches/{switchId}/ports/{portId}/actions` | Control individual switch port |
+| POST | `/switches/{switchId}/ports/all/actions` | Control all switch ports |
 
-## DEVICES - Available Devices (1 of 1 missing)
+## Devices - Multi Cameras (6 of 6 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/availableDevices` | List available (unclaimed) devices |
-
-## GROUPING - Tags (1 of 1 missing)
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/tags` | List tags |
+| GET | `/multiCameras` | List multi-camera devices |
+| POST | `/multiCameras` | Associate multi-camera with account |
+| GET | `/multiCameras/{multiCameraId}` | Retrieve multi-camera details |
+| DELETE | `/multiCameras/{multiCameraId}` | Remove multi-camera from account |
+| PATCH | `/multiCameras/{multiCameraId}` | Update multi-camera information |
+| GET | `/multiCameras/{multiCameraId}/channels` | Retrieve multi-camera channel information |
 
-## GROUPING - Locations (6 of 6 missing - entire section)
+## Devices - Available Devices (1 of 1 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/locations` | List locations |
-| POST | `/locations` | Create a location |
-| GET | `/locations/{id}` | Get location by ID |
-| PATCH | `/locations/{id}` | Update a location |
-| DELETE | `/locations/{id}` | Delete a location |
-| GET | `/locations/{id}/locations` | Get location descendants |
-
-## GROUPING - Floors (6 of 6 missing - entire section)
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/locations/{locationId}/floors` | List floors for a location |
+| GET | `/availableDevices` | List undiscovered devices available for addition |
+
+---
+
+## Grouping - Tags (1 of 1 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/tags` | Retrieve a list of all tags visible to the current user |
+
+## Grouping - Locations (6 of 6 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/locations` | Retrieve a list of locations |
+| POST | `/locations` | Create a new location |
+| GET | `/locations/{id}` | Retrieve the location with a specific ID |
+| PATCH | `/locations/{id}` | Update the location with the given ID |
+| DELETE | `/locations/{id}` | Delete the location with the given ID |
+| GET | `/locations/{id}/locations` | Retrieve child locations |
+
+## Grouping - Floors (6 of 6 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/locations/{locationId}/floors` | Retrieve the floors at the given location |
 | POST | `/locations/{locationId}/floors` | Create a floor |
-| GET | `/locations/{locationId}/floors/{id}` | Get floor by ID |
-| PATCH | `/locations/{locationId}/floors/{id}` | Update a floor |
-| DELETE | `/locations/{locationId}/floors/{id}` | Delete a floor |
-| GET | `/locations/{locationId}/floors/{id}.{type}` | Get floor image |
+| GET | `/locations/{locationId}/floors/{id}` | Retrieve a specific floor at a specific location |
+| PATCH | `/locations/{locationId}/floors/{id}` | Update one or more fields of the given floor |
+| DELETE | `/locations/{locationId}/floors/{id}` | Delete a specific floor of a specific location |
+| GET | `/locations/{locationId}/floors/{id}.{type}` | Retrieve the floor image of a specific floor |
 
-## GROUPING - Floor Plans (3 of 3 missing - entire section)
+## Grouping - Floor Plans (3 of 3 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/locations/{locationId}/floors/{id}/plans` | List floor plans |
-| POST | `/locations/{locationId}/floors/{id}/plans` | Set a floor plan |
-| DELETE | `/locations/{locationId}/floors/{id}/plans/{planId}` | Delete a floor plan |
-
-## MEDIA - Media (1 of 5 missing)
-
-Implemented: GET list, GET liveImage, GET recordedImage, GET session
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/media/recordedImage.jpeg:listFieldValues` | List recorded image overlay field values |
+| GET | `/locations/{locationId}/floors/{id}/plans` | Retrieve plans of a specific floor |
+| POST | `/locations/{locationId}/floors/{id}/plans` | Create a floor plan for a specific floor |
+| DELETE | `/locations/{locationId}/floors/{id}/plans/{planId}` | Delete a floor plan and its corresponding file |
 
-## MEDIA - Exports (1 of 2 missing)
+---
 
-Implemented: POST create
+## Media - Media (1 of 5 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/exports/{jobId}:copy` | Retry/copy an export |
-
-## MEDIA - Files (6 of 11 missing)
-
-Implemented: GET list, GET by ID, POST add, GET download, DELETE
+Implemented: `GET /media`, `GET /media/liveImage.jpeg`, `GET /media/recordedImage.jpeg`, `GET /media/session`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| PATCH | `/files/{id}` | Update a file |
-| GET | `/deletedFiles` | List trash (deleted files) |
-| GET | `/deletedFiles/{id}` | Get deleted file |
-| DELETE | `/deletedFiles/{id}` | Permanently delete a trash file |
-| DELETE | `/deletedFiles/all` | Permanently delete all trash files |
-| POST | `/deletedFiles/{id}:restore` | Restore a deleted file |
+| GET | `/media/recordedImage.jpeg:listFieldValues` | List available field values for recorded images |
 
-## MEDIA - Downloads (1 of 4 missing)
+## Media - Exports (1 of 2 missing)
 
-Implemented: GET list, GET by ID, GET download
+Implemented: `POST /exports`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| PATCH | `/downloads/{id}` | Update a download |
+| POST | `/exports/{jobId}:copy` | Retry export with modified parameters |
 
-## EVENTS - Events (2 of 5 missing)
+## Media - Files (6 of 11 missing)
 
-Implemented: GET list, GET by ID, GET listFieldValues
-
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/events` | Create an event |
-| GET | `/events:listRecentByType` | List recent events by type |
-
-## EVENTS - Event Subscriptions (4 of 8 missing)
-
-Implemented: GET list, GET by ID, POST create, DELETE
+Implemented: `GET /files`, `POST /files`, `GET /files/{id}`, `GET /files/{id}:download`, `DELETE /files/{id}`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/eventSubscriptions/{id}/filters` | List subscription filters |
-| POST | `/eventSubscriptions/{id}/filters` | Create subscription filter |
-| GET | `/eventSubscriptions/{id}/filters/{filterId}` | Get subscription filter |
-| DELETE | `/eventSubscriptions/{id}/filters/{filterId}` | Delete subscription filter |
+| PATCH | `/files/{id}` | Modify file details |
+| GET | `/deletedFiles` | List deleted files |
+| GET | `/deletedFiles/{id}` | Get recycled item details |
+| DELETE | `/deletedFiles/{id}` | Permanently delete item |
+| DELETE | `/deletedFiles/all` | Clear recycle bin |
+| POST | `/deletedFiles/{id}:restore` | Restore recycled item |
 
-## EVENTS - Notifications (1 of 3 missing)
+## Media - Downloads (1 of 4 missing)
 
-Implemented: GET list, GET by ID
-
-| Method | Path | Description |
-|--------|------|-------------|
-| PATCH | `/notifications/{id}` | Update a notification |
-
-## AUTOMATIONS - Event Alert Condition Rules (3 of 6 missing)
-
-Implemented: GET list, GET listFieldValues, GET by ID
+Implemented: `GET /downloads`, `GET /downloads/{id}`, `GET /downloads/{id}:download`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/eventAlertConditionRules` | Create event alert condition rule |
-| PATCH | `/eventAlertConditionRules/{id}` | Update event alert condition rule |
-| DELETE | `/eventAlertConditionRules/{id}` | Delete event alert condition rule |
+| PATCH | `/downloads/{id}` | Modify download metadata |
 
-## AUTOMATIONS - Alert Action Rules (3 of 5 missing)
+---
 
-Implemented: GET list, GET by ID
+## Events - Events (1 of 4 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/alertActionRules` | Create alert action rule |
-| PATCH | `/alertActionRules/{actionRuleId}` | Update alert action rule |
-| DELETE | `/alertActionRules/{actionRuleId}` | Delete alert action rule |
-
-## AUTOMATIONS - Alert Actions (3 of 5 missing)
-
-Implemented: GET list, GET by ID
+Implemented: `GET /events`, `GET /events/{id}`, `GET /events:listFieldValues`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/alertActions` | Create alert action |
-| PATCH | `/alertActions/{actionId}` | Update alert action |
-| DELETE | `/alertActions/{actionId}` | Delete alert action |
+| POST | `/events` | Create a new event for the selected actor |
 
-## VIDEO SEARCH - Video Analytic Events (7 of 7 missing - entire section)
+---
 
-| Method | Path | Description |
-|--------|------|-------------|
-| POST | `/videoAnalyticEvents:parse` | Parse video analytics query |
-| POST | `/videoAnalyticEvents:deepSearch` | Deep search video analytics events |
-| POST | `/videoAnalyticEvents:deepSearchGroupByResource` | Deep search grouped by resource |
-| POST | `/videoAnalyticEvents:deepSearchGroupByTime` | Deep search grouped by time |
-| POST | `/videoAnalyticEvents:listFieldValues` | List video analytics field values |
-| GET | `/videoAnalyticEvents:listObjectValues` | List video analytics object values |
-| GET | `/videoAnalyticEvents/{id}` | Get video analytics event by ID |
+## Automations - Event Alert Condition Rules (3 of 6 missing)
 
-## VEHICLE SURVEILLANCE - LPR Events (4 of 4 missing - entire section)
+Implemented: `GET /eventAlertConditionRules`, `GET /eventAlertConditionRules:listFieldValues`, `GET /eventAlertConditionRules/{id}`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/lprEvents` | List LPR events |
-| GET | `/lprEvents/{id}` | Get LPR event by ID |
-| GET | `/lprEvents:summary` | Get LPR events summary |
-| GET | `/lprEvents:listFieldValues` | List LPR event field values |
+| POST | `/eventAlertConditionRules` | Create a new rule that produces alerts based on event conditions |
+| PATCH | `/eventAlertConditionRules/{id}` | Update a specific alert condition rule |
+| DELETE | `/eventAlertConditionRules/{id}` | Remove a specific alert condition rule |
 
-## VEHICLE SURVEILLANCE - LPR Alert Condition Rules (6 of 6 missing - entire section)
+## Automations - Alert Action Rules (3 of 5 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/lprAlertConditionRules` | List LPR alert condition rules |
-| POST | `/lprAlertConditionRules` | Create LPR alert condition rule |
-| GET | `/lprAlertConditionRules:listFieldValues` | List LPR rule field values |
-| GET | `/lprAlertConditionRules/{id}` | Get LPR alert condition rule |
-| PATCH | `/lprAlertConditionRules/{id}` | Update LPR alert condition rule |
-| DELETE | `/lprAlertConditionRules/{id}` | Delete LPR alert condition rule |
-
-## VEHICLE SURVEILLANCE - LPR Vehicle Lists (14 of 14 missing - entire section)
+Implemented: `GET /alertActionRules`, `GET /alertActionRules/{actionRuleId}`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/lprVehicleLists` | List vehicle lists |
-| POST | `/lprVehicleLists` | Create vehicle list |
-| GET | `/lprVehicleLists:listFields` | List vehicle list fields |
-| GET | `/lprVehicleLists:listFieldValues` | List vehicle list field values |
-| GET | `/lprVehicleLists/{id}` | Get vehicle list by ID |
-| PATCH | `/lprVehicleLists/{id}` | Update vehicle list |
-| DELETE | `/lprVehicleLists/{id}` | Delete vehicle list |
-| GET | `/lprVehicleLists/{id}/vehicles` | List vehicles in a list |
-| POST | `/lprVehicleLists/{id}/vehicles` | Add vehicle to list |
-| POST | `/lprVehicleLists/{id}/vehicles:bulkCreate` | Bulk add vehicles |
-| GET | `/lprVehicleLists/{id}/vehicles/{recordId}` | Get vehicle by ID |
-| PATCH | `/lprVehicleLists/{id}/vehicles/{recordId}` | Update a vehicle |
-| DELETE | `/lprVehicleLists/{id}/vehicles/{recordId}` | Delete a vehicle |
-| GET | `/lprVehicleLists:search` | Search vehicle lists |
+| POST | `/alertActionRules` | Register a new alert action rule with the account |
+| PATCH | `/alertActionRules/{actionRuleId}` | Update a single alert action rule |
+| DELETE | `/alertActionRules/{actionRuleId}` | Remove an alert action rule |
 
-## USER & ACCOUNTS - Users (6 of 9 missing)
+## Automations - Alert Actions (3 of 5 missing)
 
-Implemented: GET list, GET by ID, GET self
+Implemented: `GET /alertActions`, `GET /alertActions/{actionId}`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/users` | Create a user |
-| PATCH | `/users/{userId}` | Update a user |
-| DELETE | `/users/{userId}` | Delete a user |
-| PATCH | `/users/self` | Update current user |
-| GET | `/users/self/trustedClients` | List trusted OAuth clients |
-| DELETE | `/users/self/trustedClients/{trustedClientId}` | Delete trusted client |
+| POST | `/alertActions` | Register a new alert action with the account |
+| PATCH | `/alertActions/{actionId}` | Update a single alert action |
+| DELETE | `/alertActions/{actionId}` | Remove an alert action |
 
-## USER & ACCOUNTS - Accounts (2 of 2 missing - entire section)
+---
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/accounts` | List accounts |
-| DELETE | `/accounts/{id}/credentials/{credentialId}` | Delete account credential |
+## Video Search - Video Analytic Events (7 of 7 missing)
 
-## USER & ACCOUNTS - Roles (8 of 8 missing - entire section)
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/roles` | List roles |
-| POST | `/roles` | Create a role |
-| GET | `/roles/{roleId}` | Get role by ID |
-| PATCH | `/roles/{roleId}` | Update a role |
-| DELETE | `/roles/{roleId}` | Delete a role |
-| GET | `/roleAssignments` | List role assignments |
-| POST | `/roleAssignments:bulkcreate` | Bulk create role assignments |
-| POST | `/roleAssignments:bulkdelete` | Bulk delete role assignments |
+| POST | `/videoAnalyticEvents:parse` | Map natural language queries to object filters for deep search |
+| POST | `/videoAnalyticEvents:deepSearch` | Fetch video analytic events matching defined filters |
+| POST | `/videoAnalyticEvents:deepSearchGroupByResource` | Fetch event frequencies grouped by resource metadata |
+| POST | `/videoAnalyticEvents:deepSearchGroupByTime` | Fetch event frequencies grouped in time periods |
+| POST | `/videoAnalyticEvents:listFieldValues` | Retrieve available deep search query parameters |
+| GET | `/videoAnalyticEvents:listObjectValues` | Fetch available filter attribute values for events |
+| GET | `/videoAnalyticEvents/{id}` | Retrieve specific video analytics event by ID |
 
-## USER & ACCOUNTS - Audit Log (1 of 1 missing)
+---
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/auditLogs` | List audit logs |
+## Vehicle Surveillance - LPR Events (4 of 4 missing)
 
-## USER & ACCOUNTS - Resource Grants (3 of 3 missing - entire section)
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/resourceGrants` | List resource grants |
-| POST | `/resourceGrants:bulkCreate` | Bulk create resource grants |
-| POST | `/resourceGrants:bulkDelete` | Bulk delete resource grants |
+| GET | `/lprEvents` | Fetch license plate recognition events with filtering |
+| GET | `/lprEvents/{id}` | Retrieve a specific LPR event by ID |
+| GET | `/lprEvents:summary` | Obtain aggregated counts of LPR events across time periods |
+| GET | `/lprEvents:listFieldValues` | List all possible filter values for LPR event attributes |
 
-## USER & ACCOUNTS - Editions (2 of 2 missing - entire section)
+## Vehicle Surveillance - LPR Alert Condition Rules (5 of 5 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/editions` | List editions |
-| GET | `/editions/{id}` | Get edition by ID |
-
-## RESELLERS - Authorization Tokens (1 of 1 missing)
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| POST | `/authorizationTokens` | Create authorization token |
+| POST | `/lprAlertConditionRules` | Create a new rule for generating alerts based on LPR conditions |
+| GET | `/lprAlertConditionRules` | Fetch LPR alert condition rules based on a filter |
+| GET | `/lprAlertConditionRules:listFieldValues` | Return possible values across all rule attributes |
+| GET | `/lprAlertConditionRules/{id}` | Retrieve details of a specific LPR rule |
+| PATCH | `/lprAlertConditionRules/{id}` | Update specified properties of an existing LPR rule |
 
-## ACCOUNT SETTINGS - SSO (2 of 2 missing - entire section)
+---
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/accounts/self/ssoAuthSettings` | Get SSO auth settings |
-| PATCH | `/accounts/self/ssoAuthSettings` | Update SSO auth settings |
+## User & Accounts - Users (6 of 9 missing)
 
-## ACCOUNT SETTINGS - Client Settings (1 of 1 missing)
-
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/clientSettings` | Get client settings |
-
-## SYSTEM - Applications (5 of 5 missing - entire section)
+Implemented: `GET /users/self`, `GET /users`, `GET /users/{userId}`
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/applications` | List applications |
-| POST | `/applications` | Create an application |
-| GET | `/applications/{applicationId}` | Get application by ID |
-| PATCH | `/applications/{applicationId}` | Update an application |
-| DELETE | `/applications/{applicationId}` | Delete an application |
+| POST | `/users` | Create a new user (verification email sent, pending state) |
+| DELETE | `/users/{userId}` | Delete a user and remove all related references |
+| PATCH | `/users/{userId}` | Update a user's data |
+| PATCH | `/users/self` | Update current user's profile data |
+| GET | `/users/self/trustedClients` | Retrieve a list of trusted clients |
+| DELETE | `/users/self/trustedClients/{trustedClientId}` | Delete a trusted client device |
 
-## SYSTEM - OAuth Clients (5 of 5 missing - entire section)
+## User & Accounts - Accounts (2 of 2 missing)
 
-| Method | Path | Description |
-|--------|------|-------------|
-| GET | `/applications/{applicationId}/oauthClients` | List OAuth clients |
-| POST | `/applications/{applicationId}/oauthClients` | Create OAuth client |
-| GET | `/applications/{applicationId}/oauthClients/{clientId}` | Get OAuth client |
-| PATCH | `/applications/{applicationId}/oauthClients/{clientId}` | Update OAuth client |
-| DELETE | `/applications/{applicationId}/oauthClients/{clientId}` | Delete OAuth client |
-
-## SYSTEM - Reference Data (2 of 2 missing - entire section)
+Implemented: none
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/languages` | List supported languages |
-| GET | `/timeZones` | List supported time zones |
+| GET | `/accounts` | Retrieve a list of accounts the user has access to |
+| DELETE | `/accounts/{id}/credentials/{credentialId}` | Remove a credential from the account |
+
+## User & Accounts - Roles (8 of 8 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/roles` | Returns a list of all roles in current user's account |
+| POST | `/roles` | Create a new role with defined permissions |
+| GET | `/roles/{roleId}` | Retrieve a role by its ID |
+| DELETE | `/roles/{roleId}` | Delete a role (only if unassigned) |
+| PATCH | `/roles/{roleId}` | Update role information and permissions |
+| GET | `/roleAssignments` | Returns a list of all role assignments |
+| POST | `/roleAssignments:bulkcreate` | Create multiple role assignments in one request |
+| POST | `/roleAssignments:bulkdelete` | Delete multiple role assignments in one request |
+
+## User & Accounts - Audit Log (1 of 1 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/auditLogs` | Filter audit events by userId, targetId, type, and timestamp range |
+
+## User & Accounts - Resource Grants (3 of 3 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/resourceGrants` | Retrieve a list of resource grants |
+| POST | `/resourceGrants:bulkCreate` | Create multiple resource grants in one request |
+| POST | `/resourceGrants:bulkDelete` | Delete multiple resource grants in one request |
+
+## User & Accounts - Editions (2 of 2 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/editions` | Retrieve available editions for the account |
+| GET | `/editions/{id}` | Retrieve a specific edition by ID |
+
+---
+
+## Resellers - Authorization Tokens (1 of 1 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | `/authorizationTokens` | Resellers retrieve access tokens for end-user accounts |
+
+---
+
+## Account Settings - SSO (2 of 2 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/accounts/self/ssoAuthSettings` | Get Single Sign On Authentication Settings |
+| PATCH | `/accounts/self/ssoAuthSettings` | Update Single Sign On Authentication Settings |
+
+## Account Settings - Client Settings (1 of 1 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/clientSettings` | Retrieve settings required to let the client use the API |
+
+---
+
+## System - Applications (5 of 5 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/applications` | Retrieve all applications accessible by the requesting user |
+| POST | `/applications` | Create new application under user's account |
+| GET | `/applications/{applicationId}` | Retrieve a single application |
+| PATCH | `/applications/{applicationId}` | Update a single application |
+| DELETE | `/applications/{applicationId}` | Delete a single application |
+
+## System - OAuth Clients (5 of 5 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/applications/{applicationId}/oauthClients` | Retrieve all OAuth credentials for the given application |
+| POST | `/applications/{applicationId}/oauthClients` | Create OAuth client for application |
+| GET | `/applications/{applicationId}/oauthClients/{clientId}` | Retrieve a specific OAuth client |
+| PATCH | `/applications/{applicationId}/oauthClients/{clientId}` | Update a specific OAuth client |
+| DELETE | `/applications/{applicationId}/oauthClients/{clientId}` | Delete a specific OAuth client |
+
+## System - Reference Data (2 of 2 missing)
+
+Implemented: none
+
+| Method | Path | Description |
+|--------|------|-------------|
+| GET | `/languages` | Retrieve a list of languages supported by the service |
+| GET | `/timeZones` | Retrieve a list of the supported time zones |
 
 ---
 
 ## Summary
 
-| Status | Count |
-|--------|-------|
-| Implemented | 51 |
-| Missing | 160 |
-| **Total EEN API endpoints** | **211** |
-| **Coverage** | **24.2%** |
+### Coverage by Category
 
-### Missing by Category
+| Category | Implemented | Missing | Total | Coverage |
+|----------|-------------|---------|-------|---------|
+| Devices - Cameras | 3 | 12 | 15 | 20% |
+| Devices - Bridges | 2 | 9 | 11 | 18% |
+| Devices - PTZ | 4 | 0 | 4 | 100% |
+| Devices - Speakers | 0 | 7 | 7 | 0% |
+| Devices - Device I/O | 0 | 6 | 6 | 0% |
+| Devices - Switches | 0 | 5 | 5 | 0% |
+| Devices - Multi Cameras | 0 | 6 | 6 | 0% |
+| Devices - Available Devices | 0 | 1 | 1 | 0% |
+| Grouping - Layouts | 5 | 0 | 5 | 100% |
+| Grouping - Tags | 0 | 1 | 1 | 0% |
+| Grouping - Locations | 0 | 6 | 6 | 0% |
+| Grouping - Floors | 0 | 6 | 6 | 0% |
+| Grouping - Floor Plans | 0 | 3 | 3 | 0% |
+| Media - Media | 4 | 1 | 5 | 80% |
+| Media - Feeds | 1 | 0 | 1 | 100% |
+| Media - Exports | 1 | 1 | 2 | 50% |
+| Media - Jobs | 3 | 0 | 3 | 100% |
+| Media - Files | 5 | 6 | 11 | 45% |
+| Media - Downloads | 3 | 1 | 4 | 75% |
+| Events - Events | 3 | 1 | 4 | 75% |
+| Events - Event Types | 1 | 0 | 1 | 100% |
+| Events - Event Metrics | 1 | 0 | 1 | 100% |
+| Events - Event Subscriptions | 4 | 0 | 4 | 100% |
+| Events - Alerts | 3 | 0 | 3 | 100% |
+| Events - Notifications | 2 | 0 | 2 | 100% |
+| Automations - Event Alert Condition Rules | 3 | 3 | 6 | 50% |
+| Automations - Alert Action Rules | 2 | 3 | 5 | 40% |
+| Automations - Alert Actions | 2 | 3 | 5 | 40% |
+| Video Search - Video Analytic Events | 0 | 7 | 7 | 0% |
+| Vehicle Surveillance - LPR Events | 0 | 4 | 4 | 0% |
+| Vehicle Surveillance - LPR Alert Condition Rules | 0 | 5 | 5 | 0% |
+| User & Accounts - Users | 3 | 6 | 9 | 33% |
+| User & Accounts - Accounts | 0 | 2 | 2 | 0% |
+| User & Accounts - Roles | 0 | 8 | 8 | 0% |
+| User & Accounts - Audit Log | 0 | 1 | 1 | 0% |
+| User & Accounts - Resource Grants | 0 | 3 | 3 | 0% |
+| User & Accounts - Editions | 0 | 2 | 2 | 0% |
+| Resellers - Authorization Tokens | 0 | 1 | 1 | 0% |
+| Account Settings - SSO | 0 | 2 | 2 | 0% |
+| Account Settings - Client Settings | 0 | 1 | 1 | 0% |
+| System - Applications | 0 | 5 | 5 | 0% |
+| System - OAuth Clients | 0 | 5 | 5 | 0% |
+| System - Reference Data | 0 | 2 | 2 | 0% |
+| **TOTAL** | **55** | **135** | **190** | **28.9%** |
 
-| Category | Missing | Total | Coverage |
-|----------|---------|-------|----------|
-| Cameras | 12 | 15 | 20% |
-| Bridges | 9 | 11 | 18% |
-| PTZ | 4 | 4 | 0% |
-| Speakers | 7 | 7 | 0% |
-| Device I/O | 6 | 6 | 0% |
-| Switches | 5 | 5 | 0% |
-| Multi Cameras | 6 | 6 | 0% |
-| Available Devices | 1 | 1 | 0% |
-| Layouts | 0 | 5 | 100% |
-| Tags | 1 | 1 | 0% |
-| Locations | 6 | 6 | 0% |
-| Floors | 6 | 6 | 0% |
-| Floor Plans | 3 | 3 | 0% |
-| Media | 1 | 5 | 80% |
-| Feeds | 0 | 1 | 100% |
-| Exports | 1 | 2 | 50% |
-| Jobs | 0 | 3 | 100% |
-| Files | 6 | 11 | 45% |
-| Downloads | 1 | 4 | 75% |
-| Events | 2 | 5 | 60% |
-| Event Types | 0 | 1 | 100% |
-| Event Metrics | 0 | 1 | 100% |
-| Event Subscriptions | 4 | 8 | 50% |
-| Alerts | 0 | 3 | 100% |
-| Notifications | 1 | 3 | 67% |
-| Event Alert Condition Rules | 3 | 6 | 50% |
-| Alert Action Rules | 3 | 5 | 40% |
-| Alert Actions | 3 | 5 | 40% |
-| Video Analytic Events | 7 | 7 | 0% |
-| LPR Events | 4 | 4 | 0% |
-| LPR Alert Condition Rules | 6 | 6 | 0% |
-| LPR Vehicle Lists | 14 | 14 | 0% |
-| Users | 6 | 9 | 33% |
-| Accounts | 2 | 2 | 0% |
-| Roles | 8 | 8 | 0% |
-| Audit Log | 1 | 1 | 0% |
-| Resource Grants | 3 | 3 | 0% |
-| Editions | 2 | 2 | 0% |
-| Authorization Tokens | 1 | 1 | 0% |
-| SSO | 2 | 2 | 0% |
-| Client Settings | 1 | 1 | 0% |
-| Applications | 5 | 5 | 0% |
-| OAuth Clients | 5 | 5 | 0% |
-| Reference Data | 2 | 2 | 0% |
+### Fully Implemented Sections (100% coverage)
 
-### Fully Implemented Sections
-
-- Layouts (5/5)
-- Feeds (1/1)
-- Jobs (3/3)
-- Event Types (1/1)
-- Event Metrics (1/1)
-- Alerts (3/3)
+- Devices - PTZ (4/4)
+- Grouping - Layouts (5/5)
+- Media - Feeds (1/1)
+- Media - Jobs (3/3)
+- Events - Event Types (1/1)
+- Events - Event Metrics (1/1)
+- Events - Event Subscriptions (4/4)
+- Events - Alerts (3/3)
+- Events - Notifications (2/2)
 
 ### Entirely Missing Sections (0% coverage)
 
-- PTZ, Speakers, Device I/O, Switches, Multi Cameras, Available Devices
-- Tags, Locations, Floors, Floor Plans
-- Video Analytic Events, LPR Events, LPR Alert Condition Rules, LPR Vehicle Lists
-- Accounts, Roles, Audit Log, Resource Grants, Editions
-- Authorization Tokens, SSO, Client Settings
-- Applications, OAuth Clients, Reference Data
+- Devices - Speakers
+- Devices - Device I/O
+- Devices - Switches
+- Devices - Multi Cameras
+- Devices - Available Devices
+- Grouping - Tags
+- Grouping - Locations
+- Grouping - Floors
+- Grouping - Floor Plans
+- Video Search - Video Analytic Events
+- Vehicle Surveillance - LPR Events
+- Vehicle Surveillance - LPR Alert Condition Rules
+- User & Accounts - Accounts
+- User & Accounts - Roles
+- User & Accounts - Audit Log
+- User & Accounts - Resource Grants
+- User & Accounts - Editions
+- Resellers - Authorization Tokens
+- Account Settings - SSO
+- Account Settings - Client Settings
+- System - Applications
+- System - OAuth Clients
+- System - Reference Data

@@ -1092,6 +1092,17 @@ interface Camera {
   deviceInfo?: CameraDeviceInfo
   shareDetails?: CameraShareDetails
   devicePosition?: CameraDevicePosition
+  capabilities?: {
+    ptz?: {
+      capable?: boolean
+      fisheye?: boolean
+      panTilt?: boolean
+      zoom?: boolean
+      positionMove?: boolean
+      directionMove?: boolean
+      centerOnMove?: boolean
+    }
+  }
   createdAt?: string
   updatedAt?: string
 }
@@ -3554,6 +3565,22 @@ function handleVideoClick(event: MouseEvent) {
 | NOT_FOUND | Camera not found or no PTZ | Show message |
 | FORBIDDEN | No permission | Show access denied |
 | VALIDATION_ERROR | Empty camera ID | Fix input |
+
+## Fisheye Camera Exclusion
+
+**IMPORTANT:** Fisheye cameras report \`capabilities.ptz.capable: true\` but are NOT true PTZ cameras.
+Always exclude fisheye cameras when checking PTZ capability:
+
+\`\`\`typescript
+import { computed } from 'vue'
+
+const isPtzCapable = computed(() => {
+  const ptz = camera.value?.capabilities?.ptz
+  return ptz?.capable === true && ptz?.fisheye !== true
+})
+\`\`\`
+
+Also check \`effectivePermissions.controlPTZ\` to verify the user has permission to move the camera.
 
 ---
 
