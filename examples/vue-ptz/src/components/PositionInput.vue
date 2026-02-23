@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { movePtz } from 'een-api-toolkit'
 import type { PtzPositionResponse, PtzDirection, PtzStepSize, PtzMoveType } from 'een-api-toolkit'
 import { useApiLog } from '../composables/useApiLog'
@@ -35,11 +35,15 @@ const relativeY = ref<string>('0.5')
 const applying = ref(false)
 const error = ref<string | null>(null)
 
+watch(moveType, () => {
+  error.value = null
+})
+
 function importPosition() {
   if (props.currentPosition) {
-    x.value = props.currentPosition.x.toFixed(3)
-    y.value = props.currentPosition.y.toFixed(3)
-    z.value = props.currentPosition.z.toFixed(3)
+    x.value = props.currentPosition.x?.toFixed(3) ?? '0'
+    y.value = props.currentPosition.y?.toFixed(3) ?? '0'
+    z.value = props.currentPosition.z?.toFixed(3) ?? '0'
   }
 }
 
