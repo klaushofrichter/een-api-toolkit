@@ -150,6 +150,21 @@ describe('Camera types', () => {
       expect(isPtzCapable).toBe(false)
     })
 
+    it('should treat missing fisheye field as non-fisheye', () => {
+      const camera: Camera = {
+        id: 'cam-ptz',
+        name: 'PTZ Camera',
+        accountId: 'acc-456',
+        capabilities: { ptz: { capable: true } }
+      }
+
+      const ptz = camera.capabilities?.ptz
+      const isPtzCapable = ptz?.capable === true && ptz?.fisheye !== true
+
+      expect(ptz?.fisheye).toBeUndefined()
+      expect(isPtzCapable).toBe(true)
+    })
+
     it('should accept null for bridgeId and locationId', () => {
       const camera: Camera = {
         id: 'cam-direct',

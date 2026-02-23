@@ -723,8 +723,12 @@ function filterTable() {
     const keys = ['_num','cat','sub','method','path','desc','status','func'];
     const key = keys[sortCol];
     data = data.slice().sort((a, b) => {
-      const av = key === '_num' ? 0 : (a[key] || '');
-      const bv = key === '_num' ? 0 : (b[key] || '');
+      if (key === '_num') {
+        const res = endpoints.indexOf(a) - endpoints.indexOf(b);
+        return sortAsc ? res : -res;
+      }
+      const av = String(a[key] || '');
+      const bv = String(b[key] || '');
       return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
     });
   }
