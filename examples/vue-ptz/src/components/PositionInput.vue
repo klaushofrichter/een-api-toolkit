@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
 import { movePtz } from 'een-api-toolkit'
-import type { PtzPositionResponse, PtzDirection, PtzStepSize, PtzMoveType } from 'een-api-toolkit'
+import type { PtzPositionResponse, PtzDirection, PtzStepSize, PtzMoveType, PtzMove } from 'een-api-toolkit'
 import { useApiLog } from '../composables/useApiLog'
 
 const props = defineProps<{
@@ -47,11 +47,7 @@ function importPosition() {
   }
 }
 
-async function apply() {
-  if (!props.cameraId || applying.value) return
-
-  error.value = null
-
+function buildMove(): PtzMove | null {
   if (moveType.value === 'position') {
     const xVal = parseFloat(x.value)
     const yVal = parseFloat(y.value)
@@ -59,71 +55,56 @@ async function apply() {
 
     if (isNaN(xVal) || isNaN(yVal) || isNaN(zVal)) {
       error.value = 'Invalid numeric values'
-      return
+      return null
     }
 
-    applying.value = true
-    try {
-      const move = { moveType: 'position' as const, x: xVal, y: yVal, z: zVal }
-      const result = await movePtz(props.cameraId, move)
-      apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
-
-      if (result.error) {
-        error.value = result.error.message
-      } else {
-        emit('move-complete')
-      }
-    } finally {
-      applying.value = false
-    }
+    // Position coordinates are camera-specific absolute values (not normalised to 0-1)
+    return { moveType: 'position', x: xVal, y: yVal, z: zVal }
   } else if (moveType.value === 'direction') {
     if (directions.value.length === 0) {
       error.value = 'Select at least one direction'
-      return
+      return null
     }
 
-    applying.value = true
-    try {
-      const move = { moveType: 'direction' as const, direction: [...directions.value], stepSize: stepSize.value }
-      const result = await movePtz(props.cameraId, move)
-      apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
-
-      if (result.error) {
-        error.value = result.error.message
-      } else {
-        emit('move-complete')
-      }
-    } finally {
-      applying.value = false
-    }
-  } else if (moveType.value === 'centerOn') {
+    return { moveType: 'direction', direction: [...directions.value], stepSize: stepSize.value }
+  } else {
     const rxVal = parseFloat(relativeX.value)
     const ryVal = parseFloat(relativeY.value)
 
     if (isNaN(rxVal) || isNaN(ryVal)) {
       error.value = 'Invalid numeric values'
-      return
+      return null
     }
 
     if (rxVal < 0 || rxVal > 1 || ryVal < 0 || ryVal > 1) {
       error.value = 'Values must be between 0 and 1'
-      return
+      return null
     }
 
-    applying.value = true
-    try {
-      const move = { moveType: 'centerOn' as const, relativeX: rxVal, relativeY: ryVal }
-      const result = await movePtz(props.cameraId, move)
-      apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
+    return { moveType: 'centerOn', relativeX: rxVal, relativeY: ryVal }
+  }
+}
 
-      if (result.error) {
-        error.value = result.error.message
-      } else {
-        emit('move-complete')
-      }
-    } finally {
-      applying.value = false
+async function apply() {
+  if (!props.cameraId || applying.value) return
+
+  error.value = null
+
+  const move = buildMove()
+  if (!move) return
+
+  applying.value = true
+  try {
+    const result = await movePtz(props.cameraId, move)
+    apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
+
+    if (result.error) {
+      error.value = result.error.message
+    } else {
+      emit('move-complete')
     }
+  } finally {
+    applying.value = false
   }
 }
 </script>
@@ -186,7 +167,7 @@ async function apply() {
     </template>
 
     <!-- Direction fields -->
-    <template v-if="moveType === 'direction'">
+    <template v-else-if="moveType === 'direction'">
       <div class="direction-checkboxes">
         <label v-for="dir in allDirections" :key="dir" class="checkbox-label">
           <input
@@ -210,7 +191,7 @@ async function apply() {
     </template>
 
     <!-- CenterOn fields -->
-    <template v-if="moveType === 'centerOn'">
+    <template v-else>
       <div class="input-row">
         <label>rX</label>
         <input
