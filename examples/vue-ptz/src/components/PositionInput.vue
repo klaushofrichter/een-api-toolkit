@@ -63,15 +63,18 @@ async function apply() {
     }
 
     applying.value = true
-    const move = { moveType: 'position' as const, x: xVal, y: yVal, z: zVal }
-    const result = await movePtz(props.cameraId, move)
-    apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
-    applying.value = false
+    try {
+      const move = { moveType: 'position' as const, x: xVal, y: yVal, z: zVal }
+      const result = await movePtz(props.cameraId, move)
+      apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
 
-    if (result.error) {
-      error.value = result.error.message
-    } else {
-      emit('move-complete')
+      if (result.error) {
+        error.value = result.error.message
+      } else {
+        emit('move-complete')
+      }
+    } finally {
+      applying.value = false
     }
   } else if (moveType.value === 'direction') {
     if (directions.value.length === 0) {
@@ -80,15 +83,18 @@ async function apply() {
     }
 
     applying.value = true
-    const move = { moveType: 'direction' as const, direction: [...directions.value], stepSize: stepSize.value }
-    const result = await movePtz(props.cameraId, move)
-    apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
-    applying.value = false
+    try {
+      const move = { moveType: 'direction' as const, direction: [...directions.value], stepSize: stepSize.value }
+      const result = await movePtz(props.cameraId, move)
+      apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
 
-    if (result.error) {
-      error.value = result.error.message
-    } else {
-      emit('move-complete')
+      if (result.error) {
+        error.value = result.error.message
+      } else {
+        emit('move-complete')
+      }
+    } finally {
+      applying.value = false
     }
   } else if (moveType.value === 'centerOn') {
     const rxVal = parseFloat(relativeX.value)
@@ -105,15 +111,18 @@ async function apply() {
     }
 
     applying.value = true
-    const move = { moveType: 'centerOn' as const, relativeX: rxVal, relativeY: ryVal }
-    const result = await movePtz(props.cameraId, move)
-    apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
-    applying.value = false
+    try {
+      const move = { moveType: 'centerOn' as const, relativeX: rxVal, relativeY: ryVal }
+      const result = await movePtz(props.cameraId, move)
+      apiLog('movePtz', { cameraId: props.cameraId, move }, result.error ?? result.data, !!result.error)
 
-    if (result.error) {
-      error.value = result.error.message
-    } else {
-      emit('move-complete')
+      if (result.error) {
+        error.value = result.error.message
+      } else {
+        emit('move-complete')
+      }
+    } finally {
+      applying.value = false
     }
   }
 }
