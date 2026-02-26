@@ -41,6 +41,10 @@
  * These are the schema names as they appear in the event's `dataSchemas` array.
  * When using in the `include` parameter, prefix with `data.`.
  *
+ * Not all schemas are mapped to specific event types in `EVENT_TYPE_DATA_SCHEMAS`.
+ * Unmapped schemas (e.g., alert-related, counting, trajectory) may still appear in
+ * API responses as part of an event's `data` array.
+ *
  * @category Events
  */
 export type DataSchema =
@@ -53,6 +57,7 @@ export type DataSchema =
   | 'een.croppedFrameImageUrl.v1'
   | 'een.fullFrameImageUrlWithOverlay.v1'
   | 'een.displayOverlay.boundingBox.v1'
+  | 'een.bestImageUrl.v1'
   // Person and vehicle attributes
   | 'een.personAttributes.v1'
   | 'een.vehicleAttributes.v1'
@@ -61,6 +66,7 @@ export type DataSchema =
   // Location and direction
   | 'een.geoLocation.v1'
   | 'een.entryDirection.v1'
+  | 'een.trajectory.v1'
   // Areas and regions
   | 'een.motionRegion.v1'
   | 'een.loiterArea.v1'
@@ -81,6 +87,7 @@ export type DataSchema =
   | 'een.userTags.v1'
   | 'een.vehicleListInfo.v1'
   | 'een.vspInsightsSummary.v1'
+  | 'een.vspVisitDetails.v1'
   // Fleet recognition
   | 'een.dotNumberRecognition.v1'
   | 'een.truckNumberRecognition.v1'
@@ -99,8 +106,12 @@ export type DataSchema =
   | 'een.posTransactionLabel.v1'
   | 'een.rawData.v1'
   | 'een.displayLocationSummary.v1'
+  // Access control
+  | 'een.credentialAccessActivation.v1'
+  | 'een.userAccessActivation.v1'
   // Device and system
   | 'een.deviceCloudStatusUpdate.v1'
+  | 'een.deviceStatusUpdate.v1'
   | 'een.deviceCloudPreviousStatus.v1'
   | 'een.deviceCloudConnectionStatusUpdate.v1'
   | 'een.deviceCloudConnectionPreviousStatus.v1'
@@ -117,8 +128,18 @@ export type DataSchema =
   | 'een.measurementThresholdStatus.v1'
   | 'een.measurementValueUpdate.v1'
   | 'een.thermalCameraValueUpdate.v1'
-  // Resource management
+  // Counting
+  | 'een.countData.v1'
+  // Creator and resource management
+  | 'een.creatorDetails.v1'
   | 'een.resourceDetails.v1'
+  // Alert
+  | 'een.alertConditionRuleInfo.v1'
+  | 'een.alertInfo.v1'
+  | 'een.gunDetectionAlertInfo.v1'
+  | 'een.lprRuleCountAggrAlertInfo.v1'
+  | 'een.lprRuleWatchAlertInfo.v1'
+  | 'een.smartAlertObjectCountAlertInfo.v1'
   // Job
   | 'een.jobDetails.v1'
   | 'een.ownerDetails.v1'
@@ -198,6 +219,8 @@ export type KnownEventType =
   | 'een.jobCreationEvent.v1'
   | 'een.jobUpdateEvent.v1'
   | 'een.jobDeletionEvent.v1'
+  // Access control events
+  | 'een.accessActivationEvent.v1'
   // Safety and protocol events
   | 'een.panicButtonEvent.v1'
   | 'een.evacuateProtocolEvent.v1'
@@ -559,6 +582,13 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
   'een.jobCreationEvent.v1': ['een.jobDetails.v1', 'een.ownerDetails.v1'],
   'een.jobUpdateEvent.v1': ['een.jobDetails.v1', 'een.ownerDetails.v1'],
   'een.jobDeletionEvent.v1': ['een.ownerDetails.v1'],
+
+  // Access control events
+  'een.accessActivationEvent.v1': [
+    'een.credentialAccessActivation.v1',
+    'een.creatorDetails.v1',
+    'een.userAccessActivation.v1'
+  ],
 
   // Safety and protocol events (no data schemas)
   'een.panicButtonEvent.v1': ['een.geoLocation.v1'],
