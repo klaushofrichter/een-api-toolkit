@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.101**](../README.md)
+[**EEN API Toolkit v0.3.102**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getAllDataSchemas**(): `string`[]
 
-Defined in: [events/dataSchemas.ts:720](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L720)
+Defined in: [events/dataSchemas.ts:746](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L746)
 
 Get all unique data schemas across all event types.
 
