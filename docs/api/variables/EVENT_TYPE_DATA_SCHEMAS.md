@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.102**](../README.md)
+[**EEN API Toolkit v0.3.103**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > `const` **EVENT\_TYPE\_DATA\_SCHEMAS**: `Readonly`\<`Record`\<[`KnownEventType`](../type-aliases/KnownEventType.md), readonly [`DataSchema`](../type-aliases/DataSchema.md)[]\>\>
 
-Defined in: [events/dataSchemas.ts:251](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L251)
+Defined in: [events/dataSchemas.ts:255](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/dataSchemas.ts#L255)
 
 Mapping of event types to their supported data schemas.
 

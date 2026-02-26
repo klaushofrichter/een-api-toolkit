@@ -1,6 +1,6 @@
 # Event Type to Data Schemas Mapping - EEN API Toolkit
 
-> **Version:** 0.3.102
+> **Version:** 0.3.103
 >
 > Complete reference for event type to data schema mappings.
 > Load this document when building dynamic event queries with the `include` parameter.
@@ -152,7 +152,7 @@ const schemas = EVENT_TYPE_DATA_SCHEMAS['een.personDetectionEvent.v1']
 | `een.objectRemovalEvent.v1` | monitoredArea, objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
 | `een.personTailgateEvent.v1` | objectDetection, fullFrameImageUrl, croppedFrameImageUrl, displayOverlay.boundingBox, fullFrameImageUrlWithOverlay |
 | `een.edgeReportedDeviceStatusEvent.v1` | deviceCommonStatusUpdate, deviceErrorStatusUpdate |
-| `een.accessActivationEvent.v1` | userAccessActivation, credentialAccessActivation, creatorDetails |
+| `een.accessActivationEvent.v1` | credentialAccessActivation, creatorDetails, userAccessActivation |
 
 ### Camera Analytics Events
 

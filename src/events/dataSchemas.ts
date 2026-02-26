@@ -41,6 +41,10 @@
  * These are the schema names as they appear in the event's `dataSchemas` array.
  * When using in the `include` parameter, prefix with `data.`.
  *
+ * Not all schemas are mapped to specific event types in `EVENT_TYPE_DATA_SCHEMAS`.
+ * Unmapped schemas (e.g., alert-related, counting, trajectory) may still appear in
+ * API responses as part of an event's `data` array.
+ *
  * @category Events
  */
 export type DataSchema =
@@ -215,6 +219,8 @@ export type KnownEventType =
   | 'een.jobCreationEvent.v1'
   | 'een.jobUpdateEvent.v1'
   | 'een.jobDeletionEvent.v1'
+  // Access control events
+  | 'een.accessActivationEvent.v1'
   // Safety and protocol events
   | 'een.panicButtonEvent.v1'
   | 'een.evacuateProtocolEvent.v1'
@@ -222,8 +228,6 @@ export type KnownEventType =
   | 'een.lockdownProtocolEvent.v1'
   | 'een.secureProtocolEvent.v1'
   | 'een.shelterProtocolEvent.v1'
-  // Access control events
-  | 'een.accessActivationEvent.v1'
   // Behavioral events
   | 'een.violenceDetectionEvent.v1'
   | 'een.fightDetectionEvent.v1'
@@ -579,6 +583,13 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
   'een.jobUpdateEvent.v1': ['een.jobDetails.v1', 'een.ownerDetails.v1'],
   'een.jobDeletionEvent.v1': ['een.ownerDetails.v1'],
 
+  // Access control events
+  'een.accessActivationEvent.v1': [
+    'een.credentialAccessActivation.v1',
+    'een.creatorDetails.v1',
+    'een.userAccessActivation.v1'
+  ],
+
   // Safety and protocol events (no data schemas)
   'een.panicButtonEvent.v1': ['een.geoLocation.v1'],
   'een.evacuateProtocolEvent.v1': [],
@@ -586,13 +597,6 @@ export const EVENT_TYPE_DATA_SCHEMAS: Readonly<Record<KnownEventType, readonly D
   'een.lockdownProtocolEvent.v1': [],
   'een.secureProtocolEvent.v1': [],
   'een.shelterProtocolEvent.v1': [],
-
-  // Access control events
-  'een.accessActivationEvent.v1': [
-    'een.userAccessActivation.v1',
-    'een.credentialAccessActivation.v1',
-    'een.creatorDetails.v1'
-  ],
 
   // Behavioral events (no data schemas)
   'een.violenceDetectionEvent.v1': [],
