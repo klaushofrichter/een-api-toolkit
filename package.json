@@ -59,7 +59,7 @@
     "@typescript-eslint/eslint-plugin": "^8.51.0",
     "@typescript-eslint/parser": "^8.51.0",
     "@vitejs/plugin-vue": "^6.0.0",
-    "@vue/tsconfig": "^0.8.1",
+    "@vue/tsconfig": "^0.9.0",
     "dotenv": "^17.2.3",
     "eslint": "^9.0.0",
     "eslint-plugin-vue": "^10.6.2",
