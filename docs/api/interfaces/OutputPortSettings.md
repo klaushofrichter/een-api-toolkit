@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -34,7 +34,7 @@ Output port index
 
 ### durationMs?
 
-> `optional` **durationMs**: `number`
+> `optional` **durationMs?**: `number`
 
 Defined in: [types/automation.ts:364](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L364)
 

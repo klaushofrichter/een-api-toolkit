@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -31,7 +31,7 @@ if (connection) {
 
 ## Properties
 
-### close()
+### close
 
 > **close**: () => `void`
 

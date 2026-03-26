@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -16,9 +16,9 @@ Extract the status string from a Camera's status field.
 
 ### status?
 
-The camera status field value
+[`CameraStatus`](../type-aliases/CameraStatus.md) \| \{ `connectionStatus?`: CameraStatus \| undefined; \}
 
-[`CameraStatus`](../type-aliases/CameraStatus.md) | \{ `connectionStatus?`: CameraStatus \| undefined; \}
+The camera status field value
 
 ## Returns
 

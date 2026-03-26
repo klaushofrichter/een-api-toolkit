@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -35,7 +35,7 @@ const { data } = await getRecordedImage({
 
 ### deviceId?
 
-> `optional` **deviceId**: `string`
+> `optional` **deviceId?**: `string`
 
 Defined in: [types/media.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L183)
 
@@ -45,7 +45,7 @@ The ID of the device (camera) - required unless using pageToken
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/media.ts:185](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L185)
 
@@ -55,7 +55,7 @@ Token from previous request to fetch next/previous image
 
 ### type?
 
-> `optional` **type**: [`MediaStreamType`](../type-aliases/MediaStreamType.md)
+> `optional` **type?**: [`MediaStreamType`](../type-aliases/MediaStreamType.md)
 
 Defined in: [types/media.ts:187](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L187)
 
@@ -65,7 +65,7 @@ Stream type (preview or main)
 
 ### timestamp\_\_lt?
 
-> `optional` **timestamp\_\_lt**: `string`
+> `optional` **timestamp\_\_lt?**: `string`
 
 Defined in: [types/media.ts:189](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L189)
 
@@ -75,7 +75,7 @@ Return first image with timestamp less than this value
 
 ### timestamp\_\_lte?
 
-> `optional` **timestamp\_\_lte**: `string`
+> `optional` **timestamp\_\_lte?**: `string`
 
 Defined in: [types/media.ts:191](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L191)
 
@@ -85,7 +85,7 @@ Return first image with timestamp less than or equal to this value
 
 ### timestamp?
 
-> `optional` **timestamp**: `string`
+> `optional` **timestamp?**: `string`
 
 Defined in: [types/media.ts:193](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L193)
 
@@ -95,7 +95,7 @@ Return image at this exact timestamp
 
 ### timestamp\_\_gte?
 
-> `optional` **timestamp\_\_gte**: `string`
+> `optional` **timestamp\_\_gte?**: `string`
 
 Defined in: [types/media.ts:195](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L195)
 
@@ -105,7 +105,7 @@ Return first image with timestamp greater than or equal to this value
 
 ### timestamp\_\_gt?
 
-> `optional` **timestamp\_\_gt**: `string`
+> `optional` **timestamp\_\_gt?**: `string`
 
 Defined in: [types/media.ts:197](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L197)
 
@@ -115,7 +115,7 @@ Return first image with timestamp greater than this value
 
 ### overlayId\_\_in?
 
-> `optional` **overlayId\_\_in**: `string`[]
+> `optional` **overlayId\_\_in?**: `string`[]
 
 Defined in: [types/media.ts:199](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L199)
 
@@ -125,7 +125,7 @@ List of overlay IDs to include
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/media.ts:204](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L204)
 
@@ -136,7 +136,7 @@ Valid values: overlayEmbedded, overlaySvgHeader
 
 ### targetWidth?
 
-> `optional` **targetWidth**: `number`
+> `optional` **targetWidth?**: `number`
 
 Defined in: [types/media.ts:206](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L206)
 
@@ -146,7 +146,7 @@ Target width for the returned image (32-7680)
 
 ### targetHeight?
 
-> `optional` **targetHeight**: `number`
+> `optional` **targetHeight?**: `number`
 
 Defined in: [types/media.ts:208](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L208)
 

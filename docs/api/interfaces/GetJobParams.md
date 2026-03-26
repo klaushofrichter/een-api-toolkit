@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -32,7 +32,7 @@ if (data?.state === 'success') {
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/job.ts:226](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L226)
 

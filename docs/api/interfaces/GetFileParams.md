@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Use to fetch file metadata before downloading.
 
 ### include?
 
-> `optional` **include**: [`FileIncludeField`](../type-aliases/FileIncludeField.md)[]
+> `optional` **include?**: [`FileIncludeField`](../type-aliases/FileIncludeField.md)[]
 
 Defined in: [types/file.ts:180](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/file.ts#L180)
 

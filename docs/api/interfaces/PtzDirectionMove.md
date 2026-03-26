@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -49,7 +49,7 @@ One or more directions to move
 
 ### stepSize?
 
-> `optional` **stepSize**: [`PtzStepSize`](../type-aliases/PtzStepSize.md)
+> `optional` **stepSize?**: [`PtzStepSize`](../type-aliases/PtzStepSize.md)
 
 Defined in: [types/ptz.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L118)
 

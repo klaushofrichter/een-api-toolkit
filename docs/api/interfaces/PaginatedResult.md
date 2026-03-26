@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -37,7 +37,7 @@ Array of items for this page
 
 ### nextPageToken?
 
-> `optional` **nextPageToken**: `string`
+> `optional` **nextPageToken?**: `string`
 
 Defined in: [types/common.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L127)
 
@@ -47,7 +47,7 @@ Token to fetch the next page (undefined if no more pages)
 
 ### prevPageToken?
 
-> `optional` **prevPageToken**: `string`
+> `optional` **prevPageToken?**: `string`
 
 Defined in: [types/common.ts:129](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L129)
 
@@ -57,7 +57,7 @@ Token to fetch the previous page (undefined if on first page)
 
 ### totalSize?
 
-> `optional` **totalSize**: `number`
+> `optional` **totalSize?**: `number`
 
 Defined in: [types/common.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L131)
 

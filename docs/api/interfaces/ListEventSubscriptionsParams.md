@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -35,7 +35,7 @@ if (data?.nextPageToken) {
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/eventSubscription.ts:283](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L283)
 
@@ -45,7 +45,7 @@ Number of results per page
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/eventSubscription.ts:285](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L285)
 

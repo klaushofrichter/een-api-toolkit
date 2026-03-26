@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -47,7 +47,7 @@ if (data?.nextPageToken) {
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/event.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L157)
 
@@ -57,7 +57,7 @@ Number of results per page (default: 100)
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/event.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L159)
 
@@ -97,7 +97,7 @@ ISO 8601 timestamp - events starting at or after this time
 
 ### startTimestamp\_\_lte?
 
-> `optional` **startTimestamp\_\_lte**: `string`
+> `optional` **startTimestamp\_\_lte?**: `string`
 
 Defined in: [types/event.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L171)
 
@@ -107,7 +107,7 @@ ISO 8601 timestamp - events starting before this time
 
 ### endTimestamp\_\_gte?
 
-> `optional` **endTimestamp\_\_gte**: `string`
+> `optional` **endTimestamp\_\_gte?**: `string`
 
 Defined in: [types/event.ts:173](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L173)
 
@@ -117,7 +117,7 @@ ISO 8601 timestamp - events ending at or after this time
 
 ### endTimestamp\_\_lte?
 
-> `optional` **endTimestamp\_\_lte**: `string`
+> `optional` **endTimestamp\_\_lte?**: `string`
 
 Defined in: [types/event.ts:175](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L175)
 
@@ -127,7 +127,7 @@ ISO 8601 timestamp - events ending before this time
 
 ### sort?
 
-> `optional` **sort**: `"+startTimestamp"` \| `"-startTimestamp"`
+> `optional` **sort?**: `"+startTimestamp"` \| `"-startTimestamp"`
 
 Defined in: [types/event.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L179)
 
@@ -137,7 +137,7 @@ Sort order for results
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/event.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L183)
 

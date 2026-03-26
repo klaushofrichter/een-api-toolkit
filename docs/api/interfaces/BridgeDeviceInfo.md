@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Contains hardware and firmware details about the physical bridge device.
 
 ### make?
 
-> `optional` **make**: `string`
+> `optional` **make?**: `string`
 
 Defined in: [types/bridge.ts:28](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L28)
 
@@ -28,7 +28,7 @@ Bridge manufacturer
 
 ### model?
 
-> `optional` **model**: `string`
+> `optional` **model?**: `string`
 
 Defined in: [types/bridge.ts:30](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L30)
 
@@ -38,7 +38,7 @@ Bridge model
 
 ### firmwareVersion?
 
-> `optional` **firmwareVersion**: `string`
+> `optional` **firmwareVersion?**: `string`
 
 Defined in: [types/bridge.ts:32](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L32)
 
@@ -48,7 +48,7 @@ Firmware version
 
 ### serialNumber?
 
-> `optional` **serialNumber**: `string`
+> `optional` **serialNumber?**: `string`
 
 Defined in: [types/bridge.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L34)
 
@@ -58,7 +58,7 @@ Serial number
 
 ### hardwareVersion?
 
-> `optional` **hardwareVersion**: `string`
+> `optional` **hardwareVersion?**: `string`
 
 Defined in: [types/bridge.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L36)
 

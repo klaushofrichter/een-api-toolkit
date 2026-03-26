@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -75,7 +75,7 @@ ID of the camera to display in this pane
 
 ### compositeId?
 
-> `optional` **compositeId**: `string` \| `null`
+> `optional` **compositeId?**: `string` \| `null`
 
 Defined in: [types/layout.ts:95](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L95)
 

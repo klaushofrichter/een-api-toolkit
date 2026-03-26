@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -59,7 +59,7 @@ User's last name
 
 ### accountId?
 
-> `optional` **accountId**: `string`
+> `optional` **accountId?**: `string`
 
 Defined in: [types/user.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L63)
 
@@ -69,7 +69,7 @@ ID of the account this user belongs to
 
 ### timeZone?
 
-> `optional` **timeZone**: `string`
+> `optional` **timeZone?**: `string`
 
 Defined in: [types/user.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L65)
 
@@ -79,7 +79,7 @@ User's timezone
 
 ### language?
 
-> `optional` **language**: `string`
+> `optional` **language?**: `string`
 
 Defined in: [types/user.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L67)
 

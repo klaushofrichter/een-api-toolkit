@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Controls microphone and audio input configuration.
 
 ### microphoneEnabled?
 
-> `optional` **microphoneEnabled**: `boolean`
+> `optional` **microphoneEnabled?**: `boolean`
 
 Defined in: [types/camera.ts:476](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L476)
 
@@ -28,7 +28,7 @@ Whether the microphone is enabled
 
 ### inputSourceId?
 
-> `optional` **inputSourceId**: `string`
+> `optional` **inputSourceId?**: `string`
 
 Defined in: [types/camera.ts:478](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L478)
 

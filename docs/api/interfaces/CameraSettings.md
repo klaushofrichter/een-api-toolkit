@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -45,7 +45,7 @@ The camera settings data
 
 ### schema?
 
-> `optional` **schema**: `object`
+> `optional` **schema?**: `object`
 
 Defined in: [types/camera.ts:675](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L675)
 
@@ -55,7 +55,7 @@ JSON Schema describing all settings fields (when include contains 'schema')
 
 ### proposedValues?
 
-> `optional` **proposedValues**: `object`
+> `optional` **proposedValues?**: `object`
 
 Defined in: [types/camera.ts:677](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L677)
 

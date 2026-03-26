@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -49,7 +49,7 @@ Unique identifier for the job
 
 ### namespace?
 
-> `optional` **namespace**: `string`
+> `optional` **namespace?**: `string`
 
 Defined in: [types/job.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L131)
 
@@ -89,7 +89,7 @@ Current state of the job
 
 ### detailedState?
 
-> `optional` **detailedState**: `string` \| `null`
+> `optional` **detailedState?**: `string` \| `null`
 
 Defined in: [types/job.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L139)
 
@@ -99,7 +99,7 @@ Detailed state information
 
 ### progress?
 
-> `optional` **progress**: `number`
+> `optional` **progress?**: `number`
 
 Defined in: [types/job.ts:141](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L141)
 
@@ -109,7 +109,7 @@ Progress as a decimal (0-1). Multiply by 100 for percentage.
 
 ### error?
 
-> `optional` **error**: `string` \| `null`
+> `optional` **error?**: `string` \| `null`
 
 Defined in: [types/job.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L143)
 
@@ -119,7 +119,7 @@ Error details if the job failed
 
 ### arguments?
 
-> `optional` **arguments**: `JobArguments`
+> `optional` **arguments?**: `JobArguments`
 
 Defined in: [types/job.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L145)
 
@@ -129,7 +129,7 @@ Job arguments including the original request
 
 ### result?
 
-> `optional` **result**: `JobResult`
+> `optional` **result?**: `JobResult`
 
 Defined in: [types/job.ts:147](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L147)
 
@@ -149,7 +149,7 @@ ISO 8601 timestamp when the job was created
 
 ### updateTimestamp?
 
-> `optional` **updateTimestamp**: `string`
+> `optional` **updateTimestamp?**: `string`
 
 Defined in: [types/job.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L151)
 
@@ -159,7 +159,7 @@ ISO 8601 timestamp when the job was last updated
 
 ### expireTimestamp?
 
-> `optional` **expireTimestamp**: `string`
+> `optional` **expireTimestamp?**: `string`
 
 Defined in: [types/job.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L153)
 
@@ -169,7 +169,7 @@ ISO 8601 timestamp when the job is scheduled to expire
 
 ### scheduleTimestamp?
 
-> `optional` **scheduleTimestamp**: `string` \| `null`
+> `optional` **scheduleTimestamp?**: `string` \| `null`
 
 Defined in: [types/job.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L155)
 

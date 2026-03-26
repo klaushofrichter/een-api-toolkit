@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -72,7 +72,7 @@ Human-readable name
 
 ### notes?
 
-> `optional` **notes**: `string`
+> `optional` **notes?**: `string`
 
 Defined in: [types/automation.ts:434](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L434)
 

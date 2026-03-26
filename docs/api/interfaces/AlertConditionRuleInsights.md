@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -14,7 +14,7 @@ Insights data for alert condition rules.
 
 ### totalAlerts?
 
-> `optional` **totalAlerts**: `number`
+> `optional` **totalAlerts?**: `number`
 
 Defined in: [types/automation.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L155)
 
@@ -24,7 +24,7 @@ Total number of alerts triggered
 
 ### lastTriggered?
 
-> `optional` **lastTriggered**: `string`
+> `optional` **lastTriggered?**: `string`
 
 Defined in: [types/automation.ts:157](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L157)
 
@@ -34,7 +34,7 @@ ISO 8601 timestamp of last triggered alert
 
 ### alertCounts?
 
-> `optional` **alertCounts**: `object`
+> `optional` **alertCounts?**: `object`
 
 Defined in: [types/automation.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L159)
 
@@ -42,12 +42,12 @@ Count of alerts by time period
 
 #### last24Hours?
 
-> `optional` **last24Hours**: `number`
+> `optional` **last24Hours?**: `number`
 
 #### last7Days?
 
-> `optional` **last7Days**: `number`
+> `optional` **last7Days?**: `number`
 
 #### last30Days?
 
-> `optional` **last30Days**: `number`
+> `optional` **last30Days?**: `number`

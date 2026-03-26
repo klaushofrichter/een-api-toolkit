@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -59,7 +59,7 @@ ISO 8601 timestamp when the action was executed
 
 ### status?
 
-> `optional` **status**: [`AlertActionStatus`](../type-aliases/AlertActionStatus.md)
+> `optional` **status?**: [`AlertActionStatus`](../type-aliases/AlertActionStatus.md)
 
 Defined in: [types/alert.ts:20](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L20)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -24,7 +24,7 @@ Slack webhook URL
 
 ### channel?
 
-> `optional` **channel**: `string`
+> `optional` **channel?**: `string`
 
 Defined in: [types/automation.ts:334](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L334)
 
@@ -34,7 +34,7 @@ Channel to post to
 
 ### username?
 
-> `optional` **username**: `string`
+> `optional` **username?**: `string`
 
 Defined in: [types/automation.ts:336](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L336)
 

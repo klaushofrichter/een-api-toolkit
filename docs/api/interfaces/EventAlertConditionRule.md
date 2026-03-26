@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -85,7 +85,7 @@ Priority level (1-10, higher is more important)
 
 ### notes?
 
-> `optional` **notes**: `string`
+> `optional` **notes?**: `string`
 
 Defined in: [types/automation.ts:91](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L91)
 
@@ -115,7 +115,7 @@ Cooldown period in seconds between alerts
 
 ### humanValidation?
 
-> `optional` **humanValidation**: [`HumanValidation`](HumanValidation.md)
+> `optional` **humanValidation?**: [`HumanValidation`](HumanValidation.md)
 
 Defined in: [types/automation.ts:97](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L97)
 

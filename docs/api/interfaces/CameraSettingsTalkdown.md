@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Configuration for cameras with speaker/talkdown capability.
 
 ### protocol?
 
-> `optional` **protocol**: `string`
+> `optional` **protocol?**: `string`
 
 Defined in: [types/camera.ts:582](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L582)
 
@@ -28,7 +28,7 @@ Communication protocol for talkdown
 
 ### audioMode?
 
-> `optional` **audioMode**: `string`
+> `optional` **audioMode?**: `string`
 
 Defined in: [types/camera.ts:584](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L584)
 
@@ -38,7 +38,7 @@ Audio mode for talkdown
 
 ### sipCredentials?
 
-> `optional` **sipCredentials**: `object`
+> `optional` **sipCredentials?**: `object`
 
 Defined in: [types/camera.ts:586](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L586)
 

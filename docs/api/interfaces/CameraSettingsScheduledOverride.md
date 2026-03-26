@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Allows the camera to be turned on/off on a schedule.
 
 ### on?
 
-> `optional` **on**: `boolean`
+> `optional` **on?**: `boolean`
 
 Defined in: [types/camera.ts:552](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L552)
 
@@ -28,7 +28,7 @@ Whether the scheduled override is active
 
 ### schedule?
 
-> `optional` **schedule**: `string`
+> `optional` **schedule?**: `string`
 
 Defined in: [types/camera.ts:554](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L554)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -75,7 +75,7 @@ Media type of the feed content
 
 ### flvUrl?
 
-> `optional` **flvUrl**: `string` \| `null`
+> `optional` **flvUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L118)
 
@@ -85,7 +85,7 @@ Flash Video URL (if requested via include)
 
 ### rtspUrl?
 
-> `optional` **rtspUrl**: `string` \| `null`
+> `optional` **rtspUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:121](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L121)
 
@@ -95,7 +95,7 @@ RTSP URL (if requested via include)
 
 ### rtspsUrl?
 
-> `optional` **rtspsUrl**: `string` \| `null`
+> `optional` **rtspsUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:124](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L124)
 
@@ -105,7 +105,7 @@ RTSP over TLS URL (if requested via include)
 
 ### localRtspUrl?
 
-> `optional` **localRtspUrl**: `string` \| `null`
+> `optional` **localRtspUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:127](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L127)
 
@@ -115,7 +115,7 @@ Local RTSP URL to bridge (if requested via include)
 
 ### hlsUrl?
 
-> `optional` **hlsUrl**: `string` \| `null`
+> `optional` **hlsUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:130](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L130)
 
@@ -125,7 +125,7 @@ HLS URL (if requested via include)
 
 ### multipartUrl?
 
-> `optional` **multipartUrl**: `string` \| `null`
+> `optional` **multipartUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:133](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L133)
 
@@ -135,7 +135,7 @@ Multipart URL for raw frames (if requested via include)
 
 ### webRtcUrl?
 
-> `optional` **webRtcUrl**: `string` \| `null`
+> `optional` **webRtcUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:136](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L136)
 
@@ -145,7 +145,7 @@ WebRTC URL (if requested via include)
 
 ### audioPushHttpsUrl?
 
-> `optional` **audioPushHttpsUrl**: `string` \| `null`
+> `optional` **audioPushHttpsUrl?**: `string` \| `null`
 
 Defined in: [types/feeds.ts:139](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L139)
 

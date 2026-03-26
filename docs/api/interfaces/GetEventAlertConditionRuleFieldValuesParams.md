@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -14,7 +14,7 @@ Parameters for getting event alert condition rule field values.
 
 ### enabled?
 
-> `optional` **enabled**: `boolean`
+> `optional` **enabled?**: `boolean`
 
 Defined in: [types/automation.ts:483](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L483)
 

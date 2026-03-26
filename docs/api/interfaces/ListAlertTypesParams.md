@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -31,7 +31,7 @@ if (data) {
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/alert.ts:280](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L280)
 
@@ -41,7 +41,7 @@ Number of results per page
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/alert.ts:282](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L282)
 

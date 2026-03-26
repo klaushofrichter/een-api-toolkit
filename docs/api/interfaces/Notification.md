@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -69,7 +69,7 @@ ISO 8601 timestamp when the notification was created in the system
 
 ### sentTimestamp?
 
-> `optional` **sentTimestamp**: `string`
+> `optional` **sentTimestamp?**: `string`
 
 Defined in: [types/notification.ts:70](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L70)
 
@@ -79,7 +79,7 @@ ISO 8601 timestamp when the notification was sent
 
 ### alertId?
 
-> `optional` **alertId**: `string` \| `null`
+> `optional` **alertId?**: `string` \| `null`
 
 Defined in: [types/notification.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L72)
 
@@ -89,7 +89,7 @@ ID of the alert that triggered this notification (null if not alert-based)
 
 ### alertType?
 
-> `optional` **alertType**: `string`
+> `optional` **alertType?**: `string`
 
 Defined in: [types/notification.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L74)
 
@@ -109,7 +109,7 @@ ID of the actor (device/entity) associated with this notification
 
 ### actorName?
 
-> `optional` **actorName**: `string`
+> `optional` **actorName?**: `string`
 
 Defined in: [types/notification.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L78)
 
@@ -189,7 +189,7 @@ Category of the notification
 
 ### description?
 
-> `optional` **description**: `string`
+> `optional` **description?**: `string`
 
 Defined in: [types/notification.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/notification.ts#L94)
 

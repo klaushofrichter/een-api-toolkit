@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -35,7 +35,7 @@ const params: ListFeedsParams = {
 
 ### deviceId?
 
-> `optional` **deviceId**: `string`
+> `optional` **deviceId?**: `string`
 
 Defined in: [types/feeds.ts:168](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L168)
 
@@ -45,7 +45,7 @@ Filter by single device ID
 
 ### deviceId\_\_in?
 
-> `optional` **deviceId\_\_in**: `string`[]
+> `optional` **deviceId\_\_in?**: `string`[]
 
 Defined in: [types/feeds.ts:171](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L171)
 
@@ -55,7 +55,7 @@ Filter by multiple device IDs
 
 ### type?
 
-> `optional` **type**: [`FeedStreamType`](../type-aliases/FeedStreamType.md)
+> `optional` **type?**: [`FeedStreamType`](../type-aliases/FeedStreamType.md)
 
 Defined in: [types/feeds.ts:174](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L174)
 
@@ -65,7 +65,7 @@ Filter by stream type
 
 ### include?
 
-> `optional` **include**: [`FeedIncludeOption`](../type-aliases/FeedIncludeOption.md)[]
+> `optional` **include?**: [`FeedIncludeOption`](../type-aliases/FeedIncludeOption.md)[]
 
 Defined in: [types/feeds.ts:177](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L177)
 
@@ -75,7 +75,7 @@ URL fields to include in response
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/feeds.ts:180](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L180)
 
@@ -85,7 +85,7 @@ Number of results per page
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/feeds.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L183)
 
@@ -95,7 +95,7 @@ Pagination cursor from previous response
 
 ### signal?
 
-> `optional` **signal**: `AbortSignal`
+> `optional` **signal?**: `AbortSignal`
 
 Defined in: [types/feeds.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L186)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -59,7 +59,7 @@ Display settings for the layout (required)
 
 ### panes?
 
-> `optional` **panes**: [`LayoutPane`](LayoutPane.md)[]
+> `optional` **panes?**: [`LayoutPane`](LayoutPane.md)[]
 
 Defined in: [types/layout.ts:325](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L325)
 

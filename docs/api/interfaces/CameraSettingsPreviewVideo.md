@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Configuration for the lower-resolution preview stream.
 
 ### transmitMode?
 
-> `optional` **transmitMode**: `string`
+> `optional` **transmitMode?**: `string`
 
 Defined in: [types/camera.ts:491](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L491)
 
@@ -28,7 +28,7 @@ Transmit mode (e.g., "always", "event")
 
 ### resolution?
 
-> `optional` **resolution**: `string`
+> `optional` **resolution?**: `string`
 
 Defined in: [types/camera.ts:493](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L493)
 
@@ -38,7 +38,7 @@ Resolution of the preview stream
 
 ### intervalMs?
 
-> `optional` **intervalMs**: `number`
+> `optional` **intervalMs?**: `number`
 
 Defined in: [types/camera.ts:495](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L495)
 
@@ -48,7 +48,7 @@ Interval between preview frames in milliseconds
 
 ### quality?
 
-> `optional` **quality**: `string`
+> `optional` **quality?**: `string`
 
 Defined in: [types/camera.ts:497](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L497)
 
@@ -58,7 +58,7 @@ Quality setting for preview stream
 
 ### supportedResolutions?
 
-> `optional` **supportedResolutions**: `string`[]
+> `optional` **supportedResolutions?**: `string`[]
 
 Defined in: [types/camera.ts:499](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L499)
 

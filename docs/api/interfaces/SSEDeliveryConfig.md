@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -29,7 +29,7 @@ Delivery type identifier
 
 ### sseUrl?
 
-> `optional` **sseUrl**: `string`
+> `optional` **sseUrl?**: `string`
 
 Defined in: [types/eventSubscription.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L52)
 

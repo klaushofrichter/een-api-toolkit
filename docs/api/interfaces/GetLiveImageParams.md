@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -48,7 +48,7 @@ The ID of the device (camera) - required
 
 ### type?
 
-> `optional` **type**: `"preview"`
+> `optional` **type?**: `"preview"`
 
 Defined in: [types/media.ts:137](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L137)
 

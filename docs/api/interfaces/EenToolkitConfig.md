@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -34,7 +34,7 @@ initEenToolkit({
 
 ### proxyUrl?
 
-> `optional` **proxyUrl**: `string`
+> `optional` **proxyUrl?**: `string`
 
 Defined in: [types/common.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L179)
 
@@ -44,7 +44,7 @@ URL of the OAuth proxy server (required for API calls)
 
 ### clientId?
 
-> `optional` **clientId**: `string`
+> `optional` **clientId?**: `string`
 
 Defined in: [types/common.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L181)
 
@@ -54,7 +54,7 @@ EEN OAuth client ID (required for authentication)
 
 ### redirectUri?
 
-> `optional` **redirectUri**: `string`
+> `optional` **redirectUri?**: `string`
 
 Defined in: [types/common.ts:183](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L183)
 
@@ -64,7 +64,7 @@ OAuth redirect URI (default: http://127.0.0.1:3333)
 
 ### storageStrategy?
 
-> `optional` **storageStrategy**: [`StorageStrategy`](../type-aliases/StorageStrategy.md)
+> `optional` **storageStrategy?**: [`StorageStrategy`](../type-aliases/StorageStrategy.md)
 
 Defined in: [types/common.ts:192](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L192)
 
@@ -79,7 +79,7 @@ Security vs convenience tradeoffs:
 
 ### debug?
 
-> `optional` **debug**: `boolean`
+> `optional` **debug?**: `boolean`
 
 Defined in: [types/common.ts:194](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L194)
 

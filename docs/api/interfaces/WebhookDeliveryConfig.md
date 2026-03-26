@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.104**](../README.md)
 
 ***
 
@@ -29,7 +29,7 @@ Delivery type identifier
 
 ### secret?
 
-> `optional` **secret**: `string`
+> `optional` **secret?**: `string`
 
 Defined in: [types/eventSubscription.ts:68](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L68)
 
