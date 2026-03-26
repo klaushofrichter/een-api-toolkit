@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -34,7 +34,7 @@ if (data.nextPageToken) {
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/common.ts:108](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L108)
 
@@ -44,7 +44,7 @@ Number of results per page (default varies by endpoint, typically 100)
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/common.ts:110](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/common.ts#L110)
 

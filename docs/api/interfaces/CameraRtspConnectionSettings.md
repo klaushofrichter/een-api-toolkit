@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Configuration for cameras that connect via RTSP protocol.
 
 ### url?
 
-> `optional` **url**: `string`
+> `optional` **url?**: `string`
 
 Defined in: [types/camera.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L94)
 
@@ -28,7 +28,7 @@ RTSP URL for the camera stream
 
 ### username?
 
-> `optional` **username**: `string`
+> `optional` **username?**: `string`
 
 Defined in: [types/camera.ts:96](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L96)
 
@@ -38,7 +38,7 @@ Username for RTSP authentication
 
 ### password?
 
-> `optional` **password**: `string`
+> `optional` **password?**: `string`
 
 Defined in: [types/camera.ts:98](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L98)
 
@@ -48,7 +48,7 @@ Password for RTSP authentication (write-only, not returned in responses)
 
 ### transport?
 
-> `optional` **transport**: `"tcp"` \| `"udp"`
+> `optional` **transport?**: `"tcp"` \| `"udp"`
 
 Defined in: [types/camera.ts:100](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L100)
 

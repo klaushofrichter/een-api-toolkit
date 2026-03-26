@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -16,9 +16,9 @@ TypeScript type guard to check if a status value is an object with connectionSta
 
 ### status?
 
-The camera status field value
+[`CameraStatus`](../type-aliases/CameraStatus.md) \| \{ `connectionStatus?`: CameraStatus \| undefined; \}
 
-[`CameraStatus`](../type-aliases/CameraStatus.md) | \{ `connectionStatus?`: CameraStatus \| undefined; \}
+The camera status field value
 
 ## Returns
 

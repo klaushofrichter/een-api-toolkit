@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -85,7 +85,7 @@ Display settings for the layout
 
 ### effectivePermissions?
 
-> `optional` **effectivePermissions**: [`LayoutPermissions`](LayoutPermissions.md)
+> `optional` **effectivePermissions?**: [`LayoutPermissions`](LayoutPermissions.md)
 
 Defined in: [types/layout.ts:153](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L153)
 
@@ -95,7 +95,7 @@ Permissions the current user has on this layout (optional, via include)
 
 ### resourceCounts?
 
-> `optional` **resourceCounts**: `object`
+> `optional` **resourceCounts?**: `object`
 
 Defined in: [types/layout.ts:155](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L155)
 
@@ -103,13 +103,13 @@ Count of resources in the layout (optional, via include)
 
 #### cameras?
 
-> `optional` **cameras**: `number`
+> `optional` **cameras?**: `number`
 
 ***
 
 ### resourceStatusCounts?
 
-> `optional` **resourceStatusCounts**: `object`
+> `optional` **resourceStatusCounts?**: `object`
 
 Defined in: [types/layout.ts:159](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L159)
 
@@ -117,13 +117,13 @@ Status counts of cameras in the layout (optional, via include)
 
 #### cameras?
 
-> `optional` **cameras**: [`CameraStatusCounts`](CameraStatusCounts.md)
+> `optional` **cameras?**: [`CameraStatusCounts`](CameraStatusCounts.md)
 
 ***
 
 ### qRelevance?
 
-> `optional` **qRelevance**: `number`
+> `optional` **qRelevance?**: `number`
 
 Defined in: [types/layout.ts:163](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L163)
 

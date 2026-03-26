@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -24,7 +24,7 @@ Action ID
 
 ### name?
 
-> `optional` **name**: `string`
+> `optional` **name?**: `string`
 
 Defined in: [types/automation.ts:143](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L143)
 
@@ -34,7 +34,7 @@ Action name
 
 ### type?
 
-> `optional` **type**: `string`
+> `optional` **type?**: `string`
 
 Defined in: [types/automation.ts:145](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L145)
 

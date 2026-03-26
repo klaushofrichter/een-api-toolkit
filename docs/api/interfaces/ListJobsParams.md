@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -35,7 +35,7 @@ const { data: exports } = await listJobs({
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/job.ts:184](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L184)
 
@@ -45,7 +45,7 @@ Number of results per page (default: 100, max: 1000)
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/job.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L186)
 
@@ -55,7 +55,7 @@ Token for fetching a specific page
 
 ### state\_\_in?
 
-> `optional` **state\_\_in**: [`JobState`](../type-aliases/JobState.md)[]
+> `optional` **state\_\_in?**: [`JobState`](../type-aliases/JobState.md)[]
 
 Defined in: [types/job.ts:188](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L188)
 
@@ -65,7 +65,7 @@ Filter by job states (any match)
 
 ### type?
 
-> `optional` **type**: `string`
+> `optional` **type?**: `string`
 
 Defined in: [types/job.ts:190](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L190)
 
@@ -75,7 +75,7 @@ Filter by job type
 
 ### type\_\_in?
 
-> `optional` **type\_\_in**: `string`[]
+> `optional` **type\_\_in?**: `string`[]
 
 Defined in: [types/job.ts:192](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L192)
 
@@ -85,7 +85,7 @@ Filter by job types (any match)
 
 ### createTimestamp\_\_gte?
 
-> `optional` **createTimestamp\_\_gte**: `string`
+> `optional` **createTimestamp\_\_gte?**: `string`
 
 Defined in: [types/job.ts:194](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L194)
 
@@ -95,7 +95,7 @@ Filter by jobs created after this timestamp (ISO 8601)
 
 ### createTimestamp\_\_lte?
 
-> `optional` **createTimestamp\_\_lte**: `string`
+> `optional` **createTimestamp\_\_lte?**: `string`
 
 Defined in: [types/job.ts:196](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L196)
 
@@ -105,7 +105,7 @@ Filter by jobs created before this timestamp (ISO 8601)
 
 ### userId?
 
-> `optional` **userId**: `string`
+> `optional` **userId?**: `string`
 
 Defined in: [types/job.ts:198](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L198)
 
@@ -115,7 +115,7 @@ Filter by user ID
 
 ### sort?
 
-> `optional` **sort**: `string`[]
+> `optional` **sort?**: `string`[]
 
 Defined in: [types/job.ts:200](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/job.ts#L200)
 

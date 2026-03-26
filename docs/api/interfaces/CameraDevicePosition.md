@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Physical location and orientation of the camera.
 
 ### latitude?
 
-> `optional` **latitude**: `number`
+> `optional` **latitude?**: `number`
 
 Defined in: [types/camera.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L113)
 
@@ -28,7 +28,7 @@ Latitude coordinate
 
 ### longitude?
 
-> `optional` **longitude**: `number`
+> `optional` **longitude?**: `number`
 
 Defined in: [types/camera.ts:115](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L115)
 
@@ -38,7 +38,7 @@ Longitude coordinate
 
 ### altitude?
 
-> `optional` **altitude**: `number`
+> `optional` **altitude?**: `number`
 
 Defined in: [types/camera.ts:117](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L117)
 
@@ -48,7 +48,7 @@ Altitude in meters
 
 ### floor?
 
-> `optional` **floor**: `number`
+> `optional` **floor?**: `number`
 
 Defined in: [types/camera.ts:119](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L119)
 
@@ -58,7 +58,7 @@ Floor level
 
 ### azimuth?
 
-> `optional` **azimuth**: `number`
+> `optional` **azimuth?**: `number`
 
 Defined in: [types/camera.ts:121](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L121)
 

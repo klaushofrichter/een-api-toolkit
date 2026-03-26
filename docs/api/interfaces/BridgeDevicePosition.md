@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Physical location of the bridge.
 
 ### latitude?
 
-> `optional` **latitude**: `number`
+> `optional` **latitude?**: `number`
 
 Defined in: [types/bridge.ts:72](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L72)
 
@@ -28,7 +28,7 @@ Latitude coordinate
 
 ### longitude?
 
-> `optional` **longitude**: `number`
+> `optional` **longitude?**: `number`
 
 Defined in: [types/bridge.ts:74](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L74)
 
@@ -38,7 +38,7 @@ Longitude coordinate
 
 ### altitude?
 
-> `optional` **altitude**: `number`
+> `optional` **altitude?**: `number`
 
 Defined in: [types/bridge.ts:76](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L76)
 
@@ -48,7 +48,7 @@ Altitude in meters
 
 ### floor?
 
-> `optional` **floor**: `number`
+> `optional` **floor?**: `number`
 
 Defined in: [types/bridge.ts:78](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L78)
 
@@ -58,7 +58,7 @@ Floor level
 
 ### azimuth?
 
-> `optional` **azimuth**: `number`
+> `optional` **azimuth?**: `number`
 
 Defined in: [types/bridge.ts:80](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L80)
 

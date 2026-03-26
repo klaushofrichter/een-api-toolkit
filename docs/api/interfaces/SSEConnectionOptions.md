@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -12,7 +12,7 @@ Options for connecting to an SSE event subscription.
 
 ## Properties
 
-### onEvent()
+### onEvent
 
 > **onEvent**: (`event`) => `void`
 
@@ -32,9 +32,9 @@ Callback when an event is received
 
 ***
 
-### onError()?
+### onError?
 
-> `optional` **onError**: (`error`) => `void`
+> `optional` **onError?**: (`error`) => `void`
 
 Defined in: [types/eventSubscription.ts:333](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L333)
 
@@ -52,9 +52,9 @@ Callback when an error occurs
 
 ***
 
-### onStatusChange()?
+### onStatusChange?
 
-> `optional` **onStatusChange**: (`status`) => `void`
+> `optional` **onStatusChange?**: (`status`) => `void`
 
 Defined in: [types/eventSubscription.ts:335](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L335)
 

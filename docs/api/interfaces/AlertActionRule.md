@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -60,7 +60,7 @@ Human-readable name
 
 ### notes?
 
-> `optional` **notes**: `string`
+> `optional` **notes?**: `string`
 
 Defined in: [types/automation.ts:245](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L245)
 
@@ -130,7 +130,7 @@ Alert action IDs to execute when rule matches
 
 ### priority\_\_gte?
 
-> `optional` **priority\_\_gte**: `number`
+> `optional` **priority\_\_gte?**: `number`
 
 Defined in: [types/automation.ts:259](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L259)
 
@@ -140,7 +140,7 @@ Minimum priority for alerts (inclusive)
 
 ### priority\_\_lte?
 
-> `optional` **priority\_\_lte**: `number`
+> `optional` **priority\_\_lte?**: `number`
 
 Defined in: [types/automation.ts:261](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L261)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -64,7 +64,7 @@ Event type to get metrics for (e.g., "een.motionDetectionEvent.v1")
 
 ### timestamp\_\_gte?
 
-> `optional` **timestamp\_\_gte**: `string`
+> `optional` **timestamp\_\_gte?**: `string`
 
 Defined in: [types/eventMetric.ts:122](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L122)
 
@@ -74,7 +74,7 @@ ISO 8601 timestamp - metrics starting at or after this time (defaults to 7 days 
 
 ### timestamp\_\_lte?
 
-> `optional` **timestamp\_\_lte**: `string`
+> `optional` **timestamp\_\_lte?**: `string`
 
 Defined in: [types/eventMetric.ts:124](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L124)
 
@@ -84,7 +84,7 @@ ISO 8601 timestamp - metrics ending before this time (defaults to now)
 
 ### aggregateByMinutes?
 
-> `optional` **aggregateByMinutes**: `number`
+> `optional` **aggregateByMinutes?**: `number`
 
 Defined in: [types/eventMetric.ts:126](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventMetric.ts#L126)
 

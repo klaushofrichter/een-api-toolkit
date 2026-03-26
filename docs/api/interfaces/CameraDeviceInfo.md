@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Contains hardware and firmware details about the physical camera device.
 
 ### make?
 
-> `optional` **make**: `string`
+> `optional` **make?**: `string`
 
 Defined in: [types/camera.ts:31](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L31)
 
@@ -28,7 +28,7 @@ Camera manufacturer (e.g., "Axis", "Hikvision")
 
 ### model?
 
-> `optional` **model**: `string`
+> `optional` **model?**: `string`
 
 Defined in: [types/camera.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L33)
 
@@ -38,7 +38,7 @@ Camera model
 
 ### firmwareVersion?
 
-> `optional` **firmwareVersion**: `string`
+> `optional` **firmwareVersion?**: `string`
 
 Defined in: [types/camera.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L35)
 
@@ -48,7 +48,7 @@ Firmware version
 
 ### directToCloud?
 
-> `optional` **directToCloud**: `boolean`
+> `optional` **directToCloud?**: `boolean`
 
 Defined in: [types/camera.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L37)
 
@@ -58,7 +58,7 @@ Whether camera connects directly to cloud (no bridge)
 
 ### serialNumber?
 
-> `optional` **serialNumber**: `string`
+> `optional` **serialNumber?**: `string`
 
 Defined in: [types/camera.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L39)
 
@@ -68,7 +68,7 @@ Serial number
 
 ### resolution?
 
-> `optional` **resolution**: `string`
+> `optional` **resolution?**: `string`
 
 Defined in: [types/camera.ts:41](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L41)
 
@@ -78,7 +78,7 @@ Resolution capabilities
 
 ### type?
 
-> `optional` **type**: `string`
+> `optional` **type?**: `string`
 
 Defined in: [types/camera.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L43)
 

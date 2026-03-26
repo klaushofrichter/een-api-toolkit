@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -89,7 +89,7 @@ Type of alert (e.g., "een.motionDetectionAlert.v1")
 
 ### alertName?
 
-> `optional` **alertName**: `string`
+> `optional` **alertName?**: `string`
 
 Defined in: [types/alert.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L63)
 
@@ -99,7 +99,7 @@ Human-readable name of the alert
 
 ### category?
 
-> `optional` **category**: `string`
+> `optional` **category?**: `string`
 
 Defined in: [types/alert.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L65)
 
@@ -109,7 +109,7 @@ Category of the alert
 
 ### serviceRuleId?
 
-> `optional` **serviceRuleId**: `string`
+> `optional` **serviceRuleId?**: `string`
 
 Defined in: [types/alert.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L67)
 
@@ -119,7 +119,7 @@ ID of the service rule that triggered this alert
 
 ### eventType?
 
-> `optional` **eventType**: `string`
+> `optional` **eventType?**: `string`
 
 Defined in: [types/alert.ts:69](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L69)
 
@@ -159,7 +159,7 @@ Account ID of the actor
 
 ### actorName?
 
-> `optional` **actorName**: `string`
+> `optional` **actorName?**: `string`
 
 Defined in: [types/alert.ts:77](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L77)
 
@@ -169,7 +169,7 @@ Human-readable name of the actor
 
 ### ruleId?
 
-> `optional` **ruleId**: `string`
+> `optional` **ruleId?**: `string`
 
 Defined in: [types/alert.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L79)
 
@@ -179,7 +179,7 @@ ID of the rule that triggered this alert
 
 ### eventId?
 
-> `optional` **eventId**: `string`
+> `optional` **eventId?**: `string`
 
 Defined in: [types/alert.ts:81](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L81)
 
@@ -189,7 +189,7 @@ ID of the event that triggered this alert
 
 ### locationId?
 
-> `optional` **locationId**: `string`
+> `optional` **locationId?**: `string`
 
 Defined in: [types/alert.ts:83](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L83)
 
@@ -199,7 +199,7 @@ ID of the location associated with this alert
 
 ### locationName?
 
-> `optional` **locationName**: `string`
+> `optional` **locationName?**: `string`
 
 Defined in: [types/alert.ts:85](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L85)
 
@@ -209,7 +209,7 @@ Human-readable name of the location
 
 ### priority?
 
-> `optional` **priority**: `number`
+> `optional` **priority?**: `number`
 
 Defined in: [types/alert.ts:87](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L87)
 
@@ -219,7 +219,7 @@ Priority level (0-20, where higher is more important)
 
 ### dataSchemas?
 
-> `optional` **dataSchemas**: `string`[]
+> `optional` **dataSchemas?**: `string`[]
 
 Defined in: [types/alert.ts:89](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L89)
 
@@ -229,7 +229,7 @@ List of data schema types included in this alert
 
 ### data?
 
-> `optional` **data**: `Record`\<`string`, `unknown`\>
+> `optional` **data?**: `Record`\<`string`, `unknown`\>
 
 Defined in: [types/alert.ts:91](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L91)
 
@@ -239,7 +239,7 @@ Alert data objects (varies by alert type)
 
 ### actions?
 
-> `optional` **actions**: `Record`\<`string`, [`AlertAction`](AlertAction.md)\>
+> `optional` **actions?**: `Record`\<`string`, [`AlertAction`](AlertAction.md)\>
 
 Defined in: [types/alert.ts:93](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L93)
 
@@ -249,7 +249,7 @@ Actions executed for this alert
 
 ### description?
 
-> `optional` **description**: `string`
+> `optional` **description?**: `string`
 
 Defined in: [types/alert.ts:95](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L95)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -40,7 +40,7 @@ Must be 'position'
 
 ### x?
 
-> `optional` **x**: `number`
+> `optional` **x?**: `number`
 
 Defined in: [types/ptz.ts:87](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L87)
 
@@ -50,7 +50,7 @@ Target pan position
 
 ### y?
 
-> `optional` **y**: `number`
+> `optional` **y?**: `number`
 
 Defined in: [types/ptz.ts:89](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L89)
 
@@ -60,7 +60,7 @@ Target tilt position
 
 ### z?
 
-> `optional` **z**: `number`
+> `optional` **z?**: `number`
 
 Defined in: [types/ptz.ts:91](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L91)
 

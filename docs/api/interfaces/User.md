@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -62,7 +62,7 @@ User's last name
 
 ### accountId?
 
-> `optional` **accountId**: `string`
+> `optional` **accountId?**: `string`
 
 Defined in: [types/user.ts:23](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L23)
 
@@ -72,7 +72,7 @@ ID of the account this user belongs to
 
 ### timeZone?
 
-> `optional` **timeZone**: `string`
+> `optional` **timeZone?**: `string`
 
 Defined in: [types/user.ts:25](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L25)
 
@@ -82,7 +82,7 @@ User's timezone (IANA timezone name, e.g., "America/Los_Angeles")
 
 ### language?
 
-> `optional` **language**: `string`
+> `optional` **language?**: `string`
 
 Defined in: [types/user.ts:27](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L27)
 
@@ -92,7 +92,7 @@ User's preferred language (ISO 639-1 code, e.g., "en")
 
 ### phone?
 
-> `optional` **phone**: `string`
+> `optional` **phone?**: `string`
 
 Defined in: [types/user.ts:29](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L29)
 
@@ -102,7 +102,7 @@ User's phone number
 
 ### mobilePhone?
 
-> `optional` **mobilePhone**: `string`
+> `optional` **mobilePhone?**: `string`
 
 Defined in: [types/user.ts:31](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L31)
 
@@ -112,7 +112,7 @@ User's mobile phone number
 
 ### permissions?
 
-> `optional` **permissions**: `string`[]
+> `optional` **permissions?**: `string`[]
 
 Defined in: [types/user.ts:33](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L33)
 
@@ -122,7 +122,7 @@ List of permission strings assigned to this user
 
 ### lastLogin?
 
-> `optional` **lastLogin**: `string`
+> `optional` **lastLogin?**: `string`
 
 Defined in: [types/user.ts:35](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L35)
 
@@ -132,7 +132,7 @@ ISO 8601 timestamp of the user's last login
 
 ### isActive?
 
-> `optional` **isActive**: `boolean`
+> `optional` **isActive?**: `boolean`
 
 Defined in: [types/user.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L37)
 
@@ -142,7 +142,7 @@ Whether the user account is active
 
 ### createdAt?
 
-> `optional` **createdAt**: `string`
+> `optional` **createdAt?**: `string`
 
 Defined in: [types/user.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L39)
 
@@ -152,7 +152,7 @@ ISO 8601 timestamp when the user was created
 
 ### updatedAt?
 
-> `optional` **updatedAt**: `string`
+> `optional` **updatedAt?**: `string`
 
 Defined in: [types/user.ts:41](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L41)
 

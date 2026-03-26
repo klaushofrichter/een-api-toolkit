@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -29,7 +29,7 @@ const { data } = await getUsers({
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/user.ts:90](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L90)
 
@@ -39,7 +39,7 @@ Number of results per page (default: 100, max: 1000)
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/user.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L92)
 
@@ -49,7 +49,7 @@ Token for fetching a specific page
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/user.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/user.ts#L94)
 

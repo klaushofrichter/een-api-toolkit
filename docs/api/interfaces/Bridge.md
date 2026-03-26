@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -66,7 +66,7 @@ ID of the account this bridge belongs to
 
 ### locationId?
 
-> `optional` **locationId**: `string` \| `null`
+> `optional` **locationId?**: `string` \| `null`
 
 Defined in: [types/bridge.ts:116](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L116)
 
@@ -76,7 +76,7 @@ ID of the location where the bridge is installed
 
 ### guid?
 
-> `optional` **guid**: `string`
+> `optional` **guid?**: `string`
 
 Defined in: [types/bridge.ts:118](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L118)
 
@@ -86,7 +86,7 @@ Globally unique identifier
 
 ### timezone?
 
-> `optional` **timezone**: `string`
+> `optional` **timezone?**: `string`
 
 Defined in: [types/bridge.ts:120](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L120)
 
@@ -96,7 +96,7 @@ Timezone of the bridge location (IANA timezone name)
 
 ### status?
 
-> `optional` **status**: [`BridgeStatus`](../type-aliases/BridgeStatus.md) \| \{ `connectionStatus?`: BridgeStatus \| undefined; \}
+> `optional` **status?**: [`BridgeStatus`](../type-aliases/BridgeStatus.md) \| \{ `connectionStatus?`: BridgeStatus \| undefined; \}
 
 Defined in: [types/bridge.ts:128](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L128)
 
@@ -111,7 +111,7 @@ depending on the `include` parameters.
 
 ### tags?
 
-> `optional` **tags**: `string`[]
+> `optional` **tags?**: `string`[]
 
 Defined in: [types/bridge.ts:130](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L130)
 
@@ -121,7 +121,7 @@ Tags assigned to this bridge for organization
 
 ### deviceInfo?
 
-> `optional` **deviceInfo**: [`BridgeDeviceInfo`](BridgeDeviceInfo.md)
+> `optional` **deviceInfo?**: [`BridgeDeviceInfo`](BridgeDeviceInfo.md)
 
 Defined in: [types/bridge.ts:132](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L132)
 
@@ -131,7 +131,7 @@ Device information (make, model, firmware)
 
 ### networkInfo?
 
-> `optional` **networkInfo**: [`BridgeNetworkInfo`](BridgeNetworkInfo.md)
+> `optional` **networkInfo?**: [`BridgeNetworkInfo`](BridgeNetworkInfo.md)
 
 Defined in: [types/bridge.ts:134](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L134)
 
@@ -141,7 +141,7 @@ Network information (IP addresses, MAC)
 
 ### devicePosition?
 
-> `optional` **devicePosition**: [`BridgeDevicePosition`](BridgeDevicePosition.md)
+> `optional` **devicePosition?**: [`BridgeDevicePosition`](BridgeDevicePosition.md)
 
 Defined in: [types/bridge.ts:136](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L136)
 
@@ -151,7 +151,7 @@ Physical position of the bridge
 
 ### cameraCount?
 
-> `optional` **cameraCount**: `number`
+> `optional` **cameraCount?**: `number`
 
 Defined in: [types/bridge.ts:138](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L138)
 
@@ -161,7 +161,7 @@ Number of cameras connected to this bridge
 
 ### createdAt?
 
-> `optional` **createdAt**: `string`
+> `optional` **createdAt?**: `string`
 
 Defined in: [types/bridge.ts:140](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L140)
 
@@ -171,7 +171,7 @@ ISO 8601 timestamp when the bridge was created
 
 ### updatedAt?
 
-> `optional` **updatedAt**: `string`
+> `optional` **updatedAt?**: `string`
 
 Defined in: [types/bridge.ts:142](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L142)
 

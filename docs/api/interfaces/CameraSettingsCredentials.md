@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Credentials used to authenticate with the camera device.
 
 ### username?
 
-> `optional` **username**: `string`
+> `optional` **username?**: `string`
 
 Defined in: [types/camera.ts:599](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L599)
 
@@ -28,7 +28,7 @@ Username for camera authentication
 
 ### password?
 
-> `optional` **password**: `string`
+> `optional` **password?**: `string`
 
 Defined in: [types/camera.ts:601](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L601)
 

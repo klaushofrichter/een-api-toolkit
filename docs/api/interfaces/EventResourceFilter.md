@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -14,7 +14,7 @@ Resource filter for event filtering.
 
 ### accountIds?
 
-> `optional` **accountIds**: `string`[]
+> `optional` **accountIds?**: `string`[]
 
 Defined in: [types/automation.ts:34](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L34)
 
@@ -24,7 +24,7 @@ Filter by specific account IDs
 
 ### actorIds?
 
-> `optional` **actorIds**: `string`[]
+> `optional` **actorIds?**: `string`[]
 
 Defined in: [types/automation.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L36)
 
@@ -34,7 +34,7 @@ Filter by specific actor IDs
 
 ### actorTags\_\_contains?
 
-> `optional` **actorTags\_\_contains**: `string`[]
+> `optional` **actorTags\_\_contains?**: `string`[]
 
 Defined in: [types/automation.ts:38](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L38)
 
@@ -44,7 +44,7 @@ Filter by actor tags (all must match)
 
 ### actorTags\_\_any?
 
-> `optional` **actorTags\_\_any**: `string`[]
+> `optional` **actorTags\_\_any?**: `string`[]
 
 Defined in: [types/automation.ts:40](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L40)
 

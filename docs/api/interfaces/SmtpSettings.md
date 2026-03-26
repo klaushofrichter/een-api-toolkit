@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -24,7 +24,7 @@ Email addresses to send to
 
 ### subject?
 
-> `optional` **subject**: `string`
+> `optional` **subject?**: `string`
 
 Defined in: [types/automation.ts:320](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L320)
 
@@ -34,7 +34,7 @@ Email subject template
 
 ### body?
 
-> `optional` **body**: `string`
+> `optional` **body?**: `string`
 
 Defined in: [types/automation.ts:322](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L322)
 

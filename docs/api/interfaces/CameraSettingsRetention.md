@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Controls how long video data is retained in cloud and on-premise storage.
 
 ### cloudDays?
 
-> `optional` **cloudDays**: `number`
+> `optional` **cloudDays?**: `number`
 
 Defined in: [types/camera.ts:455](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L455)
 
@@ -28,7 +28,7 @@ Number of days to retain recordings in cloud
 
 ### cloudPreviewOnly?
 
-> `optional` **cloudPreviewOnly**: `boolean`
+> `optional` **cloudPreviewOnly?**: `boolean`
 
 Defined in: [types/camera.ts:457](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L457)
 
@@ -38,7 +38,7 @@ Whether cloud stores only preview (lower resolution) video
 
 ### minimumOnPremiseDays?
 
-> `optional` **minimumOnPremiseDays**: `number`
+> `optional` **minimumOnPremiseDays?**: `number`
 
 Defined in: [types/camera.ts:459](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L459)
 
@@ -48,7 +48,7 @@ Minimum days to retain on the bridge
 
 ### maximumOnPremiseDays?
 
-> `optional` **maximumOnPremiseDays**: `number`
+> `optional` **maximumOnPremiseDays?**: `number`
 
 Defined in: [types/camera.ts:461](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L461)
 
@@ -58,7 +58,7 @@ Maximum days to retain on the bridge
 
 ### alwaysRecordingDays?
 
-> `optional` **alwaysRecordingDays**: `number`
+> `optional` **alwaysRecordingDays?**: `number`
 
 Defined in: [types/camera.ts:463](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L463)
 

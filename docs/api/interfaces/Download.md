@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -72,7 +72,7 @@ Current status of the download
 
 ### contentType?
 
-> `optional` **contentType**: `string`
+> `optional` **contentType?**: `string`
 
 Defined in: [types/download.ts:44](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L44)
 
@@ -82,7 +82,7 @@ MIME content type (e.g., 'video/mp4')
 
 ### sizeBytes?
 
-> `optional` **sizeBytes**: `number`
+> `optional` **sizeBytes?**: `number`
 
 Defined in: [types/download.ts:46](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L46)
 
@@ -92,7 +92,7 @@ File size in bytes
 
 ### fileId?
 
-> `optional` **fileId**: `string`
+> `optional` **fileId?**: `string`
 
 Defined in: [types/download.ts:48](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L48)
 
@@ -102,7 +102,7 @@ ID of the related file
 
 ### jobId?
 
-> `optional` **jobId**: `string`
+> `optional` **jobId?**: `string`
 
 Defined in: [types/download.ts:50](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L50)
 
@@ -112,7 +112,7 @@ ID of the job that created this download
 
 ### cameraId?
 
-> `optional` **cameraId**: `string`
+> `optional` **cameraId?**: `string`
 
 Defined in: [types/download.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L52)
 
@@ -122,7 +122,7 @@ ID of the camera this download relates to
 
 ### description?
 
-> `optional` **description**: `string`
+> `optional` **description?**: `string`
 
 Defined in: [types/download.ts:54](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L54)
 
@@ -142,7 +142,7 @@ ISO 8601 timestamp when the download was created
 
 ### expirationTimestamp?
 
-> `optional` **expirationTimestamp**: `string`
+> `optional` **expirationTimestamp?**: `string`
 
 Defined in: [types/download.ts:58](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L58)
 
@@ -152,7 +152,7 @@ ISO 8601 timestamp when the download expires
 
 ### downloadUrl?
 
-> `optional` **downloadUrl**: `string`
+> `optional` **downloadUrl?**: `string`
 
 Defined in: [types/download.ts:60](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L60)
 

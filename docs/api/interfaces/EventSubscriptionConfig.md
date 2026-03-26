@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -29,7 +29,7 @@ Subscription lifecycle type
 
 ### timeToLiveSeconds?
 
-> `optional` **timeToLiveSeconds**: `number`
+> `optional` **timeToLiveSeconds?**: `number`
 
 Defined in: [types/eventSubscription.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L36)
 

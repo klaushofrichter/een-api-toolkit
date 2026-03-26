@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -14,7 +14,7 @@ Field values available for filtering event alert condition rules.
 
 ### eventTypes?
 
-> `optional` **eventTypes**: `string`[]
+> `optional` **eventTypes?**: `string`[]
 
 Defined in: [types/automation.ts:111](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L111)
 
@@ -24,7 +24,7 @@ Available event types
 
 ### outputAlertTypes?
 
-> `optional` **outputAlertTypes**: `string`[]
+> `optional` **outputAlertTypes?**: `string`[]
 
 Defined in: [types/automation.ts:113](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L113)
 

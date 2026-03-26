@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Use to fetch download metadata and URL before downloading.
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/download.ts:117](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/download.ts#L117)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -34,7 +34,7 @@ await updatePtzSettings('camera-id', {
 
 ### presets?
 
-> `optional` **presets**: [`PtzPreset`](PtzPreset.md)[]
+> `optional` **presets?**: [`PtzPreset`](PtzPreset.md)[]
 
 Defined in: [types/ptz.ts:262](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L262)
 
@@ -44,7 +44,7 @@ Updated array of preset positions
 
 ### homePreset?
 
-> `optional` **homePreset**: `string` \| `null`
+> `optional` **homePreset?**: `string` \| `null`
 
 Defined in: [types/ptz.ts:264](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L264)
 
@@ -54,7 +54,7 @@ Updated home preset name
 
 ### mode?
 
-> `optional` **mode**: [`PtzMode`](../type-aliases/PtzMode.md)
+> `optional` **mode?**: [`PtzMode`](../type-aliases/PtzMode.md)
 
 Defined in: [types/ptz.ts:266](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L266)
 
@@ -64,7 +64,7 @@ Updated automation mode
 
 ### autoStartDelay?
 
-> `optional` **autoStartDelay**: `number`
+> `optional` **autoStartDelay?**: `number`
 
 Defined in: [types/ptz.ts:268](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/ptz.ts#L268)
 

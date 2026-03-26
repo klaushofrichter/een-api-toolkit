@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -42,7 +42,7 @@ Array of feed objects
 
 ### nextPageToken?
 
-> `optional` **nextPageToken**: `string`
+> `optional` **nextPageToken?**: `string`
 
 Defined in: [types/feeds.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L215)
 
@@ -52,7 +52,7 @@ Token for fetching next page (undefined if no more results)
 
 ### totalSize?
 
-> `optional` **totalSize**: `number`
+> `optional` **totalSize?**: `number`
 
 Defined in: [types/feeds.ts:218](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/feeds.ts#L218)
 

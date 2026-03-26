@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -39,7 +39,7 @@ ISO 8601 timestamp when the event started
 
 ### endTimestamp?
 
-> `optional` **endTimestamp**: `string` \| `null`
+> `optional` **endTimestamp?**: `string` \| `null`
 
 Defined in: [types/eventSubscription.ts:353](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L353)
 
@@ -49,7 +49,7 @@ ISO 8601 timestamp when the event ended (null for point-in-time events)
 
 ### span?
 
-> `optional` **span**: `boolean`
+> `optional` **span?**: `boolean`
 
 Defined in: [types/eventSubscription.ts:355](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L355)
 
@@ -59,7 +59,7 @@ Whether this is a span event (has duration) or point-in-time event
 
 ### accountId?
 
-> `optional` **accountId**: `string`
+> `optional` **accountId?**: `string`
 
 Defined in: [types/eventSubscription.ts:357](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L357)
 
@@ -79,7 +79,7 @@ ID of the actor (device/entity) that generated the event
 
 ### actorAccountId?
 
-> `optional` **actorAccountId**: `string`
+> `optional` **actorAccountId?**: `string`
 
 Defined in: [types/eventSubscription.ts:361](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L361)
 
@@ -89,7 +89,7 @@ Account ID of the actor
 
 ### actorType?
 
-> `optional` **actorType**: `string`
+> `optional` **actorType?**: `string`
 
 Defined in: [types/eventSubscription.ts:363](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L363)
 
@@ -99,7 +99,7 @@ Type of actor that generated the event
 
 ### creatorId?
 
-> `optional` **creatorId**: `string`
+> `optional` **creatorId?**: `string`
 
 Defined in: [types/eventSubscription.ts:365](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L365)
 
@@ -119,7 +119,7 @@ Event type identifier (e.g., "een.motionDetectionEvent.v1")
 
 ### dataSchemas?
 
-> `optional` **dataSchemas**: `string`[]
+> `optional` **dataSchemas?**: `string`[]
 
 Defined in: [types/eventSubscription.ts:369](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L369)
 
@@ -129,7 +129,7 @@ List of data schema types included in this event
 
 ### data?
 
-> `optional` **data**: `object`[]
+> `optional` **data?**: `object`[]
 
 Defined in: [types/eventSubscription.ts:371](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L371)
 
@@ -145,4 +145,4 @@ Event data objects (varies by event type)
 
 #### creatorId?
 
-> `optional` **creatorId**: `string`
+> `optional` **creatorId?**: `string`

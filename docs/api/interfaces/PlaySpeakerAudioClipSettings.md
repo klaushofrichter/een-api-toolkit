@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -34,7 +34,7 @@ Audio clip ID to play
 
 ### volume?
 
-> `optional` **volume**: `number`
+> `optional` **volume?**: `number`
 
 Defined in: [types/automation.ts:378](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L378)
 

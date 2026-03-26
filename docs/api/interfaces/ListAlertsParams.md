@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -46,7 +46,7 @@ if (data?.nextPageToken) {
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/alert.ts:179](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L179)
 
@@ -56,7 +56,7 @@ Number of results per page (default: 100)
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/alert.ts:181](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L181)
 
@@ -66,7 +66,7 @@ Token for fetching a specific page
 
 ### timestamp\_\_lte?
 
-> `optional` **timestamp\_\_lte**: `string`
+> `optional` **timestamp\_\_lte?**: `string`
 
 Defined in: [types/alert.ts:185](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L185)
 
@@ -76,7 +76,7 @@ ISO 8601 timestamp - alerts at or before this time
 
 ### timestamp\_\_gte?
 
-> `optional` **timestamp\_\_gte**: `string`
+> `optional` **timestamp\_\_gte?**: `string`
 
 Defined in: [types/alert.ts:187](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L187)
 
@@ -86,7 +86,7 @@ ISO 8601 timestamp - alerts at or after this time
 
 ### creatorId?
 
-> `optional` **creatorId**: `string`
+> `optional` **creatorId?**: `string`
 
 Defined in: [types/alert.ts:191](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L191)
 
@@ -96,7 +96,7 @@ Filter by creator ID
 
 ### alertType\_\_in?
 
-> `optional` **alertType\_\_in**: `string`[]
+> `optional` **alertType\_\_in?**: `string`[]
 
 Defined in: [types/alert.ts:193](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L193)
 
@@ -106,7 +106,7 @@ Filter by alert types (e.g., ["een.motionDetectionAlert.v1"])
 
 ### actorId\_\_in?
 
-> `optional` **actorId\_\_in**: `string`[]
+> `optional` **actorId\_\_in?**: `string`[]
 
 Defined in: [types/alert.ts:195](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L195)
 
@@ -116,7 +116,7 @@ Filter by actor IDs
 
 ### actorType\_\_in?
 
-> `optional` **actorType\_\_in**: `string`[]
+> `optional` **actorType\_\_in?**: `string`[]
 
 Defined in: [types/alert.ts:197](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L197)
 
@@ -126,7 +126,7 @@ Filter by actor types
 
 ### actorAccountId?
 
-> `optional` **actorAccountId**: `string`
+> `optional` **actorAccountId?**: `string`
 
 Defined in: [types/alert.ts:199](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L199)
 
@@ -136,7 +136,7 @@ Filter by actor account ID
 
 ### ruleId?
 
-> `optional` **ruleId**: `string`
+> `optional` **ruleId?**: `string`
 
 Defined in: [types/alert.ts:203](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L203)
 
@@ -146,7 +146,7 @@ Filter by rule ID
 
 ### ruleId\_\_in?
 
-> `optional` **ruleId\_\_in**: `string`[]
+> `optional` **ruleId\_\_in?**: `string`[]
 
 Defined in: [types/alert.ts:205](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L205)
 
@@ -156,7 +156,7 @@ Filter by rule IDs
 
 ### eventId?
 
-> `optional` **eventId**: `string`
+> `optional` **eventId?**: `string`
 
 Defined in: [types/alert.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L209)
 
@@ -166,7 +166,7 @@ Filter by event ID
 
 ### locationId\_\_in?
 
-> `optional` **locationId\_\_in**: `string`[]
+> `optional` **locationId\_\_in?**: `string`[]
 
 Defined in: [types/alert.ts:211](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L211)
 
@@ -176,7 +176,7 @@ Filter by location IDs
 
 ### priority\_\_gte?
 
-> `optional` **priority\_\_gte**: `number`
+> `optional` **priority\_\_gte?**: `number`
 
 Defined in: [types/alert.ts:215](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L215)
 
@@ -186,7 +186,7 @@ Minimum priority level (inclusive)
 
 ### priority\_\_lte?
 
-> `optional` **priority\_\_lte**: `number`
+> `optional` **priority\_\_lte?**: `number`
 
 Defined in: [types/alert.ts:217](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L217)
 
@@ -196,7 +196,7 @@ Maximum priority level (inclusive)
 
 ### showInvalidAlerts?
 
-> `optional` **showInvalidAlerts**: `boolean`
+> `optional` **showInvalidAlerts?**: `boolean`
 
 Defined in: [types/alert.ts:221](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L221)
 
@@ -206,7 +206,7 @@ Include alerts that are invalid
 
 ### alertActionId\_\_in?
 
-> `optional` **alertActionId\_\_in**: `string`[]
+> `optional` **alertActionId\_\_in?**: `string`[]
 
 Defined in: [types/alert.ts:223](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L223)
 
@@ -216,7 +216,7 @@ Filter by alert action IDs
 
 ### alertActionStatus\_\_in?
 
-> `optional` **alertActionStatus\_\_in**: [`AlertActionStatus`](../type-aliases/AlertActionStatus.md)[]
+> `optional` **alertActionStatus\_\_in?**: [`AlertActionStatus`](../type-aliases/AlertActionStatus.md)[]
 
 Defined in: [types/alert.ts:225](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L225)
 
@@ -226,7 +226,7 @@ Filter by alert action statuses
 
 ### include?
 
-> `optional` **include**: [`AlertInclude`](../type-aliases/AlertInclude.md)[]
+> `optional` **include?**: [`AlertInclude`](../type-aliases/AlertInclude.md)[]
 
 Defined in: [types/alert.ts:229](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L229)
 
@@ -236,7 +236,7 @@ Fields to include in response
 
 ### sort?
 
-> `optional` **sort**: [`AlertSort`](../type-aliases/AlertSort.md)[]
+> `optional` **sort?**: [`AlertSort`](../type-aliases/AlertSort.md)[]
 
 Defined in: [types/alert.ts:231](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L231)
 
@@ -246,7 +246,7 @@ Sort order for results
 
 ### language?
 
-> `optional` **language**: `string`
+> `optional` **language?**: `string`
 
 Defined in: [types/alert.ts:233](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/alert.ts#L233)
 

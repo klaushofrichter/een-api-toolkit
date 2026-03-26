@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -31,7 +31,7 @@ const { data } = await getCamera('camera-123', {
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/camera.ts:409](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L409)
 

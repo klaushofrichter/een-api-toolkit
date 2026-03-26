@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -24,7 +24,7 @@ Event types to include
 
 ### resourceFilter?
 
-> `optional` **resourceFilter**: [`EventResourceFilter`](EventResourceFilter.md)
+> `optional` **resourceFilter?**: [`EventResourceFilter`](EventResourceFilter.md)
 
 Defined in: [types/automation.ts:52](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L52)
 

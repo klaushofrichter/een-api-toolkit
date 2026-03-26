@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -41,7 +41,7 @@ if (data) {
 
 ### name?
 
-> `optional` **name**: `string`
+> `optional` **name?**: `string`
 
 Defined in: [types/export.ts:49](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L49)
 
@@ -91,7 +91,7 @@ End timestamp for the export (ISO 8601 format with +00:00 timezone)
 
 ### playbackMultiplier?
 
-> `optional` **playbackMultiplier**: `number`
+> `optional` **playbackMultiplier?**: `number`
 
 Defined in: [types/export.ts:63](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L63)
 
@@ -103,7 +103,7 @@ For example, a value of 10 means 10 minutes of recording becomes 1 minute of pla
 
 ### autoDelete?
 
-> `optional` **autoDelete**: `boolean`
+> `optional` **autoDelete?**: `boolean`
 
 Defined in: [types/export.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L65)
 
@@ -113,7 +113,7 @@ If true, export is auto-deleted after 2 weeks (default: false)
 
 ### directory?
 
-> `optional` **directory**: `string`
+> `optional` **directory?**: `string`
 
 Defined in: [types/export.ts:67](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L67)
 
@@ -123,7 +123,7 @@ Directory path in archive to save the export (default: '/')
 
 ### notes?
 
-> `optional` **notes**: `string`
+> `optional` **notes?**: `string`
 
 Defined in: [types/export.ts:69](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L69)
 
@@ -133,7 +133,7 @@ Notes/description for the export
 
 ### tags?
 
-> `optional` **tags**: `string`[]
+> `optional` **tags?**: `string`[]
 
 Defined in: [types/export.ts:71](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/export.ts#L71)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Used in resourceStatusCounts to show aggregated camera statuses.
 
 ### online?
 
-> `optional` **online**: `number`
+> `optional` **online?**: `number`
 
 Defined in: [types/layout.ts:11](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L11)
 
@@ -28,7 +28,7 @@ Number of online cameras
 
 ### offline?
 
-> `optional` **offline**: `number`
+> `optional` **offline?**: `number`
 
 Defined in: [types/layout.ts:13](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L13)
 
@@ -38,7 +38,7 @@ Number of offline cameras
 
 ### error?
 
-> `optional` **error**: `number`
+> `optional` **error?**: `number`
 
 Defined in: [types/layout.ts:15](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L15)
 
@@ -48,7 +48,7 @@ Number of cameras in error state
 
 ### other?
 
-> `optional` **other**: `number`
+> `optional` **other?**: `number`
 
 Defined in: [types/layout.ts:17](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L17)
 

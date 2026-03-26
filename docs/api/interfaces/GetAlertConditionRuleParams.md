@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -14,7 +14,7 @@ Parameters for getting a single alert condition rule.
 
 ### include?
 
-> `optional` **include**: [`AlertConditionRuleInclude`](../type-aliases/AlertConditionRuleInclude.md)[]
+> `optional` **include?**: [`AlertConditionRuleInclude`](../type-aliases/AlertConditionRuleInclude.md)[]
 
 Defined in: [types/automation.ts:534](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L534)
 

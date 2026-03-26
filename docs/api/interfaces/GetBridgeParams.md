@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -30,7 +30,7 @@ const { data } = await getBridge('bridge-123', {
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/bridge.ts:250](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/bridge.ts#L250)
 

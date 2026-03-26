@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -34,7 +34,7 @@ Actor type
 
 ### accountId?
 
-> `optional` **accountId**: `string`
+> `optional` **accountId?**: `string`
 
 Defined in: [types/automation.ts:131](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L131)
 

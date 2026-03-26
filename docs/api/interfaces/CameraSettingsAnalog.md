@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -18,7 +18,7 @@ Settings specific to analog cameras connected via encoders.
 
 ### videoStandard?
 
-> `optional` **videoStandard**: `string`
+> `optional` **videoStandard?**: `string`
 
 Defined in: [types/camera.ts:535](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L535)
 
@@ -28,7 +28,7 @@ Video standard (e.g., "NTSC", "PAL")
 
 ### badSignalProtection?
 
-> `optional` **badSignalProtection**: `boolean`
+> `optional` **badSignalProtection?**: `boolean`
 
 Defined in: [types/camera.ts:537](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L537)
 
@@ -38,7 +38,7 @@ Whether bad signal protection is enabled
 
 ### badSignalDetected?
 
-> `optional` **badSignalDetected**: `boolean`
+> `optional` **badSignalDetected?**: `boolean`
 
 Defined in: [types/camera.ts:539](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/camera.ts#L539)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -23,7 +23,7 @@ const { data } = await listAlertActions({
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/automation.ts:584](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L584)
 
@@ -33,7 +33,7 @@ Number of results per page
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/automation.ts:586](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L586)
 
@@ -43,7 +43,7 @@ Token for fetching a specific page
 
 ### enabled?
 
-> `optional` **enabled**: `boolean`
+> `optional` **enabled?**: `boolean`
 
 Defined in: [types/automation.ts:588](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L588)
 
@@ -53,7 +53,7 @@ Filter by enabled status
 
 ### id\_\_in?
 
-> `optional` **id\_\_in**: `string`[]
+> `optional` **id\_\_in?**: `string`[]
 
 Defined in: [types/automation.ts:590](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L590)
 
@@ -63,7 +63,7 @@ Filter by action IDs
 
 ### type\_\_in?
 
-> `optional` **type\_\_in**: [`AlertActionType`](../type-aliases/AlertActionType.md)[]
+> `optional` **type\_\_in?**: [`AlertActionType`](../type-aliases/AlertActionType.md)[]
 
 Defined in: [types/automation.ts:592](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L592)
 

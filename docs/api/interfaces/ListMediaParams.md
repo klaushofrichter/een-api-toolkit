@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -75,7 +75,7 @@ Minimum timestamp from which to list recordings (ISO 8601) - required
 
 ### endTimestamp?
 
-> `optional` **endTimestamp**: `string`
+> `optional` **endTimestamp?**: `string`
 
 Defined in: [types/media.ts:92](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L92)
 
@@ -85,7 +85,7 @@ Maximum timestamp until which to list recordings (ISO 8601)
 
 ### coalesce?
 
-> `optional` **coalesce**: `boolean`
+> `optional` **coalesce?**: `boolean`
 
 Defined in: [types/media.ts:94](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L94)
 
@@ -95,7 +95,7 @@ If true, coalesce connected intervals into a single interval (default: true)
 
 ### include?
 
-> `optional` **include**: `string`[]
+> `optional` **include?**: `string`[]
 
 Defined in: [types/media.ts:99](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L99)
 
@@ -106,7 +106,7 @@ Valid values: flvUrl, rtspUrl, rtspsUrl, hlsUrl, multipartUrl, mp4Url, wsLiveUrl
 
 ### pageToken?
 
-> `optional` **pageToken**: `string`
+> `optional` **pageToken?**: `string`
 
 Defined in: [types/media.ts:101](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L101)
 
@@ -116,7 +116,7 @@ Token for fetching a specific page
 
 ### pageSize?
 
-> `optional` **pageSize**: `number`
+> `optional` **pageSize?**: `number`
 
 Defined in: [types/media.ts:103](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/media.ts#L103)
 

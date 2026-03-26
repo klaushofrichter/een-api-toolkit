@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -60,7 +60,7 @@ ISO 8601 timestamp when the event started
 
 ### endTimestamp?
 
-> `optional` **endTimestamp**: `string` \| `null`
+> `optional` **endTimestamp?**: `string` \| `null`
 
 Defined in: [types/event.ts:79](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/event.ts#L79)
 

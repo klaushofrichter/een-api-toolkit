@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -48,7 +48,7 @@ Unique identifier for the subscription
 
 ### subscriptionConfig?
 
-> `optional` **subscriptionConfig**: [`EventSubscriptionConfig`](EventSubscriptionConfig.md)
+> `optional` **subscriptionConfig?**: [`EventSubscriptionConfig`](EventSubscriptionConfig.md)
 
 Defined in: [types/eventSubscription.ts:175](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/eventSubscription.ts#L175)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -28,7 +28,7 @@ const { data } = await getLayout('layout-123', {
 
 ### include?
 
-> `optional` **include**: [`GetLayoutInclude`](../type-aliases/GetLayoutInclude.md)[]
+> `optional` **include?**: [`GetLayoutInclude`](../type-aliases/GetLayoutInclude.md)[]
 
 Defined in: [types/layout.ts:288](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L288)
 

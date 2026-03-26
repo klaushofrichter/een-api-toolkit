@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -45,7 +45,7 @@ const { error } = await updateLayout('layout-123', {
 
 ### name?
 
-> `optional` **name**: `string`
+> `optional` **name?**: `string`
 
 Defined in: [types/layout.ts:364](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L364)
 
@@ -55,7 +55,7 @@ New display name for the layout
 
 ### settings?
 
-> `optional` **settings**: `Partial`\<[`LayoutSettings`](LayoutSettings.md)\>
+> `optional` **settings?**: `Partial`\<[`LayoutSettings`](LayoutSettings.md)\>
 
 Defined in: [types/layout.ts:376](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L376)
 
@@ -77,7 +77,7 @@ include the fields you want to change; other fields retain their current values.
 
 ### panes?
 
-> `optional` **panes**: [`LayoutPane`](LayoutPane.md)[]
+> `optional` **panes?**: [`LayoutPane`](LayoutPane.md)[]
 
 Defined in: [types/layout.ts:378](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/layout.ts#L378)
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.103**](../README.md)
+[**EEN API Toolkit v0.3.105**](../README.md)
 
 ***
 
@@ -24,7 +24,7 @@ Whether human validation is required
 
 ### timeoutSeconds?
 
-> `optional` **timeoutSeconds**: `number`
+> `optional` **timeoutSeconds?**: `number`
 
 Defined in: [types/automation.ts:24](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/types/automation.ts#L24)
 
