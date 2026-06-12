@@ -1,4 +1,3 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
@@ -6,6 +5,7 @@ import type {
   Notification,
   ListNotificationsParams
 } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug, formatTimestamp } from '../utils'
 
 /**
@@ -63,15 +63,9 @@ import { debug, formatTimestamp } from '../utils'
  * @category Notifications
  */
 export async function listNotifications(params?: ListNotificationsParams): Promise<Result<PaginatedResult<Notification>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -136,16 +130,13 @@ export async function listNotifications(params?: ListNotificationsParams): Promi
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/notifications${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/notifications${queryString ? `?${queryString}` : ''}`
   debug('Fetching notifications:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -193,30 +184,21 @@ export async function listNotifications(params?: ListNotificationsParams): Promi
  * @category Notifications
  */
 export async function getNotification(notificationId: string): Promise<Result<Notification>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!notificationId) {
     return failure('VALIDATION_ERROR', 'Notification ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/notifications/${encodeURIComponent(notificationId)}`
+  const url = `${baseUrl}/api/v3.0/notifications/${encodeURIComponent(notificationId)}`
   debug('Fetching notification:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -229,35 +211,5 @@ export async function getNotification(notificationId: string): Promise<Result<No
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to fetch notification: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

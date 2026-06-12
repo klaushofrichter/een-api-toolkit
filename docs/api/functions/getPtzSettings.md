@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getPtzSettings**(`cameraId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PtzSettings`](../interfaces/PtzSettings.md)\>\>
 
-Defined in: [ptz/service.ts:170](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/ptz/service.ts#L170)
+Defined in: [ptz/service.ts:151](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/ptz/service.ts#L151)
 
 Get PTZ settings for a camera, including presets and automation mode.
 

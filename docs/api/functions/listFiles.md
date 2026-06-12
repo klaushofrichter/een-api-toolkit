@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listFiles**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`EenFile`](../interfaces/EenFile.md)\>\>\>
 
-Defined in: [files/service.ts:43](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L43)
+Defined in: [files/service.ts:44](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L44)
 
 List files with optional pagination and filtering.
 

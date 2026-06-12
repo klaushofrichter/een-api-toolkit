@@ -1,6 +1,6 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, PtzPositionResponse, PtzMove, PtzSettings, PtzSettingsUpdate } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils/debug'
 
 /**
@@ -29,30 +29,21 @@ import { debug } from '../utils/debug'
  * @category PTZ
  */
 export async function getPtzPosition(cameraId: string): Promise<Result<PtzPositionResponse>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!cameraId) {
     return failure('VALIDATION_ERROR', 'Camera ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/position`
+  const url = `${baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/position`
   debug('Fetching PTZ position:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -100,31 +91,21 @@ export async function getPtzPosition(cameraId: string): Promise<Result<PtzPositi
  * @category PTZ
  */
 export async function movePtz(cameraId: string, move: PtzMove): Promise<Result<void>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!cameraId) {
     return failure('VALIDATION_ERROR', 'Camera ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/position`
+  const url = `${baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/position`
   debug('Moving PTZ camera:', url, 'move:', move)
 
   try {
     const response = await fetch(url, {
       method: 'PUT',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Content-Type': 'application/json' },
       body: JSON.stringify(move)
     })
 
@@ -134,7 +115,7 @@ export async function movePtz(cameraId: string, move: PtzMove): Promise<Result<v
 
     debug('PTZ move sent for:', cameraId)
 
-    return success(undefined as void)
+    return success(undefined)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to move PTZ camera: ${String(err)}`)
   }
@@ -168,30 +149,21 @@ export async function movePtz(cameraId: string, move: PtzMove): Promise<Result<v
  * @category PTZ
  */
 export async function getPtzSettings(cameraId: string): Promise<Result<PtzSettings>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!cameraId) {
     return failure('VALIDATION_ERROR', 'Camera ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/settings`
+  const url = `${baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/settings`
   debug('Fetching PTZ settings:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -240,31 +212,21 @@ export async function getPtzSettings(cameraId: string): Promise<Result<PtzSettin
  * @category PTZ
  */
 export async function updatePtzSettings(cameraId: string, settings: PtzSettingsUpdate): Promise<Result<void>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!cameraId) {
     return failure('VALIDATION_ERROR', 'Camera ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/settings`
+  const url = `${baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/ptz/settings`
   debug('Updating PTZ settings:', url)
 
   try {
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Content-Type': 'application/json' },
       body: JSON.stringify(settings)
     })
 
@@ -274,38 +236,8 @@ export async function updatePtzSettings(cameraId: string, settings: PtzSettingsU
 
     debug('PTZ settings updated for:', cameraId)
 
-    return success(undefined as void)
+    return success(undefined)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to update PTZ settings: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

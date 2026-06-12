@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { getAuthToken, AuthState } from './auth-helper'
-import { apiGet } from './api-helper'
+import { apiGet, apiDelete } from './api-helper'
 
 test.describe('Files API', () => {
   let auth: AuthState
@@ -11,13 +11,7 @@ test.describe('Files API', () => {
     auth = await getAuthToken()
 
     // Check if files endpoint is available
-    const checkResponse = await request.get(`${auth.baseUrl}/api/v3.0/files`, {
-      params: { pageSize: '1' },
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${auth.accessToken}`
-      }
-    })
+    const checkResponse = await apiGet(request, auth, '/api/v3.0/files', { pageSize: '1' })
 
     if (checkResponse.status() === 404 || checkResponse.status() === 400) {
       console.log(`Files endpoint returned ${checkResponse.status()} - tests will be skipped`)
@@ -275,8 +269,13 @@ test.describe('Files API', () => {
       return
     }
 
-    // First get a file from the list
-    const listResponse = await apiGet(request, auth, '/api/v3.0/files', { pageSize: '1' })
+    // List files with sizes so we can pick a small, downloadable one.
+    // Folders (mimeType application/directory) download as large archives
+    // that exceed the test timeout.
+    const listResponse = await apiGet(request, auth, '/api/v3.0/files', {
+      pageSize: '50',
+      include: 'size'
+    })
 
     if (!listResponse.ok()) {
       console.log(`Files endpoint returned ${listResponse.status()} - skipping test`)
@@ -285,17 +284,18 @@ test.describe('Files API', () => {
     }
 
     const listData = await listResponse.json()
+    const maxSize = 5 * 1024 * 1024
+    const candidates = (listData.results ?? []).filter(
+      (f: { mimeType: string; size?: number }) =>
+        f.mimeType !== 'application/directory' && typeof f.size === 'number' && f.size <= maxSize
+    )
 
-    if (listData.results?.length > 0) {
-      const fileId = listData.results[0].id
-      const fileName = listData.results[0].name
+    if (candidates.length > 0) {
+      const fileId = candidates[0].id
+      const fileName = candidates[0].name
 
       // Try to download the file
-      const response = await request.get(`${auth.baseUrl}/api/v3.0/files/${fileId}:download`, {
-        headers: {
-          'Authorization': `Bearer ${auth.accessToken}`
-        }
-      })
+      const response = await apiGet(request, auth, `/api/v3.0/files/${fileId}:download`)
 
       // The file might not be downloadable (e.g., still processing)
       if (response.ok()) {
@@ -314,17 +314,13 @@ test.describe('Files API', () => {
         expect([401, 403, 404, 409, 410]).toContain(response.status())
       }
     } else {
-      console.log('No files available to test download')
+      console.log('No small non-folder files available to test download')
     }
   })
 
   test('DELETE /api/v3.0/files/{id} returns error for non-existent file', async ({ request }) => {
     // Use a clearly invalid ID format
-    const response = await request.delete(`${auth.baseUrl}/api/v3.0/files/non-existent-file-id-12345`, {
-      headers: {
-        'Authorization': `Bearer ${auth.accessToken}`
-      }
-    })
+    const response = await apiDelete(request, auth, '/api/v3.0/files/non-existent-file-id-12345')
 
     console.log('DELETE non-existent file status:', response.status())
 

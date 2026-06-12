@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **addFile**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EenFile`](../interfaces/EenFile.md)\>\>
 
-Defined in: [files/service.ts:245](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L245)
+Defined in: [files/service.ts:228](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L228)
 
 Add/create a new file entry.
 

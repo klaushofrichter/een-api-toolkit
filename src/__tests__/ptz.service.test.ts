@@ -199,8 +199,8 @@ describe('PTZ service functions', () => {
 
       const result = await getPtzPosition('cam-123')
 
-      expect(result.error?.code).toBe('API_ERROR')
-      expect(result.error?.message).toContain('Service Unavailable')
+      expect(result.error?.code).toBe('SERVICE_UNAVAILABLE')
+      expect(result.error?.message).toContain('Service unavailable: Service Unavailable')
     })
   })
 

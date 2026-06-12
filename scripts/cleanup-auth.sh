@@ -15,9 +15,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 AUTH_FILE="$PROJECT_ROOT/e2e/.auth-state.json"
 
-# Load environment variables
+# Load environment variables (line-by-line: avoids word-splitting, shell
+# expansion of values, and leaking secrets through xargs process arguments)
 if [[ -f "$PROJECT_ROOT/.env" ]]; then
-    export $(grep -v '^#' "$PROJECT_ROOT/.env" | xargs)
+    # `|| [[ -n "$key" ]]` processes a final line without a trailing newline
+    while IFS='=' read -r key value || [[ -n "$key" ]]; do
+        [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+        # Strip optional surrounding quotes
+        value="${value%\"}"; value="${value#\"}"
+        value="${value%\'}"; value="${value#\'}"
+        export "$key=$value"
+    done < "$PROJECT_ROOT/.env"
 fi
 
 PROXY_URL="${VITE_PROXY_URL:-http://localhost:8787}"

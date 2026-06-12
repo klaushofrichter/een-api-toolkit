@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **updatePtzSettings**(`cameraId`, `settings`): `Promise`\<[`Result`](../type-aliases/Result.md)\<`void`\>\>
 
-Defined in: [ptz/service.ts:242](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/ptz/service.ts#L242)
+Defined in: [ptz/service.ts:214](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/ptz/service.ts#L214)
 
 Update PTZ settings for a camera (partial update).
 

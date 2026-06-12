@@ -51,6 +51,14 @@ tar -tzf "$TARBALL" | grep -q "package/dist/index.cjs" || { echo "   ✗ Missing
 tar -tzf "$TARBALL" | grep -q "package/dist/index.d.ts" || { echo "   ✗ Missing index.d.ts in tarball"; exit 1; }
 tar -tzf "$TARBALL" | grep -q "package/package.json" || { echo "   ✗ Missing package.json in tarball"; exit 1; }
 tar -tzf "$TARBALL" | grep -q "package/examples/vue-users" || { echo "   ✗ Missing examples in tarball"; exit 1; }
+
+# Ensure no secret-bearing files are packaged (live .env credentials, cached tokens)
+if tar -tzf "$TARBALL" | grep -E '/\.env$|/\.auth-state\.json$'; then
+  echo "   ✗ Tarball contains secret files (.env / .auth-state.json) — aborting"
+  rm -f "$TARBALL"
+  exit 1
+fi
+echo "   ✓ No secret files (.env, .auth-state.json) in tarball"
 echo "   ✓ Tarball contents verified (dist, examples, package.json)"
 rm -f "$TARBALL"
 echo ""

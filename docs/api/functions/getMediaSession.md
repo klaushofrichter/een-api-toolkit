@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getMediaSession**(): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`MediaSessionResponse`](../interfaces/MediaSessionResponse.md)\>\>
 
-Defined in: [media/service.ts:535](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L535)
+Defined in: [media/service.ts:474](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/media/service.ts#L474)
 
 Get the media session URL for setting cookies.
 

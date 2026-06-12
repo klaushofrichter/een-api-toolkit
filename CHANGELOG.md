@@ -5,6 +5,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+
+- **Uniform API error mapping** (consumer-visible): all services now share one
+  canonical HTTP error handler (`src/utils/api.ts`). HTTP 400 responses return
+  `error.code = 'VALIDATION_ERROR'` (message prefix `Bad request:`) and HTTP 503
+  responses return `error.code = 'SERVICE_UNAVAILABLE'` (message prefix
+  `Service unavailable:`) across **all** resources. Previously most services
+  returned `API_ERROR` for these statuses; only `layouts` mapped 400 and only
+  `media`/`feeds` mapped 503. Error message prefixes are now consistent for all
+  statuses (`Authentication failed:`, `Access denied:`, `Not found:`,
+  `Rate limited:`, `API error:`). Applications that switch on `error.code` or
+  match `error.message` strings for 400/503 responses must be updated.
+- `initEenToolkit({ debug: true })` now enables debug logging as documented
+  (previously only the `VITE_DEBUG` environment variable had any effect).
+- SSE connections from `connectToEventSubscription` now report status
+  `'disconnected'` when the server closes the stream; the connection does not
+  auto-reconnect (the previous JSDoc claim was incorrect).
+
+### Security
+
+- Excluded `examples/**/.env` and `examples/**/.auth-state.json` from the
+  published npm package and added a secret-file guard to `verify-package.sh`.
+- Debug logs now redact query strings from media session and SSE URLs.
+
 ## [0.3.0] - 2026-01-04
 
 ### Added

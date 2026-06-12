@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getAlertConditionRule**(`ruleId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`AlertConditionRule`](../interfaces/AlertConditionRule.md)\>\>
 
-Defined in: [automations/service.ts:396](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L396)
+Defined in: [automations/service.ts:360](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L360)
 
 Get a specific alert condition rule by ID.
 

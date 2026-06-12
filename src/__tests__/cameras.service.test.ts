@@ -446,7 +446,7 @@ describe('Camera service functions', () => {
 
       const result = await getCamera('cam-123')
 
-      expect(result.error?.code).toBe('API_ERROR')
+      expect(result.error?.code).toBe('SERVICE_UNAVAILABLE')
       expect(result.error?.message).toContain('Service Unavailable')
     })
 

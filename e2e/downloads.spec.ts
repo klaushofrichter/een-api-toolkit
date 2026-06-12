@@ -11,13 +11,7 @@ test.describe('Downloads API', () => {
     auth = await getAuthToken()
 
     // Check if downloads endpoint is available
-    const checkResponse = await request.get(`${auth.baseUrl}/api/v3.0/downloads`, {
-      params: { pageSize: '1' },
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${auth.accessToken}`
-      }
-    })
+    const checkResponse = await apiGet(request, auth, '/api/v3.0/downloads', { pageSize: '1' })
 
     if (checkResponse.status() === 404 || checkResponse.status() === 400) {
       console.log(`Downloads endpoint returned ${checkResponse.status()} - tests will be skipped`)
@@ -221,11 +215,7 @@ test.describe('Downloads API', () => {
       const downloadName = listData.results[0].name
 
       // Try to download the content
-      const response = await request.get(`${auth.baseUrl}/api/v3.0/downloads/${downloadId}:download`, {
-        headers: {
-          'Authorization': `Bearer ${auth.accessToken}`
-        }
-      })
+      const response = await apiGet(request, auth, `/api/v3.0/downloads/${downloadId}:download`)
 
       // Should succeed for available downloads
       if (response.ok()) {

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listEventTypes**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`EventType`](../interfaces/EventType.md)\>\>\>
 
-Defined in: [events/service.ts:266](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L266)
+Defined in: [events/service.ts:248](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L248)
 
 List all available event types.
 

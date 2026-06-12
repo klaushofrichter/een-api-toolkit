@@ -173,6 +173,7 @@ for example_dir in "$EXAMPLES_DIR"/*/; do
             echo -e "  ${YELLOW}Would write:${NC} $target_env"
         else
             echo -e "$env_content" > "$target_env"
+            chmod 600 "$target_env"
             echo -e "  ${GREEN}Written:${NC} $target_env"
         fi
 

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **connectToEventSubscription**(`sseUrl`, `options`): [`Result`](../type-aliases/Result.md)\<[`SSEConnection`](../interfaces/SSEConnection.md)\>
 
-Defined in: [eventSubscriptions/service.ts:379](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L379)
+Defined in: [eventSubscriptions/service.ts:344](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L344)
 
 Connect to an SSE event subscription to receive real-time events.
 
@@ -35,8 +35,9 @@ A Result containing the SSE connection handle or an error
 ## Remarks
 
 Opens an SSE connection to the provided URL and calls the `onEvent` callback
-for each event received. The connection automatically handles reconnection
-on errors.
+for each event received. The connection does NOT automatically reconnect on
+errors or when the stream ends. Consumers should watch the connection
+`status` (or use the `onStatusChange` callback) and reconnect as needed.
 
 Note: SSE connections require authentication. The token is passed via the
 `Authorization` header. Since EventSource doesn't support custom headers,

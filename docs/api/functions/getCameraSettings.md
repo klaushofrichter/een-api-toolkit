@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getCameraSettings**(`cameraId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`CameraSettings`](../interfaces/CameraSettings.md)\>\>
 
-Defined in: [cameras/service.ts:321](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/cameras/service.ts#L321)
+Defined in: [cameras/service.ts:303](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/cameras/service.ts#L303)
 
 Get operational settings for a specific camera.
 

@@ -444,7 +444,7 @@ describe('Bridge service functions', () => {
 
       const result = await getBridge('bridge-123')
 
-      expect(result.error?.code).toBe('API_ERROR')
+      expect(result.error?.code).toBe('SERVICE_UNAVAILABLE')
       expect(result.error?.message).toContain('Service Unavailable')
     })
 

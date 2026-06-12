@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **initEenToolkit**(`options?`): `void`
 
-Defined in: [config.ts:36](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L36)
+Defined in: [config.ts:37](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L37)
 
 Initialize the EEN API Toolkit
 

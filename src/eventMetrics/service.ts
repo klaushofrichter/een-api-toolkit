@@ -1,10 +1,10 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
   EventMetric,
   GetEventMetricsParams
 } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug, formatTimestamp } from '../utils'
 
 /**
@@ -53,15 +53,9 @@ import { debug, formatTimestamp } from '../utils'
  * @category Event Metrics
  */
 export async function getEventMetrics(params: GetEventMetricsParams): Promise<Result<EventMetric[]>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   // Validate required parameters
   if (!params.actor) {
@@ -92,16 +86,13 @@ export async function getEventMetrics(params: GetEventMetricsParams): Promise<Re
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/eventMetrics${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/eventMetrics${queryString ? `?${queryString}` : ''}`
   debug('Fetching event metrics:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -114,35 +105,5 @@ export async function getEventMetrics(params: GetEventMetricsParams): Promise<Re
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to fetch event metrics: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }
