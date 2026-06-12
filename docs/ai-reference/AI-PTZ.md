@@ -1,6 +1,6 @@
 # PTZ Camera Controls
 
-> **Version:** 0.3.106
+> **Version:** 0.3.107
 >
 > Pan/Tilt/Zoom camera control: position, movement, presets, and automation.
 

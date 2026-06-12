@@ -1,6 +1,6 @@
 # Media & Live Video - EEN API Toolkit
 
-> **Version:** 0.3.106
+> **Version:** 0.3.107
 >
 > Complete reference for media retrieval, live streaming, and video playback.
 > Load this document when implementing video features.
