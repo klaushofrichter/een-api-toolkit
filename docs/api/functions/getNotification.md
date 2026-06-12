@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getNotification**(`notificationId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Notification`](../interfaces/Notification.md)\>\>
 
-Defined in: [notifications/service.ts:195](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/notifications/service.ts#L195)
+Defined in: [notifications/service.ts:186](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/notifications/service.ts#L186)
 
 Get a specific notification by ID.
 

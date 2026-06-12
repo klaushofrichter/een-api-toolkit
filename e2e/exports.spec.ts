@@ -2,6 +2,13 @@ import { test, expect } from '@playwright/test'
 import { getAuthToken, AuthState } from './auth-helper'
 import { apiGet, apiPost } from './api-helper'
 
+/**
+ * Format timestamps - EEN API requires +00:00 format, not Z
+ */
+function formatTimestamp(date: Date): string {
+  return date.toISOString().replace('Z', '+00:00')
+}
+
 test.describe('Exports API', () => {
   let auth: AuthState
 
@@ -34,10 +41,6 @@ test.describe('Exports API', () => {
     const endTime = new Date()
     const startTime = new Date(endTime.getTime() - 5 * 60 * 1000)
 
-    // Format timestamps - EEN API requires +00:00 format, not Z
-    const formatTimestamp = (date: Date): string => {
-      return date.toISOString().replace('Z', '+00:00')
-    }
 
     // Create export job - this might fail if the camera has no recordings
     // API requires: deviceId (not cameraId), info{}, period{}
@@ -87,9 +90,6 @@ test.describe('Exports API', () => {
     const endTime = new Date()
     const startTime = new Date(endTime.getTime() - 5 * 60 * 1000)
 
-    const formatTimestamp = (date: Date): string => {
-      return date.toISOString().replace('Z', '+00:00')
-    }
 
     const response = await apiPost(request, auth, '/api/v3.0/exports', {
       deviceId: 'invalid-camera-id-12345',
@@ -146,9 +146,6 @@ test.describe('Exports API', () => {
     const endTime = new Date()
     const startTime = new Date(endTime.getTime() - 15 * 60 * 1000)
 
-    const formatTimestamp = (date: Date): string => {
-      return date.toISOString().replace('Z', '+00:00')
-    }
 
     // Create timeLapse export job with required playbackMultiplier
     const response = await apiPost(request, auth, '/api/v3.0/exports', {
@@ -210,9 +207,6 @@ test.describe('Exports API', () => {
     const endTime = new Date()
     const startTime = new Date(endTime.getTime() - 5 * 60 * 1000)
 
-    const formatTimestamp = (date: Date): string => {
-      return date.toISOString().replace('Z', '+00:00')
-    }
 
     // Create timeLapse export WITHOUT playbackMultiplier (should fail)
     const response = await apiPost(request, auth, '/api/v3.0/exports', {
@@ -264,9 +258,6 @@ test.describe('Exports API', () => {
     const endTime = new Date()
     const startTime = new Date(endTime.getTime() - 15 * 60 * 1000)
 
-    const formatTimestamp = (date: Date): string => {
-      return date.toISOString().replace('Z', '+00:00')
-    }
 
     // Create bundle export job with required playbackMultiplier
     // Bundle = combination of video and timeLapse
@@ -329,9 +320,6 @@ test.describe('Exports API', () => {
     const endTime = new Date()
     const startTime = new Date(endTime.getTime() - 5 * 60 * 1000)
 
-    const formatTimestamp = (date: Date): string => {
-      return date.toISOString().replace('Z', '+00:00')
-    }
 
     // Create bundle export WITHOUT playbackMultiplier (should fail)
     const response = await apiPost(request, auth, '/api/v3.0/exports', {

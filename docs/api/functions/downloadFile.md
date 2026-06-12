@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **downloadFile**(`fileId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`DownloadFileResult`](../interfaces/DownloadFileResult.md)\>\>
 
-Defined in: [files/service.ts:349](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L349)
+Defined in: [files/service.ts:322](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/files/service.ts#L322)
 
 Download a file's binary content.
 

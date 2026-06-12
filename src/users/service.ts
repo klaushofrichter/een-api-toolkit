@@ -1,6 +1,6 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, PaginatedResult, User, UserProfile, ListUsersParams, GetUserParams } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils/debug'
 
 /**
@@ -31,26 +31,17 @@ import { debug } from '../utils/debug'
  * @category Users
  */
 export async function getCurrentUser(): Promise<Result<UserProfile>> {
-  const authStore = useAuthStore()
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
-
-  const url = `${authStore.baseUrl}/api/v3.0/users/self`
+  const url = `${baseUrl}/api/v3.0/users/self`
   debug('Fetching current user:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -116,15 +107,9 @@ export async function getCurrentUser(): Promise<Result<UserProfile>> {
  * @category Users
  */
 export async function getUsers(params?: ListUsersParams): Promise<Result<PaginatedResult<User>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -139,16 +124,13 @@ export async function getUsers(params?: ListUsersParams): Promise<Result<Paginat
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/users${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/users${queryString ? `?${queryString}` : ''}`
   debug('Fetching users:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -203,15 +185,9 @@ export async function getUsers(params?: ListUsersParams): Promise<Result<Paginat
  * @category Users
  */
 export async function getUser(userId: string, params?: GetUserParams): Promise<Result<User>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!userId) {
     return failure('VALIDATION_ERROR', 'User ID is required')
@@ -224,16 +200,13 @@ export async function getUser(userId: string, params?: GetUserParams): Promise<R
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/users/${encodeURIComponent(userId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/users/${encodeURIComponent(userId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching user:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -246,34 +219,5 @@ export async function getUser(userId: string, params?: GetUserParams): Promise<R
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to fetch user: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch {
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **createLayout**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Layout`](../interfaces/Layout.md)\>\>
 
-Defined in: [layouts/service.ts:262](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L262)
+Defined in: [layouts/service.ts:244](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L244)
 
 Create a new layout.
 

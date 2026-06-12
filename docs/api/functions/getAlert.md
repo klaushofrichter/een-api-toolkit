@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getAlert**(`alertId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Alert`](../interfaces/Alert.md)\>\>
 
-Defined in: [alerts/service.ts:218](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/alerts/service.ts#L218)
+Defined in: [alerts/service.ts:209](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/alerts/service.ts#L209)
 
 Get a specific alert by ID.
 

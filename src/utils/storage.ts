@@ -63,24 +63,28 @@ class MemoryStorage implements StorageAdapter {
  * @internal
  */
 class BrowserStorageAdapter implements StorageAdapter {
-  constructor(private storage: Storage) {}
+  // Resolves the Storage object per call so cached adapter instances never
+  // hold a stale reference (e.g. when the global is replaced in tests)
+  constructor(private resolveStorage: () => Storage) {}
 
   getItem(key: string): string | null {
-    return this.storage.getItem(key)
+    return this.resolveStorage().getItem(key)
   }
 
   setItem(key: string, value: string): void {
-    this.storage.setItem(key, value)
+    this.resolveStorage().setItem(key, value)
   }
 
   removeItem(key: string): void {
-    this.storage.removeItem(key)
+    this.resolveStorage().removeItem(key)
   }
 }
 
 // Singleton instances
 let currentStrategy: StorageStrategy = 'localStorage'
 let memoryStorageInstance: MemoryStorage | null = null
+let localStorageAdapter: BrowserStorageAdapter | null = null
+let sessionStorageAdapter: BrowserStorageAdapter | null = null
 
 /**
  * Get the memory storage singleton instance.
@@ -132,7 +136,8 @@ export function getStorageAdapter(): StorageAdapter {
       return getMemoryStorage()
     case 'sessionStorage':
       if (typeof sessionStorage !== 'undefined') {
-        return new BrowserStorageAdapter(sessionStorage)
+        sessionStorageAdapter ??= new BrowserStorageAdapter(() => sessionStorage)
+        return sessionStorageAdapter
       }
       // Fallback to memory if sessionStorage not available
       debug('sessionStorage unavailable, falling back to memory storage')
@@ -140,7 +145,8 @@ export function getStorageAdapter(): StorageAdapter {
     case 'localStorage':
     default:
       if (typeof localStorage !== 'undefined') {
-        return new BrowserStorageAdapter(localStorage)
+        localStorageAdapter ??= new BrowserStorageAdapter(() => localStorage)
+        return localStorageAdapter
       }
       // Fallback to memory if localStorage not available
       debug('localStorage unavailable, falling back to memory storage')

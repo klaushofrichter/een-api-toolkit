@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listEventFieldValues**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EventFieldValues`](../interfaces/EventFieldValues.md)\>\>
 
-Defined in: [events/service.ts:348](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L348)
+Defined in: [events/service.ts:321](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/events/service.ts#L321)
 
 List available event field values for a specific actor.
 

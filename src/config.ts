@@ -1,5 +1,6 @@
 import type { EenToolkitConfig, StorageStrategy } from './types'
 import { setStorageStrategy, getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS } from './utils/storage'
+import { setDebugEnabled } from './utils/debug'
 
 /**
  * Global toolkit configuration
@@ -45,6 +46,8 @@ export function initEenToolkit(options: EenToolkitConfig = {}): void {
     storageStrategy,
     debug: options.debug ?? import.meta.env?.VITE_DEBUG === 'true'
   }
+
+  setDebugEnabled(config.debug === true)
 }
 
 export { getStorageStrategy, STORAGE_STRATEGY_DESCRIPTIONS }

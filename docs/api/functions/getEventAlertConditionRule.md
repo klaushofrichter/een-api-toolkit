@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getEventAlertConditionRule**(`ruleId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EventAlertConditionRule`](../interfaces/EventAlertConditionRule.md)\>\>
 
-Defined in: [automations/service.ts:220](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L220)
+Defined in: [automations/service.ts:202](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L202)
 
 Get a specific event alert condition rule by ID.
 

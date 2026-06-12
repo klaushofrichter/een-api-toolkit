@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **movePtz**(`cameraId`, `move`): `Promise`\<[`Result`](../type-aliases/Result.md)\<`void`\>\>
 
-Defined in: [ptz/service.ts:102](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/ptz/service.ts#L102)
+Defined in: [ptz/service.ts:93](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/ptz/service.ts#L93)
 
 Move a PTZ camera to a new position.
 

@@ -751,9 +751,9 @@ describe('Media service functions', () => {
         json: () => Promise.resolve({ url: 'https://media.eagleeyenetworks.com/session/abc123' })
       })
 
-      // 204 No Content is a valid success response
+      // 204 No Content is a valid success response (fetch sets ok=true for 2xx)
       mockFetch.mockResolvedValueOnce({
-        ok: false, // ok is false for 204
+        ok: true,
         status: 204
       })
 
@@ -801,7 +801,7 @@ describe('Media service functions', () => {
       const result = await initMediaSession()
 
       expect(result.error?.code).toBe('API_ERROR')
-      expect(result.error?.message).toContain('Failed to set media session cookie')
+      expect(result.error?.message).toContain('Session creation failed')
     })
 
     it('should handle missing URL in session response', async () => {

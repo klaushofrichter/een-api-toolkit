@@ -1,21 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { UserProfile } from '../types'
-import type { Result } from '../types'
 import { debug } from '../utils/debug'
 import { isAllowedEenHostname } from '../utils/hostname'
 import { getStorageAdapter } from '../utils/storage'
-
-// Lazy-loaded reference to refreshToken to avoid circular dependency at import time
-// Caches the promise (not the resolved value) to prevent race conditions with concurrent calls
-let refreshTokenFnPromise: Promise<() => Promise<Result<{ accessToken: string; expiresIn: number }>>> | null = null
-
-function getRefreshTokenFn() {
-  if (!refreshTokenFnPromise) {
-    refreshTokenFnPromise = import('./service').then((service) => service.refreshToken)
-  }
-  return refreshTokenFnPromise
-}
 
 /**
  * Pinia store for authentication state management
@@ -30,12 +18,12 @@ export const useAuthStore = defineStore('een-auth', () => {
   const port = ref<number>(443)
   const userProfile = ref<UserProfile | null>(null)
   const refreshTimerId = ref<ReturnType<typeof setTimeout> | null>(null)
-  const isRefreshing = ref(false)
-  let refreshPromise: Promise<void> | null = null
-  const refreshFailed = ref(false)
+  const refreshPromise = ref<Promise<void> | null>(null)
   const refreshFailedMessage = ref<string | null>(null)
 
   // Computed
+  const isRefreshing = computed(() => refreshPromise.value !== null)
+  const refreshFailed = computed(() => refreshFailedMessage.value !== null)
   const isAuthenticated = computed(() => !!token.value)
 
   const baseUrl = computed(() => {
@@ -134,59 +122,53 @@ export const useAuthStore = defineStore('een-auth', () => {
     const timeUntilExpiry = expiresAt - now
 
     // Calculate refresh time: 5 minutes before expiration or 50% of TTL, whichever is earlier
-    // Minimum: 1 minute before expiration, minimum timeout: 5 seconds
+    // Minimum delay: 1 minute from now
     const fiveMinutes = 5 * 60 * 1000
     const halfTtl = timeUntilExpiry / 2
     const refreshBuffer = Math.min(fiveMinutes, halfTtl)
     const refreshTime = Math.max(timeUntilExpiry - refreshBuffer, 60 * 1000)
-    const timeout = Math.max(refreshTime, 5000)
 
-    debug('Auto-refresh scheduled in', Math.round(timeout / 1000), 'seconds')
+    debug('Auto-refresh scheduled in', Math.round(refreshTime / 1000), 'seconds')
 
     refreshTimerId.value = setTimeout(async () => {
       await performAutoRefresh()
-    }, timeout)
+    }, refreshTime)
   }
 
   async function performAutoRefresh(): Promise<void> {
     // If refresh is already in progress, wait for the existing promise
-    if (refreshPromise) {
+    if (refreshPromise.value) {
       debug('Refresh already in progress, waiting for existing refresh')
-      return refreshPromise
+      return refreshPromise.value
     }
 
-    isRefreshing.value = true
     debug('Performing auto-refresh')
 
-    refreshPromise = (async () => {
+    refreshPromise.value = (async () => {
       try {
-        const refreshToken = await getRefreshTokenFn()
+        // Lazy import to avoid circular dependency at module-evaluation time
+        const { refreshToken } = await import('./service')
         const result = await refreshToken()
 
         if (result.error) {
-          refreshFailed.value = true
           refreshFailedMessage.value = result.error.message
           debug('Auto-refresh failed:', result.error.message)
         } else {
-          refreshFailed.value = false
           refreshFailedMessage.value = null
           debug('Auto-refresh successful')
         }
       } catch (err: unknown) {
-        refreshFailed.value = true
         refreshFailedMessage.value = err instanceof Error ? err.message : String(err)
         debug('Auto-refresh error:', err)
       } finally {
-        isRefreshing.value = false
-        refreshPromise = null
+        refreshPromise.value = null
       }
     })()
 
-    return refreshPromise
+    return refreshPromise.value
   }
 
   function clearRefreshFailed() {
-    refreshFailed.value = false
     refreshFailedMessage.value = null
   }
 
@@ -202,7 +184,6 @@ export const useAuthStore = defineStore('een-auth', () => {
     hostname.value = null
     port.value = 443
     userProfile.value = null
-    refreshFailed.value = false
     refreshFailedMessage.value = null
     clearStorage()
   }

@@ -1,6 +1,6 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, PaginatedResult, Camera, ListCamerasParams, GetCameraParams, CameraSettings, GetCameraSettingsParams } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils/debug'
 
 /**
@@ -47,15 +47,9 @@ import { debug } from '../utils/debug'
  * @category Cameras
  */
 export async function getCameras(params?: ListCamerasParams): Promise<Result<PaginatedResult<Camera>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -175,16 +169,13 @@ export async function getCameras(params?: ListCamerasParams): Promise<Result<Pag
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/cameras${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/cameras${queryString ? `?${queryString}` : ''}`
   debug('Fetching cameras:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -238,15 +229,9 @@ export async function getCameras(params?: ListCamerasParams): Promise<Result<Pag
  * @category Cameras
  */
 export async function getCamera(cameraId: string, params?: GetCameraParams): Promise<Result<Camera>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!cameraId) {
     return failure('VALIDATION_ERROR', 'Camera ID is required')
@@ -259,16 +244,13 @@ export async function getCamera(cameraId: string, params?: GetCameraParams): Pro
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching camera:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -319,15 +301,9 @@ export async function getCamera(cameraId: string, params?: GetCameraParams): Pro
  * @category Cameras
  */
 export async function getCameraSettings(cameraId: string, params?: GetCameraSettingsParams): Promise<Result<CameraSettings>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!cameraId) {
     return failure('VALIDATION_ERROR', 'Camera ID is required')
@@ -340,16 +316,13 @@ export async function getCameraSettings(cameraId: string, params?: GetCameraSett
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/settings${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/cameras/${encodeURIComponent(cameraId)}/settings${queryString ? `?${queryString}` : ''}`
   debug('Fetching camera settings:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -365,32 +338,3 @@ export async function getCameraSettings(cameraId: string, params?: GetCameraSett
   }
 }
 
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
-  }
-}

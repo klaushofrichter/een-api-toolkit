@@ -1,6 +1,6 @@
 # Vue 3 Application Setup - EEN API Toolkit
 
-> **Version:** 0.3.105
+> **Version:** 0.3.106
 >
 > Complete guide for setting up a Vue 3 application with the een-api-toolkit.
 > Load this document when creating a new project or troubleshooting setup issues.

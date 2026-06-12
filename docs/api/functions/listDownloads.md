@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **listDownloads**(`params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`PaginatedResult`](../interfaces/PaginatedResult.md)\<[`Download`](../interfaces/Download.md)\>\>\>
 
-Defined in: [downloads/service.ts:38](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/downloads/service.ts#L38)
+Defined in: [downloads/service.ts:39](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/downloads/service.ts#L39)
 
 List downloads with optional pagination and filtering.
 

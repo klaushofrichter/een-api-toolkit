@@ -149,10 +149,9 @@ examples/**/node_modules
 examples/**/.env
 !examples/**/.env.example
 
-# E2E test auth state cache
-examples/vue-users/e2e/.auth-state.json
-examples/vue-feeds/e2e/.auth-state.json
-examples/vue-media/e2e/.auth-state.json
+# E2E test auth state cache (any example app)
+examples/**/.auth-state.json
+
 # macOS
 .DS_Store
 

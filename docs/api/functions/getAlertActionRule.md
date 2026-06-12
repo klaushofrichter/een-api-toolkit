@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.106**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getAlertActionRule**(`ruleId`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`AlertActionRule`](../interfaces/AlertActionRule.md)\>\>
 
-Defined in: [automations/service.ts:573](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L573)
+Defined in: [automations/service.ts:519](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/automations/service.ts#L519)
 
 Get a specific alert action rule by ID.
 

@@ -1,4 +1,3 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
@@ -15,6 +14,7 @@ import type {
   ListAlertActionRulesParams,
   ListAlertActionsParams
 } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils'
 
 // =============================================================================
@@ -58,15 +58,9 @@ import { debug } from '../utils'
 export async function listEventAlertConditionRules(
   params?: ListEventAlertConditionRulesParams
 ): Promise<Result<PaginatedResult<EventAlertConditionRule>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -96,16 +90,13 @@ export async function listEventAlertConditionRules(
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/eventAlertConditionRules${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/eventAlertConditionRules${queryString ? `?${queryString}` : ''}`
   debug('Fetching event alert condition rules:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -147,15 +138,9 @@ export async function listEventAlertConditionRules(
 export async function getEventAlertConditionRuleFieldValues(
   params?: GetEventAlertConditionRuleFieldValuesParams
 ): Promise<Result<EventAlertConditionRuleFieldValues>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -164,16 +149,13 @@ export async function getEventAlertConditionRuleFieldValues(
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/eventAlertConditionRules:listFieldValues${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/eventAlertConditionRules:listFieldValues${queryString ? `?${queryString}` : ''}`
   debug('Fetching event alert condition rule field values:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -220,30 +202,21 @@ export async function getEventAlertConditionRuleFieldValues(
 export async function getEventAlertConditionRule(
   ruleId: string
 ): Promise<Result<EventAlertConditionRule>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!ruleId) {
     return failure('VALIDATION_ERROR', 'Rule ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/eventAlertConditionRules/${encodeURIComponent(ruleId)}`
+  const url = `${baseUrl}/api/v3.0/eventAlertConditionRules/${encodeURIComponent(ruleId)}`
   debug('Fetching event alert condition rule:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -295,15 +268,9 @@ export async function getEventAlertConditionRule(
 export async function listAlertConditionRules(
   params?: ListAlertConditionRulesParams
 ): Promise<Result<PaginatedResult<AlertConditionRule>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -341,16 +308,13 @@ export async function listAlertConditionRules(
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/alertConditionRules${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/alertConditionRules${queryString ? `?${queryString}` : ''}`
   debug('Fetching alert condition rules:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -397,15 +361,9 @@ export async function getAlertConditionRule(
   ruleId: string,
   params?: GetAlertConditionRuleParams
 ): Promise<Result<AlertConditionRule>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!ruleId) {
     return failure('VALIDATION_ERROR', 'Rule ID is required')
@@ -418,16 +376,13 @@ export async function getAlertConditionRule(
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/alertConditionRules/${encodeURIComponent(ruleId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/alertConditionRules/${encodeURIComponent(ruleId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching alert condition rule:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -480,15 +435,9 @@ export async function getAlertConditionRule(
 export async function listAlertActionRules(
   params?: ListAlertActionRulesParams
 ): Promise<Result<PaginatedResult<AlertActionRule>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -521,16 +470,13 @@ export async function listAlertActionRules(
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/alertActionRules${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/alertActionRules${queryString ? `?${queryString}` : ''}`
   debug('Fetching alert action rules:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -573,30 +519,21 @@ export async function listAlertActionRules(
 export async function getAlertActionRule(
   ruleId: string
 ): Promise<Result<AlertActionRule>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!ruleId) {
     return failure('VALIDATION_ERROR', 'Rule ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/alertActionRules/${encodeURIComponent(ruleId)}`
+  const url = `${baseUrl}/api/v3.0/alertActionRules/${encodeURIComponent(ruleId)}`
   debug('Fetching alert action rule:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -649,15 +586,9 @@ export async function getAlertActionRule(
 export async function listAlertActions(
   params?: ListAlertActionsParams
 ): Promise<Result<PaginatedResult<AutomationAlertAction>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -681,16 +612,13 @@ export async function listAlertActions(
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/alertActions${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/alertActions${queryString ? `?${queryString}` : ''}`
   debug('Fetching alert actions:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -732,30 +660,21 @@ export async function listAlertActions(
 export async function getAlertAction(
   actionId: string
 ): Promise<Result<AutomationAlertAction>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!actionId) {
     return failure('VALIDATION_ERROR', 'Action ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/alertActions/${encodeURIComponent(actionId)}`
+  const url = `${baseUrl}/api/v3.0/alertActions/${encodeURIComponent(actionId)}`
   debug('Fetching alert action:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -768,39 +687,5 @@ export async function getAlertAction(
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to fetch alert action: ${String(err)}`)
-  }
-}
-
-// =============================================================================
-// Helpers
-// =============================================================================
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

@@ -1,4 +1,3 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
@@ -11,6 +10,7 @@ import type {
   ListEventTypesParams,
   ListEventFieldValuesParams
 } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug, formatTimestamp } from '../utils'
 
 /**
@@ -64,15 +64,9 @@ import { debug, formatTimestamp } from '../utils'
  * @category Events
  */
 export async function listEvents(params: ListEventsParams): Promise<Result<PaginatedResult<Event>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   // Validate required parameters
   if (!params.actor) {
@@ -124,16 +118,13 @@ export async function listEvents(params: ListEventsParams): Promise<Result<Pagin
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/events${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/events${queryString ? `?${queryString}` : ''}`
   debug('Fetching events:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -187,15 +178,9 @@ export async function listEvents(params: ListEventsParams): Promise<Result<Pagin
  * @category Events
  */
 export async function getEvent(eventId: string, params?: GetEventParams): Promise<Result<Event>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!eventId) {
     return failure('VALIDATION_ERROR', 'Event ID is required')
@@ -208,16 +193,13 @@ export async function getEvent(eventId: string, params?: GetEventParams): Promis
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/events/${encodeURIComponent(eventId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/events/${encodeURIComponent(eventId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching event:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -264,15 +246,9 @@ export async function getEvent(eventId: string, params?: GetEventParams): Promis
  * @category Events
  */
 export async function listEventTypes(params?: ListEventTypesParams): Promise<Result<PaginatedResult<EventType>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -290,16 +266,13 @@ export async function listEventTypes(params?: ListEventTypesParams): Promise<Res
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/eventTypes${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/eventTypes${queryString ? `?${queryString}` : ''}`
   debug('Fetching event types:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -346,15 +319,9 @@ export async function listEventTypes(params?: ListEventTypesParams): Promise<Res
  * @category Events
  */
 export async function listEventFieldValues(params: ListEventFieldValuesParams): Promise<Result<EventFieldValues>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   // Validate required parameter
   if (!params.actor) {
@@ -365,16 +332,13 @@ export async function listEventFieldValues(params: ListEventFieldValuesParams): 
   queryParams.append('actor', params.actor)
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/events:listFieldValues${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/events:listFieldValues${queryString ? `?${queryString}` : ''}`
   debug('Fetching event field values:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -387,35 +351,5 @@ export async function listEventFieldValues(params: ListEventFieldValuesParams): 
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to fetch event field values: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }
