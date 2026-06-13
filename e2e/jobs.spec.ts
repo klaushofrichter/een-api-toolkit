@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { getAuthToken, AuthState } from './auth-helper'
-import { apiGet } from './api-helper'
+import { apiGet, apiDelete } from './api-helper'
 
 test.describe('Jobs API', () => {
   let auth: AuthState
@@ -11,12 +11,7 @@ test.describe('Jobs API', () => {
     auth = await getAuthToken()
 
     // Get current user ID (required for jobs API)
-    const userResponse = await request.get(`${auth.baseUrl}/api/v3.0/users/self`, {
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${auth.accessToken}`
-      }
-    })
+    const userResponse = await apiGet(request, auth, '/api/v3.0/users/self')
 
     if (userResponse.ok()) {
       const userData = await userResponse.json()
@@ -218,11 +213,7 @@ test.describe('Jobs API', () => {
 
   test('DELETE /api/v3.0/jobs/{id} returns error for non-existent job', async ({ request }) => {
     // Use a clearly invalid ID format
-    const response = await request.delete(`${auth.baseUrl}/api/v3.0/jobs/non-existent-job-id-12345`, {
-      headers: {
-        'Authorization': `Bearer ${auth.accessToken}`
-      }
-    })
+    const response = await apiDelete(request, auth, '/api/v3.0/jobs/non-existent-job-id-12345')
 
     console.log('DELETE non-existent job status:', response.status())
 

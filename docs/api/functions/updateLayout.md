@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **updateLayout**(`layoutId`, `params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<`void`\>\>
 
-Defined in: [layouts/service.ts:362](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L362)
+Defined in: [layouts/service.ts:334](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/layouts/service.ts#L334)
 
 Update an existing layout.
 

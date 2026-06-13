@@ -1,4 +1,3 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
@@ -11,7 +10,9 @@ import type {
   SSEConnectionStatus,
   SSEEvent
 } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils'
+import { redactUrl } from '../utils/debug'
 import { isAllowedEenHostname } from '../utils/hostname'
 
 /**
@@ -44,15 +45,9 @@ import { isAllowedEenHostname } from '../utils/hostname'
 export async function listEventSubscriptions(
   params?: ListEventSubscriptionsParams
 ): Promise<Result<PaginatedResult<EventSubscription>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -64,16 +59,13 @@ export async function listEventSubscriptions(
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/eventSubscriptions${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/eventSubscriptions${queryString ? `?${queryString}` : ''}`
   debug('Fetching event subscriptions:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -119,30 +111,21 @@ export async function listEventSubscriptions(
 export async function getEventSubscription(
   subscriptionId: string
 ): Promise<Result<EventSubscription>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!subscriptionId) {
     return failure('VALIDATION_ERROR', 'Subscription ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/eventSubscriptions/${encodeURIComponent(subscriptionId)}`
+  const url = `${baseUrl}/api/v3.0/eventSubscriptions/${encodeURIComponent(subscriptionId)}`
   debug('Fetching event subscription:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -199,15 +182,9 @@ export async function getEventSubscription(
 export async function createEventSubscription(
   params: CreateEventSubscriptionParams
 ): Promise<Result<EventSubscription>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!params.deliveryConfig) {
     return failure('VALIDATION_ERROR', 'deliveryConfig is required')
@@ -227,17 +204,13 @@ export async function createEventSubscription(
     }
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/eventSubscriptions`
+  const url = `${baseUrl}/api/v3.0/eventSubscriptions`
   debug('Creating event subscription:', url)
 
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Content-Type': 'application/json' },
       body: JSON.stringify(params)
     })
 
@@ -284,30 +257,21 @@ export async function createEventSubscription(
 export async function deleteEventSubscription(
   subscriptionId: string
 ): Promise<Result<void>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!subscriptionId) {
     return failure('VALIDATION_ERROR', 'Subscription ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/eventSubscriptions/${encodeURIComponent(subscriptionId)}`
+  const url = `${baseUrl}/api/v3.0/eventSubscriptions/${encodeURIComponent(subscriptionId)}`
   debug('Deleting event subscription:', url)
 
   try {
     const response = await fetch(url, {
       method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -326,8 +290,9 @@ export async function deleteEventSubscription(
  *
  * @remarks
  * Opens an SSE connection to the provided URL and calls the `onEvent` callback
- * for each event received. The connection automatically handles reconnection
- * on errors.
+ * for each event received. The connection does NOT automatically reconnect on
+ * errors or when the stream ends. Consumers should watch the connection
+ * `status` (or use the `onStatusChange` callback) and reconnect as needed.
  *
  * Note: SSE connections require authentication. The token is passed via the
  * `Authorization` header. Since EventSource doesn't support custom headers,
@@ -380,11 +345,9 @@ export function connectToEventSubscription(
   sseUrl: string,
   options: SSEConnectionOptions
 ): Result<SSEConnection> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore } = auth
 
   if (!authStore.token) {
     return failure('AUTH_REQUIRED', 'Access token not available')
@@ -430,7 +393,7 @@ export function connectToEventSubscription(
     if (isClosing || !abortController) return
 
     setStatus('connecting')
-    debug('Connecting to SSE:', sseUrl)
+    debug('Connecting to SSE:', redactUrl(sseUrl))
 
     try {
       // Note: We intentionally omit Cache-Control header here.
@@ -466,6 +429,11 @@ export function connectToEventSubscription(
 
         if (done) {
           debug('SSE stream ended')
+          if (!isClosing) {
+            // Stream ended unexpectedly (e.g., server closed the connection).
+            // Mark as disconnected so consumers can detect the dead stream.
+            setStatus('disconnected')
+          }
           break
         }
 
@@ -523,34 +491,4 @@ export function connectToEventSubscription(
   }
 
   return success(connection)
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', message, status)
-    case 403:
-      return failure('FORBIDDEN', message, status)
-    case 404:
-      return failure('NOT_FOUND', message, status)
-    case 429:
-      return failure('RATE_LIMITED', message, status)
-    default:
-      return failure('API_ERROR', message, status)
-  }
 }

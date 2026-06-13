@@ -1,6 +1,7 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, PaginatedResult, EenFile, ListFilesParams, GetFileParams, CreateFileParams, DownloadFileResult } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
+import { downloadBlob } from '../utils/download'
 import { debug } from '../utils/debug'
 
 /**
@@ -41,15 +42,9 @@ import { debug } from '../utils/debug'
  * @category Files
  */
 export async function listFiles(params?: ListFilesParams): Promise<Result<PaginatedResult<EenFile>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -108,16 +103,13 @@ export async function listFiles(params?: ListFilesParams): Promise<Result<Pagina
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/files${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/files${queryString ? `?${queryString}` : ''}`
   debug('Fetching files:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -166,15 +158,9 @@ export async function listFiles(params?: ListFilesParams): Promise<Result<Pagina
  * @category Files
  */
 export async function getFile(fileId: string, params?: GetFileParams): Promise<Result<EenFile>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!fileId) {
     return failure('VALIDATION_ERROR', 'File ID is required')
@@ -187,16 +173,13 @@ export async function getFile(fileId: string, params?: GetFileParams): Promise<R
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/files/${encodeURIComponent(fileId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/files/${encodeURIComponent(fileId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching file:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -243,21 +226,15 @@ export async function getFile(fileId: string, params?: GetFileParams): Promise<R
  * @category Files
  */
 export async function addFile(params: CreateFileParams): Promise<Result<EenFile>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!params.name) {
     return failure('VALIDATION_ERROR', 'File name is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/files`
+  const url = `${baseUrl}/api/v3.0/files`
   debug('Creating file:', url)
 
   // Build request body
@@ -288,11 +265,7 @@ export async function addFile(params: CreateFileParams): Promise<Result<EenFile>
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
 
@@ -347,64 +320,25 @@ export async function addFile(params: CreateFileParams): Promise<Result<EenFile>
  * @category Files
  */
 export async function downloadFile(fileId: string): Promise<Result<DownloadFileResult>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!fileId) {
     return failure('VALIDATION_ERROR', 'File ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/files/${encodeURIComponent(fileId)}:download`
+  const url = `${baseUrl}/api/v3.0/files/${encodeURIComponent(fileId)}:download`
   debug('Downloading file:', url)
 
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
-    })
-
-    if (!response.ok) {
-      return handleErrorResponse(response)
-    }
-
-    // Get the blob data
-    const blob = await response.blob()
-
-    // Parse filename from Content-Disposition header
-    const contentDisposition = response.headers.get('Content-Disposition')
-    let filename = 'download'
-    if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
-      if (filenameMatch && filenameMatch[1]) {
-        filename = filenameMatch[1].replace(/['"]/g, '')
-      }
-    }
-
-    // Get content type
-    const contentType = response.headers.get('Content-Type') || 'application/octet-stream'
-
-    const result: DownloadFileResult = {
-      blob,
-      filename,
-      contentType,
-      size: blob.size
-    }
-
-    debug('File downloaded:', filename, blob.size, 'bytes')
-
-    return success(result)
-  } catch (err) {
-    return failure('NETWORK_ERROR', `Failed to download file: ${String(err)}`)
+  const result = await downloadBlob(url, authStore.token, 'Failed to download file: ')
+  if (result.error) {
+    return result
   }
+
+  debug('File downloaded:', result.data.filename, result.data.blob.size, 'bytes')
+
+  return result
 }
 
 /**
@@ -444,21 +378,15 @@ export async function downloadFile(fileId: string): Promise<Result<DownloadFileR
  * @category Files
  */
 export async function deleteFile(fileId: string): Promise<Result<void>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!fileId) {
     return failure('VALIDATION_ERROR', 'File ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/files/${encodeURIComponent(fileId)}`
+  const url = `${baseUrl}/api/v3.0/files/${encodeURIComponent(fileId)}`
   debug('Deleting file:', url)
 
   try {
@@ -475,37 +403,8 @@ export async function deleteFile(fileId: string): Promise<Result<void>> {
 
     debug('File deleted (recycled):', fileId)
 
-    return success(undefined as void)
+    return success(undefined)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to delete file: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch {
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

@@ -1,6 +1,6 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, CreateExportParams, ExportJobResponse } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils/debug'
 
 /**
@@ -60,15 +60,9 @@ import { debug } from '../utils/debug'
  * @category Exports
  */
 export async function createExportJob(params: CreateExportParams): Promise<Result<ExportJobResponse>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   // Validate required parameters
   if (!params.cameraId) {
@@ -87,7 +81,7 @@ export async function createExportJob(params: CreateExportParams): Promise<Resul
     return failure('VALIDATION_ERROR', 'End timestamp is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/exports`
+  const url = `${baseUrl}/api/v3.0/exports`
   debug('Creating export job:', url)
 
   // Validate playbackMultiplier for timeLapse and bundle types
@@ -140,11 +134,7 @@ export async function createExportJob(params: CreateExportParams): Promise<Resul
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
 
@@ -158,34 +148,5 @@ export async function createExportJob(params: CreateExportParams): Promise<Resul
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to create export job: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch {
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

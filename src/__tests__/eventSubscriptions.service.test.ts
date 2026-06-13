@@ -436,7 +436,7 @@ describe('EventSubscriptions service functions', () => {
 
       const result = await createEventSubscription(validParams)
 
-      expect(result.error?.code).toBe('API_ERROR')
+      expect(result.error?.code).toBe('VALIDATION_ERROR')
       expect(result.error?.message).toContain('Invalid filter format')
     })
 

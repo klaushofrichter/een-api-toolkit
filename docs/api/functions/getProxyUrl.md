@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getProxyUrl**(): `string` \| `undefined`
 
-Defined in: [config.ts:62](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L62)
+Defined in: [config.ts:65](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/config.ts#L65)
 
 Get the proxy URL
 

@@ -1,6 +1,7 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, PaginatedResult, Download, ListDownloadsParams, GetDownloadParams, DownloadDownloadResult } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
+import { downloadBlob } from '../utils/download'
 import { debug } from '../utils/debug'
 
 /**
@@ -36,15 +37,9 @@ import { debug } from '../utils/debug'
  * @category Downloads
  */
 export async function listDownloads(params?: ListDownloadsParams): Promise<Result<PaginatedResult<Download>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -98,16 +93,13 @@ export async function listDownloads(params?: ListDownloadsParams): Promise<Resul
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/downloads${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/downloads${queryString ? `?${queryString}` : ''}`
   debug('Fetching downloads:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -159,15 +151,9 @@ export async function listDownloads(params?: ListDownloadsParams): Promise<Resul
  * @category Downloads
  */
 export async function getDownload(downloadId: string, params?: GetDownloadParams): Promise<Result<Download>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!downloadId) {
     return failure('VALIDATION_ERROR', 'Download ID is required')
@@ -180,16 +166,13 @@ export async function getDownload(downloadId: string, params?: GetDownloadParams
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/downloads/${encodeURIComponent(downloadId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/downloads/${encodeURIComponent(downloadId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching download:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -243,91 +226,23 @@ export async function getDownload(downloadId: string, params?: GetDownloadParams
  * @category Downloads
  */
 export async function downloadDownload(downloadId: string): Promise<Result<DownloadDownloadResult>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!downloadId) {
     return failure('VALIDATION_ERROR', 'Download ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/downloads/${encodeURIComponent(downloadId)}:download`
+  const url = `${baseUrl}/api/v3.0/downloads/${encodeURIComponent(downloadId)}:download`
   debug('Downloading:', url)
 
-  try {
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Authorization': `Bearer ${authStore.token}`
-      }
-    })
-
-    if (!response.ok) {
-      return handleErrorResponse(response)
-    }
-
-    // Get the blob data
-    const blob = await response.blob()
-
-    // Parse filename from Content-Disposition header
-    const contentDisposition = response.headers.get('Content-Disposition')
-    let filename = 'download'
-    if (contentDisposition) {
-      const filenameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/)
-      if (filenameMatch && filenameMatch[1]) {
-        filename = filenameMatch[1].replace(/['"]/g, '')
-      }
-    }
-
-    // Get content type
-    const contentType = response.headers.get('Content-Type') || 'application/octet-stream'
-
-    const result: DownloadDownloadResult = {
-      blob,
-      filename,
-      contentType,
-      size: blob.size
-    }
-
-    debug('Downloaded:', filename, blob.size, 'bytes')
-
-    return success(result)
-  } catch (err) {
-    return failure('NETWORK_ERROR', `Failed to download: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch {
-    message = response.statusText || 'Unknown error'
+  const result = await downloadBlob(url, authStore.token, 'Failed to download: ')
+  if (result.error) {
+    return result
   }
 
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
-  }
+  debug('Downloaded:', result.data.filename, result.data.blob.size, 'bytes')
+
+  return result
 }

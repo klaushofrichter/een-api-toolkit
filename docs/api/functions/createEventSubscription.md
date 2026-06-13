@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **createEventSubscription**(`params`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`EventSubscription`](../interfaces/EventSubscription.md)\>\>
 
-Defined in: [eventSubscriptions/service.ts:199](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L199)
+Defined in: [eventSubscriptions/service.ts:182](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/eventSubscriptions/service.ts#L182)
 
 Create a new event subscription.
 

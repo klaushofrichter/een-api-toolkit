@@ -1,4 +1,3 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
@@ -9,6 +8,7 @@ import type {
   CreateLayoutParams,
   UpdateLayoutParams
 } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils/debug'
 
 /**
@@ -54,15 +54,9 @@ import { debug } from '../utils/debug'
  * @category Layouts
  */
 export async function getLayouts(params?: ListLayoutsParams): Promise<Result<PaginatedResult<Layout>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -112,16 +106,13 @@ export async function getLayouts(params?: ListLayoutsParams): Promise<Result<Pag
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/layouts${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/layouts${queryString ? `?${queryString}` : ''}`
   debug('Fetching layouts:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -175,15 +166,9 @@ export async function getLayouts(params?: ListLayoutsParams): Promise<Result<Pag
  * @category Layouts
  */
 export async function getLayout(layoutId: string, params?: GetLayoutParams): Promise<Result<Layout>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!layoutId) {
     return failure('VALIDATION_ERROR', 'Layout ID is required')
@@ -196,16 +181,13 @@ export async function getLayout(layoutId: string, params?: GetLayoutParams): Pro
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/layouts/${encodeURIComponent(layoutId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/layouts/${encodeURIComponent(layoutId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching layout:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -260,15 +242,9 @@ export async function getLayout(layoutId: string, params?: GetLayoutParams): Pro
  * @category Layouts
  */
 export async function createLayout(params: CreateLayoutParams): Promise<Result<Layout>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!params.name) {
     return failure('VALIDATION_ERROR', 'Layout name is required')
@@ -278,7 +254,7 @@ export async function createLayout(params: CreateLayoutParams): Promise<Result<L
     return failure('VALIDATION_ERROR', 'Layout settings are required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/layouts`
+  const url = `${baseUrl}/api/v3.0/layouts`
   debug('Creating layout:', params.name)
 
   const body: Record<string, unknown> = {
@@ -293,11 +269,7 @@ export async function createLayout(params: CreateLayoutParams): Promise<Result<L
   try {
     const response = await fetch(url, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
 
@@ -360,15 +332,9 @@ export async function createLayout(params: CreateLayoutParams): Promise<Result<L
  * @category Layouts
  */
 export async function updateLayout(layoutId: string, params: UpdateLayoutParams): Promise<Result<void>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!layoutId) {
     return failure('VALIDATION_ERROR', 'Layout ID is required')
@@ -378,7 +344,7 @@ export async function updateLayout(layoutId: string, params: UpdateLayoutParams)
     return failure('VALIDATION_ERROR', 'At least one field (name, settings, or panes) must be provided for update')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/layouts/${encodeURIComponent(layoutId)}`
+  const url = `${baseUrl}/api/v3.0/layouts/${encodeURIComponent(layoutId)}`
   debug('Updating layout:', layoutId)
 
   const body: Record<string, unknown> = {}
@@ -396,11 +362,7 @@ export async function updateLayout(layoutId: string, params: UpdateLayoutParams)
   try {
     const response = await fetch(url, {
       method: 'PATCH',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Content-Type': 'application/json' },
       body: JSON.stringify(body)
     })
 
@@ -449,30 +411,21 @@ export async function updateLayout(layoutId: string, params: UpdateLayoutParams)
  * @category Layouts
  */
 export async function deleteLayout(layoutId: string): Promise<Result<void>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!layoutId) {
     return failure('VALIDATION_ERROR', 'Layout ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/layouts/${encodeURIComponent(layoutId)}`
+  const url = `${baseUrl}/api/v3.0/layouts/${encodeURIComponent(layoutId)}`
   debug('Deleting layout:', layoutId)
 
   try {
     const response = await fetch(url, {
       method: 'DELETE',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -484,37 +437,5 @@ export async function deleteLayout(layoutId: string): Promise<Result<void>> {
     return success(undefined)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to delete layout: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 400:
-      return failure('VALIDATION_ERROR', `Bad request: ${message}`, status)
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

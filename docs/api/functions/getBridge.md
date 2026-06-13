@@ -1,4 +1,4 @@
-[**EEN API Toolkit v0.3.105**](../README.md)
+[**EEN API Toolkit v0.3.107**](../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **getBridge**(`bridgeId`, `params?`): `Promise`\<[`Result`](../type-aliases/Result.md)\<[`Bridge`](../interfaces/Bridge.md)\>\>
 
-Defined in: [bridges/service.ts:189](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/bridges/service.ts#L189)
+Defined in: [bridges/service.ts:180](https://github.com/klaushofrichter/een-api-toolkit/blob/production/src/bridges/service.ts#L180)
 
 Get a specific bridge by ID.
 

@@ -20,6 +20,34 @@ This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EE
 - **TypeScript**: Pinned to ~5.8.x (required for API Extractor compatibility in vite-plugin-dts)
 - **Dependencies**: Always use latest stable versions of imported packages
 
+## Common Commands
+
+```bash
+npm run build              # Build library (ES + CJS + rolled-up .d.ts via vite-plugin-dts)
+npm test                   # Run all unit tests once (Vitest)
+npm run test:watch         # Vitest watch mode
+npx vitest run src/__tests__/users.service.test.ts   # Run a single test file
+npx vitest run -t "pattern"                          # Run tests matching a name
+npm run lint               # ESLint on src/
+npm run lint:fix           # ESLint with auto-fix
+npm run typecheck          # vue-tsc --noEmit
+npm run test:e2e           # Playwright E2E tests (see requirements below)
+npm run test:e2e:ui        # Playwright UI mode
+npm run test:e2e:examples  # Run E2E tests for all example apps
+npm run docs               # Generate TypeDoc API docs + AI context docs
+npm run verify-package     # Verify the built package contents
+```
+
+### Unit Tests
+All unit tests live in `src/__tests__/` (not co-located with source), one file per service: `<resource>.service.test.ts`.
+
+### E2E Tests
+Located in `e2e/`, run serially (`workers: 1`) against the live EEN API. Requirements:
+- `.env` with `TEST_USER`, `TEST_PASSWORD`, `VITE_EEN_CLIENT_ID`, `VITE_PROXY_URL` (see `.env.example`)
+- Local OAuth proxy running on port 8787: `./scripts/restart-proxy.sh`
+
+`e2e/auth-helper.ts` performs OAuth login once via a headless browser and caches the access token in `e2e/.auth-state.json` (gitignored, mode 0600) for reuse across test files. Clean up with `./scripts/cleanup-auth.sh`.
+
 ## AI Documentation & Agents
 
 ### AI Reference Documentation
@@ -69,24 +97,39 @@ npm run docs:ai-context:single   # Generate legacy single file
 ## Architecture
 
 ### Source Structure (`./src/`)
-Organized by resource (mirrors EEN API structure):
+Organized by resource (mirrors EEN API structure). Each resource directory follows the same shape: `service.ts` (plain async API functions) + `index.ts` (re-exports).
 ```
 src/
-├── auth/           # Authentication: Pinia store + auth service
-├── users/          # User API: service functions
-├── bridges/        # Bridge API: service functions
-├── cameras/        # Camera API: service functions
-├── types/          # TypeScript types
-├── utils/          # Utility functions (debug, etc.)
-├── config.ts       # Toolkit configuration
-└── index.ts        # Single entry point export
+├── auth/                 # Pinia store (store.ts) + OAuth service (login, refresh, logout)
+├── users/                # Users API
+├── bridges/              # Bridges API
+├── cameras/              # Cameras API (includes camera settings)
+├── events/               # Events API + dataSchemas.ts (event type → data schema map)
+├── eventSubscriptions/   # Real-time SSE event subscriptions
+├── eventMetrics/         # Event metrics (for charting)
+├── alerts/               # Alerts API
+├── notifications/        # Notifications API
+├── automations/          # Automation rules (alert conditions/actions)
+├── feeds/                # Feeds API (live video URLs)
+├── media/                # Media API (recorded images, HLS)
+├── layouts/              # Layouts (camera groupings)
+├── jobs/                 # Async jobs
+├── exports/              # Video exports
+├── files/                # Files API
+├── downloads/            # Downloads API
+├── ptz/                  # PTZ controls (position, presets, settings)
+├── types/                # Shared TypeScript types
+├── utils/                # Debug logging, storage, timestamps, etc.
+├── __tests__/            # All Vitest unit tests
+├── config.ts             # Toolkit configuration
+└── index.ts              # Single entry point export
 ```
 
 ### Key Patterns
 - **API Style**: Plain async functions - `getUsers()`, `getCameras()`, `getUser()`, `getCamera()` - familiar, easy to test
 - **Authentication**: Pinia store exported for direct use (`useAuthStore()`)
 - **Error Handling**: Return `{data, error}` result objects, never throw exceptions
-- **Type Generation**: Auto-generate from OpenAPI spec using openapi-typescript
+- **Types**: Hand-written per resource in `src/types/`, modeled on the EEN OpenAPI spec
 - **Pagination**: Follow EEN API's native pagination approach
 - **Data Fetching**: On demand only
 - **Logging**: Debug mode via `VITE_DEBUG=true` environment variable
@@ -109,14 +152,9 @@ import { useAuthStore, initEenToolkit, getAuthUrl, handleAuthCallback } from 'ee
 import type { User, Camera, EenError, Result } from 'een-api-toolkit'
 ```
 
-## API Implementation Priority
+## API Implementation Policy
 
-1. Users (starting point)
-2. Bridges
-3. Cameras
-4. (additional resources as needed)
-
-Only implement non-destructive GET and POST APIs until explicitly instructed to add PUT, DELETE, or PATCH.
+Only implement non-destructive GET and POST APIs until explicitly instructed to add PUT, DELETE, or PATCH. (Existing exceptions like PTZ position/settings were explicitly approved.)
 
 ## API Reference
 
@@ -500,7 +538,7 @@ docs/
 ├── guides/              # In-depth guides
 └── getting-started/     # Setup guides
 examples/
-└── vue-*/               # 11 complete Vue 3 example applications
+└── vue-*/               # 12 complete Vue 3 example applications
 ```
 
 ### Generation

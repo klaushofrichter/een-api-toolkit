@@ -1,4 +1,3 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
@@ -9,6 +8,7 @@ import type {
   GetAlertParams,
   ListAlertTypesParams
 } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug, formatTimestamp } from '../utils'
 
 /**
@@ -61,15 +61,9 @@ import { debug, formatTimestamp } from '../utils'
  * @category Alerts
  */
 export async function listAlerts(params?: ListAlertsParams): Promise<Result<PaginatedResult<Alert>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -153,16 +147,13 @@ export async function listAlerts(params?: ListAlertsParams): Promise<Result<Pagi
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/alerts${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/alerts${queryString ? `?${queryString}` : ''}`
   debug('Fetching alerts:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -216,15 +207,9 @@ export async function listAlerts(params?: ListAlertsParams): Promise<Result<Pagi
  * @category Alerts
  */
 export async function getAlert(alertId: string, params?: GetAlertParams): Promise<Result<Alert>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!alertId) {
     return failure('VALIDATION_ERROR', 'Alert ID is required')
@@ -237,16 +222,13 @@ export async function getAlert(alertId: string, params?: GetAlertParams): Promis
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/alerts/${encodeURIComponent(alertId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/alerts/${encodeURIComponent(alertId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching alert:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -293,15 +275,9 @@ export async function getAlert(alertId: string, params?: GetAlertParams): Promis
  * @category Alerts
  */
 export async function listAlertTypes(params?: ListAlertTypesParams): Promise<Result<PaginatedResult<AlertType>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -314,16 +290,13 @@ export async function listAlertTypes(params?: ListAlertTypesParams): Promise<Res
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/alertTypes${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/alertTypes${queryString ? `?${queryString}` : ''}`
   debug('Fetching alert types:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -339,32 +312,3 @@ export async function listAlertTypes(params?: ListAlertTypesParams): Promise<Res
   }
 }
 
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
-  }
-}

@@ -1,4 +1,3 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type {
   Result,
@@ -12,7 +11,8 @@ import type {
   MediaSessionResponse,
   MediaSessionResult
 } from '../types'
-import { debug } from '../utils/debug'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
+import { debug, redactUrl } from '../utils/debug'
 import { isAllowedEenHostname } from '../utils/hostname'
 
 /** Default timeout for media requests in milliseconds */
@@ -41,19 +41,16 @@ function createTimeoutController(timeoutMs: number = DEFAULT_TIMEOUT_MS): { cont
  */
 function arrayBufferToBase64(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer)
-  // Use chunked approach with array join for O(n) complexity instead of O(n²) string concatenation
-  // Iterate byte-by-byte within chunks to avoid call stack issues with String.fromCharCode.apply()
+  // Convert each chunk with a single String.fromCharCode(...chunk) call.
+  // Chunking guards against engine argument-count limits: 8192 spread
+  // arguments is safely under the limit, while converting the whole buffer
+  // in one call could exceed it for large images.
   const chunkSize = 8192
-  const chunks: string[] = []
+  let binary = ''
   for (let i = 0; i < bytes.byteLength; i += chunkSize) {
     const chunk = bytes.subarray(i, Math.min(i + chunkSize, bytes.byteLength))
-    let str = ''
-    for (let j = 0; j < chunk.length; j++) {
-      str += String.fromCharCode(chunk[j]!)
-    }
-    chunks.push(str)
+    binary += String.fromCharCode(...chunk)
   }
-  const binary = chunks.join('')
   // Use btoa in browser, Buffer in Node.js
   if (typeof btoa === 'function') {
     return btoa(binary)
@@ -97,15 +94,9 @@ function arrayBufferToBase64(buffer: ArrayBuffer): string {
  * @category Media
  */
 export async function listMedia(params: ListMediaParams): Promise<Result<PaginatedResult<MediaInterval>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   // Validate required parameters
   if (!params.deviceId) {
@@ -146,7 +137,7 @@ export async function listMedia(params: ListMediaParams): Promise<Result<Paginat
     queryParams.append('pageSize', String(params.pageSize))
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/media?${queryParams.toString()}`
+  const url = `${baseUrl}/api/v3.0/media?${queryParams.toString()}`
   debug('Fetching media intervals:', url)
 
   const { controller, timeoutId } = createTimeoutController()
@@ -154,10 +145,7 @@ export async function listMedia(params: ListMediaParams): Promise<Result<Paginat
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: authHeaders(authStore.token),
       signal: controller.signal
     })
 
@@ -233,15 +221,9 @@ export async function listMedia(params: ListMediaParams): Promise<Result<Paginat
  * @category Media
  */
 export async function getLiveImage(params: GetLiveImageParams): Promise<Result<LiveImageResult>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!params.deviceId) {
     return failure('VALIDATION_ERROR', 'Device ID is required')
@@ -254,7 +236,7 @@ export async function getLiveImage(params: GetLiveImageParams): Promise<Result<L
   queryParams.append('deviceId', params.deviceId)
   queryParams.append('type', type)
 
-  const url = `${authStore.baseUrl}/api/v3.0/media/liveImage.jpeg?${queryParams.toString()}`
+  const url = `${baseUrl}/api/v3.0/media/liveImage.jpeg?${queryParams.toString()}`
   debug('Fetching live image:', url)
 
   const { controller, timeoutId } = createTimeoutController()
@@ -262,10 +244,7 @@ export async function getLiveImage(params: GetLiveImageParams): Promise<Result<L
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'image/jpeg',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Accept': 'image/jpeg' },
       signal: controller.signal
     })
 
@@ -344,15 +323,9 @@ export async function getLiveImage(params: GetLiveImageParams): Promise<Result<L
  * @category Media
  */
 export async function getRecordedImage(params: GetRecordedImageParams): Promise<Result<RecordedImageResult>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   // Validate: either deviceId or pageToken is required
   if (!params.deviceId && !params.pageToken) {
@@ -420,7 +393,7 @@ export async function getRecordedImage(params: GetRecordedImageParams): Promise<
     queryParams.append('targetHeight', String(params.targetHeight))
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/media/recordedImage.jpeg?${queryParams.toString()}`
+  const url = `${baseUrl}/api/v3.0/media/recordedImage.jpeg?${queryParams.toString()}`
   debug('Fetching recorded image:', url)
 
   const { controller, timeoutId } = createTimeoutController()
@@ -428,10 +401,7 @@ export async function getRecordedImage(params: GetRecordedImageParams): Promise<
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'image/jpeg',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Accept': 'image/jpeg' },
       signal: controller.signal
     })
 
@@ -470,37 +440,6 @@ export async function getRecordedImage(params: GetRecordedImageParams): Promise<
 }
 
 /**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch {
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    case 503:
-      return failure('SERVICE_UNAVAILABLE', `Service unavailable: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
-  }
-}
-
-/**
  * Get the media session URL for setting cookies.
  *
  * @remarks
@@ -533,17 +472,11 @@ async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
  * @category Media
  */
 export async function getMediaSession(): Promise<Result<MediaSessionResponse>> {
-  const authStore = useAuthStore()
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
-
-  const url = `${authStore.baseUrl}/api/v3.0/media/session`
+  const url = `${baseUrl}/api/v3.0/media/session`
   debug('Fetching media session:', url)
 
   const { controller, timeoutId } = createTimeoutController()
@@ -551,10 +484,7 @@ export async function getMediaSession(): Promise<Result<MediaSessionResponse>> {
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: authHeaders(authStore.token),
       signal: controller.signal
     })
 
@@ -563,7 +493,7 @@ export async function getMediaSession(): Promise<Result<MediaSessionResponse>> {
     }
 
     const data = await response.json() as MediaSessionResponse
-    debug('Media session URL received:', data.url)
+    debug('Media session URL received:', redactUrl(data.url))
 
     return success(data)
   } catch (err) {
@@ -625,11 +555,9 @@ export async function getMediaSession(): Promise<Result<MediaSessionResponse>> {
  * @category Media
  */
 export async function initMediaSession(): Promise<Result<MediaSessionResult>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore } = auth
 
   // Step 1: Get the media session URL
   const sessionResult = await getMediaSession()
@@ -647,7 +575,7 @@ export async function initMediaSession(): Promise<Result<MediaSessionResult>> {
   }
 
   const sessionUrl = sessionResult.data.url
-  debug('Calling session URL to set cookie:', sessionUrl)
+  debug('Calling session URL to set cookie:', redactUrl(sessionUrl))
 
   // Validate session URL domain to prevent SSRF attacks
   // Session URLs should only come from trusted EEN domains
@@ -667,27 +595,14 @@ export async function initMediaSession(): Promise<Result<MediaSessionResult>> {
     const response = await fetch(sessionUrl, {
       method: 'GET',
       credentials: 'include', // Critical: include cookies in the request/response
-      headers: {
-        'Accept': '*/*',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: { ...authHeaders(authStore.token), 'Accept': '*/*' },
       signal: controller.signal
     })
 
     // The session endpoint typically returns 204 No Content on success
-    // but may also return 200 OK
-    if (!response.ok && response.status !== 204) {
-      const status = response.status
-
-      let message: string
-      try {
-        const errorData = await response.json()
-        message = errorData.message ?? errorData.error ?? response.statusText
-      } catch {
-        message = response.statusText || 'Unknown error'
-      }
-
-      return failure('API_ERROR', `Failed to set media session cookie: ${message}`, status)
+    // but may also return 200 OK; both are in the response.ok range
+    if (!response.ok) {
+      return handleErrorResponse(response)
     }
 
     debug('Media session cookie set successfully')

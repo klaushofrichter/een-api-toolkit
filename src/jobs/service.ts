@@ -1,6 +1,6 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, PaginatedResult, Job, ListJobsParams, GetJobParams } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils/debug'
 
 /**
@@ -41,15 +41,9 @@ import { debug } from '../utils/debug'
  * @category Jobs
  */
 export async function listJobs(params?: ListJobsParams): Promise<Result<PaginatedResult<Job>>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -93,16 +87,13 @@ export async function listJobs(params?: ListJobsParams): Promise<Result<Paginate
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/jobs${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/jobs${queryString ? `?${queryString}` : ''}`
   debug('Fetching jobs:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -159,15 +150,9 @@ export async function listJobs(params?: ListJobsParams): Promise<Result<Paginate
  * @category Jobs
  */
 export async function getJob(jobId: string, params?: GetJobParams): Promise<Result<Job>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!jobId) {
     return failure('VALIDATION_ERROR', 'Job ID is required')
@@ -180,16 +165,13 @@ export async function getJob(jobId: string, params?: GetJobParams): Promise<Resu
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/jobs/${encodeURIComponent(jobId)}${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/jobs/${encodeURIComponent(jobId)}${queryString ? `?${queryString}` : ''}`
   debug('Fetching job:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      }
+      headers: authHeaders(authStore.token)
     })
 
     if (!response.ok) {
@@ -243,21 +225,15 @@ export async function getJob(jobId: string, params?: GetJobParams): Promise<Resu
  * @category Jobs
  */
 export async function deleteJob(jobId: string): Promise<Result<void>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   if (!jobId) {
     return failure('VALIDATION_ERROR', 'Job ID is required')
   }
 
-  const url = `${authStore.baseUrl}/api/v3.0/jobs/${encodeURIComponent(jobId)}`
+  const url = `${baseUrl}/api/v3.0/jobs/${encodeURIComponent(jobId)}`
   debug('Deleting job:', url)
 
   try {
@@ -275,37 +251,8 @@ export async function deleteJob(jobId: string): Promise<Result<void>> {
     // 204 No Content is expected on success
     debug('Job deleted:', jobId)
 
-    return success(undefined as void)
+    return success(undefined)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to delete job: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let message: string
-  try {
-    const errorData = await response.json()
-    message = errorData.message ?? errorData.error ?? response.statusText
-  } catch {
-    message = response.statusText || 'Unknown error'
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', `Authentication failed: ${message}`, status)
-    case 403:
-      return failure('FORBIDDEN', `Access denied: ${message}`, status)
-    case 404:
-      return failure('NOT_FOUND', `Not found: ${message}`, status)
-    case 429:
-      return failure('RATE_LIMITED', `Rate limited: ${message}`, status)
-    default:
-      return failure('API_ERROR', `API error: ${message}`, status)
   }
 }

@@ -1,6 +1,6 @@
-import { useAuthStore } from '../auth/store'
 import { success, failure } from '../types'
 import type { Result, ListFeedsParams, ListFeedsResult } from '../types'
+import { requireAuth, authHeaders, handleErrorResponse } from '../utils/api'
 import { debug } from '../utils/debug'
 
 /**
@@ -58,15 +58,9 @@ import { debug } from '../utils/debug'
  * @category Feeds
  */
 export async function listFeeds(params?: ListFeedsParams): Promise<Result<ListFeedsResult>> {
-  const authStore = useAuthStore()
-
-  if (!authStore.isAuthenticated) {
-    return failure('AUTH_REQUIRED', 'Authentication required')
-  }
-
-  if (!authStore.baseUrl) {
-    return failure('AUTH_REQUIRED', 'Base URL not configured')
-  }
+  const auth = requireAuth()
+  if (!auth.ok) return auth.result
+  const { authStore, baseUrl } = auth
 
   const queryParams = new URLSearchParams()
 
@@ -97,16 +91,13 @@ export async function listFeeds(params?: ListFeedsParams): Promise<Result<ListFe
   }
 
   const queryString = queryParams.toString()
-  const url = `${authStore.baseUrl}/api/v3.0/feeds${queryString ? `?${queryString}` : ''}`
+  const url = `${baseUrl}/api/v3.0/feeds${queryString ? `?${queryString}` : ''}`
   debug('Fetching feeds:', url)
 
   try {
     const response = await fetch(url, {
       method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': `Bearer ${authStore.token}`
-      },
+      headers: authHeaders(authStore.token),
       signal: params?.signal
     })
 
@@ -120,36 +111,5 @@ export async function listFeeds(params?: ListFeedsParams): Promise<Result<ListFe
     return success(data)
   } catch (err) {
     return failure('NETWORK_ERROR', `Failed to fetch feeds: ${String(err)}`)
-  }
-}
-
-/**
- * Handle error responses from the API.
- * @internal
- */
-async function handleErrorResponse<T>(response: Response): Promise<Result<T>> {
-  const status = response.status
-
-  let apiMessage: string | undefined
-  try {
-    const errorData = await response.json()
-    apiMessage = errorData.message ?? errorData.error
-  } catch (parseError) {
-    debug('Failed to parse error response JSON:', parseError)
-  }
-
-  switch (status) {
-    case 401:
-      return failure('AUTH_REQUIRED', apiMessage || 'Authentication failed', status)
-    case 403:
-      return failure('FORBIDDEN', apiMessage || 'Access denied', status)
-    case 404:
-      return failure('NOT_FOUND', apiMessage || 'Not found', status)
-    case 429:
-      return failure('RATE_LIMITED', apiMessage || 'Rate limited', status)
-    case 503:
-      return failure('SERVICE_UNAVAILABLE', apiMessage || 'Service unavailable', status)
-    default:
-      return failure('API_ERROR', apiMessage || response.statusText || 'API error', status)
   }
 }
