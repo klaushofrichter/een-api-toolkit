@@ -20,7 +20,12 @@ AUTH_FILE="$PROJECT_ROOT/e2e/.auth-state.json"
 if [[ -f "$PROJECT_ROOT/.env" ]]; then
     # `|| [[ -n "$key" ]]` processes a final line without a trailing newline
     while IFS='=' read -r key value || [[ -n "$key" ]]; do
+        # Trim surrounding whitespace (tolerates `KEY = value`)
+        key="${key#"${key%%[![:space:]]*}"}"
+        key="${key%"${key##*[![:space:]]}"}"
         [[ "$key" =~ ^[A-Za-z_][A-Za-z0-9_]*$ ]] || continue
+        value="${value#"${value%%[![:space:]]*}"}"
+        value="${value%"${value##*[![:space:]]}"}"
         # Strip optional surrounding quotes
         value="${value%\"}"; value="${value#\"}"
         value="${value%\'}"; value="${value#\'}"

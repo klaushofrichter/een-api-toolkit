@@ -52,8 +52,10 @@ tar -tzf "$TARBALL" | grep -q "package/dist/index.d.ts" || { echo "   ✗ Missin
 tar -tzf "$TARBALL" | grep -q "package/package.json" || { echo "   ✗ Missing package.json in tarball"; exit 1; }
 tar -tzf "$TARBALL" | grep -q "package/examples/vue-users" || { echo "   ✗ Missing examples in tarball"; exit 1; }
 
-# Ensure no secret-bearing files are packaged (live .env credentials, cached tokens)
-if tar -tzf "$TARBALL" | grep -E '/\.env$|/\.auth-state\.json$'; then
+# Ensure no secret-bearing files are packaged (live .env credentials, cached
+# tokens). Anchored with (^|/) so a root-level file is caught too, and .env
+# variants like .env.local are included; .env.example is intentionally shipped.
+if tar -tzf "$TARBALL" | grep -E '(^|/)\.env(\.[^/]+)?$|(^|/)\.auth-state\.json$' | grep -vE '\.env\.example$'; then
   echo "   ✗ Tarball contains secret files (.env / .auth-state.json) — aborting"
   rm -f "$TARBALL"
   exit 1
