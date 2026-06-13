@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.108] - 2026-06-13
+
+### Changed
+
+- Dependency maintenance (no runtime/published-code changes). Updated GitHub
+  Actions: `actions/checkout` 6.0.3, `github/codeql-action` 4.36.2,
+  `actions/setup-node` 6.4.0, `actions/upload-artifact` 7.0.1 (all pinned to
+  SHAs verified against their release tags). Updated dev dependencies including
+  `@playwright/test` 1.60.0, `vite` 8.0.16, `vitest` 4.1.8, `vue` 3.5.38,
+  `vue-tsc` 3.3.4. `vite-plugin-dts` held at 4.x (the proposed 5.x major
+  changes declaration output and adds peer dependencies; deferred to its own PR).
+
 ## [0.3.107] - 2026-06-13
 
 ### Changed
