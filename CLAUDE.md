@@ -17,7 +17,7 @@ This is a TypeScript library ("Toolkit") implementing the Eagle Eye Networks (EE
 - **Testing**: Vitest (unit), Playwright (E2E)
 - **Linting**: ESLint only (no Prettier)
 - **Node.js**: Minimum version 20 LTS
-- **TypeScript**: Pinned to ~5.8.x (required for API Extractor compatibility in vite-plugin-dts)
+- **TypeScript**: Pinned to ~5.8.x (kept within the range API Extractor supports; `@microsoft/api-extractor` powers the rolled-up `.d.ts` via vite-plugin-dts v5's `bundleTypes`)
 - **Dependencies**: Always use latest stable versions of imported packages
 
 ## Common Commands

@@ -79,6 +79,18 @@ else
   echo "   ✗ Missing expected exports in declarations"
   exit 1
 fi
+
+# Type-check the rolled-up declaration itself. grep only proves names are
+# present; this catches dangling/broken type references in the bundled
+# .d.ts (the failure mode an API Extractor / vite-plugin-dts change can
+# introduce). Run isolated so it does not pick up the repo tsconfig globs.
+if npx tsc --noEmit --skipLibCheck dist/index.d.ts > /tmp/dts-typecheck.log 2>&1; then
+  echo "   ✓ Bundled declaration type-checks (no dangling references)"
+else
+  echo "   ✗ Bundled declaration failed to type-check:"
+  cat /tmp/dts-typecheck.log
+  exit 1
+fi
 echo ""
 
 # Step 5: Verify ESM and CJS syntax
