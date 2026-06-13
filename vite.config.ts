@@ -7,7 +7,10 @@ export default defineConfig({
   plugins: [
     vue(),
     dts({
-      rollupTypes: true,
+      // vite-plugin-dts v5 renamed `rollupTypes` to `bundleTypes`
+      // (powered by @microsoft/api-extractor) — produces a single
+      // rolled-up dist/index.d.ts.
+      bundleTypes: true,
       tsconfigPath: './tsconfig.json'
     })
   ],

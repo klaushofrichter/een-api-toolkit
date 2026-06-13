@@ -79,6 +79,25 @@ else
   echo "   ✗ Missing expected exports in declarations"
   exit 1
 fi
+
+# Type-check the rolled-up declaration itself. grep only proves names are
+# present; this catches dangling/broken type references in the bundled
+# .d.ts (the failure mode an API Extractor / vite-plugin-dts change can
+# introduce). NOTE: do NOT add --skipLibCheck here — it suppresses the
+# semantic checking of .d.ts files, which is exactly the dangling-reference
+# check we want (verified: a TS2304 in dist/index.d.ts passes under
+# --skipLibCheck but fails without it). A clean rolled-up build resolves
+# vue/pinia/node types without error, so the gate stays quiet when correct.
+DTS_LOG=$(mktemp)
+if npx tsc --noEmit dist/index.d.ts > "$DTS_LOG" 2>&1; then
+  echo "   ✓ Bundled declaration type-checks (no dangling references)"
+  rm -f "$DTS_LOG"
+else
+  echo "   ✗ Bundled declaration failed to type-check:"
+  cat "$DTS_LOG"
+  rm -f "$DTS_LOG"
+  exit 1
+fi
 echo ""
 
 # Step 5: Verify ESM and CJS syntax
